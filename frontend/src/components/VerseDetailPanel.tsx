@@ -17,7 +17,7 @@ interface TeluguVerseData {
 export default function VerseDetailPanel({ verse, onClose }: VerseDetailPanelProps) {
   const [activeTab, setActiveTab] = useState<'translations' | 'hebrew' | 'greek' | 'telugu' | 'notes'>('translations');
   const [strongsResults, setStrongsResults] = useState<StrongsDefinition[]>([]);
-  const [allStrongs, setAllStrongs] = useState<StrongsDefinition[]>([]);
+  const [_allStrongs, setAllStrongs] = useState<StrongsDefinition[]>([]);
   const [loadingStrongs, setLoadingStrongs] = useState(false);
   const [note, setNote] = useState('');
   const [teluguData, setTeluguData] = useState<TeluguVerseData | null>(null);
