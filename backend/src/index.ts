@@ -14,26 +14,6 @@ import downloadRouter from './routes/download';
 import notesRouter from './routes/notes';
 import teluguRouter from './routes/telugu';
 
-const app: Application = express();
-const PORT = process.env.PORT || 3001;
-
-// Middleware
-app.use(helmet());
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow any localhost origin (Vite uses auto-incrementing ports)
-    if (!origin || origin.match(/^http:\/\/(localhost|127\.0\.0\.1):\d+$/)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.use(compression());
-app.use(express.json());
-
 // Request logging
 app.use((req: Request, _res: Response, next: NextFunction) => {
   console.log(`${new Date().toISOString()} | ${req.method} ${req.path}`);
