@@ -1,0 +1,131 @@
+import express, { Application, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { dataStore } from './services/dataStore';
+
+// Routes
+import booksRouter from './routes/books';
+import versesRouter from './routes/verses';
+import strongsRouter from './routes/strongs';
+import searchRouter from './routes/search';
+import languagesRouter from './routes/languages';
+import downloadRouter from './routes/download';
+import notesRouter from './routes/notes';
+import teluguRouter from './routes/telugu';
+
+const app: Application = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware
+app.use(helmet());
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow any localhost origin (Vite uses auto-incrementing ports)
+    if (!origin || origin.match(/^http:\/\/(localhost|127\.0\.0\.1):\d+$/)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(compression());
+app.use(express.json());
+
+// Request logging
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  console.log(`${new Date().toISOString()} | ${req.method} ${req.path}`);
+  next();
+});
+
+// Health check
+app.get('/health', (_req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// API Info
+app.get('/api', (_req: Request, res: Response) => {
+  res.json({
+    name: 'Bible Mind API',
+    version: '1.0.0',
+    description: 'Advanced Bible API with Hebrew & Greek meanings',
+    endpoints: {
+      books: '/api/books',
+      verses: '/api/verses/:book/:chapter/:verse',
+      strongs: '/api/strongs/:number',
+      search: '/api/search?q=query',
+      languages: '/api/languages',
+      download: '/api/download',
+      notes: '/api/notes/:userId'
+    }
+  });
+});
+
+// Routes
+app.use('/api/books', booksRouter);
+app.use('/api/verses', versesRouter);
+app.use('/api/strongs', strongsRouter);
+app.use('/api/search', searchRouter);
+app.use('/api/languages', languagesRouter);
+app.use('/api/download', downloadRouter);
+app.use('/api/notes', notesRouter);
+app.use('/api/telugu', teluguRouter);
+
+// 404 handler
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
+    code: 404
+  });
+});
+
+// Error handler
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error('Error:', err.message);
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error',
+    code: 500
+  });
+});
+
+// Start server
+async function startServer() {
+  try {
+    // Load all data before starting server
+    await dataStore.loadAllData();
+
+    app.listen(PORT, () => {
+      console.log(`
+╔═══════════════════════════════════════════════════════╗
+║                                                       ║
+║   📖 BIBLE MIND API SERVER                            ║
+║                                                       ║
+║   Server running at: http://localhost:${PORT}          ║
+║                                                       ║
+║   Endpoints:                                          ║
+║   • GET /api/books                                    ║
+║   • GET /api/verses/:book/:chapter/:verse             ║
+║   • GET /api/strongs/:number                          ║
+║   • GET /api/search?q=query                           ║
+║   • GET /api/languages                                ║
+║   • GET /api/download                                 ║
+║   • GET /api/notes/:userId                            ║
+║                                                       ║
+╚═══════════════════════════════════════════════════════╝
+      `);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
