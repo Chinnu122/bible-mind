@@ -14,6 +14,19 @@ import downloadRouter from './routes/download';
 import notesRouter from './routes/notes';
 import teluguRouter from './routes/telugu';
 
+const app: Application = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware
+app.use(helmet());
+app.use(cors({
+  origin: true, // Allow all origins for deployment
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(compression());
+app.use(express.json());
+
 // Request logging
 app.use((req: Request, _res: Response, next: NextFunction) => {
   console.log(`${new Date().toISOString()} | ${req.method} ${req.path}`);
@@ -42,7 +55,8 @@ app.get('/api', (_req: Request, res: Response) => {
       search: '/api/search?q=query',
       languages: '/api/languages',
       download: '/api/download',
-      notes: '/api/notes/:userId'
+      notes: '/api/notes/:userId',
+      telugu: '/api/telugu'
     }
   });
 });
@@ -79,28 +93,10 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 // Start server
 async function startServer() {
   try {
-    // Load all data before starting server
     await dataStore.loadAllData();
 
     app.listen(PORT, () => {
-      console.log(`
-╔═══════════════════════════════════════════════════════╗
-║                                                       ║
-║   📖 BIBLE MIND API SERVER                            ║
-║                                                       ║
-║   Server running at: http://localhost:${PORT}          ║
-║                                                       ║
-║   Endpoints:                                          ║
-║   • GET /api/books                                    ║
-║   • GET /api/verses/:book/:chapter/:verse             ║
-║   • GET /api/strongs/:number                          ║
-║   • GET /api/search?q=query                           ║
-║   • GET /api/languages                                ║
-║   • GET /api/download                                 ║
-║   • GET /api/notes/:userId                            ║
-║                                                       ║
-╚═══════════════════════════════════════════════════════╝
-      `);
+      console.log(`📖 Bible Mind API running on port ${PORT}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
