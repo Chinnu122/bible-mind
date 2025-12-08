@@ -1,13 +1,18 @@
 {
-  "name": "frontend",
+  "name": "bible-mind-frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bible Mind Frontend",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "start": "npx serve dist -s -l ${PORT:-3000}",
+    "postinstall": "npm run build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [],
   "author": "",
