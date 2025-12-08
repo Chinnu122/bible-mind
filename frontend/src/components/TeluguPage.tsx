@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Globe, Download, ChevronLeft, ChevronRight, Book, Loader2 } from 'lucide-react';
+import { Globe, Download, ChevronLeft, ChevronRight, Book, Loader2 } from 'lucide-react';
 
 interface TeluguPageProps {
   onBack: () => void;
@@ -19,7 +19,7 @@ interface TeluguVerse {
   teluguText: string;
 }
 
-export default function TeluguPage({ onBack }: TeluguPageProps) {
+export default function TeluguPage({ onBack: _onBack }: TeluguPageProps) {
   const [books, setBooks] = useState<TeluguBook[]>([]);
   const [selectedBook, setSelectedBook] = useState<TeluguBook | null>(null);
   const [selectedChapter, setSelectedChapter] = useState(1);

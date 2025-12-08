@@ -68,11 +68,10 @@ export default function IntroAnimation({ onComplete }: IntroAnimationProps) {
   const crossHorizontal = "M 45 55 L 75 55";
 
   // Book Pages
-  const bookBase = "M 20 120 L 60 130 L 100 120"; // Bottom curve
   const bookLeftPage = "M 20 120 Q 40 110 60 130 L 60 90 Q 40 80 20 90 Z"; // Left page volume (simplified)
   const bookRightPage = "M 100 120 Q 80 110 60 130 L 60 90 Q 80 80 100 90 Z"; // Right page volume
 
-  const drawTransition = { duration: 2.5, ease: "easeInOut" };
+  const drawTransition = { duration: 2.5, ease: "easeInOut" as const };
 
   return (
     <motion.div
