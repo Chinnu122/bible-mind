@@ -33,11 +33,11 @@ class DataStore {
   }
 
   private async loadBooks(): Promise<void> {
-    const filePath = path.join(__dirname, '../../../BibleData-Book.csv');
-    
+    const filePath = path.join(__dirname, '../../data/BibleData-Book.csv');
+
     return new Promise((resolve, reject) => {
       const results: BibleBook[] = [];
-      
+
       fs.createReadStream(filePath)
         .pipe(csvParser())
         .on('data', (row) => {
@@ -69,8 +69,8 @@ class DataStore {
   }
 
   private async loadVerses(): Promise<void> {
-    const filePath = path.join(__dirname, '../../../AlamoPolyglot.csv');
-    
+    const filePath = path.join(__dirname, '../../data/AlamoPolyglot.csv');
+
     return new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(csvParser())
@@ -115,25 +115,25 @@ class DataStore {
   }
 
   private async loadStrongs(): Promise<void> {
-    const filePath = path.join(__dirname, '../../../HebrewStrongs.csv');
-    
+    const filePath = path.join(__dirname, '../../data/HebrewStrongs.csv');
+
     // Read and parse CSV manually due to multi-line fields
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
-    
+
     let currentRecord: string[] = [];
     let inQuotes = false;
     let isFirstLine = true;
-    
+
     for (const line of lines) {
       if (isFirstLine) {
         isFirstLine = false;
         continue; // Skip header
       }
-      
+
       // Count quotes to determine if we're in a multi-line field
       const quoteCount = (line.match(/"/g) || []).length;
-      
+
       if (!inQuotes) {
         currentRecord = [line];
         // If odd number of quotes, we're starting a multi-line field
@@ -156,15 +156,15 @@ class DataStore {
 
   private parseStrongsRecord(record: string): void {
     if (!record.trim()) return;
-    
+
     // Simple CSV parsing for this specific format
     const parts: string[] = [];
     let current = '';
     let inQuotes = false;
-    
+
     for (let i = 0; i < record.length; i++) {
       const char = record[i];
-      
+
       if (char === '"' && !inQuotes) {
         inQuotes = true;
       } else if (char === '"' && inQuotes) {
@@ -182,7 +182,7 @@ class DataStore {
       }
     }
     parts.push(current.trim());
-    
+
     if (parts.length >= 9 && parts[0]) {
       const def: StrongsDefinition = {
         strongsNumber: `H${parts[0]}`,
@@ -211,9 +211,9 @@ class DataStore {
   getBookByName(name: string): BibleBook | undefined {
     const lowerName = name.toLowerCase();
     return Array.from(this.books.values()).find(
-      b => b.bookName.toLowerCase() === lowerName || 
-           b.shortName.toLowerCase() === lowerName ||
-           b.usxCode.toLowerCase() === lowerName
+      b => b.bookName.toLowerCase() === lowerName ||
+        b.shortName.toLowerCase() === lowerName ||
+        b.usxCode.toLowerCase() === lowerName
     );
   }
 
@@ -242,24 +242,24 @@ class DataStore {
     const lowerQuery = query.toLowerCase();
     return Array.from(this.strongs.values()).filter(
       s => s.word.toLowerCase().includes(lowerQuery) ||
-           s.gloss.toLowerCase().includes(lowerQuery) ||
-           s.rootWord.toLowerCase().includes(lowerQuery)
+        s.gloss.toLowerCase().includes(lowerQuery) ||
+        s.rootWord.toLowerCase().includes(lowerQuery)
     ).slice(0, 50);
   }
 
   searchVerses(query: string, limit: number = 20): BibleVerse[] {
     const lowerQuery = query.toLowerCase();
     const results: BibleVerse[] = [];
-    
+
     for (const verse of this.verses.values()) {
       if (results.length >= limit) break;
-      
+
       if (verse.kjvText.toLowerCase().includes(lowerQuery) ||
-          verse.webText.toLowerCase().includes(lowerQuery)) {
+        verse.webText.toLowerCase().includes(lowerQuery)) {
         results.push(verse);
       }
     }
-    
+
     return results;
   }
 

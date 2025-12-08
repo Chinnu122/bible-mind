@@ -50,7 +50,7 @@ function loadTeluguBook(bookId: number): TeluguBook | null {
     const filename = BOOK_FILE_MAP[bookId];
     if (!filename) return null;
 
-    const filePath = path.join(__dirname, '../../../data/telugu', `${filename}.json`);
+    const filePath = path.join(__dirname, '../../data/telugu', `${filename}.json`);
     if (!fs.existsSync(filePath)) {
         console.error(`Telugu file not found: ${filePath}`);
         return null;

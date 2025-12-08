@@ -5,7 +5,7 @@ import path from 'path';
 const router = Router();
 
 // Simple file-based storage for notes
-const NOTES_DIR = path.join(__dirname, '../../../data/notes');
+const NOTES_DIR = path.join(__dirname, '../../data/notes');
 
 // Ensure notes directory exists
 if (!fs.existsSync(NOTES_DIR)) {
