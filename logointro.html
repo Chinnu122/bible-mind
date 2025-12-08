@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Mind Logo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Color Palette derived from the image */
+            --navy: #1a3c5a;
+            --gold: #bfa37c;
+            --bg-white: #ffffff;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            /* Texture simulation */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* --- Container --- */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* --- The Circular Badge --- */
+        .logo-badge {
+            width: 200px;
+            height: 200px;
+            border: 6px solid var(--navy);
+            border-radius: 50%;
+            position: relative;
+            background: var(--bg-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Keeps content inside circle */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- The Cross (Center Piece) --- */
+        .cross {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 50px;
+            background-color: var(--gold);
+            z-index: 10;
+            border-radius: 2px;
+        }
+
+        .cross::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -10px;
+            width: 34px;
+            height: 12px;
+            background-color: var(--gold);
+            border-radius: 2px;
+        }
+
+        /* --- The Brain (Navy Loops) --- */
+        .brain-assembly {
+            position: absolute;
+            top: 25px;
+            width: 120px;
+            height: 90px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 5;
+        }
+
+        .brain-lobe {
+            width: 50px;
+            height: 80px;
+            border: 5px solid var(--navy);
+            background: transparent;
+            position: relative;
+        }
+
+        /* Sculpting the brain shape using border radius */
+        .brain-lobe.left {
+            border-radius: 30px 20px 20px 30px;
+            border-right: none;
+            /* Open towards the cross */
+            margin-right: 5px;
+        }
+
+        .brain-lobe.left::before {
+            /* Creates the inner squiggle illusion */
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            width: 20px;
+            height: 30px;
+            border: 4px solid var(--navy);
+            border-right: none;
+            border-radius: 15px 0 0 15px;
+        }
+
+        .brain-lobe.right {
+            border-radius: 20px 30px 30px 20px;
+            border-left: none;
+            /* Open towards the cross */
+            margin-left: 5px;
+        }
+
+        .brain-lobe.right::before {
+            /* Creates the inner squiggle illusion */
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            width: 20px;
+            height: 30px;
+            border: 4px solid var(--navy);
+            border-left: none;
+            border-radius: 0 15px 15px 0;
+        }
+
+        /* --- The Book (Gold Base) --- */
+        .book-assembly {
+            position: absolute;
+            bottom: 35px;
+            width: 140px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            z-index: 4;
+        }
+
+        .page {
+            width: 50px;
+            height: 40px;
+            border-bottom: 5px solid var(--gold);
+            border-left: 5px solid var(--gold);
+            /* Side of book */
+            border-right: 2px solid transparent;
+            position: relative;
+        }
+
+        .page.left-page {
+            transform: skewY(15deg);
+            border-radius: 0 0 0 10px;
+            margin-right: -2px;
+        }
+
+        /* Adding "pages" detail */
+        .page.left-page::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: -2px;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            opacity: 0.6;
+        }
+
+        .page.right-page {
+            transform: skewY(-15deg);
+            border-radius: 0 0 10px 0;
+            border-left: none;
+            border-right: 5px solid var(--gold);
+            margin-left: -2px;
+        }
+
+        .page.right-page::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            right: -2px;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            opacity: 0.6;
+        }
+
+        /* --- Typography --- */
+        .text-container {
+            text-align: center;
+            color: var(--navy);
+            font-family: 'Cinzel', serif;
+        }
+
+        .main-title {
+            font-size: 32px;
+            margin: 0;
+            letter-spacing: 2px;
+            font-weight: 900;
+            color: var(--navy);
+            /* Subtle text shadow for depth */
+            text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .tagline {
+            font-family: 'Lato', sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-top: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="logo-container">
+        <div class="logo-badge">
+
+            <div class="brain-assembly">
+                <div class="brain-lobe left"></div>
+                <div class="brain-lobe right"></div>
+                <div class="cross"></div>
+            </div>
+
+            <div class="book-assembly">
+                <div class="page left-page"></div>
+                <div class="page right-page"></div>
+            </div>
+        </div>
+
+        <div class="text-container">
+            <h1 class="main-title">BIBLE MIND</h1>
+            <p class="tagline">WISDOM & UNDERSTANDING</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
