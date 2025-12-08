@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: bible-mind-api
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    networks:
+      - bible-network
+
+  frontend:
+    build: ./frontend
+    container_name: bible-mind-web
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    networks:
+      - bible-network
+
+networks:
+  bible-network:
+    driver: bridge
