@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Trash2, Calendar, Book } from 'lucide-react';
+import { ArrowLeft, Trash2, Calendar, Book, Share2, Check } from 'lucide-react';
+import { copyShareableLink, checkAndImportSharedNotes } from '../utils/deviceSync';
 
 interface NoteData {
   text: string;
@@ -16,11 +17,21 @@ interface NotesPageProps {
 
 export default function NotesPage({ onBack }: NotesPageProps) {
   const [notes, setNotes] = useState<[string, NoteData][]>([]);
+  const [shareSuccess, setShareSuccess] = useState(false);
+  const [importedNotes, setImportedNotes] = useState(false);
 
   useEffect(() => {
+    // Check for shared notes on load
+    checkAndImportSharedNotes().then(imported => {
+      if (imported) {
+        setImportedNotes(true);
+        setTimeout(() => setImportedNotes(false), 3000);
+      }
+    });
+
+    // Load notes
     try {
       const allNotes = JSON.parse(localStorage.getItem('bible-notes') || '{}');
-      // Convert object to array and sort by date (newest first)
       const notesArray = Object.entries(allNotes) as [string, NoteData][];
       notesArray.sort((a, b) => b[1].updatedAt - a[1].updatedAt);
       setNotes(notesArray);
@@ -28,6 +39,14 @@ export default function NotesPage({ onBack }: NotesPageProps) {
       console.error('Error loading notes', e);
     }
   }, []);
+
+  const handleShare = async () => {
+    const success = await copyShareableLink();
+    if (success) {
+      setShareSuccess(true);
+      setTimeout(() => setShareSuccess(false), 3000);
+    }
+  };
 
   const deleteNote = (id: string) => {
     if (confirm('Are you sure you want to delete this note?')) {
@@ -43,21 +62,45 @@ export default function NotesPage({ onBack }: NotesPageProps) {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className="pt-24 px-4 md:px-12 max-w-5xl mx-auto pb-20 min-h-screen"
     >
-      <div className="flex items-center gap-4 mb-8">
-        <button 
-          onClick={onBack}
-          className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6 text-gold-400" />
-        </button>
-        <h1 className="text-3xl font-serif text-gold-100">My Study Notes</h1>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onBack}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6 text-gold-400" />
+          </button>
+          <h1 className="text-3xl font-serif text-gold-100">My Study Notes</h1>
+        </div>
+
+        {notes.length > 0 && (
+          <button
+            onClick={handleShare}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${shareSuccess
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                : 'bg-gold-500/20 text-gold-300 border border-gold-500/30 hover:bg-gold-500/30'
+              }`}
+          >
+            {shareSuccess ? (
+              <><Check className="w-4 h-4" /> Link Copied!</>
+            ) : (
+              <><Share2 className="w-4 h-4" /> Share Notes</>
+            )}
+          </button>
+        )}
       </div>
+
+      {importedNotes && (
+        <div className="mb-6 p-4 bg-emerald-900/20 border border-emerald-500/30 rounded-xl text-emerald-300">
+          ✓ Notes imported from shared link!
+        </div>
+      )}
 
       {notes.length === 0 ? (
         <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
@@ -66,7 +109,7 @@ export default function NotesPage({ onBack }: NotesPageProps) {
           <p className="text-gray-500">
             Start reading and add notes to verses to see them here.
           </p>
-          <button 
+          <button
             onClick={onBack}
             className="mt-6 px-6 py-2 bg-gold-500/20 text-gold-300 rounded-lg hover:bg-gold-500/30 transition-colors"
           >

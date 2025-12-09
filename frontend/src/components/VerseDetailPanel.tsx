@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Languages, BookOpen, Sparkles, StickyNote, Globe } from 'lucide-react';
+import { X, Languages, BookOpen, Sparkles, StickyNote, Globe, ArrowRight, Layers } from 'lucide-react';
 import { BibleVerse, bibleAPI, StrongsDefinition } from '../api/bibleApi';
 
 interface VerseDetailPanelProps {
@@ -15,7 +15,7 @@ interface TeluguVerseData {
 }
 
 export default function VerseDetailPanel({ verse, onClose }: VerseDetailPanelProps) {
-  const [activeTab, setActiveTab] = useState<'translations' | 'hebrew' | 'greek' | 'telugu' | 'notes'>('translations');
+  const [activeTab, setActiveTab] = useState<'compare' | 'translations' | 'hebrew' | 'greek' | 'telugu' | 'notes'>('compare');
   const [strongsResults, setStrongsResults] = useState<StrongsDefinition[]>([]);
   const [_allStrongs, setAllStrongs] = useState<StrongsDefinition[]>([]);
   const [loadingStrongs, setLoadingStrongs] = useState(false);
@@ -166,6 +166,7 @@ export default function VerseDetailPanel({ verse, onClose }: VerseDetailPanelPro
         {/* Tabs */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {[
+            { id: 'compare', label: 'Compare', icon: Layers },
             { id: 'translations', label: 'Translations', icon: BookOpen },
             { id: 'hebrew', label: 'Hebrew', icon: Languages },
             { id: 'greek', label: 'Greek', icon: Sparkles },
@@ -189,6 +190,144 @@ export default function VerseDetailPanel({ verse, onClose }: VerseDetailPanelPro
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-6">
+        {/* COMPARE TAB - Multi-language Chain */}
+        {activeTab === 'compare' && (
+          <div className="space-y-4">
+            {/* Determine if OT or NT */}
+            {verse.bookId <= 39 ? (
+              // Old Testament: English → Telugu → English Meaning → Hebrew
+              <>
+                <h3 className="text-xs uppercase tracking-widest text-gold-500/70 mb-4 flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  Old Testament: English → Telugu → Meaning → Hebrew
+                </h3>
+
+                {/* Step 1: English */}
+                <div className="bg-blue-900/20 rounded-xl p-5 border border-blue-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-blue-500/30 text-blue-300 text-xs flex items-center justify-center font-bold">1</span>
+                    <span className="text-xs text-blue-300 uppercase tracking-widest">English (KJV)</span>
+                  </div>
+                  <p className="text-lg font-serif text-blue-100 leading-relaxed">{verse.kjvText}</p>
+                </div>
+
+                <div className="flex justify-center"><ArrowRight className="w-5 h-5 text-gray-600" /></div>
+
+                {/* Step 2: Telugu */}
+                <div className="bg-emerald-900/20 rounded-xl p-5 border border-emerald-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-emerald-500/30 text-emerald-300 text-xs flex items-center justify-center font-bold">2</span>
+                    <span className="text-xs text-emerald-300 uppercase tracking-widest">Telugu (తెలుగు)</span>
+                  </div>
+                  <p className="text-xl font-serif text-emerald-100 leading-relaxed">
+                    {teluguData?.teluguText || <span className="text-gray-500 italic">Loading Telugu...</span>}
+                  </p>
+                </div>
+
+                <div className="flex justify-center"><ArrowRight className="w-5 h-5 text-gray-600" /></div>
+
+                {/* Step 3: English Meaning (Word Analysis) */}
+                <div className="bg-amber-900/20 rounded-xl p-5 border border-amber-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-amber-500/30 text-amber-300 text-xs flex items-center justify-center font-bold">3</span>
+                    <span className="text-xs text-amber-300 uppercase tracking-widest">English Word Meaning</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {verse.kjvText.split(/\s+/).slice(0, 12).map((word, idx) => (
+                      <span key={idx} className="bg-amber-900/30 px-3 py-1 rounded text-amber-200 text-sm">
+                        {word}
+                      </span>
+                    ))}
+                    {verse.kjvText.split(/\s+/).length > 12 && <span className="text-amber-400">...</span>}
+                  </div>
+                </div>
+
+                <div className="flex justify-center"><ArrowRight className="w-5 h-5 text-gray-600" /></div>
+
+                {/* Step 4: Hebrew (Original) */}
+                <div className="bg-gold-900/20 rounded-xl p-5 border border-gold-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-gold-500/30 text-gold-300 text-xs flex items-center justify-center font-bold">4</span>
+                    <span className="text-xs text-gold-300 uppercase tracking-widest">Hebrew (עברית) - Original</span>
+                  </div>
+                  {verse.hebrewText ? (
+                    <>
+                      <p className="text-2xl font-serif text-gold-100 leading-relaxed text-right mb-4" dir="rtl">
+                        {verse.hebrewText}
+                      </p>
+                      <div className="flex flex-wrap gap-2" dir="rtl">
+                        {verse.hebrewText.split(/\s+/).slice(0, 8).map((word, idx) => (
+                          <span key={idx} className="bg-gold-900/40 px-3 py-2 rounded-lg text-gold-200 text-lg cursor-pointer hover:bg-gold-800/50 transition-colors" title="Click for meaning">
+                            {word}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-gray-500 italic">Hebrew text not available for this verse</p>
+                  )}
+                </div>
+              </>
+            ) : (
+              // New Testament: Telugu → English → Greek
+              <>
+                <h3 className="text-xs uppercase tracking-widest text-purple-500/70 mb-4 flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  New Testament: Telugu → English → Greek
+                </h3>
+
+                {/* Step 1: Telugu */}
+                <div className="bg-emerald-900/20 rounded-xl p-5 border border-emerald-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-emerald-500/30 text-emerald-300 text-xs flex items-center justify-center font-bold">1</span>
+                    <span className="text-xs text-emerald-300 uppercase tracking-widest">Telugu (తెలుగు)</span>
+                  </div>
+                  <p className="text-xl font-serif text-emerald-100 leading-relaxed">
+                    {teluguData?.teluguText || <span className="text-gray-500 italic">Loading Telugu...</span>}
+                  </p>
+                </div>
+
+                <div className="flex justify-center"><ArrowRight className="w-5 h-5 text-gray-600" /></div>
+
+                {/* Step 2: English */}
+                <div className="bg-blue-900/20 rounded-xl p-5 border border-blue-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-blue-500/30 text-blue-300 text-xs flex items-center justify-center font-bold">2</span>
+                    <span className="text-xs text-blue-300 uppercase tracking-widest">English (KJV)</span>
+                  </div>
+                  <p className="text-lg font-serif text-blue-100 leading-relaxed">{verse.kjvText}</p>
+                </div>
+
+                <div className="flex justify-center"><ArrowRight className="w-5 h-5 text-gray-600" /></div>
+
+                {/* Step 3: Greek (Original) */}
+                <div className="bg-purple-900/20 rounded-xl p-5 border border-purple-500/20">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-purple-500/30 text-purple-300 text-xs flex items-center justify-center font-bold">3</span>
+                    <span className="text-xs text-purple-300 uppercase tracking-widest">Greek (Ελληνικά) - Original</span>
+                  </div>
+                  {verse.greekText ? (
+                    <>
+                      <p className="text-2xl font-serif text-purple-100 leading-relaxed mb-4">
+                        {verse.greekText}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {verse.greekText.split(/\s+/).slice(0, 8).map((word, idx) => (
+                          <span key={idx} className="bg-purple-900/40 px-3 py-2 rounded-lg text-purple-200 text-lg cursor-pointer hover:bg-purple-800/50 transition-colors" title="Click for meaning">
+                            {word}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-gray-500 italic">Greek text not available for this verse</p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         {activeTab === 'translations' && (
           <div className="space-y-6">
             <TranslationBlock label="King James Version" text={verse.kjvText} highlight />
@@ -441,29 +580,97 @@ function TranslationBlock({ label, text, highlight = false }: { label: string; t
 }
 
 function StrongsCard({ definition }: { definition: StrongsDefinition }) {
+  const [expanded, setExpanded] = useState(false);
+
+  // Parse full gloss for numbered meanings
+  const glossLines = (definition.gloss || '').split('\n').filter(l => l.trim());
+  const kjvMatch = definition.gloss?.match(/KJV:\s*(.+?)(?:\n|$)/i);
+  const kjvUsage = kjvMatch ? kjvMatch[1] : null;
+
+  // Get primary meaning (first numbered item)
   const meaningMatch = definition.gloss?.match(/\d\.\s*(.+?)(?:\n|$)/);
-  const primaryMeaning = meaningMatch ? meaningMatch[1] : (definition.gloss || '').substring(0, 100);
+  const primaryMeaning = meaningMatch ? meaningMatch[1] : glossLines[0] || '';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/5 rounded-lg p-4 border border-white/5 hover:border-gold-500/30 transition-colors"
+      className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-gold-500/30 transition-all cursor-pointer"
+      onClick={() => setExpanded(!expanded)}
     >
-      <div className="flex justify-between items-start mb-2">
-        <span className="text-xl font-serif text-gold-400">{definition.word}</span>
-        <span className="text-xs text-gray-500 font-mono bg-white/5 px-2 py-1 rounded">{definition.strongsNumber}</span>
+      {/* Header Row */}
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex items-center gap-3">
+          <span className="text-3xl font-serif text-gold-400">{definition.word}</span>
+          <span className="text-xs text-gray-500 font-mono bg-gold-900/30 px-2 py-1 rounded border border-gold-500/20">
+            {definition.strongsNumber}
+          </span>
+        </div>
+        <span className="text-xs text-gray-400">{expanded ? '▲' : '▼'}</span>
       </div>
-      <p className="text-sm text-gray-400 mb-2">{primaryMeaning || 'Definition loading...'}</p>
-      <div className="flex gap-4 text-xs text-gray-500">
-        {definition.partOfSpeech && <span>{definition.partOfSpeech}</span>}
+
+      {/* Primary Meaning */}
+      <p className="text-base text-gray-300 mb-3 leading-relaxed">{primaryMeaning || 'Definition loading...'}</p>
+
+      {/* Meta Row - Always Visible */}
+      <div className="flex flex-wrap gap-3 text-xs mb-2">
+        {definition.partOfSpeech && (
+          <span className="bg-blue-900/30 text-blue-300 px-2 py-1 rounded">{definition.partOfSpeech}</span>
+        )}
+        {definition.gender && (
+          <span className="bg-purple-900/30 text-purple-300 px-2 py-1 rounded">{definition.gender}</span>
+        )}
         {definition.occurrences && (
-          <>
-            <span>•</span>
-            <span>{definition.occurrences} occurrences</span>
-          </>
+          <span className="bg-emerald-900/30 text-emerald-300 px-3 py-1 rounded font-bold">
+            {definition.occurrences} occurrences
+          </span>
         )}
       </div>
+
+      {/* Expanded Content */}
+      {expanded && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="mt-4 pt-4 border-t border-white/10 space-y-3"
+        >
+          {/* Full Gloss */}
+          {glossLines.length > 1 && (
+            <div>
+              <p className="text-xs text-gold-500/70 uppercase tracking-widest mb-2">Full Definition</p>
+              <div className="text-sm text-gray-400 space-y-1">
+                {glossLines.slice(0, 5).map((line, idx) => (
+                  <p key={idx}>{line}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* KJV Usage */}
+          {kjvUsage && (
+            <div>
+              <p className="text-xs text-gold-500/70 uppercase tracking-widest mb-2">KJV Usage</p>
+              <p className="text-sm text-amber-300">{kjvUsage}</p>
+            </div>
+          )}
+
+          {/* First Occurrence */}
+          {definition.firstOccurrence && (
+            <div>
+              <p className="text-xs text-gold-500/70 uppercase tracking-widest mb-2">First Occurrence</p>
+              <p className="text-sm text-blue-300">{definition.firstOccurrence}</p>
+            </div>
+          )}
+
+          {/* Root Word */}
+          {definition.rootWord && (
+            <div>
+              <p className="text-xs text-gold-500/70 uppercase tracking-widest mb-2">Root Word</p>
+              <p className="text-lg text-gold-200 font-serif">{definition.rootWord}</p>
+            </div>
+          )}
+        </motion.div>
+      )}
     </motion.div>
   );
 }
