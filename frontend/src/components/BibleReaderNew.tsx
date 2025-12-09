@@ -11,19 +11,26 @@ export default function BibleReader() {
   const [verses, setVerses] = useState<BibleVerse[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<BibleVerse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showBookSelector, setShowBookSelector] = useState(false);
 
   // Load books on mount
   useEffect(() => {
     async function loadBooks() {
       try {
+        setLoading(true);
         const booksData = await bibleAPI.getBooks();
         setBooks(booksData);
         if (booksData.length > 0) {
           setSelectedBook(booksData[0]); // Start with Genesis
+        } else {
+          setError("No books found. Please check API connection.");
+          setLoading(false);
         }
       } catch (error) {
         console.error('Failed to load books:', error);
+        setError("Failed to connect to Bible API. Please refresh or try again later.");
+        setLoading(false);
       }
     }
     loadBooks();
@@ -33,13 +40,15 @@ export default function BibleReader() {
   useEffect(() => {
     async function loadChapter() {
       if (!selectedBook) return;
-      
+
       setLoading(true);
+      setError(null);
       try {
         const chapterData = await bibleAPI.getChapter(selectedBook.bookId, selectedChapter);
         setVerses(chapterData.verses);
       } catch (error) {
         console.error('Failed to load chapter:', error);
+        setError("Failed to load chapter content.");
         setVerses([]);
       } finally {
         setLoading(false);
@@ -76,7 +85,7 @@ export default function BibleReader() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="pt-24 px-4 md:px-12 max-w-7xl mx-auto pb-20 min-h-screen"
@@ -136,17 +145,16 @@ export default function BibleReader() {
                       setSelectedChapter(1);
                       setShowBookSelector(false);
                     }}
-                    className={`px-3 py-2 text-sm rounded-lg transition-all ${
-                      selectedBook?.bookId === book.bookId
-                        ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
-                        : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                    }`}
+                    className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
+                      ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
+                      : 'bg-white/5 hover:bg-white/10 text-gray-300'
+                      }`}
                   >
                     {book.shortName}
                   </button>
                 ))}
               </div>
-              
+
               <h3 className="text-gold-400 text-sm uppercase tracking-widest mb-4">New Testament</h3>
               <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
                 {books.filter(b => b.testament === 'new').map(book => (
@@ -157,11 +165,10 @@ export default function BibleReader() {
                       setSelectedChapter(1);
                       setShowBookSelector(false);
                     }}
-                    className={`px-3 py-2 text-sm rounded-lg transition-all ${
-                      selectedBook?.bookId === book.bookId
-                        ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
-                        : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                    }`}
+                    className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
+                      ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
+                      : 'bg-white/5 hover:bg-white/10 text-gray-300'
+                      }`}
                   >
                     {book.shortName}
                   </button>
@@ -182,11 +189,10 @@ export default function BibleReader() {
                           setSelectedChapter(ch);
                           setShowBookSelector(false);
                         }}
-                        className={`w-10 h-10 rounded-lg transition-all ${
-                          selectedChapter === ch
-                            ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
-                            : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                        }`}
+                        className={`w-10 h-10 rounded-lg transition-all ${selectedChapter === ch
+                          ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
+                          : 'bg-white/5 hover:bg-white/10 text-gray-300'
+                          }`}
                       >
                         {ch}
                       </button>
@@ -206,6 +212,17 @@ export default function BibleReader() {
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 text-gold-400 animate-spin" />
             </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="text-red-400 mb-2 font-serif text-xl">Connection Error</div>
+              <p className="text-gray-400 mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors"
+              >
+                Retry Connection
+              </button>
+            </div>
           ) : (
             <div className="space-y-4 font-serif text-xl md:text-2xl leading-loose text-gray-300">
               {verses.map((verse, index) => (
@@ -217,8 +234,8 @@ export default function BibleReader() {
                   onClick={() => setSelectedVerse(verse)}
                   className={`
                     relative p-4 rounded-xl cursor-pointer transition-all duration-300
-                    ${selectedVerse?.id === verse.id 
-                      ? 'bg-gold-900/20 border-gold-500/30 shadow-[0_0_30px_-10px_rgba(196,142,47,0.3)]' 
+                    ${selectedVerse?.id === verse.id
+                      ? 'bg-gold-900/20 border-gold-500/30 shadow-[0_0_30px_-10px_rgba(196,142,47,0.3)]'
                       : 'hover:bg-white/5 border-transparent hover:border-white/10'}
                     border
                   `}
@@ -239,7 +256,7 @@ export default function BibleReader() {
             <div className="p-6 rounded-2xl bg-gradient-to-b from-white/5 to-transparent border border-white/5">
               <h3 className="text-gold-400 font-medium mb-4">Study Notes</h3>
               <p className="text-sm text-gray-400 leading-relaxed">
-                Click on any verse to view the original Hebrew or Greek text, 
+                Click on any verse to view the original Hebrew or Greek text,
                 transliteration, and Strong's definitions.
               </p>
               {selectedBook && (
@@ -266,9 +283,9 @@ export default function BibleReader() {
               onClick={() => setSelectedVerse(null)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
-            <VerseDetailPanel 
-              verse={selectedVerse} 
-              onClose={() => setSelectedVerse(null)} 
+            <VerseDetailPanel
+              verse={selectedVerse}
+              onClose={() => setSelectedVerse(null)}
             />
           </>
         )}
