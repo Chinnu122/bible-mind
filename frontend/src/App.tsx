@@ -17,8 +17,9 @@ import DailyVersePage from './components/DailyVersePage';
 import SlidingBackground from './components/SlidingBackground';
 import AmbientParticles from './components/AmbientParticles';
 import BibleStudyPage from './components/BibleStudyPage';
+import CharacterOfDay from './components/CharacterOfDay';
 
-type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study';
+type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character';
 
 function AppLayout() {
   const [showIntro, setShowIntro] = useState(true);
@@ -201,7 +202,7 @@ function AppLayout() {
                 <Hero key="hero" onStart={handleStart} />
               )}
               {view === 'daily' && (
-                <DailyVersePage key="daily" onBack={() => setView('hero')} />
+                <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} />
               )}
               {view === 'reader' && (
                 <BibleReaderNew key="reader" />
@@ -217,6 +218,9 @@ function AppLayout() {
               )}
               {view === 'study' && (
                 <BibleStudyPage key="study" onBack={() => setView('hero')} />
+              )}
+              {view === 'character' && (
+                <CharacterOfDay key="character" onBack={() => setView('daily')} />
               )}
             </AnimatePresence>
           </div>

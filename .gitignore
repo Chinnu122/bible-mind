@@ -2,3 +2,11 @@ node_modules/
 dist/
 .env
 .DS_Store
+
+# Extracted Bible PDFs (too large for git)
+backend/data/telugu-extracted/
+backend/data/hebrew-extracted/
+backend/data/greek-extracted/
+
+# Large PDFs
+*.pdf
