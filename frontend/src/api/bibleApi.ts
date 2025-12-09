@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export interface BibleBook {
   bookId: number;
@@ -50,7 +50,7 @@ export interface ApiResponse<T> {
 }
 
 class BibleAPI {
-  private baseUrl: string;
+  public baseUrl: string;
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
