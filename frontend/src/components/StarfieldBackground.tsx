@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Stars, Cloud, Sparkles } from '@react-three/drei';
+import { Stars, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 function RotatingScene() {
     const groupRef = useRef<THREE.Group>(null);
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (groupRef.current) {
             groupRef.current.rotation.y -= delta * 0.05; // Slow rotation
             groupRef.current.rotation.x += delta * 0.01;
@@ -17,25 +17,24 @@ function RotatingScene() {
         <group ref={groupRef}>
             <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={1} />
 
-            {/* Golden Nebula */}
-            <Cloud
-                opacity={0.3}
-                speed={0.2}
-                width={20}
-                depth={1.5}
-                segments={20}
-                position={[10, 0, -20]}
+            {/* Golden Sparkles */}
+            <Sparkles
+                count={100}
+                scale={30}
+                size={4}
+                speed={0.3}
+                opacity={0.4}
                 color="#ffd700"
             />
-            {/* Deep Blue/Purple Ambience */}
-            <Cloud
-                opacity={0.3}
+
+            {/* Blue Ambient Sparkles */}
+            <Sparkles
+                count={100}
+                scale={30}
+                size={3}
                 speed={0.2}
-                width={20}
-                depth={1.5}
-                segments={20}
-                position={[-10, 5, -25]}
-                color="#1a1a2e"
+                opacity={0.3}
+                color="#4aa8ff"
             />
 
             <Sparkles count={300} scale={25} size={3} speed={0.4} opacity={0.5} />
