@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
-import { Search, Menu, StickyNote, Globe, X, User, Settings, Calendar } from 'lucide-react';
+import { Search, Menu, StickyNote, Globe, X, User, Settings, Calendar, BookOpen } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
 import IntroAnimation from './components/IntroAnimation';
@@ -16,8 +16,9 @@ import DynamicTitle from './components/DynamicTitle';
 import DailyVersePage from './components/DailyVersePage';
 import SlidingBackground from './components/SlidingBackground';
 import AmbientParticles from './components/AmbientParticles';
+import BibleStudyPage from './components/BibleStudyPage';
 
-type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily';
+type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study';
 
 function AppLayout() {
   const [showIntro, setShowIntro] = useState(true);
@@ -145,6 +146,7 @@ function AppLayout() {
               {/* Desktop Menu */}
               <div className="hidden md:flex items-center gap-6">
                 <button onClick={() => navigateTo('daily')} className={`flex items-center gap-2 text-sm font-medium tracking-widest transition-colors ${view === 'daily' ? currentStyle.accent : 'opacity-60 hover:opacity-100'}`}><Calendar className="w-4 h-4" />DAILY</button>
+                <button onClick={() => navigateTo('study')} className={`flex items-center gap-2 text-sm font-medium tracking-widest transition-colors ${view === 'study' ? currentStyle.accent : 'opacity-60 hover:opacity-100'}`}><BookOpen className="w-4 h-4" />STUDY</button>
                 <button onClick={() => navigateTo('reader')} className={`text-sm font-medium tracking-widest transition-colors ${view === 'reader' ? currentStyle.accent : 'opacity-60 hover:opacity-100'}`}>READ</button>
                 <button onClick={() => navigateTo('telugu')} className={`flex items-center gap-2 text-sm font-medium tracking-widest transition-colors ${view === 'telugu' ? currentStyle.accent : 'opacity-60 hover:opacity-100'}`}><Globe className="w-4 h-4" />TELUGU</button>
                 <button onClick={() => navigateTo('notes')} className={`flex items-center gap-2 text-sm font-medium tracking-widest transition-colors ${view === 'notes' ? currentStyle.accent : 'opacity-60 hover:opacity-100'}`}><StickyNote className="w-4 h-4" />NOTES</button>
@@ -212,6 +214,9 @@ function AppLayout() {
               )}
               {view === 'auth' && (
                 <AuthPage key="auth" onBack={() => setView('hero')} />
+              )}
+              {view === 'study' && (
+                <BibleStudyPage key="study" onBack={() => setView('hero')} />
               )}
             </AnimatePresence>
           </div>

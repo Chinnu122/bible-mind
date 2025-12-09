@@ -13,6 +13,7 @@ import languagesRouter from './routes/languages';
 import downloadRouter from './routes/download';
 import notesRouter from './routes/notes';
 import teluguRouter from './routes/telugu';
+import noteSyncRouter from './routes/noteSync';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -70,6 +71,7 @@ app.use('/api/languages', languagesRouter);
 app.use('/api/download', downloadRouter);
 app.use('/api/notes', notesRouter);
 app.use('/api/telugu', teluguRouter);
+app.use('/api/device-notes', noteSyncRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
