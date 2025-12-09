@@ -1,8 +1,7 @@
-import { useRef, useState, useEffect, Suspense, useMemo } from 'react'
+import { useRef, useState, useEffect, Suspense } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Text, Stars, float, Sparkles, MeshDistortMaterial, MeshWobbleMaterial, Environment, CameraShake } from '@react-three/drei'
+import { Text, Stars, Sparkles, MeshDistortMaterial, MeshWobbleMaterial, Environment, CameraShake } from '@react-three/drei'
 import * as THREE from 'three'
-import { Group, Vector3, MathUtils } from 'three'
 
 interface Intro3DProps {
     onComplete: () => void
@@ -164,12 +163,12 @@ function Scene({ onComplete }: { onComplete: () => void }) {
         // Attempt audio
         const audio = new Audio('/intro.mp3')
         audio.volume = 0.6
-        audio.play().catch(e => { })
+        audio.play().catch(() => { })
         audioRef.current = audio
         return () => audio.pause()
     }, [])
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         const newTime = time + delta
         setTime(newTime)
         if (newTime > 20) onComplete()

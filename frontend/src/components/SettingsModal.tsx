@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useSettings, Theme } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Sparkles, Moon, Sun, Scroll, Zap } from 'lucide-react';
+import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap } from 'lucide-react';
 
 export default function SettingsModal() {
     const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles } = useSettings();
