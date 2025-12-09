@@ -215,7 +215,10 @@ export default function BibleReader() {
           ) : error ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="text-red-400 mb-2 font-serif text-xl">Connection Error</div>
-              <p className="text-gray-400 mb-4">{error}</p>
+              <p className="text-gray-400 mb-2">{error}</p>
+              <div className="text-xs text-gray-600 mb-4 bg-black/20 p-2 rounded font-mono">
+                Connecting to: {bibleAPI['baseUrl']}
+              </div>
               <button
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors"
