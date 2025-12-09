@@ -1,6 +1,5 @@
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { useState } from 'react';
 
 interface HeroProps {
   onStart: () => void;

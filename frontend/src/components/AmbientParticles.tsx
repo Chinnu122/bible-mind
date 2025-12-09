@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 
 function Particles(props: any) {
-    const ref = useRef<any>();
+    const ref = useRef<any>(null);
 
     // Manual Random Sphere Generation (No external dependencies)
     const sphere = useMemo(() => {
@@ -22,7 +22,7 @@ function Particles(props: any) {
         return positions;
     }, []);
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (ref.current) {
             ref.current.rotation.x -= delta / 30;
             ref.current.rotation.y -= delta / 40;
