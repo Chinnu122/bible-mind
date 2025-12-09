@@ -6,9 +6,10 @@ import { useSettings } from '../contexts/SettingsContext';
 
 interface DailyVersePageProps {
     onBack: () => void;
+    onViewCharacter?: () => void;
 }
 
-export default function DailyVersePage({ onBack }: DailyVersePageProps) {
+export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePageProps) {
     const [language, setLanguage] = useState<Language>('en');
     const [expandedVerse, setExpandedVerse] = useState<string | null>(null);
     const [showLangMenu, setShowLangMenu] = useState(false);
@@ -163,6 +164,14 @@ export default function DailyVersePage({ onBack }: DailyVersePageProps) {
                         <p className="text-lg leading-relaxed">
                             {content.character.context[language]}
                         </p>
+                        {onViewCharacter && (
+                            <button
+                                onClick={onViewCharacter}
+                                className={`mt-4 px-6 py-3 rounded-full font-medium transition-all ${styles.button}`}
+                            >
+                                View Full Story →
+                            </button>
+                        )}
                     </div>
 
                     {/* Key Verses */}

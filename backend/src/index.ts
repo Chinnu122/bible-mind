@@ -14,6 +14,7 @@ import downloadRouter from './routes/download';
 import notesRouter from './routes/notes';
 import teluguRouter from './routes/telugu';
 import noteSyncRouter from './routes/noteSync';
+import characterOfDayRouter from './routes/characterOfDay';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -57,7 +58,8 @@ app.get('/api', (_req: Request, res: Response) => {
       languages: '/api/languages',
       download: '/api/download',
       notes: '/api/notes/:userId',
-      telugu: '/api/telugu'
+      telugu: '/api/telugu',
+      characterOfDay: '/api/character-of-day'
     }
   });
 });
@@ -72,6 +74,7 @@ app.use('/api/download', downloadRouter);
 app.use('/api/notes', notesRouter);
 app.use('/api/telugu', teluguRouter);
 app.use('/api/device-notes', noteSyncRouter);
+app.use('/api/character-of-day', characterOfDayRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
