@@ -21,7 +21,8 @@ class DataStore {
     await Promise.all([
       this.loadBooks(),
       this.loadVerses(),
-      this.loadStrongs(),
+      this.loadHebrewStrongs(),
+      this.loadGreekStrongs(),
     ]);
 
     this.isLoaded = true;
@@ -114,7 +115,7 @@ class DataStore {
     });
   }
 
-  private async loadStrongs(): Promise<void> {
+  private async loadHebrewStrongs(): Promise<void> {
     const filePath = path.join(__dirname, '../../data/HebrewStrongs.csv');
 
     // Read and parse CSV manually due to multi-line fields
@@ -196,6 +197,47 @@ class DataStore {
         rootWord: parts[8] || '',
       };
       this.strongs.set(def.strongsNumber, def);
+    }
+  }
+
+  private async loadGreekStrongs(): Promise<void> {
+    const filePath = path.join(__dirname, '../../data/GreekStrongs.csv');
+
+    // Read TSV file (tab-separated)
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split('\n');
+
+    let isFirstLine = true;
+    for (const line of lines) {
+      if (isFirstLine) {
+        isFirstLine = false;
+        continue; // Skip header
+      }
+
+      if (!line.trim()) continue;
+
+      // Parse TSV: Number, Lemma, Origin, Root, RootLemma, | (separator)
+      const parts = line.split('\t');
+      if (parts.length >= 2 && parts[0]) {
+        const strongsNumber = parts[0].trim(); // Already includes 'G' prefix
+        const lemma = parts[1]?.trim() || '';
+        const origin = parts[2]?.trim() || '';
+        const root = parts[3]?.trim() || '';
+        const rootLemma = parts[4]?.trim() || '';
+
+        const def: StrongsDefinition = {
+          strongsNumber: strongsNumber,
+          word: lemma,
+          gloss: rootLemma, // Use root lemma as a gloss/meaning hint
+          language: 'G' as 'H' | 'A' | 'G',
+          partOfSpeech: '',
+          gender: '',
+          occurrences: 0,
+          firstOccurrence: '',
+          rootWord: root,
+        };
+        this.strongs.set(def.strongsNumber, def);
+      }
     }
   }
 

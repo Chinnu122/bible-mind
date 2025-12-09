@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import { Search, Menu, StickyNote, Globe, X, User, Settings, Calendar, BookOpen } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
-import IntroAnimation from './components/IntroAnimation';
+import LogoIntro from './components/LogoIntro';
 import PremiumLogo from './components/PremiumLogo';
 import NotesPage from './components/NotesPage';
 import TeluguPage from './components/TeluguPage';
@@ -121,9 +121,9 @@ function AppLayout() {
         transition={{ type: "spring", damping: 20 }}
         className={`relative z-10 min-h-screen origin-top transition-all duration-500 ${isSettingsOpen ? 'overflow-hidden shadow-2xl ring-1 ring-white/10' : ''}`}
       >
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {showIntro && (
-            <IntroAnimation onComplete={() => setShowIntro(false)} />
+            <LogoIntro onComplete={() => setShowIntro(false)} />
           )}
         </AnimatePresence>
 
