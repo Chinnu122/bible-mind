@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, motion, useScroll, useSpring } from 'framer-motion';
 import { Menu, StickyNote, X, Settings, Calendar, BookOpen, MessageSquare, CheckCircle } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
@@ -137,126 +137,137 @@ function AppLayout() {
         className={`relative z-10 min-h-screen origin-top transition-all duration-500 ${isSettingsOpen ? 'overflow-hidden shadow-2xl ring-1 ring-white/10' : ''}`}
       >
         {/* Main Content Area */}
-        <motion.div
-          className="relative z-10 w-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          {showIntro ? (
-            <ImmersiveIntro onComplete={() => setShowIntro(false)} />
-          ) : (
-            <div className="relative">
-              {/* Navbar */}
-              <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 ${currentStyle.navBg} backdrop-blur-md border-b border-white/5`}>
-                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('hero')}>
-                  <div className="w-10 h-10 relative">
-                    <LogoSVG className={`w-full h-full drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]`} layoutId="main-logo-transition" />
-                  </div>
-                  <span className={`text-xl font-cinzel font-bold tracking-wider ${currentStyle.text}`}>Bible Mind</span>
-                </div>
-
-                {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-8">
-                  <button onClick={() => navigateTo('reader')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'reader' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                    <BookOpen className="w-4 h-4" /> Reading
-                  </button>
-                  <button onClick={() => navigateTo('daily')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'daily' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                    <Calendar className="w-4 h-4" /> Daily
-                  </button>
-                  <button onClick={() => navigateTo('notes')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'notes' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                    <StickyNote className="w-4 h-4" /> Notes
-                  </button>
-                  <button onClick={() => navigateTo('quiz')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'quiz' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                    <CheckCircle className="w-4 h-4" /> Quiz
-                  </button>
-                  <button onClick={() => navigateTo('reviews')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'reviews' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                    <MessageSquare className="w-4 h-4" /> Community
-                  </button>
-                  <button onClick={() => navigateTo('auth')} className={`px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-all ${currentStyle.accent}`}>
-                    Sign In
-                  </button>
-                  <button onClick={() => setIsSettingsOpen(true)} className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Settings">
-                    <Settings className="w-5 h-5" />
-                  </button>
-                </div>
-
-                {/* Mobile Menu Toggle */}
-                <button
-                  className="md:hidden p-2"
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                >
-                  {mobileMenuOpen ? <X /> : <Menu />}
-                </button>
-              </nav>
-
-              {/* Mobile Menu Overlay */}
-              <AnimatePresence>
-                {mobileMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className={`fixed inset-0 z-40 pt-24 px-6 ${currentStyle.bg}`}
-                  >
-                    <div className="flex flex-col gap-6 text-2xl font-cinzel">
-                      <button onClick={() => navigateTo('reader')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                        <BookOpen /> Reading
-                      </button>
-                      <button onClick={() => navigateTo('daily')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                        <Calendar /> Daily
-                      </button>
-                      <button onClick={() => navigateTo('notes')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                        <StickyNote /> Notes
-                      </button>
-                      <button onClick={() => navigateTo('quiz')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                        <CheckCircle /> Daily Quiz
-                      </button>
-                      <button onClick={() => setIsSettingsOpen(true)} className="flex items-center gap-4 py-4 border-b border-white/10">
-                        <Settings /> Settings
-                      </button>
+        <LayoutGroup>
+          <AnimatePresence mode="wait">
+            {showIntro ? (
+              <motion.div
+                key="intro"
+                initial={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="relative z-10 w-full"
+              >
+                <ImmersiveIntro onComplete={() => setShowIntro(false)} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="main"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="relative z-10 w-full"
+              >
+                {/* Navbar */}
+                <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 ${currentStyle.navBg} backdrop-blur-md border-b border-white/5`}>
+                  <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('hero')}>
+                    <div className="w-10 h-10 relative">
+                      <LogoSVG className={`w-full h-full drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]`} layoutId="main-logo-transition" />
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <span className={`text-xl font-cinzel font-bold tracking-wider ${currentStyle.text}`}>Bible Mind</span>
+                  </div>
 
-              <AnimatePresence mode="wait">
-                {view === 'hero' && (
-                  <Hero key="hero" onStart={handleStart} />
-                )}
-                {view === 'daily' && (
-                  <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} />
-                )}
-                {view === 'reader' && (
-                  <BibleReaderNew key="reader" />
-                )}
-                {view === 'notes' && (
-                  <NotesPage key="notes" onBack={() => setView('reader')} />
-                )}
-                {view === 'telugu' && (
-                  <TeluguPage key="telugu" onBack={() => setView('reader')} />
-                )}
-                {view === 'auth' && (
-                  <AuthPage key="auth" onBack={() => setView('hero')} />
-                )}
-                {view === 'study' && (
-                  <BibleStudyPage key="study" onBack={() => setView('hero')} />
-                )}
-                {view === 'character' && (
-                  <CharacterOfDay key="character" onBack={() => setView('daily')} />
-                )}
-                {view === 'reviews' && (
-                  <ReviewBoard key="reviews" onBack={() => setView('hero')} />
-                )}
-                {view === 'quiz' && (
-                  <DailyQuiz key="quiz" onBack={() => setView('hero')} />
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-        </motion.div>
+                  {/* Desktop Menu */}
+                  <div className="hidden md:flex items-center gap-8">
+                    <button onClick={() => navigateTo('reader')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'reader' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
+                      <BookOpen className="w-4 h-4" /> Reading
+                    </button>
+                    <button onClick={() => navigateTo('daily')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'daily' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
+                      <Calendar className="w-4 h-4" /> Daily
+                    </button>
+                    <button onClick={() => navigateTo('notes')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'notes' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
+                      <StickyNote className="w-4 h-4" /> Notes
+                    </button>
+                    <button onClick={() => navigateTo('quiz')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'quiz' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
+                      <CheckCircle className="w-4 h-4" /> Quiz
+                    </button>
+                    <button onClick={() => navigateTo('reviews')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'reviews' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
+                      <MessageSquare className="w-4 h-4" /> Community
+                    </button>
+                    <button onClick={() => navigateTo('auth')} className={`px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-all ${currentStyle.accent}`}>
+                      Sign In
+                    </button>
+                    <button onClick={() => setIsSettingsOpen(true)} className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Settings">
+                      <Settings className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Mobile Menu Toggle */}
+                  <button
+                    className="md:hidden p-2"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  >
+                    {mobileMenuOpen ? <X /> : <Menu />}
+                  </button>
+                </nav>
+
+                {/* Mobile Menu Overlay */}
+                <AnimatePresence>
+                  {mobileMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className={`fixed inset-0 z-40 pt-24 px-6 ${currentStyle.bg}`}
+                    >
+                      <div className="flex flex-col gap-6 text-2xl font-cinzel">
+                        <button onClick={() => navigateTo('reader')} className="flex items-center gap-4 py-4 border-b border-white/10">
+                          <BookOpen /> Reading
+                        </button>
+                        <button onClick={() => navigateTo('daily')} className="flex items-center gap-4 py-4 border-b border-white/10">
+                          <Calendar /> Daily
+                        </button>
+                        <button onClick={() => navigateTo('notes')} className="flex items-center gap-4 py-4 border-b border-white/10">
+                          <StickyNote /> Notes
+                        </button>
+                        <button onClick={() => navigateTo('quiz')} className="flex items-center gap-4 py-4 border-b border-white/10">
+                          <CheckCircle /> Daily Quiz
+                        </button>
+                        <button onClick={() => setIsSettingsOpen(true)} className="flex items-center gap-4 py-4 border-b border-white/10">
+                          <Settings /> Settings
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <AnimatePresence mode="wait">
+                  {view === 'hero' && (
+                    <Hero key="hero" onStart={handleStart} />
+                  )}
+                  {view === 'daily' && (
+                    <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} />
+                  )}
+                  {view === 'reader' && (
+                    <BibleReaderNew key="reader" />
+                  )}
+                  {view === 'notes' && (
+                    <NotesPage key="notes" onBack={() => setView('reader')} />
+                  )}
+                  {view === 'telugu' && (
+                    <TeluguPage key="telugu" onBack={() => setView('reader')} />
+                  )}
+                  {view === 'auth' && (
+                    <AuthPage key="auth" onBack={() => setView('hero')} />
+                  )}
+                  {view === 'study' && (
+                    <BibleStudyPage key="study" onBack={() => setView('hero')} />
+                  )}
+                  {view === 'character' && (
+                    <CharacterOfDay key="character" onBack={() => setView('daily')} />
+                  )}
+                  {view === 'reviews' && (
+                    <ReviewBoard key="reviews" onBack={() => setView('hero')} />
+                  )}
+                  {view === 'quiz' && (
+                    <DailyQuiz key="quiz" onBack={() => setView('hero')} />
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </LayoutGroup>
       </motion.div>
-    </div>
+    </div >
   );
 }
 
