@@ -205,21 +205,13 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     return (
         <div className="fixed inset-0 z-[100] w-full h-screen overflow-hidden flex flex-col items-center justify-center font-serif text-[#e0e0e0] bg-black">
 
-            {/* Hidden Udio Music Player - plays ambient background music */}
+            {/* Background Music */}
             {started && (
-                <iframe
-                    src="https://www.udio.com/embed/fJ4tnTeGbSWzPvrKmXAjkc?embedVariant=default&autoplay=1"
-                    style={{
-                        position: 'absolute',
-                        width: '1px',
-                        height: '1px',
-                        opacity: 0,
-                        pointerEvents: 'none',
-                        top: '-9999px',
-                        left: '-9999px'
-                    }}
-                    allow="autoplay"
-                    title="Background Music"
+                <audio
+                    src="/intro-music.mp3"
+                    autoPlay
+                    loop
+                    style={{ display: 'none' }}
                 />
             )}
             <style>{`
