@@ -10,3 +10,4 @@ backend/data/greek-extracted/
 
 # Large PDFs
 *.pdf
+*.zip
