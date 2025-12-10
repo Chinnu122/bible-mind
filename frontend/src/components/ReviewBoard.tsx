@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Send, MessageSquare, Lightbulb, User } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Lightbulb } from 'lucide-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 

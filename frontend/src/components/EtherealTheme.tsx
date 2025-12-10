@@ -67,10 +67,8 @@ function AuroraMesh() {
 
 // Updating the shader uniforms with time
 function Scene() {
-    useFrame((state) => {
-        // You would typically access the material here to update uTime, 
-        // but for simplicity in this generated code, we used a static shader or simple inline frame updates.
-        // Let's rely on the mesh rotation for movement for now to be safe.
+    useFrame(() => {
+        // Shader updates handled inside AuroraMesh
     });
     return <AuroraMesh />;
 }
