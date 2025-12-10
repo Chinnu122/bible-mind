@@ -12,12 +12,12 @@ import searchRouter from './routes/search';
 import languagesRouter from './routes/languages';
 import downloadRouter from './routes/download';
 import notesRouter from './routes/notes';
-import notesRouter from './routes/notes';
 import teluguRouter from './routes/telugu';
 import noteSyncRouter from './routes/noteSync';
 import characterOfDayRouter from './routes/characterOfDay';
 import reviewsRouter from './routes/reviews';
 import quizRouter from './routes/quiz';
+import authRouter from './routes/auth';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -64,7 +64,8 @@ app.get('/api', (_req: Request, res: Response) => {
       telugu: '/api/telugu',
       characterOfDay: '/api/character-of-day',
       reviews: '/api/reviews',
-      quiz: '/api/quiz'
+      quiz: '/api/quiz',
+      auth: '/api/auth'
     }
   });
 });
@@ -82,6 +83,7 @@ app.use('/api/device-notes', noteSyncRouter);
 app.use('/api/character-of-day', characterOfDayRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/quiz', quizRouter);
+app.use('/api/auth', authRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {

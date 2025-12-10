@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
+import { sendReviewNotification } from '../services/emailService';
 
 const router = Router();
 const DATA_DIR = path.join(__dirname, '../../data');
@@ -42,7 +43,7 @@ router.get('/', (_req: Request, res: Response) => {
 });
 
 // POST a new review/idea
-router.post('/', (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     const { userId, authorName, content, rating, type } = req.body;
 
     if (!content) {
@@ -63,6 +64,14 @@ router.post('/', (req: Request, res: Response) => {
 
     reviews.push(newReview);
     saveReviews(reviews);
+
+    // Send email notification (async, don't block response)
+    sendReviewNotification({
+        authorName: newReview.authorName,
+        content: newReview.content,
+        type: newReview.type,
+        submittedAt: newReview.createdAt
+    }).catch(err => console.error('Email notification failed:', err));
 
     res.status(201).json({
         success: true,
