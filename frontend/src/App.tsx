@@ -170,9 +170,6 @@ function AppLayout() {
                   <button onClick={() => navigateTo('notes')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'notes' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
                     <StickyNote className="w-4 h-4" /> Notes
                   </button>
-                  <button onClick={() => setIsSettingsOpen(true)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                    <Settings className="w-5 h-5" />
-                  </button>
                   <button onClick={() => navigateTo('quiz')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'quiz' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
                     <CheckCircle className="w-4 h-4" /> Quiz
                   </button>
@@ -181,6 +178,9 @@ function AppLayout() {
                   </button>
                   <button onClick={() => navigateTo('auth')} className={`px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-all ${currentStyle.accent}`}>
                     Sign In
+                  </button>
+                  <button onClick={() => setIsSettingsOpen(true)} className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Settings">
+                    <Settings className="w-5 h-5" />
                   </button>
                 </div>
 
