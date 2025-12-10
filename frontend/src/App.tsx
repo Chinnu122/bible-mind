@@ -3,7 +3,8 @@ import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import { Menu, StickyNote, X, Settings, Calendar, BookOpen, MessageSquare, CheckCircle } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
-import LogoIntro from './components/LogoIntro';
+import ImmersiveIntro from './components/ImmersiveIntro';
+import LogoSVG from './components/LogoSVG';
 import NotesPage from './components/NotesPage';
 import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
@@ -137,7 +138,7 @@ function AppLayout() {
       >
         <AnimatePresence mode="wait">
           {showIntro && (
-            <LogoIntro onComplete={() => setShowIntro(false)} />
+            <ImmersiveIntro onComplete={() => setShowIntro(false)} />
           )}
         </AnimatePresence>
 
@@ -149,13 +150,15 @@ function AppLayout() {
           transition={{ duration: 1 }}
         >
           {showIntro ? (
-            <LogoIntro onComplete={() => setShowIntro(false)} />
+            <ImmersiveIntro onComplete={() => setShowIntro(false)} />
           ) : (
             <div className="relative">
               {/* Navbar */}
               <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 ${currentStyle.navBg} backdrop-blur-md border-b border-white/5`}>
                 <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('hero')}>
-                  <BookOpen className={`w-8 h-8 ${currentStyle.accent}`} />
+                  <div className="w-10 h-10 relative">
+                    <LogoSVG className={`w-full h-full drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]`} layoutId="main-logo-transition" />
+                  </div>
                   <span className={`text-xl font-cinzel font-bold tracking-wider ${currentStyle.text}`}>Bible Mind</span>
                 </div>
 
