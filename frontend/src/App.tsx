@@ -136,12 +136,6 @@ function AppLayout() {
         transition={{ type: "spring", damping: 20 }}
         className={`relative z-10 min-h-screen origin-top transition-all duration-500 ${isSettingsOpen ? 'overflow-hidden shadow-2xl ring-1 ring-white/10' : ''}`}
       >
-        <AnimatePresence mode="wait">
-          {showIntro && (
-            <ImmersiveIntro onComplete={() => setShowIntro(false)} />
-          )}
-        </AnimatePresence>
-
         {/* Main Content Area */}
         <motion.div
           className="relative z-10 w-full"
