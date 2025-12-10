@@ -349,14 +349,6 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
                     <div className="mt-8 font-['Cinzel'] text-white/60 text-sm md:text-lg tracking-[0.8em] uppercase border-t border-white/10 pt-4">
                         Wisdom Transcending Time
                     </div>
-
-                    {/* Enter Button */}
-                    <button
-                        onClick={finish}
-                        className="mt-12 group relative px-16 py-4 bg-transparent border border-[#d4af37]/40 text-[#d4af37] font-['Cinzel'] text-lg tracking-[0.3em] uppercase hover:bg-[#d4af37]/10 hover:border-[#d4af37]/60 transition-all duration-500 backdrop-blur-sm"
-                    >
-                        <span className="relative z-10 group-hover:tracking-[0.5em] transition-all duration-500">Enter</span>
-                    </button>
                 </div>
             )}
 
