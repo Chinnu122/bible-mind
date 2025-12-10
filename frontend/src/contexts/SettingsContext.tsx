@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Theme = 'divine' | 'midnight' | 'parchment';
+export type Theme = 'divine' | 'midnight' | 'parchment' | 'ethereal';
 
 interface SettingsContextType {
     theme: Theme;

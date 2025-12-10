@@ -40,6 +40,11 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
             card: 'bg-white/60 border-amber-700/20',
             accent: 'text-amber-800',
             button: 'bg-amber-500/20 hover:bg-amber-500/30 border-amber-700/30'
+        },
+        ethereal: {
+            card: 'bg-purple-900/40 border-purple-500/20',
+            accent: 'text-purple-400',
+            button: 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-500/30'
         }
     };
 
