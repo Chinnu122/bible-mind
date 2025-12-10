@@ -21,8 +21,23 @@ interface Note {
     verse: number;
     text: string;
     highlightColor?: string;
+    isPublic?: boolean;
+    authorName?: string;
     createdAt: string;
     updatedAt: string;
+}
+
+const PUBLIC_NOTES_FILE = path.join(NOTES_DIR, 'community_notes.json');
+
+function loadPublicNotes(): Note[] {
+    if (!fs.existsSync(PUBLIC_NOTES_FILE)) return [];
+    try {
+        return JSON.parse(fs.readFileSync(PUBLIC_NOTES_FILE, 'utf-8'));
+    } catch { return []; }
+}
+
+function savePublicNotes(notes: Note[]) {
+    fs.writeFileSync(PUBLIC_NOTES_FILE, JSON.stringify(notes, null, 2));
 }
 
 function getUserNotesPath(userId: string): string {
@@ -50,6 +65,23 @@ function saveUserNotes(userId: string, notes: Note[]): void {
 function generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 }
+
+/**
+ * GET /api/notes/:userId
+ * Get all notes for a user
+ */
+/**
+ * GET /api/notes/public
+ * Get all public community notes
+ */
+router.get('/public', (_req: Request, res: Response) => {
+    const notes = loadPublicNotes();
+    res.json({
+        success: true,
+        data: notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()), // Newest first
+        meta: { total: notes.length }
+    });
+});
 
 /**
  * GET /api/notes/:userId
@@ -92,7 +124,7 @@ router.get('/:userId/verse/:bookId/:chapter/:verse', (req: Request, res: Respons
  * Create a new note (mark a verse)
  */
 router.post('/', (req: Request, res: Response) => {
-    const { userId, verseRef, bookId, chapter, verse, text, highlightColor } = req.body;
+    const { userId, verseRef, bookId, chapter, verse, text, highlightColor, isPublic, authorName } = req.body;
 
     if (!userId || !bookId || !chapter || !verse) {
         res.status(400).json({
@@ -115,10 +147,19 @@ router.post('/', (req: Request, res: Response) => {
         verse: parseInt(verse),
         text: text || '',
         highlightColor: highlightColor || '#FFD700', // Default gold
+        isPublic: !!isPublic,
+        authorName: authorName || 'Anonymous',
         createdAt: now,
         updatedAt: now
     };
 
+    if (isPublic) {
+        const publicNotes = loadPublicNotes();
+        publicNotes.push(newNote);
+        savePublicNotes(publicNotes);
+    }
+
+    // Always save to user's private collection too (or maybe not? Let's say yes for now so they can manage it)
     notes.push(newNote);
     saveUserNotes(userId, notes);
 
