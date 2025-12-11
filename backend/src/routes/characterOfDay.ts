@@ -41,7 +41,11 @@ function loadCharacters(): CharacterFromCSV[] {
             storyHighlight: row.storyHighlight
         }));
     } catch (error) {
-        console.error('Failed to load characters CSV:', error);
+        console.error('CRITICAL: Failed to load characters CSV:', error);
+        if (error instanceof Error) {
+            console.error('Error details:', error.message);
+            console.error('Stack trace:', error.stack);
+        }
         return [];
     }
 }

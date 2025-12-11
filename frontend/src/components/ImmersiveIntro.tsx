@@ -31,6 +31,7 @@ const LivingBackground = ({ theme }: { theme: string }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationRef = useRef<number | null>(null);
 
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -164,6 +165,7 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     const [sequenceIndex, setSequenceIndex] = useState(-1);
     const [showLogo, setShowLogo] = useState(false);
     const [currentTheme, setCurrentTheme] = useState('void');
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     const handleStart = () => {
         setStarted(true);
@@ -179,7 +181,26 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     };
 
     const finish = () => {
-        onComplete(); // Trigger exit and layoutID transition
+        const audio = audioRef.current;
+        if (audio) {
+            // Smooth fade out
+            const fadeOutDuration = 2000;
+            const intervalTime = 50;
+            const steps = fadeOutDuration / intervalTime;
+            const volumeStep = audio.volume / steps;
+
+            const fadeInterval = setInterval(() => {
+                if (audio.volume > volumeStep) {
+                    audio.volume = Math.max(0, audio.volume - volumeStep);
+                } else {
+                    audio.volume = 0;
+                    clearInterval(fadeInterval);
+                    onComplete();
+                }
+            }, intervalTime);
+        } else {
+            onComplete();
+        }
     };
 
     const runSequence = (index: number) => {
@@ -208,6 +229,7 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
             {/* Background Music */}
             {started && (
                 <audio
+                    ref={audioRef}
                     src="/intro-music.mp3"
                     autoPlay
                     loop

@@ -3,7 +3,7 @@ import { useSettings, Theme } from '../contexts/SettingsContext';
 import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap } from 'lucide-react';
 
 export default function SettingsModal() {
-    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles } = useSettings();
+    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize } = useSettings();
 
     const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
         { id: 'divine', name: 'Divine', icon: Sun, color: 'bg-gradient-to-br from-gray-900 to-black border-gold-500/50', desc: 'Premium Gold & Dark' },
@@ -59,8 +59,55 @@ export default function SettingsModal() {
 
                 {/* Toggles */}
                 <div>
-                    <h3 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4">Immersion</h3>
+                    <h3 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4">Immersion & Display</h3>
                     <div className="flex flex-col gap-3">
+                        {/* Master Volume */}
+                        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
+                                    {volume > 0 ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-white font-medium">Master Volume</span>
+                                    <span className="text-xs text-white/40">{Math.round(volume * 100)}%</span>
+                                </div>
+                            </div>
+                            <input
+                                type="range"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                value={volume}
+                                onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                className="w-32 accent-blue-500 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                            />
+                        </div>
+
+                        {/* Font Size */}
+                        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-green-500/20 text-green-400 rounded-lg">
+                                    <span className="text-lg font-serif">Aa</span>
+                                </div>
+                                <span className="text-white font-medium">Text Size</span>
+                            </div>
+                            <div className="flex items-center bg-black/20 rounded-lg p-1">
+                                <button
+                                    onClick={() => setFontSize('normal')}
+                                    className={`px-3 py-1 rounded-md text-sm transition-all ${fontSize === 'normal' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/80'}`}
+                                >
+                                    Normal
+                                </button>
+                                <button
+                                    onClick={() => setFontSize('large')}
+                                    className={`px-3 py-1 rounded-md text-sm transition-all ${fontSize === 'large' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/80'}`}
+                                >
+                                    Large
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Interface Sounds Toggle */}
                         <button
                             onClick={() => setSoundEnabled(!soundEnabled)}
                             className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors"
