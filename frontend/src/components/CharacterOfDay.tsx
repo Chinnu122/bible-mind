@@ -234,7 +234,7 @@ export default function CharacterOfDay({ onBack }: Props) {
                                         className="px-4 pb-4"
                                     >
                                         <p className="text-gray-300 leading-relaxed">
-                                            {section[language]}
+                                            {section?.[language] || section?.english || ''}
                                         </p>
                                     </motion.div>
                                 )}
