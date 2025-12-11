@@ -23,6 +23,7 @@ interface DailyQuizProps {
 export default function DailyQuiz({ onBack }: DailyQuizProps) {
     const [question, setQuestion] = useState<Question | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [result, setResult] = useState<QuizResult | null>(null);
     const [score, setScore] = useState(0);
@@ -37,20 +38,24 @@ export default function DailyQuiz({ onBack }: DailyQuizProps) {
     const fetchDailyQuestion = async () => {
         try {
             setLoading(true);
+            setError(null);
             const res = await fetch(`${API_BASE_URL}/quiz/today`);
+
+            if (!res.ok) {
+                throw new Error(`Server responded with ${res.status}`);
+            }
+
             const json = await res.json();
-            if (json.success) {
+
+            if (json.success && json.data && json.data.question && json.data.options) {
                 setQuestion(json.data);
-                // Check if already answered today
-                const lastAnswered = localStorage.getItem('bible-quiz-last-answered');
-                const today = new Date().toDateString();
-                if (lastAnswered === today + '-' + json.data.id) {
-                    // Maybe show they already did it? For now, let them retry or just show it clean.
-                    // Let's keep it simple: they can play again or we just don't block.
-                }
+            } else {
+                // API returned success but no valid question data
+                throw new Error('No quiz questions available for today');
             }
         } catch (e) {
-            console.error('Error fetching quiz', e);
+            console.error('Error fetching quiz:', e);
+            setError(e instanceof Error ? e.message : 'Failed to load quiz. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -108,9 +113,34 @@ export default function DailyQuiz({ onBack }: DailyQuizProps) {
             </div>
 
             {loading ? (
-                <div className="text-center py-20 text-gray-500 animate-pulse">Loading today's challenge...</div>
+                <div className="text-center py-20">
+                    <div className="w-12 h-12 border-4 border-gold-500/30 border-t-gold-500 rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-400 animate-pulse">Loading today's challenge...</p>
+                </div>
+            ) : error ? (
+                <div className="text-center py-20 bg-[#1a1a1d] border border-white/10 rounded-2xl">
+                    <HelpCircle className="w-16 h-16 text-red-400/50 mx-auto mb-4" />
+                    <h3 className="text-xl font-serif text-red-400 mb-2">Unable to Load Quiz</h3>
+                    <p className="text-gray-400 mb-6">{error}</p>
+                    <button
+                        onClick={fetchDailyQuestion}
+                        className="px-6 py-3 bg-gold-500/20 hover:bg-gold-500/30 border border-gold-500/30 rounded-full text-gold-300 transition-all"
+                    >
+                        Try Again
+                    </button>
+                </div>
             ) : !question ? (
-                <div className="text-center py-20 text-gray-500">Failed to load quiz. Please try again later.</div>
+                <div className="text-center py-20 bg-[#1a1a1d] border border-white/10 rounded-2xl">
+                    <HelpCircle className="w-16 h-16 text-gray-500/50 mx-auto mb-4" />
+                    <h3 className="text-xl font-serif text-gray-400 mb-2">No Quiz Available</h3>
+                    <p className="text-gray-500 mb-6">Check back later for today's Bible challenge!</p>
+                    <button
+                        onClick={onBack}
+                        className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full text-white transition-all"
+                    >
+                        Go Back
+                    </button>
+                </div>
             ) : (
                 <div className="bg-[#1a1a1d] border border-white/10 rounded-2xl p-8 relative overflow-hidden">
                     {/* Background Decoration */}
