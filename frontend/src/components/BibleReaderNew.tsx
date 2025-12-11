@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Book, Loader2, Volume2, Square } from 'lucide-react';
 import { bibleAPI, BibleBook, BibleVerse } from '../api/bibleApi';
 import VerseDetailPanel from './VerseDetailPanel';
+import { useSettings } from '../contexts/SettingsContext';
+
 export default function BibleReader() {
   const [books, setBooks] = useState<BibleBook[]>([]);
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(null);
@@ -13,6 +15,7 @@ export default function BibleReader() {
   const [error, setError] = useState<string | null>(null);
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const { fontSize } = useSettings();
 
   // Stop audio on unmount or change
   useEffect(() => {
@@ -265,7 +268,7 @@ export default function BibleReader() {
               </button>
             </div>
           ) : (
-            <div className="space-y-4 font-serif text-xl md:text-2xl leading-loose text-gray-300">
+            <div className={`space-y-4 font-serif leading-loose text-gray-300 ${fontSize === 'large' ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}`}>
               {verses.map((verse, index) => (
                 <motion.div
                   key={verse.id}
