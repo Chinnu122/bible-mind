@@ -2,22 +2,16 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { User, Book, ChevronDown, ChevronUp, Globe, Loader2, ArrowLeft, Heart } from 'lucide-react';
 
+// Simplified interfaces matching actual API response
 interface CharacterName {
     english: string;
-    hebrew: string;
-    hebrewTransliteration: string;
-    greek: string;
-    greekTransliteration: string;
-    telugu: string;
+    hebrew?: string;
+    telugu?: string;
 }
 
-interface CharacterStory {
-    creation?: { english: string; telugu: string };
-    temptation?: { english: string; telugu: string };
-    sin?: { english: string; telugu: string };
-    consequences?: { english: string; telugu: string };
-    redemption?: { english: string; telugu: string };
-    hardWork?: { english: string; telugu: string };
+interface LocalizedText {
+    english: string;
+    telugu?: string;
 }
 
 interface CharacterReference {
@@ -26,15 +20,12 @@ interface CharacterReference {
 }
 
 interface Character {
-    id: string;
     name: CharacterName;
-    meaning: { english: string; hebrew: string; telugu: string };
-    description: { english: string; telugu: string };
-    story: CharacterStory;
+    meaning: LocalizedText;
+    description: LocalizedText;
+    story: Record<string, LocalizedText>;
     references: CharacterReference[];
-    lessons: { english: string[]; telugu: string[] };
-    date: string;
-    dayNumber: number;
+    lessons?: { english: string[]; telugu?: string[] };
 }
 
 interface CharacterData {
@@ -110,7 +101,7 @@ export default function CharacterOfDay({ onBack }: Props) {
         );
     }
 
-    const storyKeys = character.story ? Object.keys(character.story) as Array<keyof CharacterStory> : [];
+    const storyKeys = character.story ? Object.keys(character.story) : [];
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
@@ -168,7 +159,8 @@ export default function CharacterOfDay({ onBack }: Props) {
                         <p className="text-sm text-gold-400 uppercase tracking-widest mb-1">Character of the Day #{data.dayNumber}</p>
                         <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-white">{character.name?.[language] || character.name?.english || 'Unknown'}</h1>
                         <p className="text-gray-400 mt-1">
-                            <span className="text-gold-300">{character.name.hebrew}</span> • {character.name.hebrewTransliteration}
+                            {character.name?.hebrew && <span className="text-gold-300">{character.name.hebrew}</span>}
+                            {character.name?.telugu && <span className="text-emerald-300 ml-2">({character.name.telugu})</span>}
                         </p>
                     </div>
                 </div>
@@ -265,21 +257,23 @@ export default function CharacterOfDay({ onBack }: Props) {
                 </div>
             </motion.div>
 
-            {/* Lessons */}
-            <motion.div variants={itemVariants} className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 rounded-xl p-6 border border-purple-500/20">
-                <h3 className="text-xl font-cinzel font-bold text-purple-300 flex items-center gap-3 mb-4">
-                    <Heart className="w-5 h-5" />
-                    {language === 'english' ? 'Lessons for Today' : 'నేటి పాఠాలు'}
-                </h3>
-                <ul className="space-y-3">
-                    {character.lessons[language].map((lesson, index) => (
-                        <li key={index} className="flex gap-3">
-                            <span className="text-purple-400 font-bold">{index + 1}.</span>
-                            <span className="text-gray-300">{lesson}</span>
-                        </li>
-                    ))}
-                </ul>
-            </motion.div>
+            {/* Lessons - Only show if lessons exist */}
+            {character.lessons && (character.lessons[language] || character.lessons.english) && (
+                <motion.div variants={itemVariants} className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 rounded-xl p-6 border border-purple-500/20">
+                    <h3 className="text-xl font-cinzel font-bold text-purple-300 flex items-center gap-3 mb-4">
+                        <Heart className="w-5 h-5" />
+                        {language === 'english' ? 'Lessons for Today' : 'నేటి పాఠాలు'}
+                    </h3>
+                    <ul className="space-y-3">
+                        {(character.lessons[language] || character.lessons.english || []).map((lesson, index) => (
+                            <li key={index} className="flex gap-3">
+                                <span className="text-purple-400 font-bold">{index + 1}.</span>
+                                <span className="text-gray-300">{lesson}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </motion.div>
+            )}
         </motion.div >
     );
 }
