@@ -47,8 +47,19 @@ export default function DailyQuiz({ onBack }: DailyQuizProps) {
 
             const json = await res.json();
 
-            if (json.success && json.data && json.data.question && json.data.options) {
-                setQuestion(json.data);
+            if (json.success && json.data) {
+                // API returns array of questions for the day, take the first one
+                const questionData = Array.isArray(json.data) ? json.data[0] : json.data;
+
+                if (questionData && questionData.question && questionData.options) {
+                    setQuestion({
+                        id: questionData.questionId || questionData.id,
+                        question: questionData.question,
+                        options: questionData.options
+                    });
+                } else {
+                    throw new Error('No quiz questions available for today');
+                }
             } else {
                 // API returned success but no valid question data
                 throw new Error('No quiz questions available for today');
