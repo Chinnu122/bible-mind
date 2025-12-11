@@ -19,6 +19,7 @@ import AmbientParticles from './components/AmbientParticles';
 import BibleStudyPage from './components/BibleStudyPage';
 import CharacterOfDay from './components/CharacterOfDay';
 import RealisticSnow from './components/RealisticSnow';
+import ChristmasTheme from './components/ChristmasTheme';
 import EtherealTheme from './components/EtherealTheme';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
@@ -70,6 +71,14 @@ function AppLayout() {
       accent: 'text-gold-400',
       hover: 'hover:text-gold-300'
     },
+    christmas: {
+      bg: 'bg-[#0a1628]',
+      text: 'text-white',
+      navBg: 'bg-[#0a1628]/90',
+      accent: 'text-red-400',
+      hover: 'hover:text-green-300',
+      backdrop: 'backdrop-blur-md bg-[#0a1628]/70'
+    },
     midnight: {
       bg: 'bg-slate-900',
       text: 'text-blue-100',
@@ -110,6 +119,9 @@ function AppLayout() {
           <SlidingBackground />
           <AmbientParticles />
         </>
+      )}
+      {theme === 'christmas' && (
+        <ChristmasTheme />
       )}
       {theme === 'midnight' && (
         <>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Theme = 'divine' | 'midnight' | 'parchment' | 'ethereal';
+export type Theme = 'divine' | 'christmas' | 'midnight' | 'parchment' | 'ethereal';
 export type FontSize = 'normal' | 'large';
 
 interface SettingsContextType {
@@ -21,7 +21,7 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('divine');
+    const [theme, setTheme] = useState<Theme>('christmas');
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [particles, setParticles] = useState(true);
     const [volume, setVolume] = useState(0.5);

@@ -41,6 +41,11 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
             accent: 'text-amber-800',
             button: 'bg-amber-500/20 hover:bg-amber-500/30 border-amber-700/30'
         },
+        christmas: {
+            card: 'bg-[#112240]/60 border-red-500/20',
+            accent: 'text-red-400',
+            button: 'bg-red-500/20 hover:bg-red-500/30 border-red-500/30'
+        },
         ethereal: {
             card: 'bg-purple-900/40 border-purple-500/20',
             accent: 'text-purple-400',
