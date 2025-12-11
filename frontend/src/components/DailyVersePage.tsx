@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { ChevronLeft, ChevronDown, ChevronUp, Globe, BookOpen, User, Calendar, Sparkles } from 'lucide-react';
 import { getTodayContent, languageNames, verseStudyContent, Language } from '../data/dailyContent';
 import { useSettings } from '../contexts/SettingsContext';
@@ -50,17 +50,40 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
 
     const styles = themeStyles[theme];
 
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2,
+                delayChildren: 0.1
+            }
+        },
+        exit: { opacity: 0 }
+    };
+
+    const itemVariants: Variants = {
+        hidden: { y: 30, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 50, damping: 20 }
+        }
+    };
+
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="min-h-screen pt-24 pb-12 px-4 md:px-8"
         >
             <div className="max-w-4xl mx-auto">
 
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
+                <motion.div variants={itemVariants} className="flex items-center justify-between mb-8">
                     <button
                         onClick={onBack}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md border transition-all ${styles.button}`}
@@ -101,14 +124,15 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
                             )}
                         </AnimatePresence>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Hebron Calendar Date */}
                 <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    className={`text-center mb-8 p-6 rounded-2xl backdrop-blur-md border ${styles.card}`}
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02 }}
+                    className={`text-center mb-8 p-6 rounded-2xl backdrop-blur-md border ${styles.card} relative overflow-hidden group`}
                 >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
                     <div className="flex items-center justify-center gap-2 mb-2">
                         <Calendar className={`w-6 h-6 ${styles.accent}`} />
                         <span className="text-sm uppercase tracking-widest opacity-60">Hebron Calendar</span>
@@ -120,9 +144,8 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
 
                 {/* Daily Verse Card */}
                 <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
+                    variants={itemVariants}
+                    whileHover={{ y: -5 }}
                     className={`mb-8 p-8 rounded-3xl backdrop-blur-md border relative overflow-hidden ${styles.card}`}
                 >
                     <div className="absolute top-4 right-4">
@@ -134,20 +157,22 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
                         <span className="text-sm uppercase tracking-widest opacity-60">Daily Verse</span>
                     </div>
 
-                    <blockquote className="text-2xl md:text-3xl font-serif italic leading-relaxed mb-4">
+                    <blockquote className="text-2xl md:text-3xl font-serif italic leading-relaxed mb-4 relative z-10">
                         "{content.verse.text[language]}"
                     </blockquote>
 
-                    <p className={`text-lg font-medium ${styles.accent}`}>
+                    <p className={`text-lg font-medium ${styles.accent} relative z-10`}>
                         — {content.verse.reference}
                     </p>
+
+                    {/* Living Background Effect for Card */}
+                    <div className={`absolute -bottom-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-10 ${theme === 'divine' ? 'bg-gold-500' : 'bg-blue-500'}`} />
                 </motion.div>
 
                 {/* Character of the Day */}
                 <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
+                    variants={itemVariants}
+                    whileHover={{ y: -5 }}
                     className={`p-8 rounded-3xl backdrop-blur-md border ${styles.card}`}
                 >
                     <div className="flex items-center gap-2 mb-6">
@@ -221,3 +246,4 @@ export default function DailyVersePage({ onBack, onViewCharacter }: DailyVersePa
         </motion.div>
     );
 }
+
