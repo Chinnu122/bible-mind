@@ -36,7 +36,7 @@ export interface DailyContent {
 export const dailyContentData: Record<string, DailyContent> = {
     '12-09': {
         date: '2025-12-09',
-        hebronDate: '🤝Hebron Calendar\n9.12.2025',
+        hebronDate: '🤝Hebron Calendar\n9/12/2025',
         verse: {
             reference: 'Isaiah 58:12',
             text: {
@@ -90,7 +90,7 @@ export const dailyContentData: Record<string, DailyContent> = {
     },
     '12-10': {
         date: '2025-12-10',
-        hebronDate: '🤝Hebron Calendar\n10.12.2025',
+        hebronDate: '🤝Hebron Calendar\n10/12/2025',
         verse: {
             reference: 'Proverbs 3:5-6',
             text: {
@@ -144,7 +144,7 @@ export const dailyContentData: Record<string, DailyContent> = {
     },
     '12-11': {
         date: '2025-12-11',
-        hebronDate: '🤝Hebron Calendar\n11.12.2025',
+        hebronDate: '🤝Hebron Calendar\n11/12/2025',
         verse: {
             reference: 'Jeremiah 33:3',
             text: {
