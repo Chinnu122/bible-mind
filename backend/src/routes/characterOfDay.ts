@@ -18,6 +18,8 @@ interface CharacterFromCSV {
     shortDescription: string;
     keyVerse: string;
     storyHighlight: string;
+    longStory: string;
+    references: string;
 }
 
 // Load characters from CSV file
@@ -38,7 +40,9 @@ function loadCharacters(): CharacterFromCSV[] {
             meaning: row.meaning,
             shortDescription: row.shortDescription,
             keyVerse: row.keyVerse,
-            storyHighlight: row.storyHighlight
+            storyHighlight: row.storyHighlight,
+            longStory: row.longStory || '',
+            references: row.references || ''
         }));
     } catch (error) {
         console.error('CRITICAL: Failed to load characters CSV:', error);
@@ -77,6 +81,16 @@ router.get('/', async (_req: Request, res: Response) => {
             });
         }
 
+        // Parse references from pipe-separated string
+        const parsedReferences = todayCharacter.references
+            ? todayCharacter.references.split('|').map((ref: string) => ({
+                reference: ref.trim(),
+                topic: ref.includes('Genesis') ? 'Creation & Origins' :
+                    ref.includes('Exodus') ? 'Deliverance' :
+                        ref.includes('Hebrews') || ref.includes('Romans') ? 'New Testament' : 'Old Testament'
+            }))
+            : [{ reference: todayCharacter.keyVerse, topic: 'Key Verse' }];
+
         res.json({
             success: true,
             data: {
@@ -95,11 +109,12 @@ router.get('/', async (_req: Request, res: Response) => {
                     story: {
                         highlight: {
                             english: todayCharacter.storyHighlight
+                        },
+                        full: {
+                            english: todayCharacter.longStory || todayCharacter.storyHighlight
                         }
                     },
-                    references: [
-                        { reference: todayCharacter.keyVerse, topic: 'Key Verse' }
-                    ]
+                    references: parsedReferences
                 },
                 dayNumber: effectiveDay,
                 lastUpdated: new Date().toISOString().split('T')[0]
