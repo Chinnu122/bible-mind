@@ -5,8 +5,24 @@ import { parse } from 'csv-parse/sync';
 
 const router = Router();
 
-// Data directory paths
-const dataDir = path.join(__dirname, '../../data');
+// Data directory paths - handle both running from root or backend folder
+// First check if we're in the backend folder, then check parent/backend
+const findDataDir = (): string => {
+    // Try current directory + data (if running from backend/)
+    let dataPath = path.join(process.cwd(), 'data');
+    if (fs.existsSync(path.join(dataPath, 'daily_characters.csv'))) {
+        return dataPath;
+    }
+    // Try current directory + backend/data (if running from root/)
+    dataPath = path.join(process.cwd(), 'backend', 'data');
+    if (fs.existsSync(path.join(dataPath, 'daily_characters.csv'))) {
+        return dataPath;
+    }
+    // Fallback to __dirname based path (production/dist)
+    return path.join(__dirname, '..', 'data');
+};
+
+const dataDir = findDataDir();
 const charactersDir = path.join(dataDir, 'characters');
 
 interface CharacterFromCSV {
@@ -26,11 +42,25 @@ interface CharacterFromCSV {
 function loadCharacters(): CharacterFromCSV[] {
     try {
         const csvPath = path.join(dataDir, 'daily_characters.csv');
+        console.log('📖 Loading characters from:', csvPath);
+        console.log('📂 Data directory:', dataDir);
+        console.log('📁 File exists:', require('fs').existsSync(csvPath));
+
+        if (!fs.existsSync(csvPath)) {
+            console.error('❌ CSV file not found at:', csvPath);
+            return [];
+        }
+
         const csvContent = fs.readFileSync(csvPath, 'utf-8');
+        console.log('📄 CSV content length:', csvContent.length, 'bytes');
+
         const records = parse(csvContent, {
             columns: true,
-            skip_empty_lines: true
+            skip_empty_lines: true,
+            relax_column_count: true  // Allow rows with missing columns (longStory, references)
         });
+
+        console.log('✅ Parsed', records.length, 'character records');
 
         return records.map((row: any) => ({
             dayOfYear: parseInt(row.dayOfYear),
@@ -55,6 +85,19 @@ function loadCharacters(): CharacterFromCSV[] {
 }
 
 let characters: CharacterFromCSV[] = loadCharacters();
+
+// Debug endpoint to check paths
+router.get('/debug', (_req: Request, res: Response) => {
+    const csvPath = path.join(dataDir, 'daily_characters.csv');
+    res.json({
+        cwd: process.cwd(),
+        dirname: __dirname,
+        dataDir: dataDir,
+        csvPath: csvPath,
+        fileExists: fs.existsSync(csvPath),
+        charactersCount: characters.length
+    });
+});
 
 // Get the current day of year (1-365)
 function getDayOfYear(): number {
