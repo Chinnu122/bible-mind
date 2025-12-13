@@ -12,28 +12,10 @@ const SEQUENCES = [
         theme: "void"
     },
     {
-        text: "The heavens declare the glory of God; the skies proclaim the work of his hands.",
-        ref: "Psalm 19:1",
-        duration: 6500,
-        theme: "celestial"
-    },
-    {
         text: "In the beginning was the Word, and the Word was God.",
         ref: "John 1:1",
         duration: 7000,
         theme: "light"
-    },
-    {
-        text: "Trust in the LORD with all your heart and lean not on your own understanding.",
-        ref: "Proverbs 3:5",
-        duration: 6000,
-        theme: "wisdom"
-    },
-    {
-        text: "Be transformed by the renewing of your mind.",
-        ref: "Romans 12:2",
-        duration: 8000,
-        theme: "mind"
     },
     {
         text: "I am the Alpha and the Omega, the First and the Last, the Beginning and the End.",
@@ -395,13 +377,16 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
 
             {started && !showLogo && (
                 <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2, duration: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1, duration: 0.8 }}
                     onClick={handleSkip}
-                    className="absolute bottom-8 right-8 md:bottom-10 md:right-10 text-white/40 hover:text-white/90 hover:bg-white/10 px-4 py-2 rounded-full transition-all z-[60] flex items-center gap-2 font-['Cinzel'] text-[10px] tracking-[0.3em] uppercase backdrop-blur-sm border border-white/5"
+                    className="absolute bottom-8 right-8 z-[60] flex items-center gap-2 group"
                 >
-                    Skip <SkipForward className="w-3 h-3" />
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 group-hover:text-gold-400 transition-colors">Skip Intro</span>
+                    <div className="p-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md group-hover:bg-gold-500/20 group-hover:border-gold-500/50 transition-all">
+                        <SkipForward className="w-4 h-4 text-white/60 group-hover:text-gold-400" />
+                    </div>
                 </motion.button>
             )}
 
@@ -437,37 +422,42 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
 
             {/* --- LOGO --- */}
 
-            {/* --- LOGO --- */}
-
             {showLogo && (
                 <div className="z-50 flex flex-col items-center reveal-up relative">
                     {/* Surprise 5: Cinematic Flash */}
                     <motion.div
                         initial={{ opacity: 1 }}
                         animate={{ opacity: 0 }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        transition={{ duration: 2.0, ease: "easeOut" }}
                         className="absolute inset-0 bg-white z-[100] pointer-events-none scale-[5]"
                     />
-                    <div className="mb-10 hover:scale-105 transition-transform duration-[2000ms] cursor-pointer drop-shadow-2xl">
-                        {/* The Logo with layoutId for transition */}
+
+                    {/* Clean Logo Display - No BOX */}
+                    <div className="mb-12 cursor-pointer drop-shadow-2xl relative">
+                        {/* Soft Ambient Glow only - no borders */}
+                        <div className="absolute inset-0 bg-gold-400/20 blur-[100px] rounded-full opacity-20 animate-pulse pointer-events-none"></div>
+
                         <motion.img
                             src="/logo-v2.png"
                             alt="Bible Mind Logo"
-                            className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_60px_rgba(255,215,0,0.4)] relative z-20"
+                            className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-20"
                             layoutId="main-logo-transition"
-                            initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            transition={{ duration: 1.5, type: "spring" }}
+                            initial={{ opacity: 0, scale: 0.8, rotate: -5, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
+                            transition={{ duration: 1.8, type: "spring", stiffness: 40 }}
                         />
                     </div>
-                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] shine-gold tracking-tighter drop-shadow-2xl relative group">
-                        <span className="relative z-10">Bible Mind</span>
-                        {/* Surprise 7: Glitch Effect Layers */}
-                        <span className="absolute top-0 left-0 -ml-[2px] text-red-500 opacity-70 animate-pulse mix-blend-screen select-none pointer-events-none">Bible Mind</span>
-                        <span className="absolute top-0 left-0 ml-[2px] text-blue-500 opacity-70 animate-pulse mix-blend-screen select-none pointer-events-none" style={{ animationDelay: '0.1s' }}>Bible Mind</span>
+
+                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] text-transparent bg-clip-text bg-gradient-to-b from-amber-100 to-amber-600 tracking-tighter drop-shadow-sm mb-4 relative">
+                        Bible Mind
                     </h1>
-                    <div className="mt-8 font-['Cinzel'] text-white/60 text-sm md:text-lg tracking-[0.8em] uppercase border-t border-white/10 pt-4">
-                        Wisdom Transcending Time
+
+                    {/* Creative Subtitle Design */}
+                    <div className="relative mt-2">
+                        <div className="absolute -inset-x-8 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"></div>
+                        <div className="font-['Cinzel'] text-amber-200/80 text-xs md:text-base tracking-[1.2em] uppercase py-2 bg-black/50 backdrop-blur-sm px-4 relative z-10 border-y border-white/5">
+                            Wisdom Transcending Time
+                        </div>
                     </div>
                 </div>
             )}
@@ -476,4 +466,3 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     );
 
 }
-

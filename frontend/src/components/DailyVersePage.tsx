@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     ChevronLeft, Share2, BookOpen,
     Sparkles, MessageCircle, ArrowUpRight
@@ -24,6 +24,30 @@ export default function DailyVersePage({ onBack, onViewCharacter, onViewQuiz, on
     const today = new Date();
     const formattedDate = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth() + 1).toString().padStart(2, '0')}`;
     const year = today.getFullYear();
+
+    // Verse Slider Logic
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const verseImages = [
+        '/bg-intro-nebula.png',
+        '/bg-verse-1.png',
+        '/bg-verse-2.png'
+    ];
+
+    // Preload images
+    useState(() => {
+        verseImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+    });
+
+    // Auto-rotate background
+    useState(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex(prev => (prev + 1) % verseImages.length);
+        }, 8000);
+        return () => clearInterval(interval);
+    });
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -84,27 +108,45 @@ export default function DailyVersePage({ onBack, onViewCharacter, onViewQuiz, on
             {/* Bento Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(180px,auto)]">
 
-                {/* 1. Hero Card - Daily Verse (Span 8) */}
+                {/* 1. Hero Card - Daily Verse (Full Box Mode) */}
                 <motion.div
                     variants={itemVariants}
-                    className="col-span-1 md:col-span-8 row-span-2 relative group overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/5 p-8 md:p-12 flex flex-col justify-center min-h-[400px]"
+                    className="col-span-1 md:col-span-8 row-span-2 relative group overflow-hidden rounded-3xl min-h-[400px] border border-white/5"
                 >
-                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <BookOpen size={200} />
-                    </div>
+                    {/* Background Slider */}
+                    <AnimatePresence mode="popLayout">
+                        <motion.img
+                            key={currentImageIndex}
+                            src={verseImages[currentImageIndex]}
+                            alt="Background"
+                            initial={{ opacity: 0, scale: 1.1 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 1.5 }}
+                            className="absolute inset-0 w-full h-full object-cover"
+                        />
+                    </AnimatePresence>
 
-                    <div className="relative z-10">
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold uppercase tracking-widest mb-6 border border-gold-500/20">
+                    {/* Glass Overlay */}
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-10" />
+
+                    {/* Content */}
+                    <div className="relative z-20 h-full flex flex-col justify-center p-8 md:p-12">
+                        <div className="absolute top-8 right-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <BookOpen size={100} />
+                        </div>
+
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 text-gold-400 text-xs font-bold uppercase tracking-widest mb-8 border border-gold-500/30 w-fit backdrop-blur-md">
                             <Sparkles size={12} /> Daily Manna
                         </span>
 
-                        <blockquote className="text-3xl md:text-4xl lg:text-5xl font-editorial text-crema-50 leading-tight mb-8">
+                        <blockquote className="text-3xl md:text-5xl lg:text-6xl font-editorial text-crema-50 leading-tight mb-8 drop-shadow-lg">
                             "{content.verse.text[language]}"
                         </blockquote>
 
                         <div className="flex items-center gap-4">
-                            <div className="h-px flex-1 bg-white/10" />
-                            <cite className="text-xl text-gold-200 font-serif italic not-italic">
+                            <div className="h-px flex-1 bg-gradient-to-r from-gold-500/50 to-transparent" />
+                            <cite className="text-xl md:text-2xl text-gold-200 font-serif tracking-wide drop-shadow-md">
                                 — {content.verse.reference}
                             </cite>
                         </div>
