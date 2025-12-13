@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { SkipForward } from 'lucide-react';
-import LogoSVG from './LogoSVG';
 
 // --- Constants ---
 
@@ -331,9 +331,15 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
             )}
 
             {started && !showLogo && (
-                <button onClick={handleSkip} className="absolute bottom-10 right-10 text-white/20 hover:text-white/80 transition-colors z-[60] flex items-center gap-2 font-['Cinzel'] text-[10px] tracking-[0.3em] uppercase">
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2, duration: 1 }}
+                    onClick={handleSkip}
+                    className="absolute bottom-8 right-8 md:bottom-10 md:right-10 text-white/40 hover:text-white/90 hover:bg-white/10 px-4 py-2 rounded-full transition-all z-[60] flex items-center gap-2 font-['Cinzel'] text-[10px] tracking-[0.3em] uppercase backdrop-blur-sm border border-white/5"
+                >
                     Skip <SkipForward className="w-3 h-3" />
-                </button>
+                </motion.button>
             )}
 
             {/* --- TEXT CONTENT --- */}
@@ -368,14 +374,24 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
 
             {/* --- LOGO --- */}
 
+            {/* --- LOGO --- */}
+
             {showLogo && (
                 <div className="z-50 flex flex-col items-center reveal-up">
                     <div className="mb-10 hover:scale-105 transition-transform duration-[2000ms] cursor-pointer drop-shadow-2xl">
                         {/* The Logo with layoutId for transition */}
-                        <LogoSVG className="w-64 h-64 md:w-96 md:h-96 drop-shadow-[0_0_60px_rgba(255,255,255,0.6)] relative z-20" layoutId="main-logo-transition" />
+                        <motion.img
+                            src="/logo-v2.png"
+                            alt="Bible Mind Logo"
+                            className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_60px_rgba(255,215,0,0.4)] relative z-20"
+                            layoutId="main-logo-transition"
+                            initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                            transition={{ duration: 1.5, type: "spring" }}
+                        />
                     </div>
-                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] shine-purple tracking-tighter drop-shadow-2xl">
-                        Bible mind
+                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] shine-gold tracking-tighter drop-shadow-2xl">
+                        Bible Mind
                     </h1>
                     <div className="mt-8 font-['Cinzel'] text-white/60 text-sm md:text-lg tracking-[0.8em] uppercase border-t border-white/10 pt-4">
                         Wisdom Transcending Time

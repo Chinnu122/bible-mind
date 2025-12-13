@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 export type Theme = 'divine' | 'christmas' | 'midnight' | 'parchment' | 'ethereal';
 export type FontSize = 'normal' | 'large';
 
+export type Atmosphere = 'rain' | 'celestial' | 'monastery' | 'none';
+
 interface SettingsContextType {
     theme: Theme;
     setTheme: (t: Theme) => void;
@@ -14,6 +16,10 @@ interface SettingsContextType {
     setVolume: (v: number) => void;
     fontSize: FontSize;
     setFontSize: (v: FontSize) => void;
+    atmosphere: Atmosphere;
+    setAtmosphere: (a: Atmosphere) => void;
+    zenMode: boolean;
+    setZenMode: (v: boolean) => void;
     isSettingsOpen: boolean;
     setIsSettingsOpen: (v: boolean) => void;
 }
@@ -26,6 +32,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const [particles, setParticles] = useState(true);
     const [volume, setVolume] = useState(0.5);
     const [fontSize, setFontSize] = useState<FontSize>('normal');
+    const [atmosphere, setAtmosphere] = useState<Atmosphere>('none');
+    const [zenMode, setZenMode] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     // Initialize from local storage
@@ -33,16 +41,19 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         const savedTheme = localStorage.getItem('bible-mind-theme') as Theme;
         const savedVolume = localStorage.getItem('bible-mind-volume');
         const savedFontSize = localStorage.getItem('bible-mind-fontsize') as FontSize;
+        const savedAtmosphere = localStorage.getItem('bible-mind-atmosphere') as Atmosphere;
 
         if (savedTheme) setTheme(savedTheme);
         if (savedVolume) setVolume(parseFloat(savedVolume));
         if (savedFontSize) setFontSize(savedFontSize);
+        if (savedAtmosphere) setAtmosphere(savedAtmosphere);
     }, []);
 
     useEffect(() => {
         localStorage.setItem('bible-mind-theme', theme);
         localStorage.setItem('bible-mind-volume', volume.toString());
         localStorage.setItem('bible-mind-fontsize', fontSize);
+        localStorage.setItem('bible-mind-atmosphere', atmosphere);
 
         // Apply global body class for root variable handling
         document.body.className = `${theme} ${fontSize === 'large' ? 'text-lg' : ''}`;
@@ -52,7 +63,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         for (let i = 0; i < audioElements.length; i++) {
             audioElements[i].volume = volume;
         }
-    }, [theme, volume, fontSize]);
+    }, [theme, volume, fontSize, atmosphere]);
 
     return (
         <SettingsContext.Provider value={{
@@ -61,6 +72,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
             particles, setParticles,
             volume, setVolume,
             fontSize, setFontSize,
+            atmosphere, setAtmosphere,
+            zenMode, setZenMode,
             isSettingsOpen, setIsSettingsOpen
         }}>
             {children}
