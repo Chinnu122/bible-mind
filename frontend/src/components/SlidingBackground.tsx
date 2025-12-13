@@ -25,19 +25,15 @@ export default function SlidingBackground() {
             <AnimatePresence mode="wait">
                 <motion.div
                     key={theme}
-                    initial={{ opacity: 0, scale: 1.1 }}
+                    initial={{ opacity: 0 }}
                     animate={{
                         opacity: 1,
-                        scale: 1,
-                        backgroundPosition: ['0% 0%', '0% 100%']
                     }}
                     exit={{ opacity: 0 }}
                     transition={{
-                        opacity: { duration: 1.5 },
-                        scale: { duration: 10, ease: "linear" },
-                        backgroundPosition: { duration: 60, repeat: Infinity, repeatType: "reverse", ease: "linear" }
+                        opacity: { duration: 0.8 },
                     }}
-                    className="absolute inset-0 bg-cover bg-center"
+                    className="absolute inset-0 bg-cover bg-center gpu-accelerate"
                     style={{
                         backgroundImage: `url('${currentBg}')`,
                     }}
