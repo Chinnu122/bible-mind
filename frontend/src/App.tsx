@@ -199,18 +199,37 @@ function AppLayout() {
 
             {/* Mobile Bottom Bar - Hidden in Zen Mode */}
             {!zenMode && (
-              <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-slate-900/90 backdrop-blur-xl border-t border-white/5 pb-6">
-                <div className="flex justify-around items-center p-4">
-                  {navItems.slice(0, 5).map((item) => (
+              <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-slate-900/90 border-t border-white/5 pb-6">
+                <div className="flex justify-around items-center p-3">
+                  {/* Main Nav Items (4 items) */}
+                  {navItems.slice(0, 4).map((item) => (
                     <button
                       key={item.id}
                       onClick={() => navigateTo(item.id as ViewState)}
                       className={`flex flex-col items-center gap-1 ${view === item.id ? 'text-gold-400' : 'text-slate-500'}`}
                     >
-                      <item.icon size={22} />
-                      <span className="text-[10px] uppercase tracking-wider">{item.label}</span>
+                      <item.icon size={20} />
+                      <span className="text-[9px] uppercase tracking-wider">{item.label}</span>
                     </button>
                   ))}
+
+                  {/* Profile Button */}
+                  <button
+                    onClick={() => navigateTo('auth')}
+                    className={`flex flex-col items-center gap-1 ${view === 'auth' ? 'text-gold-400' : 'text-slate-500'}`}
+                  >
+                    <User size={20} />
+                    <span className="text-[9px] uppercase tracking-wider">Profile</span>
+                  </button>
+
+                  {/* Settings Button */}
+                  <button
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="flex flex-col items-center gap-1 text-slate-500"
+                  >
+                    <Settings size={20} />
+                    <span className="text-[9px] uppercase tracking-wider">Settings</span>
+                  </button>
                 </div>
               </nav>
             )}
