@@ -36,6 +36,7 @@ interface CharacterFromCSV {
     storyHighlight: string;
     longStory: string;
     references: string;
+    image: string;
 }
 
 // Load characters from CSV file
@@ -43,8 +44,6 @@ function loadCharacters(): CharacterFromCSV[] {
     try {
         const csvPath = path.join(dataDir, 'daily_characters.csv');
         console.log('📖 Loading characters from:', csvPath);
-        console.log('📂 Data directory:', dataDir);
-        console.log('📁 File exists:', require('fs').existsSync(csvPath));
 
         if (!fs.existsSync(csvPath)) {
             console.error('❌ CSV file not found at:', csvPath);
@@ -52,12 +51,10 @@ function loadCharacters(): CharacterFromCSV[] {
         }
 
         const csvContent = fs.readFileSync(csvPath, 'utf-8');
-        console.log('📄 CSV content length:', csvContent.length, 'bytes');
-
         const records = parse(csvContent, {
             columns: true,
             skip_empty_lines: true,
-            relax_column_count: true  // Allow rows with missing columns (longStory, references)
+            relax_column_count: true
         });
 
         console.log('✅ Parsed', records.length, 'character records');
@@ -72,41 +69,18 @@ function loadCharacters(): CharacterFromCSV[] {
             keyVerse: row.keyVerse,
             storyHighlight: row.storyHighlight,
             longStory: row.longStory || '',
-            references: row.references || ''
+            references: row.references || '',
+            image: row.image || ''
         }));
     } catch (error) {
         console.error('CRITICAL: Failed to load characters CSV:', error);
-        if (error instanceof Error) {
-            console.error('Error details:', error.message);
-            console.error('Stack trace:', error.stack);
-        }
         return [];
     }
 }
 
 let characters: CharacterFromCSV[] = loadCharacters();
 
-// Debug endpoint to check paths
-router.get('/debug', (_req: Request, res: Response) => {
-    const csvPath = path.join(dataDir, 'daily_characters.csv');
-    res.json({
-        cwd: process.cwd(),
-        dirname: __dirname,
-        dataDir: dataDir,
-        csvPath: csvPath,
-        fileExists: fs.existsSync(csvPath),
-        charactersCount: characters.length
-    });
-});
-
-// Get the current day of year (1-365)
-function getDayOfYear(): number {
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const diff = now.getTime() - start.getTime();
-    const oneDay = 1000 * 60 * 60 * 24;
-    return Math.floor(diff / oneDay);
-}
+// ... (middleware code)
 
 // Get today's character of the day (from CSV)
 router.get('/', async (_req: Request, res: Response) => {
@@ -118,19 +92,14 @@ router.get('/', async (_req: Request, res: Response) => {
         const todayCharacter = characters.find(c => c.dayOfYear === effectiveDay) || characters[0];
 
         if (!todayCharacter) {
-            return res.status(404).json({
-                success: false,
-                error: 'No character found for today'
-            });
+            return res.status(404).json({ success: false, error: 'No character found for today' });
         }
 
-        // Parse references from pipe-separated string
+        // Parse references logic...
         const parsedReferences = todayCharacter.references
             ? todayCharacter.references.split('|').map((ref: string) => ({
                 reference: ref.trim(),
-                topic: ref.includes('Genesis') ? 'Creation & Origins' :
-                    ref.includes('Exodus') ? 'Deliverance' :
-                        ref.includes('Hebrews') || ref.includes('Romans') ? 'New Testament' : 'Old Testament'
+                topic: ref.includes('Genesis') ? 'Creation & Origins' : 'Key Reference'
             }))
             : [{ reference: todayCharacter.keyVerse, topic: 'Key Verse' }];
 
@@ -143,19 +112,12 @@ router.get('/', async (_req: Request, res: Response) => {
                         hebrew: todayCharacter.hebrewName,
                         telugu: todayCharacter.teluguName
                     },
-                    meaning: {
-                        english: todayCharacter.meaning
-                    },
-                    description: {
-                        english: todayCharacter.shortDescription
-                    },
+                    meaning: { english: todayCharacter.meaning },
+                    description: { english: todayCharacter.shortDescription },
+                    image: todayCharacter.image,
                     story: {
-                        highlight: {
-                            english: todayCharacter.storyHighlight
-                        },
-                        full: {
-                            english: todayCharacter.longStory || todayCharacter.storyHighlight
-                        }
+                        highlight: { english: todayCharacter.storyHighlight },
+                        full: { english: todayCharacter.longStory || todayCharacter.storyHighlight }
                     },
                     references: parsedReferences
                 },
@@ -164,11 +126,8 @@ router.get('/', async (_req: Request, res: Response) => {
             }
         });
     } catch (error) {
-        console.error('Error loading character of the day:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to load character of the day'
-        });
+        console.error('Error:', error);
+        res.status(500).json({ success: false, error: 'Failed to load character' });
     }
 });
 
