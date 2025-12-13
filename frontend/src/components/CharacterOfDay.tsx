@@ -26,6 +26,7 @@ interface Character {
     story: Record<string, LocalizedText>;
     references: CharacterReference[];
     lessons?: { english: string[]; telugu?: string[] };
+    image?: string;
 }
 
 interface CharacterData {
@@ -150,32 +151,78 @@ export default function CharacterOfDay({ onBack }: Props) {
             </motion.div>
 
             {/* Character Card */}
-            <motion.div variants={itemVariants} className="bg-gradient-to-br from-gold-900/30 to-purple-900/20 rounded-3xl border border-gold-500/20 p-8 mb-8">
-                <div className="flex items-center gap-4 mb-6">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold-500 to-amber-600 flex items-center justify-center">
-                        <User className="w-10 h-10 text-white" />
+            <motion.div variants={itemVariants} className="bg-gradient-to-br from-gold-900/30 to-purple-900/20 rounded-3xl border border-gold-500/20 overflow-hidden mb-8">
+                {/* Hero Image */}
+                {character.image && (
+                    <div className="relative w-full h-96 overflow-hidden group">
+                        <motion.img
+                            initial={{ scale: 1.1 }}
+                            animate={{ scale: 1 }}
+                            transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+                            src={character.image}
+                            alt={character.name.english}
+                            className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />
+
+                        <div className="absolute bottom-8 left-8 right-8">
+                            <motion.div
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                className="flex items-center gap-4 mb-4"
+                            >
+                                <div className="p-2 bg-gold-500/20 backdrop-blur-md rounded-lg border border-gold-500/30">
+                                    <span className="text-gold-400 text-xs font-bold uppercase tracking-widest">Character #{data.dayNumber}</span>
+                                </div>
+                            </motion.div>
+
+                            <motion.h1
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-5xl md:text-7xl font-cinzel font-bold text-white mb-2 drop-shadow-2xl"
+                            >
+                                {character.name?.[language] || character.name?.english}
+                            </motion.h1>
+
+                            <motion.p
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.5 }}
+                                className="text-lg md:text-xl text-gold-200 font-serif"
+                            >
+                                {character.name?.hebrew} • {character.name?.telugu}
+                            </motion.p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm text-gold-400 uppercase tracking-widest mb-1">Character of the Day #{data.dayNumber}</p>
-                        <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-white">{character.name?.[language] || character.name?.english || 'Unknown'}</h1>
-                        <p className="text-gray-400 mt-1">
-                            {character.name?.hebrew && <span className="text-gold-300">{character.name.hebrew}</span>}
-                            {character.name?.telugu && <span className="text-emerald-300 ml-2">({character.name.telugu})</span>}
-                        </p>
+                )}
+
+                <div className="p-8">
+                    {!character.image && (
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold-500 to-amber-600 flex items-center justify-center">
+                                <User className="w-10 h-10 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gold-400 uppercase tracking-widest mb-1">Character of the Day #{data.dayNumber}</p>
+                                <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-white">{character.name?.[language] || character.name?.english || 'Unknown'}</h1>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Meaning */}
+                    <div className="bg-black/30 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-gold-400 uppercase tracking-wider mb-2">Meaning</p>
+                        <p className="text-xl text-white">{character.meaning?.[language] || character.meaning?.english || ''}</p>
                     </div>
+
+                    {/* Description */}
+                    <p className="text-lg text-gray-300 leading-relaxed">
+                        {character.description?.[language] || character.description?.english || ''}
+                    </p>
+
                 </div>
-
-                {/* Meaning */}
-                <div className="bg-black/30 rounded-xl p-4 mb-6">
-                    <p className="text-sm text-gold-400 uppercase tracking-wider mb-2">Meaning</p>
-                    <p className="text-xl text-white">{character.meaning?.[language] || character.meaning?.english || ''}</p>
-                </div>
-
-                {/* Description */}
-                <p className="text-lg text-gray-300 leading-relaxed">
-                    {character.description?.[language] || character.description?.english || ''}
-                </p>
-
             </motion.div>
 
             {/* Story Sections */}

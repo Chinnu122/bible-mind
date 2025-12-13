@@ -20,6 +20,7 @@ import DailyQuiz from './components/DailyQuiz';
 import SlidingBackground from './components/SlidingBackground';
 import ChristmasSnow from './components/ChristmasSnow';
 import AtmospherePlayer from './components/AtmospherePlayer';
+import DivineRays from './components/DivineRays';
 
 type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz';
 
@@ -48,6 +49,7 @@ function AppLayout() {
   return (
     <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
       <SlidingBackground />
+      <DivineRays />
       {theme === 'christmas' && <ChristmasSnow />}
       <ClickSound />
       <AtmospherePlayer />

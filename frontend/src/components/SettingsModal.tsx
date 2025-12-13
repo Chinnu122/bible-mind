@@ -4,7 +4,7 @@ import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap, Paintbrush, Music, Info, M
 import { useState } from 'react';
 
 export default function SettingsModal() {
-    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
+    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, fontFamily, setFontFamily, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
     const [activeTab, setActiveTab] = useState<'visuals' | 'sound' | 'about' | 'atmosphere'>('visuals');
 
     const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
@@ -126,7 +126,7 @@ export default function SettingsModal() {
                                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                         <Type size={14} /> Typography
                                     </h3>
-                                    <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center justify-between">
+                                    <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center justify-between mb-4">
                                         <span className="text-crema-50 font-medium">Reading Size</span>
                                         <div className="flex bg-black/20 rounded-lg p-1">
                                             {['normal', 'large'].map((size) => (
@@ -137,6 +137,26 @@ export default function SettingsModal() {
                                                         }`}
                                                 >
                                                     {size}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center justify-between">
+                                        <span className="text-crema-50 font-medium">Font Style</span>
+                                        <div className="flex bg-black/20 rounded-lg p-1 gap-1">
+                                            {[
+                                                { id: 'sans', label: 'Modern', style: 'font-sans' },
+                                                { id: 'serif', label: 'Classic', style: 'font-serif' },
+                                                { id: 'mono', label: 'Code', style: 'font-mono' }
+                                            ].map((font) => (
+                                                <button
+                                                    key={font.id}
+                                                    onClick={() => setFontFamily(font.id as any)}
+                                                    className={`px-3 py-1.5 rounded-md text-sm transition-all ${fontFamily === font.id ? 'bg-white/10 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                                                        } ${font.style}`}
+                                                >
+                                                    {font.label}
                                                 </button>
                                             ))}
                                         </div>
