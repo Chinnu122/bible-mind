@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings, Theme } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap, Paintbrush, Music, Info, Monitor, Type } from 'lucide-react';
+import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsModal() {
-    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize } = useSettings();
-    const [activeTab, setActiveTab] = useState<'visuals' | 'sound' | 'about'>('visuals');
+    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
+    const [activeTab, setActiveTab] = useState<'visuals' | 'sound' | 'about' | 'atmosphere'>('visuals');
 
     const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
         { id: 'divine', name: 'Divine', icon: Sun, color: 'from-amber-100 to-amber-500', desc: 'Heavenly Light' },
@@ -45,6 +45,7 @@ export default function SettingsModal() {
                         <div className="flex flex-col gap-2">
                             {[
                                 { id: 'visuals', icon: Paintbrush, label: 'Visuals' },
+                                { id: 'atmosphere', icon: Wind, label: 'Atmosphere' },
                                 { id: 'sound', icon: Music, label: 'Sound' },
                                 { id: 'about', icon: Info, label: 'About' }
                             ].map((tab) => (
@@ -52,8 +53,8 @@ export default function SettingsModal() {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as any)}
                                     className={`flex items-center gap-3 p-3 rounded-xl transition-all ${activeTab === tab.id
-                                            ? 'bg-gold-500/20 text-gold-400 shadow-lg shadow-gold-500/5'
-                                            : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                        ? 'bg-gold-500/20 text-gold-400 shadow-lg shadow-gold-500/5'
+                                        : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                         }`}
                                 >
                                     <tab.icon size={20} />
@@ -158,6 +159,98 @@ export default function SettingsModal() {
                                             />
                                         </div>
                                     </button>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <EyeOff size={14} /> Distraction Free
+                                    </h3>
+                                    <button
+                                        onClick={() => setZenMode(!zenMode)}
+                                        className={`w-full border rounded-2xl p-4 flex items-center justify-between group transition-all duration-300 ${zenMode ? 'bg-gold-500/10 border-gold-500/50' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                                    >
+                                        <div>
+                                            <span className={`font-medium block mb-1 ${zenMode ? 'text-gold-400' : 'text-crema-50'}`}>Zen Mode</span>
+                                            <span className="text-xs text-slate-400">Hide all UI for reading</span>
+                                        </div>
+                                        <div className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ${zenMode ? 'bg-gold-500' : 'bg-slate-700'}`}>
+                                            <motion.div
+                                                className="w-4 h-4 rounded-full bg-white shadow-sm"
+                                                animate={{ x: zenMode ? 24 : 0 }}
+                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                            />
+                                        </div>
+                                    </button>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <EyeOff size={14} /> Distraction Free
+                                    </h3>
+                                    <button
+                                        onClick={() => setZenMode(!zenMode)}
+                                        className={`w-full border rounded-2xl p-4 flex items-center justify-between group transition-all duration-300 ${zenMode ? 'bg-gold-500/10 border-gold-500/50' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                                    >
+                                        <div>
+                                            <span className={`font-medium block mb-1 ${zenMode ? 'text-gold-400' : 'text-crema-50'}`}>Zen Mode</span>
+                                            <span className="text-xs text-slate-400">Hide all UI for reading</span>
+                                        </div>
+                                        <div className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ${zenMode ? 'bg-gold-500' : 'bg-slate-700'}`}>
+                                            <motion.div
+                                                className="w-4 h-4 rounded-full bg-white shadow-sm"
+                                                animate={{ x: zenMode ? 24 : 0 }}
+                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                            />
+                                        </div>
+                                    </button>
+                                </section>
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'atmosphere' && (
+                            <motion.div
+                                key="atmosphere"
+                                variants={tabVariant}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                className="space-y-6"
+                            >
+                                <section>
+                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                        <Wind size={14} /> Soundscapes
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[
+                                            { id: 'none', label: 'Silence', icon: VolumeX, desc: 'Pure Focus' },
+                                            { id: 'rain', label: 'Soft Rain', icon: CloudRain, desc: 'Calm Storm' },
+                                            { id: 'celestial', label: 'Celestial', icon: Sparkles, desc: 'Ethereal Drone' },
+                                            { id: 'monastery', label: 'Monastery', icon: Church, desc: 'Gregorian Chant' },
+                                        ].map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => setAtmosphere(item.id as any)}
+                                                className={`group relative p-4 rounded-2xl border transition-all text-left flex flex-col gap-3 overflow-hidden ${atmosphere === item.id
+                                                    ? 'bg-gold-500/10 border-gold-500/50 shadow-lg shadow-gold-500/5'
+                                                    : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                                            >
+                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${atmosphere === item.id ? 'bg-gold-500 text-slate-900' : 'bg-slate-800 text-slate-400'}`}>
+                                                    <item.icon size={20} />
+                                                </div>
+                                                <div>
+                                                    <div className={`font-bold transition-colors ${atmosphere === item.id ? 'text-gold-400' : 'text-slate-300'}`}>{item.label}</div>
+                                                    <div className="text-xs text-slate-500">{item.desc}</div>
+                                                </div>
+                                                {atmosphere === item.id && (
+                                                    <motion.div
+                                                        layoutId="activeAtmosphere"
+                                                        className="absolute inset-0 border-2 border-gold-500/50 rounded-2xl"
+                                                        transition={{ duration: 0.2 }}
+                                                    />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </section>
                             </motion.div>
                         )}
