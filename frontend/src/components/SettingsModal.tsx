@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings, Theme } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind } from 'lucide-react';
+import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Snowflake, Flame, Activity } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsModal() {
@@ -11,6 +11,7 @@ export default function SettingsModal() {
         { id: 'divine', name: 'Divine', icon: Sun, color: 'from-amber-100 to-amber-500', desc: 'Heavenly Light' },
         { id: 'midnight', name: 'Midnight', icon: Moon, color: 'from-slate-900 to-blue-900', desc: 'Deep Space' },
         { id: 'parchment', name: 'Parchment', icon: Scroll, color: 'from-[#f4e4bc] to-[#d4c5a0]', desc: 'Ancient Scroll' },
+        { id: 'christmas', name: 'Christmas', icon: Snowflake, color: 'from-blue-100 to-blue-300', desc: 'Winter Wonder' },
     ];
 
     const tabVariant = {
@@ -226,6 +227,9 @@ export default function SettingsModal() {
                                             { id: 'rain', label: 'Soft Rain', icon: CloudRain, desc: 'Calm Storm' },
                                             { id: 'celestial', label: 'Celestial', icon: Sparkles, desc: 'Ethereal Drone' },
                                             { id: 'monastery', label: 'Monastery', icon: Church, desc: 'Gregorian Chant' },
+                                            { id: 'relax', label: 'Relax', icon: Wind, desc: 'Ambient Chill' },
+                                            { id: 'focus', label: 'Focus', icon: Flame, desc: 'Deep Work' },
+                                            { id: 'meditate', label: 'Meditate', icon: Activity, desc: 'Mindfulness' },
                                         ].map((item) => (
                                             <button
                                                 key={item.id}

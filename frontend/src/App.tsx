@@ -18,6 +18,8 @@ import CharacterOfDay from './components/CharacterOfDay';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
 import SlidingBackground from './components/SlidingBackground';
+import ChristmasSnow from './components/ChristmasSnow';
+import AtmospherePlayer from './components/AtmospherePlayer';
 
 type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz';
 
@@ -25,7 +27,8 @@ function AppLayout() {
   const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewState>('hero');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isSettingsOpen, setIsSettingsOpen, zenMode, setZenMode } = useSettings();
+  const { isSettingsOpen, setIsSettingsOpen, zenMode, setZenMode, theme } = useSettings();
+  const [santaMessage, setSantaMessage] = useState(false);
 
   const navigateTo = (target: ViewState) => {
     setView(target);
@@ -45,7 +48,9 @@ function AppLayout() {
   return (
     <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
       <SlidingBackground />
+      {theme === 'christmas' && <ChristmasSnow />}
       <ClickSound />
+      <AtmospherePlayer />
 
       {/* Surprise 10: Scroll Progress Indicator */}
       <motion.div
@@ -164,6 +169,32 @@ function AppLayout() {
                 <LogOut size={16} />
                 <span className="text-xs uppercase tracking-widest font-sans">Exit Zen</span>
               </motion.button>
+            )}
+
+            {/* Surprise 8: Santa Widget (Christmas Theme Only) */}
+            {theme === 'christmas' && !zenMode && (
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                className="fixed bottom-24 right-4 md:right-8 z-50"
+              >
+                <button
+                  onClick={() => setSantaMessage(p => !p)}
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-red-600 to-red-800 border-2 border-white/20 shadow-2xl flex items-center justify-center text-3xl hover:scale-110 transition-transform cursor-pointer relative"
+                >
+                  🎅
+                  {santaMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className="absolute bottom-20 right-0 w-48 bg-white text-slate-900 p-4 rounded-2xl shadow-xl text-center font-serif text-sm border-2 border-red-500 after:content-[''] after:absolute after:bottom-[-8px] after:right-6 after:w-4 after:h-4 after:bg-white after:rotate-45 after:border-r-2 after:border-b-2 after:border-red-500"
+                    >
+                      <p className="mb-2 font-bold text-red-600">Merry Christmas!</p>
+                      <p>May the peace of Christ rule in your hearts.</p>
+                    </motion.div>
+                  )}
+                </button>
+              </motion.div>
             )}
 
             {/* Mobile Bottom Bar - Hidden in Zen Mode */}
