@@ -14,23 +14,51 @@ export default function ClickSound() {
             if (!AudioContext) return;
 
             const ctx = new AudioContext();
+
+            // Primary oscillator (Body of sound)
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
 
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.05);
+            // Filter for warmer sound
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 1000;
 
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+            osc.type = 'triangle'; // Softer than sine
 
-            osc.connect(gain);
+            // Pitch Envelope: Quick drop (Mechanical Thud)
+            const now = ctx.currentTime;
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+
+            // Volume Envelope: Percussive
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.15, now + 0.01); // Attack
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1); // Decay
+
+            // Connect
+            osc.connect(filter);
+            filter.connect(gain);
             gain.connect(ctx.destination);
 
-            osc.start();
-            osc.stop(ctx.currentTime + 0.05);
+            osc.start(now);
+            osc.stop(now + 0.15);
+
+            // Optional: High frequency "click" tick for definition
+            const tickOsc = ctx.createOscillator();
+            const tickGain = ctx.createGain();
+            tickOsc.type = 'sine';
+            tickOsc.frequency.setValueAtTime(2000, now);
+            tickGain.gain.setValueAtTime(0.05, now);
+            tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+
+            tickOsc.connect(tickGain);
+            tickGain.connect(ctx.destination);
+            tickOsc.start(now);
+            tickOsc.stop(now + 0.02);
+
         } catch (e) {
-            // Audio issues ignored
+            // Audio ignore
         }
     }, [soundEnabled]);
 
