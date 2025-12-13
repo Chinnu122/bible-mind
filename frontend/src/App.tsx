@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
   Settings, User, Home, LogOut, BookOpen, Calendar, StickyNote, CheckCircle, MessageSquare
 } from 'lucide-react';
@@ -46,6 +46,12 @@ function AppLayout() {
     <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
       <SlidingBackground />
       <ClickSound />
+
+      {/* Surprise 10: Scroll Progress Indicator */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gold-500 z-[100] origin-left"
+        style={{ scaleX: useScroll().scrollYProgress }}
+      />
 
       {/* Settings Modal */}
       <AnimatePresence>
