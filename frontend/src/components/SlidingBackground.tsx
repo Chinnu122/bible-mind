@@ -1,76 +1,58 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useSettings } from '../contexts/SettingsContext';
 
-const slides = [
-    '/slide-1.jpg',
-    '/slide-2.png',
-    '/slide-3.jpg',
-    '/slide-4.jpg'
-];
+const backgrounds = {
+    divine: '/bg-divine.png',
+    midnight: '/bg-midnight.png',
+    parchment: '/bg-parchment.png',
+    christmas: '/bg-divine.png', // Fallback for now
+    ethereal: '/bg-glass.png'    // Fallback
+};
 
 export default function SlidingBackground() {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [imagesLoaded, setImagesLoaded] = useState(false);
-
-    // Preload all images on mount
-    useEffect(() => {
-        let loadedCount = 0;
-        slides.forEach((src) => {
-            const img = new Image();
-            img.src = src;
-            img.onload = () => {
-                loadedCount++;
-                if (loadedCount === slides.length) {
-                    setImagesLoaded(true);
-                }
-            };
-        });
-    }, []);
-
-    useEffect(() => {
-        if (!imagesLoaded) return;
-
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 10000); // Slower transitions = smoother
-
-        return () => clearInterval(interval);
-    }, [imagesLoaded]);
-
-    if (!imagesLoaded) {
-        return (
-            <div className="fixed inset-0 z-0 bg-black" />
-        );
-    }
+    const { theme } = useSettings();
+    const currentBg = backgrounds[theme as keyof typeof backgrounds] || backgrounds.divine;
 
     return (
-        <div className="fixed inset-0 z-0 overflow-hidden">
-            {/* Static blurred background - always visible, prevents flash */}
-            <div
-                className="absolute inset-0 bg-cover bg-center blur-lg scale-110"
-                style={{
-                    backgroundImage: `url('${slides[currentSlide]}')`,
-                    willChange: 'auto'
-                }}
-            />
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+            {/* Base layer - Solid color backup */}
+            <div className={`absolute inset-0 transition-colors duration-1000 ease-in-out
+                ${theme === 'divine' ? 'bg-slate-900' : ''}
+                ${theme === 'midnight' ? 'bg-black' : ''}
+                ${theme === 'parchment' ? 'bg-[#f4e4bc]' : ''}
+            `} />
 
-            <AnimatePresence initial={false}>
+            <AnimatePresence mode="wait">
                 <motion.div
-                    key={currentSlide}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    key={theme}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{
+                        opacity: 1,
+                        scale: 1,
+                        backgroundPosition: ['0% 0%', '0% 100%']
+                    }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 1.5, ease: "linear" }}
-                    className="absolute inset-0 bg-cover bg-center blur-sm"
+                    transition={{
+                        opacity: { duration: 1.5 },
+                        scale: { duration: 10, ease: "linear" },
+                        backgroundPosition: { duration: 60, repeat: Infinity, repeatType: "reverse", ease: "linear" }
+                    }}
+                    className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('${slides[currentSlide]}')`,
-                        willChange: 'opacity'
+                        backgroundImage: `url('${currentBg}')`,
                     }}
                 />
             </AnimatePresence>
 
-            {/* Dark overlay for content readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+            {/* Overlay for readability */}
+            <div className={`absolute inset-0 transition-opacity duration-1000
+                ${theme === 'parchment' ? 'bg-amber-900/10 mix-blend-multiply' : 'bg-black/40 backdrop-blur-[1px]'}
+            `} />
+
+            {/* Animated Particles / ambient noise overlay could go here */}
+            {theme !== 'parchment' && (
+                <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150 mix-blend-overlay" />
+            )}
         </div>
     );
 }

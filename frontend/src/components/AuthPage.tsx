@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, LogOut } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, ArrowRight } from 'lucide-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -21,23 +21,13 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
 
+    // Form State
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         name: ''
     });
-
-    // Check for existing session
-    useEffect(() => {
-        const savedUser = localStorage.getItem('bible-mind-user');
-        if (savedUser) {
-            try {
-                setLoggedInUser(JSON.parse(savedUser));
-            } catch { }
-        }
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -59,16 +49,12 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
                 throw new Error(data.error || 'Authentication failed');
             }
 
-            // Save to localStorage
             const user: UserData = data.data;
             localStorage.setItem('bible-mind-user', JSON.stringify(user));
-            setLoggedInUser(user);
             setSuccess(data.message || 'Success!');
-
             onAuthSuccess?.(user);
 
-            // Auto redirect after success
-            setTimeout(() => onBack(), 1500);
+            setTimeout(() => onBack(), 1000);
         } catch (err: any) {
             setError(err.message || 'Authentication failed');
         } finally {
@@ -76,200 +62,143 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('bible-mind-user');
-        setLoggedInUser(null);
-        setFormData({ email: '', password: '', name: '' });
-    };
-
-    // If user is logged in, show profile
-    if (loggedInUser) {
-        return (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="pt-24 px-4 md:px-12 min-h-screen flex items-center justify-center"
-            >
-                <motion.div
-                    initial={{ scale: 0.95, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    className="w-full max-w-md"
-                >
-                    <button
-                        onClick={onBack}
-                        className="flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors mb-8"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Bible
-                    </button>
-
-                    <div className="bg-gradient-to-b from-white/5 to-transparent rounded-2xl border border-white/10 p-8 text-center">
-                        <div className="w-20 h-20 bg-gradient-to-br from-gold-500 to-gold-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <User className="w-10 h-10 text-black" />
-                        </div>
-
-                        <h2 className="text-2xl font-cinzel font-bold text-gold-200 mb-1">
-                            Welcome, {loggedInUser.name}!
-                        </h2>
-                        <p className="text-gray-400 text-sm mb-6">{loggedInUser.email}</p>
-
-                        <div className="bg-white/5 rounded-xl p-4 mb-6 text-left">
-                            <p className="text-gray-300 text-sm">
-                                ✓ Your notes and highlights are saved<br />
-                                ✓ Your progress syncs across devices<br />
-                                ✓ Community reviews use your name
-                            </p>
-                        </div>
-
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center justify-center gap-2 w-full bg-white/10 text-white py-3 rounded-xl hover:bg-red-500/20 hover:text-red-300 transition-all"
-                        >
-                            <LogOut className="w-5 h-5" />
-                            Sign Out
-                        </button>
-                    </div>
-                </motion.div>
-            </motion.div>
-        );
-    }
-
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="pt-24 px-4 md:px-12 min-h-screen flex items-center justify-center"
-        >
-            <motion.div
-                initial={{ scale: 0.95, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                className="w-full max-w-md"
-            >
-                {/* Back Button */}
+        <div className="h-full w-full flex overflow-hidden rounded-3xl bg-slate-900 border border-white/5 shadow-2xl">
+            {/* Left Side - Visual / Artistic */}
+            <div className="hidden lg:flex w-1/2 relative bg-premium-mesh overflow-hidden items-center justify-center p-12">
+                <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-[2px]" />
+
+                <div className="relative z-10 max-w-md text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <h2 className="text-4xl md:text-5xl font-editorial text-crema-100 mb-6 leading-tight">
+                            "Thy word is a lamp unto my feet."
+                        </h2>
+                        <p className="text-crema-300/80 font-sans text-lg tracking-wide">
+                            Join a community dedicated to exploring wisdom, one verse at a time.
+                        </p>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center relative bg-slate-900">
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-gray-400 hover:text-gold-300 transition-colors mb-8"
+                    className="absolute top-8 left-8 p-2 rounded-full hover:bg-white/5 text-slate-500 hover:text-crema-100 transition-colors"
                 >
-                    <ArrowLeft className="w-5 h-5" />
-                    Back to Bible
+                    <ArrowLeft size={20} />
                 </button>
 
-                {/* Card */}
-                <div className="bg-gradient-to-b from-white/5 to-transparent rounded-2xl border border-white/10 p-8">
-                    {/* Header */}
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-cinzel font-bold text-gold-200 mb-2">
+                <div className="max-w-sm w-full mx-auto">
+                    <div className="mb-10">
+                        <h3 className="text-3xl font-editorial text-crema-50 mb-2">
                             {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
-                        </h1>
-                        <p className="text-gray-400 text-sm">
+                        </h3>
+                        <p className="text-slate-400">
                             {mode === 'signin'
-                                ? 'Sign in to access your notes and bookmarks'
-                                : 'Join Bible Mind to save your study progress'}
+                                ? 'Enter your details to access your personal study.'
+                                : 'Begin your journey with us today.'}
                         </p>
                     </div>
 
-                    {/* Error Message */}
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-6 text-red-400 text-sm text-center"
-                        >
-                            {error}
-                        </motion.div>
-                    )}
-
-                    {/* Success Message */}
-                    {success && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 mb-6 text-emerald-400 text-sm text-center"
-                        >
-                            {success}
-                        </motion.div>
-                    )}
-
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         {mode === 'signup' && (
-                            <div className="relative">
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                                <input
-                                    type="text"
-                                    placeholder="Your Name"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500/50 transition-colors"
-                                />
+                            <div className="group">
+                                <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2 group-focus-within:text-gold-400 transition-colors">
+                                    Full Name
+                                </label>
+                                <div className="relative">
+                                    <User className="absolute left-0 top-3 w-5 h-5 text-slate-600 group-focus-within:text-gold-400 transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        className="w-full bg-transparent border-b border-slate-700 py-3 pl-8 text-crema-100 placeholder-slate-700 focus:outline-none focus:border-gold-400 transition-all font-medium"
+                                        placeholder="John Doe"
+                                    />
+                                </div>
                             </div>
                         )}
 
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                            <input
-                                type="email"
-                                placeholder="Email Address"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500/50 transition-colors"
-                            />
+                        <div className="group">
+                            <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2 group-focus-within:text-gold-400 transition-colors">
+                                Email Address
+                            </label>
+                            <div className="relative">
+                                <Mail className="absolute left-0 top-3 w-5 h-5 text-slate-600 group-focus-within:text-gold-400 transition-colors" />
+                                <input
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    className="w-full bg-transparent border-b border-slate-700 py-3 pl-8 text-crema-100 placeholder-slate-700 focus:outline-none focus:border-gold-400 transition-all font-medium"
+                                    placeholder="john@example.com"
+                                />
+                            </div>
                         </div>
 
-                        <div className="relative">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="Password"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500/50 transition-colors"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-                            >
-                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
+                        <div className="group">
+                            <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2 group-focus-within:text-gold-400 transition-colors">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Lock className="absolute left-0 top-3 w-5 h-5 text-slate-600 group-focus-within:text-gold-400 transition-colors" />
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    className="w-full bg-transparent border-b border-slate-700 py-3 pl-8 text-crema-100 placeholder-slate-700 focus:outline-none focus:border-gold-400 transition-all font-medium"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-0 top-3 text-slate-600 hover:text-crema-300 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                         </div>
+
+                        {error && <p className="text-red-400 text-sm animate-fade-in">{error}</p>}
+                        {success && <p className="text-sage-400 text-sm animate-fade-in">{success}</p>}
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-gold-600 to-gold-500 text-black font-semibold py-4 rounded-xl hover:from-gold-500 hover:to-gold-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full mt-8 bg-crema-100 text-slate-900 font-semibold py-4 rounded-full hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
                         >
-                            {loading ? 'Please wait...' : (mode === 'signin' ? 'Sign In' : 'Create Account')}
+                            {loading ? 'Processing...' : (
+                                <>
+                                    {mode === 'signin' ? 'Sign In' : 'Create Account'}
+                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
                         </button>
                     </form>
 
-                    {/* Toggle Mode */}
-                    <div className="mt-6 text-center text-sm text-gray-400">
+                    <div className="mt-8 text-center text-sm text-slate-500">
                         {mode === 'signin' ? (
                             <>
-                                Don't have an account?{' '}
-                                <button onClick={() => { setMode('signup'); setError(''); }} className="text-gold-400 hover:text-gold-300 transition-colors">
-                                    Sign Up
+                                New here?{' '}
+                                <button onClick={() => setMode('signup')} className="text-gold-400 hover:text-gold-300 font-medium transition-colors">
+                                    Join the community
                                 </button>
                             </>
                         ) : (
                             <>
-                                Already have an account?{' '}
-                                <button onClick={() => { setMode('signin'); setError(''); }} className="text-gold-400 hover:text-gold-300 transition-colors">
-                                    Sign In
+                                Already a member?{' '}
+                                <button onClick={() => setMode('signin')} className="text-gold-400 hover:text-gold-300 font-medium transition-colors">
+                                    Sign in instead
                                 </button>
                             </>
                         )}
                     </div>
                 </div>
-
-                {/* Info */}
-                <p className="text-center text-xs text-gray-500 mt-6">
-                    Your data is encrypted and securely stored
-                </p>
-            </motion.div>
-        </motion.div>
+            </div>
+        </div>
     );
 }

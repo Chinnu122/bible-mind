@@ -1,328 +1,179 @@
-import React, { useState, useEffect } from 'react';
-import { AnimatePresence, LayoutGroup, motion, useScroll, useSpring } from 'framer-motion';
-import { Menu, StickyNote, X, Settings, Calendar, BookOpen, MessageSquare, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import {
+  BookOpen, Calendar, StickyNote, CheckCircle, MessageSquare,
+  Settings, User, Home
+} from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
 import ImmersiveIntro from './components/ImmersiveIntro';
-import LogoSVG from './components/LogoSVG';
 import NotesPage from './components/NotesPage';
 import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
 import ClickSound from './components/ClickSound';
 import { SettingsProvider, useSettings } from './contexts/SettingsContext';
 import SettingsModal from './components/SettingsModal';
-import StarfieldBackground from './components/StarfieldBackground';
-import DynamicTitle from './components/DynamicTitle';
 import DailyVersePage from './components/DailyVersePage';
-import SlidingBackground from './components/SlidingBackground';
-import AmbientParticles from './components/AmbientParticles';
 import BibleStudyPage from './components/BibleStudyPage';
 import CharacterOfDay from './components/CharacterOfDay';
-import RealisticSnow from './components/RealisticSnow';
-import ChristmasTheme from './components/ChristmasTheme';
-import EtherealTheme from './components/EtherealTheme';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
+import SlidingBackground from './components/SlidingBackground';
 
 type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz';
 
 function AppLayout() {
   const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewState>('hero');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const { theme, setTheme, isSettingsOpen, setIsSettingsOpen, particles } = useSettings();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-
-  // Konami Code Easter Egg
-  useEffect(() => {
-    const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let cursor = 0;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === konami[cursor]) {
-        cursor++;
-        if (cursor === konami.length) {
-          setTheme('midnight');
-          alert('🕵️ SECRET UNLOCKED: Midnight Protocol Activated');
-          cursor = 0;
-        }
-      } else {
-        cursor = 0;
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [setTheme]);
-
-  const handleStart = () => setView('reader');
+  const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isSettingsOpen, setIsSettingsOpen } = useSettings();
 
   const navigateTo = (target: ViewState) => {
     setView(target);
     setMobileMenuOpen(false);
   };
 
-  // Theme Configs
-  const styles = {
-    divine: {
-      bg: 'bg-[#0f0f11]',
-      text: 'text-white',
-      navBg: 'bg-gradient-to-b from-black/90 to-transparent',
-      accent: 'text-gold-400',
-      hover: 'hover:text-gold-300'
-    },
-    christmas: {
-      bg: 'bg-[#0a1628]',
-      text: 'text-white',
-      navBg: 'bg-[#0a1628]/90',
-      accent: 'text-red-400',
-      hover: 'hover:text-green-300',
-      backdrop: 'backdrop-blur-md bg-[#0a1628]/70'
-    },
-    midnight: {
-      bg: 'bg-slate-900',
-      text: 'text-blue-100',
-      navBg: 'bg-slate-900/80',
-      accent: 'text-cyan-400',
-      hover: 'hover:text-cyan-300',
-      backdrop: 'backdrop-blur-md bg-slate-900/50' // Added visibility fix
-    },
-    ethereal: {
-      bg: 'bg-black',
-      text: 'text-purple-100',
-      navBg: 'bg-black/80',
-      accent: 'text-purple-400',
-      hover: 'hover:text-purple-300',
-      backdrop: 'backdrop-blur-lg bg-black/40 border border-white/10' // High readability
-    }
-  };
-
-  // Map 'parchment' to 'ethereal' if user selects it (Legacy support or force upgrade)
-  // Or better, just treat 'parchment' as 'ethereal' in the UI/Logic if we want to replace it.
-  const activeTheme = theme === 'parchment' ? 'ethereal' : theme;
-  const currentStyle = styles[activeTheme];
+  // Navigation Items Configuration
+  const navItems = [
+    { id: 'hero', icon: Home, label: 'Home' },
+    { id: 'reader', icon: BookOpen, label: 'Read' },
+    { id: 'daily', icon: Calendar, label: 'Daily' },
+    { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
+    { id: 'notes', icon: StickyNote, label: 'Notes' },
+    { id: 'reviews', icon: MessageSquare, label: 'Community' },
+  ];
 
   return (
-    <div className={`min-h-screen overflow-x-hidden perspective-1000 ${currentStyle.bg} ${currentStyle.text} transition-colors duration-700`}>
+    <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
+      <SlidingBackground />
       <ClickSound />
-      <DynamicTitle />
-
-      {/* Reading Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gold-500 origin-left z-[100]"
-        style={{ scaleX }}
-      />
-
-      {/* Backgrounds */}
-      {theme === 'divine' && (
-        <>
-          <SlidingBackground />
-          <AmbientParticles />
-        </>
-      )}
-      {theme === 'christmas' && (
-        <ChristmasTheme />
-      )}
-      {theme === 'midnight' && (
-        <>
-          {particles && (
-            <div className="fixed inset-0 z-0 opacity-50">
-              <StarfieldBackground />
-            </div>
-          )}
-          <RealisticSnow />
-        </>
-      )}
-      {(theme === 'parchment' || theme === 'ethereal') && (
-        <EtherealTheme />
-      )}
 
       {/* Settings Modal */}
       <AnimatePresence>
         {isSettingsOpen && <SettingsModal />}
       </AnimatePresence>
 
-      {/* Main Content Transformation Container */}
-      <motion.div
-        animate={isSettingsOpen ? { scale: 0.92, borderRadius: 20, rotateX: 5, y: 40, opacity: 0.5 } : { scale: 1, borderRadius: 0, rotateX: 0, y: 0, opacity: 1 }}
-        transition={{ type: "spring", damping: 20 }}
-        className={`relative z-10 min-h-screen origin-top transition-all duration-500 ${isSettingsOpen ? 'overflow-hidden shadow-2xl ring-1 ring-white/10' : ''}`}
-      >
-        {/* Main Content Area */}
-        <LayoutGroup>
-          <AnimatePresence mode="wait">
-            {showIntro ? (
-              <motion.div
-                key="intro"
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="relative z-10 w-full"
-              >
-                <ImmersiveIntro onComplete={() => setShowIntro(false)} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="main"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative z-10 w-full"
-              >
-                {/* Navbar */}
-                <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 ${currentStyle.navBg} backdrop-blur-md border-b border-white/5`}>
-                  <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('hero')}>
-                    <div className="w-10 h-10 relative">
-                      <LogoSVG className={`w-full h-full drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]`} layoutId="main-logo-transition" />
-                    </div>
-                    <span className={`text-xl font-cinzel font-bold tracking-wider ${currentStyle.text}`}>Bible Mind</span>
-                  </div>
+      <AnimatePresence mode="wait">
+        {showIntro ? (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900"
+          >
+            <ImmersiveIntro onComplete={() => setShowIntro(false)} />
+          </motion.div>
+        ) : (
+          <LayoutGroup>
+            {/* Main Content Container - Glass Effect */}
+            <motion.main
+              layout
+              className={`relative min-h-screen transition-all duration-700 ease-out 
+                  ${isSettingsOpen ? 'scale-[0.92] opacity-50 blur-sm rounded-[2rem] overflow-hidden' : 'scale-100'} 
+                  pt-8 pb-32 px-4 md:px-8 max-w-[1600px] mx-auto`}
+            >
+              <AnimatePresence mode="wait">
+                {view === 'hero' && <Hero key="hero" onStart={() => setView('reader')} />}
+                {view === 'reader' && <BibleReaderNew key="reader" />}
+                {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
+                {view === 'notes' && <NotesPage key="notes" onBack={() => setView('reader')} />}
+                {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
+                {view === 'auth' && <AuthPage key="auth" onBack={() => setView('hero')} />}
+                {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('hero')} />}
+                {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
+                {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('hero')} />}
+                {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('hero')} />}
+              </AnimatePresence>
+            </motion.main>
 
-                  {/* Desktop Menu */}
-                  <div className="hidden md:flex items-center gap-8">
-                    <button onClick={() => navigateTo('reader')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'reader' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                      <BookOpen className="w-4 h-4" /> Reading
-                    </button>
-                    <button onClick={() => navigateTo('daily')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'daily' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                      <Calendar className="w-4 h-4" /> Daily
-                    </button>
-                    <button onClick={() => navigateTo('notes')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'notes' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                      <StickyNote className="w-4 h-4" /> Notes
-                    </button>
-                    <button onClick={() => navigateTo('quiz')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'quiz' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                      <CheckCircle className="w-4 h-4" /> Quiz
-                    </button>
-                    <button onClick={() => navigateTo('reviews')} className={`flex items-center gap-2 text-sm uppercase tracking-widest hover:scale-105 transition-all ${view === 'reviews' ? currentStyle.accent : 'opacity-70 hover:opacity-100'}`}>
-                      <MessageSquare className="w-4 h-4" /> Community
-                    </button>
-                    <button onClick={() => navigateTo('auth')} className={`px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-all ${currentStyle.accent}`}>
-                      Sign In
-                    </button>
-                    <button onClick={() => setIsSettingsOpen(true)} className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Settings">
-                      <Settings className="w-5 h-5" />
-                    </button>
-                  </div>
+            {/* Floating Dock Navigation (Desktop) */}
+            <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-2 p-2 
+                bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-full shadow-2xl shadow-black/20">
 
-                  {/* Mobile Menu Toggle */}
+              {navItems.map((item) => {
+                const isActive = view === item.id;
+                return (
                   <button
-                    className="md:hidden p-2"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    key={item.id}
+                    onClick={() => navigateTo(item.id as ViewState)}
+                    className="relative group p-3 rounded-full transition-all duration-300 hover:bg-white/5"
                   >
-                    {mobileMenuOpen ? <X /> : <Menu />}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTab"
+                        className="absolute inset-0 bg-white/10 rounded-full border border-white/5"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                    <item.icon
+                      size={24}
+                      className={`relative z-10 transition-colors duration-300 
+                          ${isActive ? 'text-gold-400' : 'text-slate-400 group-hover:text-crema-100'}`}
+                    />
+
+                    {/* Tooltip */}
+                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
+                        rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                      {item.label}
+                    </span>
                   </button>
-                </nav>
+                );
+              })}
 
-                {/* Mobile Menu Overlay */}
-                <AnimatePresence>
-                  {mobileMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className={`fixed inset-0 z-40 pt-24 px-6 ${currentStyle.bg}`}
-                    >
-                      <div className="flex flex-col gap-6 text-2xl font-cinzel">
-                        <button onClick={() => navigateTo('reader')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                          <BookOpen /> Reading
-                        </button>
-                        <button onClick={() => navigateTo('daily')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                          <Calendar /> Daily
-                        </button>
-                        <button onClick={() => navigateTo('notes')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                          <StickyNote /> Notes
-                        </button>
-                        <button onClick={() => navigateTo('quiz')} className="flex items-center gap-4 py-4 border-b border-white/10">
-                          <CheckCircle /> Daily Quiz
-                        </button>
-                        <button onClick={() => setIsSettingsOpen(true)} className="flex items-center gap-4 py-4 border-b border-white/10">
-                          <Settings /> Settings
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              <div className="w-px h-8 bg-white/10 mx-2" />
 
-                <AnimatePresence mode="wait">
-                  {view === 'hero' && (
-                    <Hero key="hero" onStart={handleStart} />
-                  )}
-                  {view === 'daily' && (
-                    <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} />
-                  )}
-                  {view === 'reader' && (
-                    <BibleReaderNew key="reader" />
-                  )}
-                  {view === 'notes' && (
-                    <NotesPage key="notes" onBack={() => setView('reader')} />
-                  )}
-                  {view === 'telugu' && (
-                    <TeluguPage key="telugu" onBack={() => setView('reader')} />
-                  )}
-                  {view === 'auth' && (
-                    <AuthPage key="auth" onBack={() => setView('hero')} />
-                  )}
-                  {view === 'study' && (
-                    <BibleStudyPage key="study" onBack={() => setView('hero')} />
-                  )}
-                  {view === 'character' && (
-                    <CharacterOfDay key="character" onBack={() => setView('daily')} />
-                  )}
-                  {view === 'reviews' && (
-                    <ReviewBoard key="reviews" onBack={() => setView('hero')} />
-                  )}
-                  {view === 'quiz' && (
-                    <DailyQuiz key="quiz" onBack={() => setView('hero')} />
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </LayoutGroup>
-      </motion.div>
-    </div >
+              <button
+                onClick={() => navigateTo('auth')}
+                className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
+              >
+                <User size={24} />
+                <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
+                    rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                  Profile
+                </span>
+              </button>
+
+              <button
+                onClick={() => setIsSettingsOpen(true)}
+                className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
+              >
+                <Settings size={24} />
+                <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
+                    rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                  Settings
+                </span>
+              </button>
+            </nav>
+
+            {/* Mobile Bottom Bar */}
+            <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-slate-900/90 backdrop-blur-xl border-t border-white/5 pb-safe">
+              <div className="flex justify-around items-center p-4">
+                {navItems.slice(0, 5).map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => navigateTo(item.id as ViewState)}
+                    className={`flex flex-col items-center gap-1 ${view === item.id ? 'text-gold-400' : 'text-slate-500'}`}
+                  >
+                    <item.icon size={22} />
+                    <span className="text-[10px] uppercase tracking-wider">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </nav>
+
+          </LayoutGroup>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
 function App() {
   return (
     <SettingsProvider>
-      <ErrorBoundary>
-        <AppLayout />
-      </ErrorBoundary>
+      <AppLayout />
     </SettingsProvider>
   );
-}
-
-// Simple Error Boundary to catch rendering errors
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: Error | null }> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-[#0f0f11] text-white flex items-center justify-center p-8">
-          <div className="text-center max-w-md">
-            <h1 className="text-2xl font-serif text-gold-400 mb-4">Something went wrong</h1>
-            <p className="text-gray-400 mb-6">{this.state.error?.message || 'An unexpected error occurred.'}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-gold-500/20 hover:bg-gold-500/30 border border-gold-500/30 rounded-full text-gold-300 transition-all"
-            >
-              Reload App
-            </button>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
 }
 
 export default App;
