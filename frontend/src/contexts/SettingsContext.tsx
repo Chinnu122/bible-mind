@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 export type Theme = 'divine' | 'christmas' | 'midnight' | 'parchment' | 'ethereal';
 export type FontSize = 'normal' | 'large';
 
-export type Atmosphere = 'rain' | 'celestial' | 'monastery' | 'none';
+export type Atmosphere = 'rain' | 'celestial' | 'monastery' | 'relax' | 'focus' | 'meditate' | 'none';
 
 interface SettingsContextType {
     theme: Theme;

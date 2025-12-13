@@ -5,7 +5,7 @@ const backgrounds = {
     divine: '/bg-divine.png',
     midnight: '/bg-midnight.png',
     parchment: '/bg-parchment.png',
-    christmas: '/bg-divine.png', // Fallback for now
+    christmas: '/bg-christmas.png', // Generated Winter Background
     ethereal: '/bg-glass.png'    // Fallback
 };
 

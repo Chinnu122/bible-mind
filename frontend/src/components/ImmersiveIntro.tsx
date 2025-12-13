@@ -440,7 +440,8 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
                         <motion.img
                             src="/logo-v2.png"
                             alt="Bible Mind Logo"
-                            className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-20"
+                            // FIX: mix-blend-mode-screen removes the black background box
+                            className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-20 mix-blend-screen"
                             layoutId="main-logo-transition"
                             initial={{ opacity: 0, scale: 0.8, rotate: -5, y: 20 }}
                             animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
