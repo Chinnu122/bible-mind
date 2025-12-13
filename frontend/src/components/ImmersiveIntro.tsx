@@ -9,19 +9,37 @@ const SEQUENCES = [
         text: "In the beginning God created the heavens and the earth.",
         ref: "Genesis 1:1",
         duration: 7000,
-        theme: "void" // Floating particles
+        theme: "void"
+    },
+    {
+        text: "The heavens declare the glory of God; the skies proclaim the work of his hands.",
+        ref: "Psalm 19:1",
+        duration: 6500,
+        theme: "celestial"
     },
     {
         text: "In the beginning was the Word, and the Word was God.",
         ref: "John 1:1",
         duration: 7000,
-        theme: "light" // Radiating rays
+        theme: "light"
+    },
+    {
+        text: "Trust in the LORD with all your heart and lean not on your own understanding.",
+        ref: "Proverbs 3:5",
+        duration: 6000,
+        theme: "wisdom"
     },
     {
         text: "Be transformed by the renewing of your mind.",
         ref: "Romans 12:2",
         duration: 8000,
-        theme: "mind" // Connected network
+        theme: "mind"
+    },
+    {
+        text: "I am the Alpha and the Omega, the First and the Last, the Beginning and the End.",
+        ref: "Revelation 22:13",
+        duration: 7500,
+        theme: "omega"
     }
 ];
 
@@ -53,6 +71,14 @@ const LivingBackground = ({ theme }: { theme: string }) => {
         };
 
         window.addEventListener('resize', resize);
+
+        // Track mouse for interaction
+        const handleMouseMove = (e: MouseEvent) => {
+            (window as any).mouseX = e.clientX;
+            (window as any).mouseY = e.clientY;
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+
         resize();
 
         // Initialize Particles
@@ -77,39 +103,67 @@ const LivingBackground = ({ theme }: { theme: string }) => {
             if (theme === 'light') color = '255, 215, 0'; // Gold
             if (theme === 'mind') color = '168, 85, 247'; // Purple/Platinum
 
+            // Mouse interaction
+            const mouseX = ((window as any).mouseX || 0);
+            const mouseY = ((window as any).mouseY || 0);
+
             particles.forEach((p, i) => {
                 // --- BEHAVIOR ---
+
+                // Mouse Repulsion (Surprise 3)
+                const dxMouse = p.x - mouseX;
+                const dyMouse = p.y - mouseY;
+                const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+                if (distMouse < 150) {
+                    const angle = Math.atan2(dyMouse, dxMouse);
+                    p.vx += Math.cos(angle) * 0.5;
+                    p.vy += Math.sin(angle) * 0.5;
+                }
 
                 if (theme === 'void') {
                     // Slow floating
                     p.x += p.vx;
                     p.y += p.vy;
-                } else if (theme === 'light') {
+                    // Friction
+                    p.vx *= 0.99;
+                    p.vy *= 0.99;
+                } else if (theme === 'light' || theme === 'celestial') {
                     // Radiate from center
                     const dx = p.x - width / 2;
                     const dy = p.y - height / 2;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
                     // Move away from center
-                    p.x += (dx / dist) * 2;
-                    p.y += (dy / dist) * 2;
+                    p.x += (dx / dist) * 2 + p.vx;
+                    p.y += (dy / dist) * 2 + p.vy;
+
+                    p.vx *= 0.95;
+                    p.vy *= 0.95;
 
                     // Reset if out of bounds
                     if (dist > Math.max(width, height) / 1.5) {
                         p.x = width / 2 + (Math.random() - 0.5) * 10;
                         p.y = height / 2 + (Math.random() - 0.5) * 10;
                     }
-                } else if (theme === 'mind') {
+                } else if (theme === 'mind' || theme === 'wisdom' || theme === 'omega') {
                     // Network floating
                     p.x += p.vx * 1.5;
                     p.y += p.vy * 1.5;
+                    // Bounce off walls
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+                } else {
+                    p.x += p.vx;
+                    p.y += p.vy;
                 }
 
-                // Boundary Wrap
-                if (p.x < 0) p.x = width;
-                if (p.x > width) p.x = 0;
-                if (p.y < 0) p.y = height;
-                if (p.y > height) p.y = 0;
+                // Boundary Wrap (except mind theme which bounces)
+                if (theme !== 'mind' && theme !== 'wisdom' && theme !== 'omega') {
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+                }
 
                 // Twinkle
                 p.life += 0.02;
@@ -122,7 +176,7 @@ const LivingBackground = ({ theme }: { theme: string }) => {
                 ctx.fill();
 
                 // --- CONNECTIONS (For "Mind" Theme) ---
-                if (theme === 'mind') {
+                if (theme === 'mind' || theme === 'wisdom') {
                     for (let j = i + 1; j < particles.length; j++) {
                         const p2 = particles[j];
                         const dx = p.x - p2.x;
@@ -165,6 +219,7 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     const [sequenceIndex, setSequenceIndex] = useState(-1);
     const [showLogo, setShowLogo] = useState(false);
     const [currentTheme, setCurrentTheme] = useState('void');
+    const [isFinishing, setIsFinishing] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
     const handleStart = () => {
@@ -181,26 +236,29 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     };
 
     const finish = () => {
-        const audio = audioRef.current;
-        if (audio) {
-            // Smooth fade out
-            const fadeOutDuration = 2000;
-            const intervalTime = 50;
-            const steps = fadeOutDuration / intervalTime;
-            const volumeStep = audio.volume / steps;
+        setIsFinishing(true);
+        setTimeout(() => {
+            const audio = audioRef.current;
+            if (audio) {
+                // Smooth fade out
+                const fadeOutDuration = 2000;
+                const intervalTime = 50;
+                const steps = fadeOutDuration / intervalTime;
+                const volumeStep = audio.volume / steps;
 
-            const fadeInterval = setInterval(() => {
-                if (audio.volume > volumeStep) {
-                    audio.volume = Math.max(0, audio.volume - volumeStep);
-                } else {
-                    audio.volume = 0;
-                    clearInterval(fadeInterval);
-                    onComplete();
-                }
-            }, intervalTime);
-        } else {
-            onComplete();
-        }
+                const fadeInterval = setInterval(() => {
+                    if (audio.volume > volumeStep) {
+                        audio.volume = Math.max(0, audio.volume - volumeStep);
+                    } else {
+                        audio.volume = 0;
+                        clearInterval(fadeInterval);
+                        onComplete();
+                    }
+                }, intervalTime);
+            } else {
+                onComplete();
+            }
+        }, 800);
     };
 
     const runSequence = (index: number) => {
@@ -224,7 +282,12 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
     const currentData = sequenceIndex >= 0 && sequenceIndex < SEQUENCES.length ? SEQUENCES[sequenceIndex] : null;
 
     return (
-        <div className="fixed inset-0 z-[100] w-full h-screen overflow-hidden flex flex-col items-center justify-center font-serif text-[#e0e0e0] bg-black">
+        <div className={`fixed inset-0 z-[100] w-full h-screen overflow-hidden flex flex-col items-center justify-center font-serif text-[#e0e0e0] bg-black transition-transform duration-1000 ${isFinishing ? 'scale-[20] opacity-0 blur-xl' : ''}`}>
+
+            {/* Surprise 1: Nebula Background */}
+            <div className="absolute inset-0 z-0 opacity-60">
+                <img src="/bg-intro-nebula.png" alt="Nebula" className="w-full h-full object-cover" />
+            </div>
 
             {/* Background Music */}
             {started && (
@@ -377,7 +440,14 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
             {/* --- LOGO --- */}
 
             {showLogo && (
-                <div className="z-50 flex flex-col items-center reveal-up">
+                <div className="z-50 flex flex-col items-center reveal-up relative">
+                    {/* Surprise 5: Cinematic Flash */}
+                    <motion.div
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 0 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className="absolute inset-0 bg-white z-[100] pointer-events-none scale-[5]"
+                    />
                     <div className="mb-10 hover:scale-105 transition-transform duration-[2000ms] cursor-pointer drop-shadow-2xl">
                         {/* The Logo with layoutId for transition */}
                         <motion.img
@@ -390,8 +460,11 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
                             transition={{ duration: 1.5, type: "spring" }}
                         />
                     </div>
-                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] shine-gold tracking-tighter drop-shadow-2xl">
-                        Bible Mind
+                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] shine-gold tracking-tighter drop-shadow-2xl relative group">
+                        <span className="relative z-10">Bible Mind</span>
+                        {/* Surprise 7: Glitch Effect Layers */}
+                        <span className="absolute top-0 left-0 -ml-[2px] text-red-500 opacity-70 animate-pulse mix-blend-screen select-none pointer-events-none">Bible Mind</span>
+                        <span className="absolute top-0 left-0 ml-[2px] text-blue-500 opacity-70 animate-pulse mix-blend-screen select-none pointer-events-none" style={{ animationDelay: '0.1s' }}>Bible Mind</span>
                     </h1>
                     <div className="mt-8 font-['Cinzel'] text-white/60 text-sm md:text-lg tracking-[0.8em] uppercase border-t border-white/10 pt-4">
                         Wisdom Transcending Time
@@ -401,4 +474,6 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
 
         </div>
     );
+
 }
+
