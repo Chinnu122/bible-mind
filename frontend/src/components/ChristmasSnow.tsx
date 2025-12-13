@@ -15,8 +15,11 @@ export default function ChristmasSnow() {
         canvas.width = width;
         canvas.height = height;
 
+        // PERFORMANCE: Reduce particles on mobile
+        const isMobile = width < 768;
+        const maxSnowflakes = isMobile ? 40 : 120;
+
         const snowflakes: { x: number; y: number; r: number; d: number }[] = [];
-        const maxSnowflakes = 150;
 
         for (let i = 0; i < maxSnowflakes; i++) {
             snowflakes.push({

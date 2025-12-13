@@ -1,71 +1,86 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useSettings } from '../contexts/SettingsContext';
 
+// Singleton AudioContext for performance (avoid creating new one on each click)
+let sharedAudioContext: AudioContext | null = null;
+
+function getAudioContext(): AudioContext | null {
+    if (sharedAudioContext && sharedAudioContext.state !== 'closed') {
+        // Resume if suspended (browser policy)
+        if (sharedAudioContext.state === 'suspended') {
+            sharedAudioContext.resume();
+        }
+        return sharedAudioContext;
+    }
+
+    try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) return null;
+        sharedAudioContext = new AudioContextClass();
+        return sharedAudioContext;
+    } catch {
+        return null;
+    }
+}
+
 export default function ClickSound() {
-    // Safe default in case used outside provider (though App wraps it now)
     const context = useSettings();
     const soundEnabled = context ? context.soundEnabled : true;
+    const lastClickTime = useRef(0);
 
     const playClick = useCallback(() => {
         if (!soundEnabled) return;
 
+        // Throttle: Prevent rapid-fire audio (max 10 clicks/sec)
+        const now = performance.now();
+        if (now - lastClickTime.current < 100) return;
+        lastClickTime.current = now;
+
         try {
-            const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-            if (!AudioContext) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
 
-            const ctx = new AudioContext();
+            const currentTime = ctx.currentTime;
 
-            // Primary oscillator (Body of sound)
+            // Primary oscillator (Mechanical Thud)
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-
-            // Filter for warmer sound
             const filter = ctx.createBiquadFilter();
+
             filter.type = 'lowpass';
-            filter.frequency.value = 1000;
+            filter.frequency.value = 800;
 
-            osc.type = 'triangle'; // Softer than sine
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, currentTime + 0.08);
 
-            // Pitch Envelope: Quick drop (Mechanical Thud)
-            const now = ctx.currentTime;
-            osc.frequency.setValueAtTime(400, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+            gain.gain.setValueAtTime(0, currentTime);
+            gain.gain.linearRampToValueAtTime(0.12, currentTime + 0.005);
+            gain.gain.exponentialRampToValueAtTime(0.001, currentTime + 0.08);
 
-            // Volume Envelope: Percussive
-            gain.gain.setValueAtTime(0, now);
-            gain.gain.linearRampToValueAtTime(0.15, now + 0.01); // Attack
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1); // Decay
-
-            // Connect
             osc.connect(filter);
             filter.connect(gain);
             gain.connect(ctx.destination);
 
-            osc.start(now);
-            osc.stop(now + 0.15);
+            osc.start(currentTime);
+            osc.stop(currentTime + 0.1);
 
-            // Optional: High frequency "click" tick for definition
-            const tickOsc = ctx.createOscillator();
-            const tickGain = ctx.createGain();
-            tickOsc.type = 'sine';
-            tickOsc.frequency.setValueAtTime(2000, now);
-            tickGain.gain.setValueAtTime(0.05, now);
-            tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-
-            tickOsc.connect(tickGain);
-            tickGain.connect(ctx.destination);
-            tickOsc.start(now);
-            tickOsc.stop(now + 0.02);
-
-        } catch (e) {
+        } catch {
             // Audio ignore
         }
     }, [soundEnabled]);
 
     useEffect(() => {
         const handleClick = () => playClick();
-        window.addEventListener('mousedown', handleClick);
-        return () => window.removeEventListener('mousedown', handleClick);
+
+        // Use passive listener for performance
+        window.addEventListener('mousedown', handleClick, { passive: true });
+        window.addEventListener('touchstart', handleClick, { passive: true });
+
+        return () => {
+            window.removeEventListener('mousedown', handleClick);
+            window.removeEventListener('touchstart', handleClick);
+        };
     }, [playClick]);
 
     return null;
