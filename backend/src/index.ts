@@ -2,7 +2,10 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
+import path from 'path';
+import fs from 'fs';
 import { dataStore } from './services/dataStore';
+import { initCronJobs, triggerImageGen } from './cronJobs';
 
 // Routes
 import booksRouter from './routes/books';
@@ -65,12 +68,13 @@ app.get('/api', (_req: Request, res: Response) => {
       characterOfDay: '/api/character-of-day',
       reviews: '/api/reviews',
       quiz: '/api/quiz',
-      auth: '/api/auth'
+      auth: '/api/auth',
+      gallery: '/api/gallery'
     }
   });
 });
 
-// Routes
+// Standard Routes
 app.use('/api/books', booksRouter);
 app.use('/api/verses', versesRouter);
 app.use('/api/strongs', strongsRouter);
@@ -85,7 +89,45 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/quiz', quizRouter);
 app.use('/api/auth', authRouter);
 
-// 404 handler
+// Serve generated images statically
+app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));
+
+// Gallery API - List generated images
+app.get('/api/gallery', (_req: Request, res: Response) => {
+  const imagesDir = path.join(__dirname, '../public/generated_images');
+
+  if (!fs.existsSync(imagesDir)) {
+    return res.json([]);
+  }
+
+  fs.readdir(imagesDir, (err, files) => {
+    if (err) return res.status(500).json({ error: 'Failed to list images' });
+
+    // Filter image files and add full URL path
+    const images = files
+      .filter(file => /\.(jpg|jpeg|png)$/i.test(file))
+      .map(file => ({
+        filename: file,
+        url: `/generated_images/${file}`,
+        timestamp: fs.statSync(path.join(imagesDir, file)).mtime
+      }))
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+    res.json(images);
+  });
+});
+
+// Gallery API - Trigger manual generation (Dev/Admin)
+app.post('/api/gallery/generate', async (_req: Request, res: Response) => {
+  try {
+    const url = await triggerImageGen();
+    res.json({ success: true, url });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 404 handler (MUST be after all routes)
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
@@ -104,50 +146,6 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-import path from 'path';
-import { initCronJobs, triggerImageGen } from './cronJobs';
-
-// ... (existing imports)
-
-// Serve generated images statically
-app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));
-
-// API route to list generated images
-app.get('/api/gallery', (req, res) => {
-  const imagesDir = path.join(__dirname, '../public/generated_images');
-  import('fs').then(fs => {
-    if (!fs.existsSync(imagesDir)) {
-      return res.json([]);
-    }
-
-    fs.readdir(imagesDir, (err, files) => {
-      if (err) return res.status(500).json({ error: 'Failed to list images' });
-
-      // Filter image files and add full URL path
-      const images = files
-        .filter(file => /\.(jpg|jpeg|png)$/i.test(file))
-        .map(file => ({
-          filename: file,
-          url: `/generated_images/${file}`,
-          timestamp: fs.statSync(path.join(imagesDir, file)).mtime
-        }))
-        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()); // Newest first
-
-      res.json(images);
-    });
-  });
-});
-
-// Admin/Dev route to trigger generation manually (optional)
-app.post('/api/gallery/generate', async (req, res) => {
-  try {
-    const url = await triggerImageGen();
-    res.json({ success: true, url });
-  } catch (e: any) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
 // Start server
 async function startServer() {
   try {
@@ -164,3 +162,4 @@ async function startServer() {
 }
 
 startServer();
+
