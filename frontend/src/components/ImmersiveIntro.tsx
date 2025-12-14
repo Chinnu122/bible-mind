@@ -432,9 +432,9 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
                         className="absolute inset-0 bg-white z-[100] pointer-events-none scale-[5]"
                     />
 
-                    {/* Clean Logo Display - No BOX */}
-                    <div className="mb-12 cursor-pointer drop-shadow-2xl relative">
-                        {/* Soft Ambient Glow only - no borders */}
+                    {/* Clean Logo Display */}
+                    <div className="cursor-pointer drop-shadow-2xl relative flex flex-col items-center justify-center">
+                        {/* Soft Ambient Glow */}
                         <div className="absolute inset-0 bg-gold-400/20 blur-[100px] rounded-full opacity-20 animate-pulse pointer-events-none"></div>
 
                         <motion.img
@@ -446,6 +446,24 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
                             animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
                             transition={{ duration: 1.8, type: "spring", stiffness: 40 }}
                         />
+
+                        {/* Cinematic Divider Line (Matching Verses) */}
+                        <motion.div
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: 64, opacity: 1 }} // 64px = w-16
+                            transition={{ delay: 0.5, duration: 1.5 }}
+                            className="h-[1px] bg-white/30 my-6 z-20"
+                        />
+
+                        {/* Cinematic Subtitle */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1.0, duration: 1.0 }}
+                            className="font-['Cinzel'] text-sm tracking-[0.6em] uppercase text-gold-400/80 z-20"
+                        >
+                            Enter
+                        </motion.div>
                     </div>
                 </div>
             )}
