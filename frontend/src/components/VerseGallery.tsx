@@ -4,6 +4,13 @@ import { ArrowLeft, ImageIcon, RefreshCw, Sparkles, AlertCircle } from 'lucide-r
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
+// Fallback demo images (served from frontend public/ when backend is unavailable)
+const FALLBACK_IMAGES: GeneratedImage[] = [
+    { filename: 'Psalm_23_4.png', url: '/gallery/Psalm_23_4.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_3.png', url: '/gallery/Genesis_1_3.png', timestamp: new Date().toISOString() },
+    { filename: 'Philippians_4_13.png', url: '/gallery/Philippians_4_13.png', timestamp: new Date().toISOString() },
+];
+
 interface GeneratedImage {
     filename: string;
     url: string;
@@ -16,9 +23,11 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
     const [generating, setGenerating] = useState(false);
     const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [, setUsingFallback] = useState(false); // Track fallback state
 
     const fetchImages = async () => {
         setError(null);
+        setUsingFallback(false);
         try {
             const res = await fetch(`${API_BASE_URL}/gallery`);
             if (!res.ok) {
@@ -26,16 +35,19 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
             }
             const data = await res.json();
             // Ensure data is an array
-            if (Array.isArray(data)) {
+            if (Array.isArray(data) && data.length > 0) {
                 setImages(data);
             } else {
-                setImages([]);
-                console.warn('Gallery API returned non-array:', data);
+                // Backend returned empty - use fallbacks
+                console.log('Backend returned empty, using fallback images');
+                setImages(FALLBACK_IMAGES);
+                setUsingFallback(true);
             }
         } catch (e: any) {
             console.error('Gallery fetch error:', e);
-            setError(e.message || 'Failed to load gallery');
-            setImages([]);
+            // Use fallback images on any error
+            setImages(FALLBACK_IMAGES);
+            setUsingFallback(true);
         } finally {
             setLoading(false);
         }
@@ -137,7 +149,12 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {images.map((img, i) => {
                         // Extract verse ref from filename (cleanup needed)
-                        const cleanName = img.filename.replace(/_[0-9]+\.jpg$/, '').replace(/_/g, ' ');
+                        const cleanName = img.filename.replace(/_[0-9]+\.(jpg|png)$/i, '').replace(/_/g, ' ');
+
+                        // Determine image URL: local fallback vs backend
+                        const imageUrl = img.url.startsWith('/gallery/')
+                            ? img.url  // Local fallback - relative path works
+                            : `${API_BASE_URL.replace('/api', '')}${img.url}`; // Backend image
 
                         return (
                             <motion.div
@@ -150,7 +167,7 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                                 className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-gold-500/50 transition-colors bg-slate-900 shadow-2xl"
                             >
                                 <img
-                                    src={`${API_BASE_URL.replace('/api', '')}${img.url}`}
+                                    src={imageUrl}
                                     alt="Generated Verse"
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     loading="lazy"
@@ -180,7 +197,9 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                             onClick={e => e.stopPropagation()}
                         >
                             <img
-                                src={`${API_BASE_URL.replace('/api', '')}${selectedImage.url}`}
+                                src={selectedImage.url.startsWith('/gallery/')
+                                    ? selectedImage.url
+                                    : `${API_BASE_URL.replace('/api', '')}${selectedImage.url}`}
                                 alt="Full View"
                                 className="w-full h-full object-contain"
                             />
