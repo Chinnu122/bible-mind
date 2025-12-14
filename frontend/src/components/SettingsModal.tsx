@@ -204,27 +204,6 @@ export default function SettingsModal() {
                                     </button>
                                 </section>
 
-                                <section>
-                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <EyeOff size={14} /> Distraction Free
-                                    </h3>
-                                    <button
-                                        onClick={() => setZenMode(!zenMode)}
-                                        className={`w-full border rounded-2xl p-4 flex items-center justify-between group transition-all duration-300 ${zenMode ? 'bg-gold-500/10 border-gold-500/50' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
-                                    >
-                                        <div>
-                                            <span className={`font-medium block mb-1 ${zenMode ? 'text-gold-400' : 'text-crema-50'}`}>Zen Mode</span>
-                                            <span className="text-xs text-slate-400">Hide all UI for reading</span>
-                                        </div>
-                                        <div className={`w-12 h-6 rounded-full p-1 transition-colors duration-300 ${zenMode ? 'bg-gold-500' : 'bg-slate-700'}`}>
-                                            <motion.div
-                                                className="w-4 h-4 rounded-full bg-white shadow-sm"
-                                                animate={{ x: zenMode ? 24 : 0 }}
-                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                            />
-                                        </div>
-                                    </button>
-                                </section>
                             </motion.div>
                         )}
 

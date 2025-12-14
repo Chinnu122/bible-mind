@@ -438,27 +438,14 @@ export default function ImmersiveIntro({ onComplete }: ImmersiveIntroProps) {
                         <div className="absolute inset-0 bg-gold-400/20 blur-[100px] rounded-full opacity-20 animate-pulse pointer-events-none"></div>
 
                         <motion.img
-                            src="/logo-v2.png"
+                            src="/logo.png"
                             alt="Bible Mind Logo"
-                            // FIX: mix-blend-mode-screen removes the black background box
-                            className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-20 mix-blend-screen"
+                            className="w-48 h-48 md:w-72 md:h-72 object-contain relative z-20"
                             layoutId="main-logo-transition"
                             initial={{ opacity: 0, scale: 0.8, rotate: -5, y: 20 }}
                             animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
                             transition={{ duration: 1.8, type: "spring", stiffness: 40 }}
                         />
-                    </div>
-
-                    <h1 className="text-6xl md:text-8xl font-bold font-['Playfair_Display'] text-transparent bg-clip-text bg-gradient-to-b from-amber-100 to-amber-600 tracking-tighter drop-shadow-sm mb-4 relative">
-                        Bible Mind
-                    </h1>
-
-                    {/* Creative Subtitle Design */}
-                    <div className="relative mt-2">
-                        <div className="absolute -inset-x-8 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"></div>
-                        <div className="font-['Cinzel'] text-amber-200/80 text-xs md:text-base tracking-[1.2em] uppercase py-2 bg-black/50 backdrop-blur-sm px-4 relative z-10 border-y border-white/5">
-                            Wisdom Transcending Time
-                        </div>
                     </div>
                 </div>
             )}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
   Settings, User, Home, LogOut, BookOpen, Calendar, StickyNote, CheckCircle, MessageSquare
@@ -24,12 +24,31 @@ import DivineRays from './components/DivineRays';
 
 type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz';
 
+interface UserData {
+  id: string;
+  email: string;
+  name: string;
+}
+
 function AppLayout() {
   const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewState>('hero');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isSettingsOpen, setIsSettingsOpen, zenMode, setZenMode, theme } = useSettings();
   const [santaMessage, setSantaMessage] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
+
+  // Restore user from localStorage on app load
+  useEffect(() => {
+    const savedUser = localStorage.getItem('bible-mind-user');
+    if (savedUser) {
+      try {
+        setLoggedInUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error('Failed to parse saved user', e);
+      }
+    }
+  }, []);
 
   const navigateTo = (target: ViewState) => {
     setView(target);
@@ -90,7 +109,7 @@ function AppLayout() {
                 {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
                 {view === 'notes' && <NotesPage key="notes" onBack={() => setView('reader')} />}
                 {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
-                {view === 'auth' && <AuthPage key="auth" onBack={() => setView('hero')} />}
+                {view === 'auth' && <AuthPage key="auth" onBack={() => setView('hero')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
                 {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('hero')} />}
                 {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
                 {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('hero')} />}
@@ -135,16 +154,34 @@ function AppLayout() {
 
                 <div className="w-px h-8 bg-white/10 mx-2" />
 
-                <button
-                  onClick={() => navigateTo('auth')}
-                  className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
-                >
-                  <User size={24} />
-                  <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
-                    rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
-                    Profile
-                  </span>
-                </button>
+                {loggedInUser ? (
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('bible-mind-user');
+                      setLoggedInUser(null);
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-white/5 text-gold-400 hover:text-red-400 transition-colors relative group"
+                  >
+                    <User size={20} />
+                    <span className="text-sm font-medium max-w-[100px] truncate">{loggedInUser.name}</span>
+                    <LogOut size={16} className="opacity-50 group-hover:opacity-100" />
+                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
+                      rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                      Logout
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigateTo('auth')}
+                    className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
+                  >
+                    <User size={24} />
+                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
+                      rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                      Sign In
+                    </span>
+                  </button>
+                )}
 
                 <button
                   onClick={() => setIsSettingsOpen(true)}
@@ -216,13 +253,26 @@ function AppLayout() {
                   ))}
 
                   {/* Profile Button */}
-                  <button
-                    onClick={() => navigateTo('auth')}
-                    className={`flex flex-col items-center gap-1 ${view === 'auth' ? 'text-gold-400' : 'text-slate-500'}`}
-                  >
-                    <User size={20} />
-                    <span className="text-[9px] uppercase tracking-wider">Profile</span>
-                  </button>
+                  {loggedInUser ? (
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('bible-mind-user');
+                        setLoggedInUser(null);
+                      }}
+                      className="flex flex-col items-center gap-1 text-gold-400"
+                    >
+                      <LogOut size={20} />
+                      <span className="text-[9px] uppercase tracking-wider">Logout</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => navigateTo('auth')}
+                      className={`flex flex-col items-center gap-1 ${view === 'auth' ? 'text-gold-400' : 'text-slate-500'}`}
+                    >
+                      <User size={20} />
+                      <span className="text-[9px] uppercase tracking-wider">Sign In</span>
+                    </button>
+                  )}
 
                   {/* Settings Button */}
                   <button
