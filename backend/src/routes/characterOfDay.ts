@@ -5,6 +5,15 @@ import { parse } from 'csv-parse/sync';
 
 const router = Router();
 
+// Helper: Get day of year (1-365)
+function getDayOfYear(): number {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now.getTime() - start.getTime();
+    const oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay);
+}
+
 // Data directory paths - handle both running from root or backend folder
 // First check if we're in the backend folder, then check parent/backend
 const findDataDir = (): string => {
