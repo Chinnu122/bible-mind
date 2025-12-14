@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, LogOut, BookOpen, Calendar, StickyNote, CheckCircle, MessageSquare
+  Settings, User, Home, LogOut, BookOpen, Calendar, StickyNote, CheckCircle, MessageSquare, ImageIcon
 } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
@@ -21,8 +21,9 @@ import SlidingBackground from './components/SlidingBackground';
 import ChristmasSnow from './components/ChristmasSnow';
 import AtmospherePlayer from './components/AtmospherePlayer';
 import DivineRays from './components/DivineRays';
+import VerseGallery from './components/VerseGallery';
 
-type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz';
+type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery';
 
 interface UserData {
   id: string;
@@ -60,6 +61,7 @@ function AppLayout() {
     { id: 'hero', icon: Home, label: 'Home' },
     { id: 'reader', icon: BookOpen, label: 'Read' },
     { id: 'daily', icon: Calendar, label: 'Daily' },
+    { id: 'gallery', icon: ImageIcon, label: 'Gallery' },
     { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
     { id: 'notes', icon: StickyNote, label: 'Notes' },
     { id: 'reviews', icon: MessageSquare, label: 'Community' },
@@ -114,6 +116,7 @@ function AppLayout() {
                 {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
                 {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('hero')} />}
                 {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('hero')} />}
+                {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('hero')} />}
               </AnimatePresence>
             </motion.main>
 
