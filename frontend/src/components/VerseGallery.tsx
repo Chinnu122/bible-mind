@@ -15,14 +15,27 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
     const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchImages = async () => {
+        setError(null);
         try {
             const res = await fetch(`${API_BASE_URL}/gallery`);
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
             const data = await res.json();
-            setImages(data);
-        } catch (e) {
-            console.error(e);
+            // Ensure data is an array
+            if (Array.isArray(data)) {
+                setImages(data);
+            } else {
+                setImages([]);
+                console.warn('Gallery API returned non-array:', data);
+            }
+        } catch (e: any) {
+            console.error('Gallery fetch error:', e);
+            setError(e.message || 'Failed to load gallery');
+            setImages([]);
         } finally {
             setLoading(false);
         }
@@ -30,15 +43,19 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
 
     const handleGenerateNow = async () => {
         setGenerating(true);
+        setError(null);
         try {
             // Trigger backend generation for testing
             const res = await fetch(`${API_BASE_URL}/gallery/generate`, { method: 'POST' });
             if (res.ok) {
                 // Wait a moment for FS to sync then refresh
                 setTimeout(fetchImages, 2000);
+            } else {
+                setError('Generation failed. Please try again.');
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
+            setError(e.message || 'Failed to generate');
         } finally {
             setGenerating(false);
         }
@@ -89,6 +106,14 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                 </div>
             </div>
 
+            {/* Error Banner */}
+            {error && (
+                <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-center">
+                    <AlertCircle className="inline mr-2" size={18} />
+                    {error}
+                </div>
+            )}
+
             {loading ? (
                 <div className="flex justify-center py-20">
                     <div className="w-12 h-12 border-2 border-slate-700 border-t-gold-500 rounded-full animate-spin" />
@@ -102,9 +127,10 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                     <p className="text-slate-500 mb-6">The gallery is waiting for its first inspiration.</p>
                     <button
                         onClick={handleGenerateNow}
-                        className="px-6 py-3 rounded-full bg-crema-100 text-slate-900 font-bold hover:scale-105 transition-transform"
+                        disabled={generating}
+                        className="px-6 py-3 rounded-full bg-crema-100 text-slate-900 font-bold hover:scale-105 transition-transform disabled:opacity-50"
                     >
-                        Create First Image
+                        {generating ? 'Creating...' : 'Create First Image'}
                     </button>
                 </div>
             ) : (
