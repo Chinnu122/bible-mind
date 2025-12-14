@@ -104,10 +104,55 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
+import path from 'path';
+import { initCronJobs, triggerImageGen } from './cronJobs';
+
+// ... (existing imports)
+
+// Serve generated images statically
+app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));
+
+// API route to list generated images
+app.get('/api/gallery', (req, res) => {
+  const imagesDir = path.join(__dirname, '../public/generated_images');
+  import('fs').then(fs => {
+    if (!fs.existsSync(imagesDir)) {
+      return res.json([]);
+    }
+
+    fs.readdir(imagesDir, (err, files) => {
+      if (err) return res.status(500).json({ error: 'Failed to list images' });
+
+      // Filter image files and add full URL path
+      const images = files
+        .filter(file => /\.(jpg|jpeg|png)$/i.test(file))
+        .map(file => ({
+          filename: file,
+          url: `/generated_images/${file}`,
+          timestamp: fs.statSync(path.join(imagesDir, file)).mtime
+        }))
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()); // Newest first
+
+      res.json(images);
+    });
+  });
+});
+
+// Admin/Dev route to trigger generation manually (optional)
+app.post('/api/gallery/generate', async (req, res) => {
+  try {
+    const url = await triggerImageGen();
+    res.json({ success: true, url });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Start server
 async function startServer() {
   try {
     await dataStore.loadAllData();
+    initCronJobs(); // Start background jobs
 
     app.listen(PORT, () => {
       console.log(`📖 Bible Mind API running on port ${PORT}`);
