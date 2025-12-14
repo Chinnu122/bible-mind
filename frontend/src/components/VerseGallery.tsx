@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ImageIcon, RefreshCw, Sparkles, AlertCircle } from 'lucide-react';
-import { useSettings } from '../contexts/SettingsContext';
+import { ArrowLeft, ImageIcon, RefreshCw, Sparkles, AlertCircle } from 'lucide-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -16,7 +15,6 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
     const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
-    const { theme } = useSettings();
 
     const fetchImages = async () => {
         try {
@@ -53,15 +51,24 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
     return (
         <div className="min-h-screen p-8 md:p-12 max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-12">
-                <div>
-                    <h2 className="text-4xl font-editorial text-crema-50 mb-4 flex items-center gap-3">
-                        <Sparkles className="text-gold-400" />
-                        Divine Gallery
-                    </h2>
-                    <p className="text-slate-400 max-w-xl">
-                        AI-generated visualizations of scripture, updated hourly.
-                        Powered by Gemini & Flux.
-                    </p>
+                <div className="flex items-center gap-6">
+                    <button
+                        onClick={onBack}
+                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                        aria-label="Go Back"
+                    >
+                        <ArrowLeft size={24} />
+                    </button>
+                    <div>
+                        <h2 className="text-4xl font-editorial text-crema-50 mb-4 flex items-center gap-3">
+                            <Sparkles className="text-gold-400" />
+                            Divine Gallery
+                        </h2>
+                        <p className="text-slate-400 max-w-xl">
+                            AI-generated visualizations of scripture, updated hourly.
+                            Powered by Gemini & Flux.
+                        </p>
+                    </div>
                 </div>
                 <div className="flex gap-4">
                     <button
