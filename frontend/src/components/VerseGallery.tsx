@@ -9,6 +9,12 @@ const FALLBACK_IMAGES: GeneratedImage[] = [
     { filename: 'Psalm_23_4.png', url: '/gallery/Psalm_23_4.png', timestamp: new Date().toISOString() },
     { filename: 'Genesis_1_3.png', url: '/gallery/Genesis_1_3.png', timestamp: new Date().toISOString() },
     { filename: 'Philippians_4_13.png', url: '/gallery/Philippians_4_13.png', timestamp: new Date().toISOString() },
+    // New Images
+    { filename: 'Isaiah_40_31.png', url: '/gallery/Isaiah_40_31.png', timestamp: new Date().toISOString() },
+    { filename: 'Psalm_119_105.png', url: '/gallery/Psalm_119_105.png', timestamp: new Date().toISOString() },
+    { filename: 'Jeremiah_29_11.png', url: '/gallery/Jeremiah_29_11.png', timestamp: new Date().toISOString() },
+    { filename: 'Matthew_5_14.png', url: '/gallery/Matthew_5_14.png', timestamp: new Date().toISOString() },
+    { filename: 'Psalm_23_1.png', url: '/gallery/Psalm_23_1.png', timestamp: new Date().toISOString() },
 ];
 
 interface GeneratedImage {
