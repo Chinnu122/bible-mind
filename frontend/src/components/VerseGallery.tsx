@@ -6,15 +6,20 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 // Fallback demo images (served from frontend public/ when backend is unavailable)
 const FALLBACK_IMAGES: GeneratedImage[] = [
-    { filename: 'Psalm_23_4.png', url: '/gallery/Psalm_23_4.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_1.png', url: '/gallery/Genesis_1_1.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_2.png', url: '/gallery/Genesis_1_2.png', timestamp: new Date().toISOString() },
     { filename: 'Genesis_1_3.png', url: '/gallery/Genesis_1_3.png', timestamp: new Date().toISOString() },
-    { filename: 'Philippians_4_13.png', url: '/gallery/Philippians_4_13.png', timestamp: new Date().toISOString() },
-    // New Images
-    { filename: 'Isaiah_40_31.png', url: '/gallery/Isaiah_40_31.png', timestamp: new Date().toISOString() },
-    { filename: 'Psalm_119_105.png', url: '/gallery/Psalm_119_105.png', timestamp: new Date().toISOString() },
-    { filename: 'Jeremiah_29_11.png', url: '/gallery/Jeremiah_29_11.png', timestamp: new Date().toISOString() },
-    { filename: 'Matthew_5_14.png', url: '/gallery/Matthew_5_14.png', timestamp: new Date().toISOString() },
-    { filename: 'Psalm_23_1.png', url: '/gallery/Psalm_23_1.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_4.png', url: '/gallery/Genesis_1_4.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_5.png', url: '/gallery/Genesis_1_5.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_6.png', url: '/gallery/Genesis_1_6.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_7.png', url: '/gallery/Genesis_1_7.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_8.png', url: '/gallery/Genesis_1_8.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_9.png', url: '/gallery/Genesis_1_9.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_10.png', url: '/gallery/Genesis_1_10.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_11.png', url: '/gallery/Genesis_1_11.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_12.png', url: '/gallery/Genesis_1_12.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_13.png', url: '/gallery/Genesis_1_13.png', timestamp: new Date().toISOString() },
+    { filename: 'Genesis_1_14.png', url: '/gallery/Genesis_1_14.png', timestamp: new Date().toISOString() },
 ];
 
 interface GeneratedImage {
