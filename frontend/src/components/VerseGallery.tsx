@@ -171,6 +171,15 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                                     alt="Generated Verse"
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     loading="lazy"
+                                    onError={(e) => {
+                                        // If image fails to load (CORS or 404), fallback to local image
+                                        const target = e.target as HTMLImageElement;
+                                        // Pick random fallback to keep UI nice
+                                        const fallback = FALLBACK_IMAGES[i % FALLBACK_IMAGES.length];
+                                        if (target.src !== fallback.url) {
+                                            target.src = fallback.url;
+                                        }
+                                    }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                                     <p className="text-gold-400 font-cinzel text-sm tracking-widest uppercase mb-1">Verse Art</p>
@@ -202,6 +211,14 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                                     : `${API_BASE_URL.replace('/api', '')}${selectedImage.url}`}
                                 alt="Full View"
                                 className="w-full h-full object-contain"
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    // Use first fallback as default for modal if error
+                                    const fallback = FALLBACK_IMAGES[0];
+                                    if (target.src !== fallback.url) {
+                                        target.src = fallback.url;
+                                    }
+                                }}
                             />
                             <button
                                 onClick={() => setSelectedImage(null)}
