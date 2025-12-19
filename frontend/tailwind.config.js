@@ -7,19 +7,28 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Luxury Gold Palette
         gold: {
-          50: '#fbf8eb',
-          100: '#f5eccd',
-          200: '#ebd89f',
-          300: '#e0c06b',
-          400: '#d6a942',
-          500: '#c48e2f',
-          600: '#a66e24',
+          50: '#FDFCF5',
+          100: '#FBF8EB',
+          200: '#F5ECC8',
+          300: '#EBD89F',
+          400: '#D6A942',
+          500: '#C48E2F', // Primary Gold
+          600: '#A66E24',
           700: '#855220',
-          800: '#6d4220',
-          900: '#5a371e',
+          800: '#6D4220',
+          900: '#5A371E',
+          950: '#38220F',
         },
-        // Premium Light/Cream Palette
+        // Deep Luxury Black/Dark Palette
+        luxury: {
+          900: '#050505', // Ultra Dark
+          800: '#0A0A0C', // Rich Black
+          700: '#121214', // Soft Black
+          card: '#0f0f11aa', // Glass Card
+        },
+        // Crema / Off-White for text
         crema: {
           50: '#F9F9F7',
           100: '#F5F5F0',
@@ -28,23 +37,12 @@ export default {
           400: '#C7C7B0',
           500: '#AFA990',
         },
-        // Sophisticated Slate/Dark Palette
-        slate: {
-          800: '#1A1C23',
-          850: '#14161B',
-          900: '#0F1115',
-          950: '#08090B',
-        },
         // Accents
         royal: {
-          400: '#60A5FA', // Soft Blue
-          500: '#3B82F6',
-          900: '#1E3A8A',
+          400: '#7C3AED', // Vivid Purple
+          500: '#6D28D9', // Deep Purple
+          900: '#4C1D95', // Royal Purple
         },
-        sage: {
-          400: '#A4C3B2',
-          500: '#6B9080',
-        }
       },
       fontFamily: {
         serif: ['"Crimson Pro"', 'serif'],
