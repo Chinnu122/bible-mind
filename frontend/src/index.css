@@ -5,14 +5,12 @@
 @tailwind utilities;
 
 :root {
-  --font-main: "Cinzel", serif;
+  --font-main: "Fraunces", serif;
   --font-body: "Inter", sans-serif;
-  --font-editorial: "Playfair Display", serif;
+  --font-editorial: "Crimson Pro", serif;
 
-  background-color: #0F1115;
-  /* Slate 900 */
-  color: #F9F9F7;
-  /* Crema 50 */
+  background-color: #050505; /* Luxury Ultra Dark */
+  color: #F9F9F7; /* Crema 50 */
 }
 
 @layer base {
@@ -21,12 +19,7 @@
     scroll-behavior: smooth;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-main);
   }
 
@@ -39,16 +32,13 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image:
-    radial-gradient(circle at 15% 50%, rgba(255, 215, 0, 0.03), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.03), transparent 25%);
-  background-attachment: fixed;
+  background-color: #050505;
+  /* Live wallpaper handles the visual background now */
 }
 
 /* Premium Selection */
 ::selection {
-  background: rgba(196, 142, 47, 0.2);
-  /* Gold 500 at 20% */
+  background: rgba(196, 142, 47, 0.3); /* Gold 500 */
   color: #fff;
 }
 
@@ -63,104 +53,56 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(196, 142, 47, 0.2); /* Gold tint */
   border-radius: 10px;
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(196, 142, 47, 0.4);
 }
 
-/* Typography Utilities */
-.font-editorial {
-  font-family: 'Fraunces', serif;
-}
-
-/* Glass Utilities */
+/* Glass Utilities - Refined for Luxury */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(10, 10, 12, 0.6); /* Luxury 800 with opacity */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(196, 142, 47, 0.1); /* Subtle Gold Border */
 }
 
 .glass-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
 }
 
 /* Smooth Focus Rings */
 *:focus-visible {
   outline: 2px solid rgba(196, 142, 47, 0.5);
-  /* Gold 500 */
   outline-offset: 2px;
 }
 
-/* No Glitch - Pure Cleanliness */
-
-/* ========================================
-   MOBILE PERFORMANCE OPTIMIZATIONS
-   Target: 120fps on mobile devices
-   ======================================== */
-
-/* CRITICAL: Disable heavy backdrop-blur on mobile */
+/* Mobile Optimizations */
 @media (max-width: 768px) {
-
   .glass-panel,
   .glass-card,
   [class*="backdrop-blur"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
-
-  /* Replace blur with simple opacity backgrounds */
+  
   .glass-panel {
-    background: rgba(15, 17, 21, 0.85) !important;
+    background: rgba(5, 5, 5, 0.95) !important;
+    border: 1px solid rgba(196, 142, 47, 0.15);
   }
 
   .glass-card {
-    background: rgba(30, 35, 45, 0.9) !important;
+    background: rgba(18, 18, 20, 0.9) !important;
   }
 }
 
-/* GPU Acceleration Hints */
-.gpu-accelerate,
-[class*="motion"],
-canvas,
-video,
-img {
+.gpu-accelerate {
   transform: translateZ(0);
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Force hardware acceleration on frequently animated elements */
-.fixed,
-nav,
-button {
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Optimize touch scrolling */
-.overflow-y-auto,
-.overflow-x-auto,
-.custom-scrollbar {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
 }

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 
 export default function PremiumLogo({ className = "w-10 h-10" }: { className?: string }) {
+    // Paths remain the same, just updating colors
     const brainLeftPath = "M 40 30 C 20 30, 10 50, 10 70 C 10 100, 30 110, 40 110";
     const brainLeftInner = "M 20 50 C 15 60, 25 70, 20 80";
     const brainRightPath = "M 80 30 C 100 30, 110 50, 110 70 C 110 100, 90 110, 80 110";
@@ -14,17 +15,23 @@ export default function PremiumLogo({ className = "w-10 h-10" }: { className?: s
         <div className={`${className} relative group cursor-pointer`}>
             <motion.svg
                 viewBox="0 0 120 140"
-                className="w-full h-full drop-shadow-[0_0_5px_rgba(191,163,124,0.3)]"
+                className="w-full h-full drop-shadow-[0_0_8px_rgba(196,142,47,0.4)]"
                 whileHover={{ scale: 1.05 }}
             >
-                <motion.path d={brainLeftPath} fill="transparent" stroke="#1a3c5a" strokeWidth="3" strokeLinecap="round" className="group-hover:stroke-[#bfa37c] transition-colors duration-500" />
-                <motion.path d={brainLeftInner} fill="transparent" stroke="#1a3c5a" strokeWidth="2" strokeLinecap="round" className="group-hover:stroke-[#bfa37c] transition-colors duration-500" />
-                <motion.path d={brainRightPath} fill="transparent" stroke="#1a3c5a" strokeWidth="3" strokeLinecap="round" className="group-hover:stroke-[#bfa37c] transition-colors duration-500" />
-                <motion.path d={brainRightInner} fill="transparent" stroke="#1a3c5a" strokeWidth="2" strokeLinecap="round" className="group-hover:stroke-[#bfa37c] transition-colors duration-500" />
-                <motion.path d={crossVertical} fill="transparent" stroke="#bfa37c" strokeWidth="4" strokeLinecap="round" />
-                <motion.path d={crossHorizontal} fill="transparent" stroke="#bfa37c" strokeWidth="4" strokeLinecap="round" />
-                <motion.path d={bookLeftPage} fill="#bfa37c" fillOpacity={0.1} stroke="#bfa37c" strokeWidth="2" className="group-hover:fill-opacity-30 transition-all duration-500" />
-                <motion.path d={bookRightPage} fill="#bfa37c" fillOpacity={0.1} stroke="#bfa37c" strokeWidth="2" className="group-hover:fill-opacity-30 transition-all duration-500" />
+                {/* Brain Parts - Dark Metallic Blue -> Luxury Dark Slate/Gold mix for now, keeping generic dark for contrast */}
+                <motion.path d={brainLeftPath} fill="transparent" stroke="#C48E2F" strokeWidth="3" strokeLinecap="round" className="opacity-80 group-hover:stroke-gold-300 transition-colors duration-500" />
+                <motion.path d={brainLeftInner} fill="transparent" stroke="#C48E2F" strokeWidth="2" strokeLinecap="round" className="opacity-60 group-hover:stroke-gold-300 transition-colors duration-500" />
+
+                <motion.path d={brainRightPath} fill="transparent" stroke="#C48E2F" strokeWidth="3" strokeLinecap="round" className="opacity-80 group-hover:stroke-gold-300 transition-colors duration-500" />
+                <motion.path d={brainRightInner} fill="transparent" stroke="#C48E2F" strokeWidth="2" strokeLinecap="round" className="opacity-60 group-hover:stroke-gold-300 transition-colors duration-500" />
+
+                {/* Cross - Bright Gold */}
+                <motion.path d={crossVertical} fill="transparent" stroke="#F5ECC8" strokeWidth="4" strokeLinecap="round" className="group-hover:stroke-white transition-colors" />
+                <motion.path d={crossHorizontal} fill="transparent" stroke="#F5ECC8" strokeWidth="4" strokeLinecap="round" className="group-hover:stroke-white transition-colors" />
+
+                {/* Book - Subtle Gold Fill */}
+                <motion.path d={bookLeftPage} fill="#C48E2F" fillOpacity={0.15} stroke="#C48E2F" strokeWidth="2" className="group-hover:fill-opacity-40 transition-all duration-500" />
+                <motion.path d={bookRightPage} fill="#C48E2F" fillOpacity={0.15} stroke="#C48E2F" strokeWidth="2" className="group-hover:fill-opacity-40 transition-all duration-500" />
             </motion.svg>
         </div>
     );

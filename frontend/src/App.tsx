@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, LogOut, BookOpen, Calendar, StickyNote, CheckCircle, MessageSquare, ImageIcon
+  Settings, User, Home, LogOut, BookOpen, Calendar, CheckCircle, MessageSquare, ImageIcon
 } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
 import ImmersiveIntro from './components/ImmersiveIntro';
-import NotesPage from './components/NotesPage';
 import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
 import ClickSound from './components/ClickSound';
@@ -17,13 +16,15 @@ import BibleStudyPage from './components/BibleStudyPage';
 import CharacterOfDay from './components/CharacterOfDay';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
-import SlidingBackground from './components/SlidingBackground';
 import ChristmasSnow from './components/ChristmasSnow';
 import AtmospherePlayer from './components/AtmospherePlayer';
 import DivineRays from './components/DivineRays';
 import VerseGallery from './components/VerseGallery';
+import VideosPage from './components/VideosPage';
+import BooksPage from './components/BooksPage';
+import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
 
-type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery';
+type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books';
 
 interface UserData {
   id: string;
@@ -60,16 +61,16 @@ function AppLayout() {
   const navItems = [
     { id: 'hero', icon: Home, label: 'Home' },
     { id: 'reader', icon: BookOpen, label: 'Read' },
+    { id: 'videos', icon: ImageIcon, label: 'Video1s' }, // Requested "Video1s"
+    { id: 'books', icon: BookOpen, label: 'Books' },     // Requested "Books & Stories"
     { id: 'daily', icon: Calendar, label: 'Daily' },
-    { id: 'gallery', icon: ImageIcon, label: 'Gallery' },
     { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
-    { id: 'notes', icon: StickyNote, label: 'Notes' },
     { id: 'reviews', icon: MessageSquare, label: 'Community' },
   ];
 
   return (
     <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
-      <SlidingBackground />
+      <LiveAbstractWallpaper isConcentrated={view === 'reader' || view === 'study'} />
       <DivineRays />
       {theme === 'christmas' && <ChristmasSnow />}
       <ClickSound />
@@ -109,7 +110,6 @@ function AppLayout() {
                 {view === 'hero' && <Hero key="hero" onStart={() => setView('reader')} />}
                 {view === 'reader' && <BibleReaderNew key="reader" />}
                 {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
-                {view === 'notes' && <NotesPage key="notes" onBack={() => setView('reader')} />}
                 {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
                 {view === 'auth' && <AuthPage key="auth" onBack={() => setView('hero')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
                 {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('hero')} />}
@@ -117,6 +117,8 @@ function AppLayout() {
                 {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('hero')} />}
                 {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('hero')} />}
                 {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('hero')} />}
+                {view === 'videos' && <VideosPage key="videos" onBack={() => setView('hero')} />}
+                {view === 'books' && <BooksPage key="books" onBack={() => setView('hero')} />}
               </AnimatePresence>
             </motion.main>
 
