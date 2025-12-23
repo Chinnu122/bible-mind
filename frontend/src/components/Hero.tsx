@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Sparkles } from 'lucide-react';
 
 interface HeroProps {
   onStart: () => void;
@@ -10,11 +10,11 @@ export default function Hero({ onStart }: HeroProps) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const rotateX = useTransform(y, [-300, 300], [10, -10]);
-  const rotateY = useTransform(x, [-300, 300], [-10, 10]);
+  const rotateX = useTransform(y, [-300, 300], [8, -8]);
+  const rotateY = useTransform(x, [-300, 300], [-8, 8]);
 
   // Spring physics for smooth tilt
-  const springConfig = { damping: 25, stiffness: 150 };
+  const springConfig = { damping: 30, stiffness: 200 };
   const springRotateX = useSpring(rotateX, springConfig);
   const springRotateY = useSpring(rotateY, springConfig);
 
@@ -43,55 +43,80 @@ export default function Hero({ onStart }: HeroProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, y: -50 }}
-      className="h-screen flex flex-col items-center justify-center relative overflow-hidden perspective-1000"
+      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+      style={{ perspective: 1000 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gold-900/20 via-[#0f0f11] to-[#0f0f11] z-0" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold-500/5 rounded-full blur-3xl animate-pulse" />
-
+      {/* Glassmorphism Card Container */}
       <motion.div
-        style={{ rotateX: springRotateX, rotateY: springRotateY }}
-        className="relative z-10 text-center max-w-4xl px-6 transform-style-3d"
+        style={{ rotateX: springRotateX, rotateY: springRotateY, transformStyle: 'preserve-3d' }}
+        className="relative z-10 w-full max-w-3xl mx-4 sm:mx-6 md:mx-auto"
       >
-        <motion.h1
-          initial="hidden"
-          animate="visible"
-          transition={{ staggerChildren: 0.1 }}
-          className="text-6xl md:text-8xl font-serif font-bold text-gold-gradient mb-8 drop-shadow-2xl"
-        >
-          {sentence.map((char, index) => (
-            <motion.span key={index} variants={letter} className="inline-block">
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-        </motion.h1>
+        {/* Glass Card */}
+        <div className="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl overflow-hidden">
+          {/* Gradient Overlay inside card */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-cyan-500/10 pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-32 bg-gradient-to-b from-gold-500/10 to-transparent blur-2xl pointer-events-none" />
 
-        <motion.p
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="text-xl md:text-2xl text-gray-400 mb-12 font-light leading-relaxed"
-        >
-          Experience scripture like never before. Dive deep into the original Hebrew and Greek meanings with a single touch.
-        </motion.p>
+          {/* Shimmer Effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"
+            animate={{ x: ['-100%', '100%'] }}
+            transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: 'linear' }}
+          />
 
-        <motion.button
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ delay: 1.8 }}
-          onClick={onStart}
-          className="group relative px-8 py-4 bg-transparent border border-gold-500/30 rounded-full overflow-hidden btn-3d shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:shadow-[0_0_25px_rgba(255,215,0,0.3)]"
-        >
-          <div className="absolute inset-0 bg-gold-500/10 group-hover:bg-gold-500/20 transition-colors" />
-          <div className="relative flex items-center gap-3 text-gold-100 font-medium tracking-wide">
-            START READING
-            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          {/* Content */}
+          <div className="relative z-10 text-center">
+            {/* Decorative Icon */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+              className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-gold-400 to-amber-600 flex items-center justify-center shadow-lg shadow-gold-500/30"
+            >
+              <Sparkles className="w-8 h-8 text-black" />
+            </motion.div>
+
+            <motion.h1
+              initial="hidden"
+              animate="visible"
+              transition={{ staggerChildren: 0.08, delayChildren: 0.5 }}
+              className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-crema-100 via-gold-300 to-crema-100"
+            >
+              {sentence.map((char, index) => (
+                <motion.span key={index} variants={letter} className="inline-block">
+                  {char === " " ? "\u00A0" : char}
+                </motion.span>
+              ))}
+            </motion.h1>
+
+            <motion.p
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1.5, duration: 0.8 }}
+              className="text-base sm:text-lg md:text-xl text-slate-300 mb-10 font-light leading-relaxed max-w-xl mx-auto"
+            >
+              Experience scripture like never before. Dive deep into the original Hebrew and Greek meanings with a single touch.
+            </motion.p>
+
+            <motion.button
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ delay: 1.8, type: 'spring', stiffness: 300 }}
+              onClick={onStart}
+              className="group relative px-8 py-4 bg-gradient-to-r from-gold-500 to-amber-500 rounded-full overflow-hidden shadow-lg shadow-gold-500/30 hover:shadow-gold-500/50 transition-shadow"
+            >
+              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex items-center gap-3 text-black font-semibold tracking-wide">
+                START READING
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </motion.button>
           </div>
-        </motion.button>
+        </div>
       </motion.div>
     </motion.div>
   );
