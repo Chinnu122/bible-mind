@@ -1,18 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSettings, Theme } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Moon, Sun, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity } from 'lucide-react';
+import { useSettings } from '../contexts/SettingsContext';
+import { X, Volume2, VolumeX, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsModal() {
-    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, fontFamily, setFontFamily, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
+    const { soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, fontFamily, setFontFamily, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
     const [activeTab, setActiveTab] = useState<'visuals' | 'sound' | 'about' | 'atmosphere'>('visuals');
 
-    const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
-        { id: 'live-abstract', name: 'Live Abstract', icon: Zap, color: 'from-purple-500 to-indigo-600', desc: 'Interactive Particles' },
-        { id: 'divine', name: 'Divine', icon: Sun, color: 'from-amber-100 to-amber-500', desc: 'Heavenly Light' },
-        { id: 'midnight', name: 'Midnight', icon: Moon, color: 'from-slate-900 to-blue-900', desc: 'Deep Space' },
-        { id: 'ethereal', name: 'Ethereal', icon: Wind, color: 'from-cyan-100 to-blue-200', desc: 'Soft & Airy' },
-    ];
+    // Themes removed as per user request
+
 
     const tabVariant = {
         hidden: { opacity: 0, y: 10 },
