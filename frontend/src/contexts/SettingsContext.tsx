@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Theme = 'divine' | 'midnight' | 'ethereal' | 'live-abstract';
+export type Theme = 'nebula' | 'abstract' | 'cosmic';
 export type FontSize = 'normal' | 'large';
 export type FontFamily = 'sans' | 'serif' | 'mono';
 
@@ -32,7 +32,7 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('live-abstract');
+    const [theme, setTheme] = useState<Theme>('nebula');
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [particles, setParticles] = useState(true);
     const [volume, setVolume] = useState(0.5);
