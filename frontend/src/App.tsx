@@ -105,19 +105,7 @@ function AppLayout() {
         style={{ scaleX: useScroll().scrollYProgress }}
       />
 
-      {/* Persistent Logo (Top Left) - Visible after intro */}
-      <AnimatePresence>
-        {!showIntro && !zenMode && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="fixed top-6 left-6 z-40 md:top-8 md:left-8"
-          >
-            <PremiumLogo className="w-12 h-12 md:w-16 md:h-16" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Logo removed as per user request */}
 
       {/* Settings Modal */}
       <AnimatePresence>
