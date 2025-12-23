@@ -20,15 +20,17 @@ const PremiumLogo: React.FC<PremiumLogoProps> = ({ className = "", animate = fal
     return (
         <motion.div
             className={`relative flex flex-col items-center justify-center ${className}`}
-            initial={animate ? "hidden" : "visible"}
-            animate={animate ? "visible" : "visible"}
-            exit={animate ? "exit" : undefined}
             variants={{
                 hidden: { opacity: 0, scale: 0.5 },
-                visible: {
+                intro: {
                     opacity: 1,
                     scale: [0.5, 0.8, 1.2, 1],
                     transition: { duration: 6, times: [0, 0.4, 0.7, 1], ease: "easeInOut" }
+                },
+                static: {
+                    opacity: 1,
+                    scale: 1,
+                    transition: { duration: 0 }
                 },
                 exit: {
                     scale: 0.5,
@@ -38,6 +40,8 @@ const PremiumLogo: React.FC<PremiumLogoProps> = ({ className = "", animate = fal
                     transition: { duration: 1.5, ease: "easeInOut" }
                 }
             }}
+            initial={animate ? "hidden" : "static"}
+            animate={animate ? "intro" : "static"}
             onAnimationComplete={() => {
                 if (onAnimationComplete) onAnimationComplete();
             }}
