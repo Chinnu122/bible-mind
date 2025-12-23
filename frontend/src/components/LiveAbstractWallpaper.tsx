@@ -321,7 +321,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-1000"
+            className="fixed inset-0 w-full h-full z-0 pointer-events-none"
             style={{ opacity: 1 }}
         />
     );
