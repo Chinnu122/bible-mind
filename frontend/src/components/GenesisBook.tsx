@@ -4,9 +4,65 @@ import {
     Book, ChevronLeft, ChevronRight, RefreshCcw, BookOpen,
     TreeDeciduous, Cloud, Sun, Droplets, Heart,
     Flame, Baby, Tent, Crown, Gift, Users, Hammer, Mountain, Shield,
-    Zap, Sprout, Moon, Bird, Fish, Wheat, Map, X, Star, Rainbow, Castle
+    Zap, Sprout, Moon, Bird, Fish, Wheat, Map, X, Star, Rainbow, Castle, Globe
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
+
+// Available Languages
+type Language = 'en' | 'te' | 'hi' | 'es' | 'fr' | 'de' | 'pt' | 'zh' | 'ko' | 'ta' | 'ml';
+
+const languages: { id: Language; name: string; native: string; flag: string }[] = [
+    { id: 'en', name: 'English', native: 'English', flag: '🇬🇧' },
+    { id: 'te', name: 'Telugu', native: 'తెలుగు', flag: '🇮🇳' },
+    { id: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🇮🇳' },
+    { id: 'ta', name: 'Tamil', native: 'தமிழ்', flag: '🇮🇳' },
+    { id: 'ml', name: 'Malayalam', native: 'മലയാളം', flag: '🇮🇳' },
+    { id: 'es', name: 'Spanish', native: 'Español', flag: '🇪🇸' },
+    { id: 'fr', name: 'French', native: 'Français', flag: '🇫🇷' },
+    { id: 'de', name: 'German', native: 'Deutsch', flag: '🇩🇪' },
+    { id: 'pt', name: 'Portuguese', native: 'Português', flag: '🇧🇷' },
+    { id: 'zh', name: 'Chinese', native: '中文', flag: '🇨🇳' },
+    { id: 'ko', name: 'Korean', native: '한국어', flag: '🇰🇷' },
+];
+
+// Translations for titles (first 10 pages as example, rest fallback to English)
+const translations: Record<Language, Record<number, { title: string; paragraphs: string[] }>> = {
+    en: {}, // English is the default in genesisStories
+    te: {
+        1: { title: "ఆరంభంలో", paragraphs: ["ప్రపంచం ప్రారంభమయ్యే ముందు, భూమి, ఆకాశం, సముద్రం లేదు. అంతా చీకటిగా, ఖాళీగా ఉంది. మీకు తెలిసిన అత్యంత నిశ్శబ్దమైన రాత్రి కంటే నిశ్శబ్దంగా ఉంది.", "కానీ దేవుడు అక్కడ ఉన్నాడు. దేవుడు అందమైనది తయారు చేయడానికి అద్భుతమైన ప్రణాళిక కలిగి ఉన్నాడు!", "దేవుడు 'వెలుగు కలుగును గాక!' అని చెప్పాడు. అకస్మాత్తుగా—ఫ్లాష్!—ప్రకాశవంతమైన, అందమైన వెలుగు కనిపించింది. దేవుడు వెలుగును 'పగలు' అని, చీకటిని 'రాత్రి' అని పిలిచాడు. అది మొదటి రోజు."] },
+        2: { title: "ఆకాశం మరియు నీరు", paragraphs: ["రెండవ రోజున, ప్రపంచం ఇంకా నీటితో కప్పబడి ఉంది. కాబట్టి దేవుడు మళ్ళీ మాట్లాడాడు.", "అతను నీటిని వేరు చేయడానికి పెద్ద, నీలం స్థలం చేసాడు. కొంత నీటిని పైకి మేఘాలు చేయడానికి నెట్టాడు, కొన్ని నీటిని సముద్రాల కోసం క్రింద ఉంచాడు.", "అతను ఆ స్థలాన్ని 'ఆకాశం' అని పిలిచాడు. ఇప్పుడు గాలి వీచడానికి మరియు మేఘాలు తేలడానికి స్థలం ఉంది!"] },
+        3: { title: "భూమి మరియు మొక్కలు", paragraphs: ["మూడవ రోజున, దేవుడు క్రింద ఉన్న నీటికి ఒకచోట చేరమని చెప్పాడు. సముద్రం నుండి పొడి నేల బయటకు వచ్చింది! అతను పొడి నేలను 'భూమి' అని, నీటిని 'సముద్రాలు' అని పిలిచాడు.", "అప్పుడు దేవుడు 'భూమి మొక్కలు పెరగనీ!' అని చెప్పాడు.", "అకస్మాత్తుగా, గడ్డి కొండలను ఆకుపచ్చగా మార్చింది. మట్టి నుండి పొడవైన చెట్లు పెరిగాయి, ప్రతిచోటా రంగురంగుల పువ్వులు విరిసాయి. ప్రపంచం తోటలా కనిపించడం మొదలైంది."] },
+    },
+    hi: {
+        1: { title: "आदि में", paragraphs: ["दुनिया शुरू होने से पहले, कोई पृथ्वी नहीं थी, कोई आकाश नहीं था, और कोई समुद्र नहीं था। सब कुछ अंधेरा और खाली था। यह आपकी जानी हुई सबसे शांत रात से भी ज़्यादा शांत था।", "लेकिन भगवान वहाँ थे। और भगवान के पास कुछ सुंदर बनाने की अद्भुत योजना थी!", "भगवान ने कहा, 'प्रकाश हो!' और अचानक—फ्लैश!—उज्ज्वल, सुंदर प्रकाश प्रकट हुआ। भगवान ने प्रकाश को 'दिन' और अंधकार को 'रात' कहा। यह पहला दिन था।"] },
+        2: { title: "आकाश और जल", paragraphs: ["दूसरे दिन, दुनिया अभी भी पानी से ढकी हुई थी। इसलिए भगवान ने फिर से बात की।", "उसने पानी को अलग करने के लिए एक बड़ा, नीला स्थान बनाया। उसने कुछ पानी को ऊपर धकेल कर बादल बनाए, और कुछ पानी को समुद्रों के लिए नीचे रखा।", "उसने उस स्थान को 'आकाश' कहा। अब हवा चलने और बादलों के तैरने के लिए जगह थी!"] },
+    },
+    es: {
+        1: { title: "En el Principio", paragraphs: ["Antes de que comenzara el mundo, no había tierra, ni cielo, ni mar. Todo estaba oscuro y vacío. Era más silencioso que la noche más silenciosa que hayas conocido.", "¡Pero Dios estaba allí! ¡Y Dios tenía un plan maravilloso para hacer algo hermoso!", "Dios dijo: '¡Que haya luz!' Y de repente—¡FLASH!—apareció una luz brillante y hermosa. Dios llamó a la luz 'Día' y a la oscuridad 'Noche'. Ese fue el primer día."] },
+        2: { title: "Cielo y Aguas", paragraphs: ["En el segundo día, el mundo todavía estaba cubierto de agua. Entonces Dios habló de nuevo.", "Hizo un gran espacio azul para separar el agua. Empujó un poco de agua hacia arriba para hacer nubes, y mantuvo un poco de agua abajo para los océanos.", "Llamó al espacio 'Cielo'. ¡Ahora había un lugar para que el viento soplara y las nubes flotaran!"] },
+    },
+    fr: {
+        1: { title: "Au Commencement", paragraphs: ["Avant que le monde ne commence, il n'y avait ni terre, ni ciel, ni mer. Tout était sombre et vide. C'était plus silencieux que la nuit la plus silencieuse que vous ayez connue.", "Mais Dieu était là. Et Dieu avait un plan merveilleux pour créer quelque chose de beau!", "Dieu dit: 'Que la lumière soit!' Et soudain—FLASH!—une belle lumière brillante apparut. Dieu appela la lumière 'Jour' et les ténèbres 'Nuit'. C'était le tout premier jour."] },
+    },
+    de: {
+        1: { title: "Am Anfang", paragraphs: ["Bevor die Welt begann, gab es keine Erde, keinen Himmel und kein Meer. Alles war dunkel und leer. Es war stiller als die stillste Nacht, die du je gekannt hast.", "Aber Gott war da. Und Gott hatte einen wunderbaren Plan, etwas Schönes zu machen!", "Gott sprach: 'Es werde Licht!' Und plötzlich—BLITZ!—erschien helles, schönes Licht. Gott nannte das Licht 'Tag' und die Finsternis 'Nacht'. Das war der allererste Tag."] },
+    },
+    pt: {
+        1: { title: "No Princípio", paragraphs: ["Antes do mundo começar, não havia terra, céu ou mar. Tudo era escuro e vazio. Era mais silencioso que a noite mais silenciosa que você já conheceu.", "Mas Deus estava lá. E Deus tinha um plano maravilhoso para fazer algo lindo!", "Deus disse: 'Haja luz!' E de repente—FLASH!—uma luz brilhante e bonita apareceu. Deus chamou a luz de 'Dia' e a escuridão de 'Noite'. Esse foi o primeiro dia."] },
+    },
+    zh: {
+        1: { title: "起初", paragraphs: ["在世界开始之前，没有地球，没有天空，没有海洋。一切都是黑暗和空虚的。比你所知道的最安静的夜晚还要安静。", "但神在那里。神有一个美好的计划，要创造美丽的东西！", "神说：'要有光！'突然——闪光！——明亮美丽的光出现了。神称光为'白昼'，称黑暗为'夜晚'。这是第一天。"] },
+    },
+    ko: {
+        1: { title: "태초에", paragraphs: ["세상이 시작되기 전, 땅도 없고, 하늘도 없고, 바다도 없었습니다. 모든 것이 어둡고 비어 있었습니다. 당신이 아는 가장 조용한 밤보다 더 조용했습니다.", "그러나 하나님이 계셨습니다. 그리고 하나님은 아름다운 것을 만들 멋진 계획을 가지고 계셨습니다!", "하나님이 '빛이 있으라!' 하시니 갑자기—번쩍!—밝고 아름다운 빛이 나타났습니다. 하나님이 빛을 '낮'이라 하시고 어둠을 '밤'이라 하셨습니다. 이것이 첫째 날이었습니다."] },
+    },
+    ta: {
+        1: { title: "ஆதியிலே", paragraphs: ["உலகம் தொடங்குவதற்கு முன், பூமி இல்லை, வானம் இல்லை, கடல் இல்லை. எல்லாம் இருளாகவும் வெறுமையாகவும் இருந்தது. நீங்கள் அறிந்த மிக அமைதியான இரவை விட அமைதியாக இருந்தது.", "ஆனால் கடவுள் அங்கே இருந்தார். அழகான ஒன்றை உருவாக்க கடவுளுக்கு அற்புதமான திட்டம் இருந்தது!", "கடவுள் 'வெளிச்சம் உண்டாகட்டும்!' என்று சொன்னார். திடீரென—பிரகாசம்!—பிரகாசமான, அழகான ஒளி தோன்றியது. கடவுள் ஒளியை 'பகல்' என்றும் இருளை 'இரவு' என்றும் அழைத்தார். அது முதல் நாள்."] },
+    },
+    ml: {
+        1: { title: "ആദിയിൽ", paragraphs: ["ലോകം ആരംഭിക്കുന്നതിന് മുമ്പ്, ഭൂമിയില്ല, ആകാശമില്ല, കടലില്ല. എല്ലാം ഇരുട്ടും ശൂന്യവുമായിരുന്നു. നിങ്ങൾക്കറിയാവുന്ന ഏറ്റവും നിശ്ശബ്ദമായ രാത്രിയേക്കാൾ നിശ്ശബ്ദമായിരുന്നു.", "എന്നാൽ ദൈവം അവിടെ ഉണ്ടായിരുന്നു. സുന്ദരമായ എന്തെങ്കിലും ഉണ്ടാക്കാൻ ദൈവത്തിന് അത്ഭുതകരമായ ഒരു പദ്ധതി ഉണ്ടായിരുന്നു!", "ദൈവം 'വെളിച്ചം ഉണ്ടാകട്ടെ!' എന്ന് പറഞ്ഞു. പെട്ടെന്ന്—ഫ്ലാഷ്!—തിളക്കമുള്ള, മനോഹരമായ വെളിച്ചം പ്രത്യക്ഷപ്പെട്ടു. ദൈവം വെളിച്ചത്തെ 'പകൽ' എന്നും ഇരുട്ടിനെ 'രാത്രി' എന്നും വിളിച്ചു. അതായിരുന്നു ഒന്നാം ദിവസം."] },
+    },
+};
 
 // --- Data: 50 Pages of Genesis ---
 const genesisStories = [
@@ -209,6 +265,8 @@ interface GenesisBookProps {
 
 export default function GenesisBook({ onClose }: GenesisBookProps) {
     const [currentPage, setCurrentPage] = useState(0);
+    const [selectedLang, setSelectedLang] = useState<Language>('en');
+    const [showLangMenu, setShowLangMenu] = useState(false);
     const { theme } = useSettings();
     const totalPages = genesisStories.length;
     const contentRef = useRef<HTMLDivElement>(null);
@@ -227,7 +285,29 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
         }
     };
 
-    const pageData = currentPage > 0 ? genesisStories[currentPage - 1] : null;
+    const basePageData = currentPage > 0 ? genesisStories[currentPage - 1] : null;
+
+    // Get translated content or fallback to English
+    const getTranslatedContent = () => {
+        if (!basePageData) return null;
+
+        const langTranslations = translations[selectedLang];
+        const pageTranslation = langTranslations[basePageData.page];
+
+        if (pageTranslation) {
+            return {
+                ...basePageData,
+                title: pageTranslation.title,
+                paragraphs: pageTranslation.paragraphs,
+            };
+        }
+
+        return basePageData; // Fallback to English
+    };
+
+    const pageData = getTranslatedContent();
+
+    const currentLangInfo = languages.find(l => l.id === selectedLang) || languages[0];
 
     // Theme-based background
     const getBgClass = () => {
@@ -257,13 +337,52 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
                 exit={{ scale: 0.9, y: 50 }}
                 className={`relative w-full max-w-4xl h-[85vh] bg-gradient-to-br ${getBgClass()} backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/10`}
             >
-                {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
-                >
-                    <X className="w-6 h-6 text-white" />
-                </button>
+                {/* Header Controls */}
+                <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+                    {/* Language Selector */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowLangMenu(!showLangMenu)}
+                            className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white text-sm"
+                        >
+                            <Globe className="w-4 h-4" />
+                            <span>{currentLangInfo.flag} {currentLangInfo.native}</span>
+                        </button>
+
+                        <AnimatePresence>
+                            {showLangMenu && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute top-full right-0 mt-2 bg-gray-900/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-xl overflow-hidden min-w-[180px] max-h-[300px] overflow-y-auto"
+                                >
+                                    {languages.map((lang) => (
+                                        <button
+                                            key={lang.id}
+                                            onClick={() => { setSelectedLang(lang.id); setShowLangMenu(false); }}
+                                            className={`w-full px-4 py-2.5 text-left flex items-center gap-3 hover:bg-white/10 transition-colors ${selectedLang === lang.id ? 'bg-gold-500/20 text-gold-300' : 'text-gray-200'}`}
+                                        >
+                                            <span className="text-lg">{lang.flag}</span>
+                                            <div>
+                                                <div className="font-medium">{lang.native}</div>
+                                                <div className="text-xs text-gray-400">{lang.name}</div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Close Button */}
+                    <button
+                        onClick={onClose}
+                        className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+                    >
+                        <X className="w-6 h-6 text-white" />
+                    </button>
+                </div>
 
                 <AnimatePresence mode="wait">
                     {currentPage === 0 ? (
