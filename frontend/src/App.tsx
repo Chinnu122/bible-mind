@@ -71,14 +71,8 @@ function AppLayout() {
       );
     }
 
-    if (theme === 'live-abstract') {
-      return <LiveAbstractWallpaper isConcentrated={view === 'reader' || view === 'study'} />;
-    }
-
-    // Fallback gradients for other themes if not live abstract
-    return (
-      <div className={`fixed inset-0 -z-10 transition-colors duration-700 bg-gradient-to-br from-slate-900 via-[#0a0a0a] to-black`} />
-    );
+    // Always use generative background (Live Abstract) for all themes
+    return <LiveAbstractWallpaper theme={theme} isConcentrated={zenMode} />;
   };
 
   // Navigation Items Configuration
