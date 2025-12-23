@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Theme = 'divine' | 'christmas' | 'midnight' | 'parchment' | 'ethereal';
+export type Theme = 'divine' | 'midnight' | 'ethereal' | 'live-abstract';
 export type FontSize = 'normal' | 'large';
 export type FontFamily = 'sans' | 'serif' | 'mono';
 
@@ -25,12 +25,14 @@ interface SettingsContextType {
     setZenMode: (v: boolean) => void;
     isSettingsOpen: boolean;
     setIsSettingsOpen: (v: boolean) => void;
+    customBackground: string | null;
+    setCustomBackground: (url: string | null) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('christmas');
+    const [theme, setTheme] = useState<Theme>('live-abstract');
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [particles, setParticles] = useState(true);
     const [volume, setVolume] = useState(0.5);
@@ -39,6 +41,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const [atmosphere, setAtmosphere] = useState<Atmosphere>('none');
     const [zenMode, setZenMode] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [customBackground, setCustomBackground] = useState<string | null>(null);
 
     // Initialize from local storage
     useEffect(() => {
@@ -47,12 +50,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         const savedFontSize = localStorage.getItem('bible-mind-fontsize') as FontSize;
         const savedFontFamily = localStorage.getItem('bible-mind-fontfamily') as FontFamily;
         const savedAtmosphere = localStorage.getItem('bible-mind-atmosphere') as Atmosphere;
+        const savedBg = localStorage.getItem('bible-mind-bg');
 
         if (savedTheme) setTheme(savedTheme);
         if (savedVolume) setVolume(parseFloat(savedVolume));
         if (savedFontSize) setFontSize(savedFontSize);
         if (savedFontFamily) setFontFamily(savedFontFamily);
         if (savedAtmosphere) setAtmosphere(savedAtmosphere);
+        if (savedBg) setCustomBackground(savedBg);
     }, []);
 
     useEffect(() => {
@@ -61,6 +66,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('bible-mind-fontsize', fontSize);
         localStorage.setItem('bible-mind-fontfamily', fontFamily);
         localStorage.setItem('bible-mind-atmosphere', atmosphere);
+        if (customBackground) localStorage.setItem('bible-mind-bg', customBackground);
+        else localStorage.removeItem('bible-mind-bg');
 
         // Apply global body class for root variable handling
         document.body.className = `${theme} ${fontSize === 'large' ? 'text-lg' : ''} font-${fontFamily}`;
@@ -83,7 +90,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         for (let i = 0; i < audioElements.length; i++) {
             audioElements[i].volume = volume;
         }
-    }, [theme, volume, fontSize, fontFamily, atmosphere]);
+    }, [theme, volume, fontSize, fontFamily, atmosphere, customBackground]);
 
     return (
         <SettingsContext.Provider value={{
@@ -95,7 +102,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
             fontFamily, setFontFamily,
             atmosphere, setAtmosphere,
             zenMode, setZenMode,
-            isSettingsOpen, setIsSettingsOpen
+            isSettingsOpen, setIsSettingsOpen,
+            customBackground, setCustomBackground
         }}>
             {children}
         </SettingsContext.Provider>

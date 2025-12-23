@@ -1,38 +1,78 @@
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-export default function PremiumLogo({ className = "w-10 h-10" }: { className?: string }) {
-    // Paths remain the same, just updating colors
-    const brainLeftPath = "M 40 30 C 20 30, 10 50, 10 70 C 10 100, 30 110, 40 110";
-    const brainLeftInner = "M 20 50 C 15 60, 25 70, 20 80";
-    const brainRightPath = "M 80 30 C 100 30, 110 50, 110 70 C 110 100, 90 110, 80 110";
-    const brainRightInner = "M 100 50 C 105 60, 95 70, 100 80";
-    const crossVertical = "M 60 40 L 60 100";
-    const crossHorizontal = "M 45 55 L 75 55";
-    const bookLeftPage = "M 20 120 Q 40 110 60 130 L 60 90 Q 40 80 20 90 Z";
-    const bookRightPage = "M 100 120 Q 80 110 60 130 L 60 90 Q 80 80 100 90 Z";
+interface PremiumLogoProps {
+    className?: string;
+    animate?: boolean;
+    onAnimationComplete?: () => void;
+}
+
+const PremiumLogo: React.FC<PremiumLogoProps> = ({ className = "", animate = false, onAnimationComplete }) => {
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        if (animate && audioRef.current) {
+            audioRef.current.volume = 0.4;
+            audioRef.current.play().catch(e => console.log("Audio play failed", e));
+        }
+    }, [animate]);
 
     return (
-        <div className={`${className} relative group cursor-pointer`}>
-            <motion.svg
-                viewBox="0 0 120 140"
-                className="w-full h-full drop-shadow-[0_0_8px_rgba(196,142,47,0.4)]"
-                whileHover={{ scale: 1.05 }}
-            >
-                {/* Brain Parts - Dark Metallic Blue -> Luxury Dark Slate/Gold mix for now, keeping generic dark for contrast */}
-                <motion.path d={brainLeftPath} fill="transparent" stroke="#C48E2F" strokeWidth="3" strokeLinecap="round" className="opacity-80 group-hover:stroke-gold-300 transition-colors duration-500" />
-                <motion.path d={brainLeftInner} fill="transparent" stroke="#C48E2F" strokeWidth="2" strokeLinecap="round" className="opacity-60 group-hover:stroke-gold-300 transition-colors duration-500" />
+        <motion.div
+            className={`relative flex flex-col items-center justify-center ${className}`}
+            initial={animate ? "hidden" : "visible"}
+            animate={animate ? "visible" : "visible"}
+            exit={animate ? "exit" : undefined}
+            variants={{
+                hidden: { opacity: 0, scale: 0.5 },
+                visible: {
+                    opacity: 1,
+                    scale: [0.5, 0.8, 1.2, 1],
+                    transition: { duration: 6, times: [0, 0.4, 0.7, 1], ease: "easeInOut" }
+                },
+                exit: {
+                    scale: 0.5,
+                    x: -window.innerWidth / 3,
+                    y: -window.innerHeight / 3,
+                    opacity: 0,
+                    transition: { duration: 1.5, ease: "easeInOut" }
+                }
+            }}
+            onAnimationComplete={() => {
+                if (onAnimationComplete) onAnimationComplete();
+            }}
+        >
+            {/* Intro Audio - using a cinematic sound effect URL */}
+            {animate && (
+                <audio ref={audioRef} src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_30704c7c64.mp3" />
+            )}
 
-                <motion.path d={brainRightPath} fill="transparent" stroke="#C48E2F" strokeWidth="3" strokeLinecap="round" className="opacity-80 group-hover:stroke-gold-300 transition-colors duration-500" />
-                <motion.path d={brainRightInner} fill="transparent" stroke="#C48E2F" strokeWidth="2" strokeLinecap="round" className="opacity-60 group-hover:stroke-gold-300 transition-colors duration-500" />
+            <div className="relative group cursor-pointer">
+                {/* Logo Icon */}
+                <div className="relative w-16 h-16 md:w-20 md:h-20 mb-4 mx-auto">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-gold-600 to-amber-300 rounded-xl rotate-45 shadow-lg shadow-gold-500/20 group-hover:rotate-90 transition-transform duration-700 ease-out" />
+                    <div className="absolute inset-2 bg-black rounded-lg rotate-45 flex items-center justify-center border border-gold-500/30">
+                        <span className="font-main text-3xl text-gold-400 font-bold">BM</span>
+                    </div>
+                </div>
 
-                {/* Cross - Bright Gold */}
-                <motion.path d={crossVertical} fill="transparent" stroke="#F5ECC8" strokeWidth="4" strokeLinecap="round" className="group-hover:stroke-white transition-colors" />
-                <motion.path d={crossHorizontal} fill="transparent" stroke="#F5ECC8" strokeWidth="4" strokeLinecap="round" className="group-hover:stroke-white transition-colors" />
-
-                {/* Book - Subtle Gold Fill */}
-                <motion.path d={bookLeftPage} fill="#C48E2F" fillOpacity={0.15} stroke="#C48E2F" strokeWidth="2" className="group-hover:fill-opacity-40 transition-all duration-500" />
-                <motion.path d={bookRightPage} fill="#C48E2F" fillOpacity={0.15} stroke="#C48E2F" strokeWidth="2" className="group-hover:fill-opacity-40 transition-all duration-500" />
-            </motion.svg>
-        </div>
+                {/* Text Logo */}
+                <div className="text-center">
+                    <h1 className="font-main text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-crema-100 via-gold-300 to-crema-100 tracking-wider">
+                        BIBLE MIND
+                    </h1>
+                    {animate && (
+                        <motion.div
+                            className="h-[1px] bg-gradient-to-r from-transparent via-gold-500 to-transparent w-full mt-2"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 1.5, delay: 0.5 }}
+                        />
+                    )}
+                </div>
+            </div>
+        </motion.div>
     );
-}
+};
+
+export default PremiumLogo;

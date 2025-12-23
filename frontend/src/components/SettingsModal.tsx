@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings, Theme } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Moon, Sun, Scroll, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Snowflake, Flame, Activity } from 'lucide-react';
+import { X, Volume2, VolumeX, Moon, Sun, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsModal() {
@@ -8,10 +8,10 @@ export default function SettingsModal() {
     const [activeTab, setActiveTab] = useState<'visuals' | 'sound' | 'about' | 'atmosphere'>('visuals');
 
     const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
+        { id: 'live-abstract', name: 'Live Abstract', icon: Zap, color: 'from-purple-500 to-indigo-600', desc: 'Interactive Particles' },
         { id: 'divine', name: 'Divine', icon: Sun, color: 'from-amber-100 to-amber-500', desc: 'Heavenly Light' },
         { id: 'midnight', name: 'Midnight', icon: Moon, color: 'from-slate-900 to-blue-900', desc: 'Deep Space' },
-        { id: 'parchment', name: 'Parchment', icon: Scroll, color: 'from-[#f4e4bc] to-[#d4c5a0]', desc: 'Ancient Scroll' },
-        { id: 'christmas', name: 'Christmas', icon: Snowflake, color: 'from-blue-100 to-blue-300', desc: 'Winter Wonder' },
+        { id: 'ethereal', name: 'Ethereal', icon: Wind, color: 'from-cyan-100 to-blue-200', desc: 'Soft & Airy' },
     ];
 
     const tabVariant = {
