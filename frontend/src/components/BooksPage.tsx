@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotebookModal from './NotebookModal';
+import GenesisBook from './GenesisBook';
 
 const bibleBooks = [
     // Old Testament
@@ -76,6 +77,18 @@ const bibleBooks = [
 
 const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const [selectedBook, setSelectedBook] = useState<{ id: number; title: string } | null>(null);
+    const [showGenesisBook, setShowGenesisBook] = useState(false);
+
+    // Handle book click - special handling for Genesis
+    const handleBookClick = (book: { id: number; title: string }) => {
+        if (book.id === 1) {
+            // Genesis - open the story book
+            setShowGenesisBook(true);
+        } else {
+            // Other books - open notebook
+            setSelectedBook(book);
+        }
+    };
 
     // Function to get a unique color gradient for each book
     const getBookColor = (id: number) => {
@@ -121,7 +134,7 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.03 }}
                         className="group perspective-1000 cursor-pointer"
-                        onClick={() => setSelectedBook(book)}
+                        onClick={() => handleBookClick(book)}
                     >
                         {/* Book Container with 3D Rotate */}
                         <div className="relative w-full aspect-[2/3] transition-transform duration-500 transform-style-3d group-hover:rotate-y-[-20deg] group-hover:translate-x-3 group-hover:scale-110 z-10">
@@ -171,6 +184,9 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         bookTitle={selectedBook.title}
                         bookId={selectedBook.id}
                     />
+                )}
+                {showGenesisBook && (
+                    <GenesisBook onClose={() => setShowGenesisBook(false)} />
                 )}
             </AnimatePresence>
         </motion.div>
