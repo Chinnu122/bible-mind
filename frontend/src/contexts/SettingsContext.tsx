@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Theme = 'nebula' | 'abstract' | 'cosmic';
+export type Theme = 'nebula' | 'abstract' | 'cosmic' | 'aurora';
 export type FontSize = 'normal' | 'large';
 export type FontFamily = 'sans' | 'serif' | 'mono';
 
