@@ -38,7 +38,7 @@ export default function SettingsModal() {
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="relative w-full max-w-3xl h-[600px] bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-2xl flex overflow-hidden"
+                className="relative w-full max-w-3xl h-[90vh] max-h-[700px] backdrop-blur-2xl bg-slate-900/70 border border-white/10 rounded-3xl shadow-2xl flex overflow-hidden"
             >
                 {/* Sidebar */}
                 <div className="w-20 md:w-64 bg-black/20 border-r border-white/5 p-6 flex flex-col justify-between">
