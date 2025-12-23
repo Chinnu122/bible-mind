@@ -183,15 +183,40 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                 ctx.fillStyle = g2;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-            // LIVE ABSTRACT: Standard subtle gradient
+            // LIVE ABSTRACT: Standard subtle gradient -> UPGRADED TO RICH NEBULA
             if (theme === 'live-abstract') {
-                const g = ctx.createRadialGradient(
+                // Layer 1: Deep Purple/Blue foundation
+                const g1 = ctx.createRadialGradient(
                     canvas.width * 0.5, canvas.height * 0.5, 0,
                     canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.8
                 );
-                g.addColorStop(0, 'rgba(124, 58, 237, 0.05)');
-                g.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = g;
+                g1.addColorStop(0, 'rgba(76, 29, 149, 0.2)'); // Increased opacity
+                g1.addColorStop(0.6, 'rgba(30, 27, 75, 0.1)');
+                g1.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = g1;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Layer 2: Moving Golden gaseous clouds
+                const cloudX = canvas.width * 0.5 + Math.sin(t * 0.002) * 200;
+                const cloudY = canvas.height * 0.4 + Math.cos(t * 0.003) * 100;
+                const g2 = ctx.createRadialGradient(
+                    cloudX, cloudY, 0,
+                    cloudX, cloudY, 500
+                );
+                g2.addColorStop(0, 'rgba(196, 142, 47, 0.15)'); // Visible Gold
+                g2.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = g2;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Layer 3: Accent Highlights (Cyan/Magenta) for "Space" feel
+                const highlightX = canvas.width * 0.2 + Math.cos(t * 0.001) * 300;
+                const g3 = ctx.createRadialGradient(
+                    highlightX, canvas.height * 0.8, 0,
+                    highlightX, canvas.height * 0.8, 400
+                );
+                g3.addColorStop(0, 'rgba(124, 58, 237, 0.1)'); // Violet
+                g3.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = g3;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         };
