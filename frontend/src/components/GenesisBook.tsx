@@ -1,10 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
     Book, ChevronLeft, ChevronRight, RefreshCcw, BookOpen,
-    TreeDeciduous, Cloud, Sun, Droplets, Heart,
-    Flame, Baby, Tent, Crown, Gift, Users, Hammer, Mountain, Shield,
-    Zap, Sprout, Moon, Bird, Fish, Wheat, Map, X, Star, Rainbow, Castle, Globe
+    TreeDeciduous, Cloud, Sun, Moon, Bird, Fish, Users, X, Globe
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 
