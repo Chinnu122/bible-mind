@@ -11,10 +11,11 @@ interface Particle {
 }
 
 interface LiveWallpaperProps {
+    theme?: 'live-abstract' | 'divine' | 'midnight' | 'ethereal' | string;
     isConcentrated?: boolean;
 }
 
-const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = false }) => {
+const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abstract', isConcentrated = false }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseRef = useRef({ x: 0, y: 0 });
 
@@ -44,13 +45,32 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
             initParticles();
         };
 
+        const getThemeColors = () => {
+            switch (theme) {
+                case 'divine':
+                    return ['#FFD700', '#FFF8DC', '#FFA500', '#ffffff', '#FFFAF0']; // Gold/Cream/Orange/White
+                case 'midnight':
+                    return ['#1E90FF', '#4169E1', '#000080', '#87CEFA', '#ffffff']; // Blue/Navy/White
+                case 'ethereal':
+                    return ['#E0FFFF', '#B0C4DE', '#F0F8FF', '#ffffff', '#AFEEEE']; // Cyans/Light Blues
+                default: // live-abstract
+                    return ['#C48E2F', '#7C3AED', '#ffffff', '#DAA520', '#4B0082']; // Original Gold/Purple
+            }
+        };
+
+        const getBgColors = () => {
+            switch (theme) {
+                case 'divine': return ['#2a1a00', '#000000'];
+                case 'midnight': return ['#000010', '#0a0a2a'];
+                case 'ethereal': return ['#0a1a2a', '#102030'];
+                default: return ['#020202', '#08080a'];
+            }
+        };
+
         const initParticles = () => {
             particles = [];
             const particleCount = isConcentrated ? 60 : 100;
-
-            const colors = isConcentrated
-                ? ['#C48E2F', '#5A371E', '#3E2723'] // Muted Gold/Brown/Dark
-                : ['#C48E2F', '#7C3AED', '#ffffff', '#DAA520', '#4B0082']; // Vibrant Gold/Purple/White/Deep Purple
+            const colors = getThemeColors();
 
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
@@ -66,57 +86,58 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
         };
 
         const createShootingStar = () => {
-            // Only create rarely
             if (Math.random() > 0.98 && shootingStars.length < 2) {
                 shootingStars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * (canvas.height / 2),
                     speed: Math.random() * 10 + 10,
                     length: Math.random() * 80 + 50,
-                    angle: Math.PI / 4, // 45 degrees
+                    angle: Math.PI / 4,
                     opacity: 1
                 });
             }
         };
 
         const drawNebula = (t: number) => {
-            // Create a few moving gradient blobs for "nebula" effect
-            const gradient1 = ctx.createRadialGradient(
-                canvas.width * 0.2 + Math.sin(t * 0.001) * 100,
-                canvas.height * 0.3 + Math.cos(t * 0.002) * 50,
-                0,
-                canvas.width * 0.4,
-                canvas.height * 0.5,
-                600
-            );
-            gradient1.addColorStop(0, 'rgba(76, 29, 149, 0.05)'); // Deep Purple
-            gradient1.addColorStop(1, 'rgba(0,0,0,0)');
+            if (theme === 'live-abstract' || theme === 'midnight') {
+                const gradient1 = ctx.createRadialGradient(
+                    canvas.width * 0.2 + Math.sin(t * 0.001) * 100,
+                    canvas.height * 0.3 + Math.cos(t * 0.002) * 50,
+                    0,
+                    canvas.width * 0.4,
+                    canvas.height * 0.5,
+                    600
+                );
 
-            const gradient2 = ctx.createRadialGradient(
-                canvas.width * 0.8 - Math.sin(t * 0.0015) * 100,
-                canvas.height * 0.7 - Math.cos(t * 0.001) * 50,
-                0,
-                canvas.width * 0.7,
-                canvas.height * 0.8,
-                700
-            );
-            gradient2.addColorStop(0, 'rgba(196, 142, 47, 0.03)'); // faint Gold
-            gradient2.addColorStop(1, 'rgba(0,0,0,0)');
+                if (theme === 'midnight') {
+                    gradient1.addColorStop(0, 'rgba(30, 144, 255, 0.05)');
+                } else {
+                    gradient1.addColorStop(0, 'rgba(76, 29, 149, 0.05)');
+                }
+                gradient1.addColorStop(1, 'rgba(0,0,0,0)');
 
-            ctx.fillStyle = gradient1;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = gradient2;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+                ctx.fillStyle = gradient1;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            if (theme === 'divine') {
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.05)'); // Low gold haze
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        };
 
         const draw = () => {
             time++;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Rich Dark Background
+            // Background
+            const bgCols = getBgColors();
             const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            bgGradient.addColorStop(0, '#020202');
-            bgGradient.addColorStop(1, '#08080a');
+            bgGradient.addColorStop(0, bgCols[0]);
+            bgGradient.addColorStop(1, bgCols[1]);
             ctx.fillStyle = bgGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -126,7 +147,6 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
             createShootingStar();
             for (let i = shootingStars.length - 1; i >= 0; i--) {
                 const s = shootingStars[i];
-
                 const endX = s.x - s.length * Math.cos(s.angle);
                 const endY = s.y - s.length * Math.sin(s.angle);
 
@@ -150,9 +170,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
                 }
             }
 
-
             particles.forEach((p) => {
-                // Interactive Mouse Force
                 const dx = mouseRef.current.x - p.x;
                 const dy = mouseRef.current.y - p.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -160,7 +178,6 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
                 if (distance < 200) {
                     const force = (200 - distance) / 200;
                     const angle = Math.atan2(dy, dx);
-                    // Gentle repulsion
                     p.x -= Math.cos(angle) * force * 1;
                     p.y -= Math.sin(angle) * force * 1;
                 }
@@ -172,20 +189,17 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
                 ctx.fill();
                 ctx.globalAlpha = 1.0;
 
-                // Update Position with float
                 p.x += p.speedX + Math.sin(time * 0.01 + p.y * 0.01) * 0.1;
                 p.y += p.speedY + Math.cos(time * 0.01 + p.x * 0.01) * 0.1;
 
-                // Wrap around screen
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height;
                 if (p.y > canvas.height) p.y = 0;
             });
 
-            // Connecting lines
-            if (!isConcentrated) {
-                ctx.strokeStyle = 'rgba(196, 142, 47, 0.08)'; // Very faint gold
+            if (!isConcentrated && theme !== 'ethereal') {
+                ctx.strokeStyle = theme === 'divine' ? 'rgba(255, 215, 0, 0.08)' : 'rgba(196, 142, 47, 0.08)';
                 ctx.lineWidth = 0.5;
                 for (let i = 0; i < particles.length; i++) {
                     for (let j = i + 1; j < particles.length; j++) {
@@ -214,7 +228,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ isConcentrated = 
             window.removeEventListener('resize', resizeCanvas);
             cancelAnimationFrame(animationFrameId);
         };
-    }, [isConcentrated]);
+    }, [isConcentrated, theme]);
 
     return (
         <canvas

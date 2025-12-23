@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, Save, Download, Check, Image as ImageIcon } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
@@ -31,7 +31,7 @@ const ImageDetailModal: React.FC<ImageDetailModalProps> = ({ imageSrc, title, on
         setDownloading(true);
         const element = document.getElementById('capture-card');
         if (element) {
-            const canvas = await html2canvas(element, { scale: 2, backgroundColor: null });
+            const canvas = await html2canvas(element, { scale: 2, backgroundColor: null } as any);
             const link = document.createElement('a');
             link.download = `${title.replace(/\s+/g, '_')}_note.png`;
             link.href = canvas.toDataURL('image/png');
