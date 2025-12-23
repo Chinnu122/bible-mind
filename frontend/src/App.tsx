@@ -21,7 +21,6 @@ import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
 import Dashboard from './components/Dashboard';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
-import PremiumLogo from './components/PremiumLogo';
 import LivingPrismIntro from './components/LivingPrismIntro';
 import MagneticButton from './components/MagneticButton';
 import GoldenDustCursor from './components/GoldenDustCursor';
