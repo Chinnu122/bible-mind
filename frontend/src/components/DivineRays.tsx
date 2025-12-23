@@ -5,7 +5,7 @@ export default function DivineRays() {
     const { theme } = useSettings();
 
     // Only show rays on divine or christmas themes
-    if (theme !== 'divine' && theme !== 'christmas') return null;
+    if (theme !== 'divine') return null;
 
     return (
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">

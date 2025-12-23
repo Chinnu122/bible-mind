@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, LogOut, BookOpen, Calendar, CheckCircle, MessageSquare, ImageIcon
+  Settings, User, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut
 } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
-import ImmersiveIntro from './components/ImmersiveIntro';
 import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
 import ClickSound from './components/ClickSound';
@@ -16,15 +15,18 @@ import BibleStudyPage from './components/BibleStudyPage';
 import CharacterOfDay from './components/CharacterOfDay';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
-import ChristmasSnow from './components/ChristmasSnow';
 import AtmospherePlayer from './components/AtmospherePlayer';
-import DivineRays from './components/DivineRays';
 import VerseGallery from './components/VerseGallery';
-import VideosPage from './components/VideosPage';
+import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
+import Dashboard from './components/Dashboard';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
+import PremiumLogo from './components/PremiumLogo';
+import LivingPrismIntro from './components/LivingPrismIntro';
+import MagneticButton from './components/MagneticButton';
+import GoldenDustCursor from './components/GoldenDustCursor';
 
-type ViewState = 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard';
 
 interface UserData {
   id: string;
@@ -33,11 +35,10 @@ interface UserData {
 }
 
 function AppLayout() {
+  const { theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode } = useSettings();
   const [showIntro, setShowIntro] = useState(true);
-  const [view, setView] = useState<ViewState>('hero');
+  const [view, setView] = useState<ViewState>('landing');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isSettingsOpen, setIsSettingsOpen, zenMode, setZenMode, theme } = useSettings();
-  const [santaMessage, setSantaMessage] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
 
   // Restore user from localStorage on app load
@@ -57,30 +58,70 @@ function AppLayout() {
     setMobileMenuOpen(false);
   };
 
+  // Background Selection
+  const renderBackground = () => {
+    if (customBackground) {
+      return (
+        <div
+          className="fixed inset-0 z-0 bg-cover bg-center transition-all duration-1000"
+          style={{ backgroundImage: `url('${customBackground}')` }}
+        >
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+        </div>
+      );
+    }
+
+    if (theme === 'live-abstract') {
+      return <LiveAbstractWallpaper isConcentrated={view === 'reader' || view === 'study'} />;
+    }
+
+    // Fallback gradients for other themes if not live abstract
+    return (
+      <div className={`fixed inset-0 -z-10 transition-colors duration-700 bg-gradient-to-br from-slate-900 via-[#0a0a0a] to-black`} />
+    );
+  };
+
   // Navigation Items Configuration
   const navItems = [
-    { id: 'hero', icon: Home, label: 'Home' },
+    { id: 'landing', icon: Home, label: 'Home' },
+    { id: 'dashboard', icon: TrendingUp, label: 'Dashboard' },
     { id: 'reader', icon: BookOpen, label: 'Read' },
-    { id: 'videos', icon: ImageIcon, label: 'Video1s' }, // Requested "Video1s"
-    { id: 'books', icon: BookOpen, label: 'Books' },     // Requested "Books & Stories"
+    { id: 'videos', icon: ImageIcon, label: 'Visuals' },
+    { id: 'books', icon: BookOpen, label: 'Books' },
     { id: 'daily', icon: Calendar, label: 'Daily' },
     { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
     { id: 'reviews', icon: MessageSquare, label: 'Community' },
   ];
 
+  /* Main App Layout */
   return (
     <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
-      <LiveAbstractWallpaper isConcentrated={view === 'reader' || view === 'study'} />
-      <DivineRays />
-      {theme === 'christmas' && <ChristmasSnow />}
+
+      {renderBackground()}
+
+      <GoldenDustCursor />
       <ClickSound />
       <AtmospherePlayer />
 
-      {/* Surprise 10: Scroll Progress Indicator */}
+      {/* Scroll Progress Indicator */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gold-500 z-[100] origin-left"
         style={{ scaleX: useScroll().scrollYProgress }}
       />
+
+      {/* Persistent Logo (Top Left) - Visible after intro */}
+      <AnimatePresence>
+        {!showIntro && !zenMode && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="fixed top-6 left-6 z-40 md:top-8 md:left-8"
+          >
+            <PremiumLogo className="w-12 h-12 md:w-16 md:h-16" />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Settings Modal */}
       <AnimatePresence>
@@ -89,14 +130,7 @@ function AppLayout() {
 
       <AnimatePresence mode="wait">
         {showIntro ? (
-          <motion.div
-            key="intro"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-900"
-          >
-            <ImmersiveIntro onComplete={() => setShowIntro(false)} />
-          </motion.div>
+          <LivingPrismIntro onComplete={() => setShowIntro(false)} />
         ) : (
           <LayoutGroup>
             {/* Main Content Container - Glass Effect */}
@@ -104,63 +138,59 @@ function AppLayout() {
               layout
               className={`relative min-h-screen transition-all duration-700 ease-out 
                   ${isSettingsOpen ? 'scale-[0.92] opacity-50 blur-sm rounded-[2rem] overflow-hidden' : 'scale-100'} 
-                  pt-8 pb-32 px-4 md:px-8 max-w-[1600px] mx-auto`}
+                  pt-20 pb-32 px-4 md:px-8 max-w-[1600px] mx-auto`}
             >
               <AnimatePresence mode="wait">
-                {view === 'hero' && <Hero key="hero" onStart={() => setView('reader')} />}
+                {view === 'landing' && <Hero key="landing" onStart={() => setView('dashboard')} />}
+                {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
                 {view === 'reader' && <BibleReaderNew key="reader" />}
-                {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('hero')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
+                {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
                 {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
-                {view === 'auth' && <AuthPage key="auth" onBack={() => setView('hero')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
-                {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('hero')} />}
+                {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
+                {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('landing')} />}
                 {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
-                {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('hero')} />}
-                {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('hero')} />}
-                {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('hero')} />}
-                {view === 'videos' && <VideosPage key="videos" onBack={() => setView('hero')} />}
-                {view === 'books' && <BooksPage key="books" onBack={() => setView('hero')} />}
+                {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('landing')} />}
+                {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('landing')} />}
+                {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('landing')} />}
+                {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}
+                {view === 'books' && <BooksPage key="books" onBack={() => setView('dashboard')} />}
               </AnimatePresence>
             </motion.main>
 
             {/* Floating Dock Navigation (Desktop) - Hidden in Zen Mode */}
             {!zenMode && (
               <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-2 p-2 
-                  bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-full shadow-2xl shadow-black/20">
-
+                  bg-[#050505]/80 backdrop-blur-xl border border-gold-500/10 rounded-full shadow-2xl shadow-black/40">
                 {navItems.map((item) => {
                   const isActive = view === item.id;
                   return (
-                    <button
+                    <MagneticButton
                       key={item.id}
                       onClick={() => navigateTo(item.id as ViewState)}
-                      className="relative group p-3 rounded-full transition-all duration-300 hover:bg-white/5"
+                      className={`relative group p-3 rounded-full transition-all duration-300 ${isActive ? 'bg-gold-500/20 text-gold-400' : 'text-slate-400 hover:text-crema-50 hover:bg-white/5'}`}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-white/10 rounded-full border border-white/5"
+                          className="absolute inset-0 bg-gold-500/10 rounded-full border border-gold-500/20"
                           transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
                       )}
-                      <item.icon
-                        size={24}
-                        className={`relative z-10 transition-colors duration-300 
-                          ${isActive ? 'text-gold-400' : 'text-slate-400 group-hover:text-crema-100'}`}
-                      />
+                      <item.icon size={20} className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-gold-400' : 'text-slate-400 group-hover:text-crema-100'}`} />
 
                       {/* Tooltip */}
-                      <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
-                        rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                      <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#1a1a1a] text-xs text-gold-100
+                        rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-gold-500/10 whitespace-nowrap">
                         {item.label}
                       </span>
-                    </button>
+                    </MagneticButton>
                   );
                 })}
 
                 <div className="w-px h-8 bg-white/10 mx-2" />
 
                 {loggedInUser ? (
-                  <button
+                  <MagneticButton
                     onClick={() => {
                       localStorage.removeItem('bible-mind-user');
                       setLoggedInUser(null);
@@ -168,36 +198,32 @@ function AppLayout() {
                     className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-white/5 text-gold-400 hover:text-red-400 transition-colors relative group"
                   >
                     <User size={20} />
-                    <span className="text-sm font-medium max-w-[100px] truncate">{loggedInUser.name}</span>
+                    <span className="text-sm font-medium max-w-[100px] truncate hidden md:block">{loggedInUser.name}</span>
                     <LogOut size={16} className="opacity-50 group-hover:opacity-100" />
-                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
-                      rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
-                      Logout
-                    </span>
-                  </button>
+                  </MagneticButton>
                 ) : (
-                  <button
+                  <MagneticButton
                     onClick={() => navigateTo('auth')}
                     className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
                   >
                     <User size={24} />
-                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
-                      rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#1a1a1a] text-xs text-gold-100
+                        rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-gold-500/10 whitespace-nowrap">
                       Sign In
                     </span>
-                  </button>
+                  </MagneticButton>
                 )}
 
-                <button
+                <MagneticButton
                   onClick={() => setIsSettingsOpen(true)}
                   className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
                 >
                   <Settings size={24} />
-                  <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-xs 
-                    rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/5">
+                  <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#1a1a1a] text-xs text-gold-100
+                    rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-gold-500/10 whitespace-nowrap">
                     Settings
                   </span>
-                </button>
+                </MagneticButton>
               </nav>
             )}
 
@@ -215,35 +241,9 @@ function AppLayout() {
               </motion.button>
             )}
 
-            {/* Surprise 8: Santa Widget (Christmas Theme Only) */}
-            {theme === 'christmas' && !zenMode && (
-              <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                className="fixed bottom-24 right-4 md:right-8 z-50"
-              >
-                <button
-                  onClick={() => setSantaMessage(p => !p)}
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-red-600 to-red-800 border-2 border-white/20 shadow-2xl flex items-center justify-center text-3xl hover:scale-110 transition-transform cursor-pointer relative"
-                >
-                  🎅
-                  {santaMessage && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      className="absolute bottom-20 right-0 w-48 bg-white text-slate-900 p-4 rounded-2xl shadow-xl text-center font-serif text-sm border-2 border-red-500 after:content-[''] after:absolute after:bottom-[-8px] after:right-6 after:w-4 after:h-4 after:bg-white after:rotate-45 after:border-r-2 after:border-b-2 after:border-red-500"
-                    >
-                      <p className="mb-2 font-bold text-red-600">Merry Christmas!</p>
-                      <p>May the peace of Christ rule in your hearts.</p>
-                    </motion.div>
-                  )}
-                </button>
-              </motion.div>
-            )}
-
             {/* Mobile Bottom Bar - Hidden in Zen Mode */}
             {!zenMode && (
-              <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-slate-900/90 border-t border-white/5 pb-6">
+              <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#050505]/95 backdrop-blur-xl border-t border-gold-500/10 pb-6">
                 <div className="flex justify-around items-center p-3">
                   {/* Main Nav Items (4 items) */}
                   {navItems.slice(0, 4).map((item) => (
