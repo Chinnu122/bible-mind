@@ -41,7 +41,8 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
             case 'abstract':
                 return ['#f59e0b', '#fbbf24', '#c48e2f', '#fcd34d', '#f97316', '#eab308'];
             case 'cosmic':
-                return ['#06b6d4', '#3b82f6', '#6366f1', '#22d3ee', '#0ea5e9', '#818cf8'];
+            case 'dark':
+                return ['#71717a', '#a1a1aa', '#d4d4d8', '#e4e4e7', '#52525b', '#3f3f46'];
             case 'aurora':
                 return ['#10b981', '#14b8a6', '#06b6d4', '#22d3ee', '#34d399', '#2dd4bf'];
             default:
@@ -53,7 +54,8 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
         switch (theme) {
             case 'nebula': return ['#0d0015', '#1a0530', '#0f0020'];
             case 'abstract': return ['#0a0604', '#150d08', '#0f0906'];
-            case 'cosmic': return ['#010812', '#051525', '#020c18'];
+            case 'cosmic':
+            case 'dark': return ['#09090b', '#18181b', '#0f0f10'];
             case 'aurora': return ['#021210', '#041a18', '#031512'];
             default: return ['#0d0015', '#1a0530'];
         }
@@ -225,54 +227,50 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
             ctx.fillRect(0, 0, w, h);
         };
 
-        // COSMIC - Celestial waves and aurora-like effects
+        // COSMIC/DARK LUXURY - Premium elegant with subtle silver accents
         const drawCosmicTheme = (t: number, w: number, h: number) => {
-            // Top cyan aurora
+            // Central subtle silver glow
             const g1 = ctx.createRadialGradient(
                 w * 0.5,
-                h * 0.2 + Math.sin(t * 0.0005) * 30,
+                h * 0.4 + Math.sin(t * 0.0003) * 20,
                 0,
-                w * 0.5, h * 0.3, w * 0.55
+                w * 0.5, h * 0.45, w * 0.5
             );
-            g1.addColorStop(0, 'rgba(6, 182, 212, 0.28)');
-            g1.addColorStop(0.5, 'rgba(34, 211, 238, 0.1)');
+            g1.addColorStop(0, 'rgba(161, 161, 170, 0.12)');
+            g1.addColorStop(0.6, 'rgba(113, 113, 122, 0.04)');
             g1.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = g1;
             ctx.fillRect(0, 0, w, h);
 
-            // Central blue wave
-            const waveY = h * 0.55 + Math.sin(t * 0.0008) * 60;
+            // Subtle accent highlight
+            const highlightX = w * 0.25 + Math.sin(t * 0.0004) * 80;
             const g2 = ctx.createRadialGradient(
-                w * 0.5 + Math.cos(t * 0.0005) * 100,
-                waveY, 0,
-                w * 0.5, waveY, w * 0.65
+                highlightX, h * 0.3, 0,
+                highlightX, h * 0.3, 300
             );
-            g2.addColorStop(0, 'rgba(59, 130, 246, 0.22)');
-            g2.addColorStop(0.6, 'rgba(14, 165, 233, 0.08)');
+            g2.addColorStop(0, 'rgba(212, 212, 216, 0.08)');
             g2.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = g2;
             ctx.fillRect(0, 0, w, h);
 
-            // Indigo depth
+            // Bottom edge glow
             const g3 = ctx.createRadialGradient(
-                w * 0.25 + Math.sin(t * 0.0004) * 80,
-                h * 0.7,
-                0,
-                w * 0.25, h * 0.7, 350
+                w * 0.6, h * 0.85, 0,
+                w * 0.6, h * 0.85, w * 0.5
             );
-            g3.addColorStop(0, 'rgba(99, 102, 241, 0.18)');
+            g3.addColorStop(0, 'rgba(82, 82, 91, 0.1)');
             g3.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = g3;
             ctx.fillRect(0, 0, w, h);
 
-            // Right side shimmer
+            // Subtle top corner accent
             const g4 = ctx.createRadialGradient(
-                w * 0.85 - Math.cos(t * 0.0006) * 60,
-                h * 0.4 + Math.sin(t * 0.0006) * 40,
+                w * 0.9 - Math.cos(t * 0.0003) * 50,
+                h * 0.15,
                 0,
-                w * 0.85, h * 0.4, 280
+                w * 0.9, h * 0.15, 200
             );
-            g4.addColorStop(0, 'rgba(129, 140, 248, 0.12)');
+            g4.addColorStop(0, 'rgba(228, 228, 231, 0.05)');
             g4.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = g4;
             ctx.fillRect(0, 0, w, h);
@@ -355,7 +353,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
                 drawNebulaTheme(t, w, h);
             } else if (theme === 'abstract') {
                 drawAbstractTheme(t, w, h);
-            } else if (theme === 'cosmic') {
+            } else if (theme === 'cosmic' || theme === 'dark') {
                 drawCosmicTheme(t, w, h);
             } else if (theme === 'aurora') {
                 drawAuroraTheme(t, w, h);

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings, Theme } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity, Stars, Orbit, Waves } from 'lucide-react';
+import { X, Volume2, VolumeX, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity, Stars, Moon, Waves } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsModal() {
@@ -11,7 +11,7 @@ export default function SettingsModal() {
     const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
         { id: 'nebula', name: 'Nebula', icon: Stars, color: 'from-purple-600 via-pink-500 to-blue-600', desc: 'Deep Space Galaxy' },
         { id: 'abstract', name: 'Abstract', icon: Zap, color: 'from-gold-500 via-amber-400 to-yellow-300', desc: 'Dynamic Particles' },
-        { id: 'cosmic', name: 'Cosmic', icon: Orbit, color: 'from-cyan-500 via-blue-600 to-indigo-700', desc: 'Celestial Waves' },
+        { id: 'dark', name: 'Dark Luxury', icon: Moon, color: 'from-slate-700 via-zinc-800 to-neutral-900', desc: 'Premium Elegant' },
         { id: 'aurora', name: 'Aurora', icon: Waves, color: 'from-emerald-400 via-teal-500 to-cyan-600', desc: 'Northern Lights' },
     ];
 
