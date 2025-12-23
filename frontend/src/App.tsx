@@ -25,6 +25,7 @@ import PremiumLogo from './components/PremiumLogo';
 import LivingPrismIntro from './components/LivingPrismIntro';
 import MagneticButton from './components/MagneticButton';
 import GoldenDustCursor from './components/GoldenDustCursor';
+import DivineRays from './components/DivineRays';
 
 type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard';
 
@@ -93,6 +94,7 @@ function AppLayout() {
 
       {renderBackground()}
 
+      <DivineRays />
       <GoldenDustCursor />
       <ClickSound />
       <AtmospherePlayer />
