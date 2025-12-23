@@ -42,6 +42,8 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
                 return ['#f59e0b', '#fbbf24', '#c48e2f', '#fcd34d', '#f97316', '#eab308'];
             case 'cosmic':
                 return ['#06b6d4', '#3b82f6', '#6366f1', '#22d3ee', '#0ea5e9', '#818cf8'];
+            case 'aurora':
+                return ['#10b981', '#14b8a6', '#06b6d4', '#22d3ee', '#34d399', '#2dd4bf'];
             default:
                 return ['#a855f7', '#ec4899', '#3b82f6', '#8b5cf6', '#ffffff'];
         }
@@ -52,6 +54,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
             case 'nebula': return ['#0d0015', '#1a0530', '#0f0020'];
             case 'abstract': return ['#0a0604', '#150d08', '#0f0906'];
             case 'cosmic': return ['#010812', '#051525', '#020c18'];
+            case 'aurora': return ['#021210', '#041a18', '#031512'];
             default: return ['#0d0015', '#1a0530'];
         }
     }, [theme]);
@@ -275,6 +278,54 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
             ctx.fillRect(0, 0, w, h);
         };
 
+        // AURORA - Northern Lights flowing effect
+        const drawAuroraTheme = (t: number, w: number, h: number) => {
+            // Main emerald curtain
+            const curtainY = h * 0.3 + Math.sin(t * 0.0004) * 40;
+            const g1 = ctx.createRadialGradient(
+                w * 0.5, curtainY, 0,
+                w * 0.5, curtainY, w * 0.7
+            );
+            g1.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
+            g1.addColorStop(0.5, 'rgba(5, 150, 105, 0.12)');
+            g1.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g1;
+            ctx.fillRect(0, 0, w, h);
+
+            // Teal wave
+            const waveX = w * 0.3 + Math.sin(t * 0.0006) * 150;
+            const g2 = ctx.createRadialGradient(
+                waveX, h * 0.45, 0,
+                waveX, h * 0.45, 400
+            );
+            g2.addColorStop(0, 'rgba(20, 184, 166, 0.25)');
+            g2.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g2;
+            ctx.fillRect(0, 0, w, h);
+
+            // Cyan shimmer
+            const shimmerX = w * 0.7 - Math.cos(t * 0.0005) * 100;
+            const shimmerY = h * 0.55 + Math.sin(t * 0.0007) * 80;
+            const g3 = ctx.createRadialGradient(
+                shimmerX, shimmerY, 0,
+                shimmerX, shimmerY, 350
+            );
+            g3.addColorStop(0, 'rgba(6, 182, 212, 0.2)');
+            g3.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g3;
+            ctx.fillRect(0, 0, w, h);
+
+            // Bottom glow
+            const g4 = ctx.createRadialGradient(
+                w * 0.5, h * 0.85, 0,
+                w * 0.5, h * 0.85, w * 0.6
+            );
+            g4.addColorStop(0, 'rgba(52, 211, 153, 0.15)');
+            g4.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g4;
+            ctx.fillRect(0, 0, w, h);
+        };
+
         const draw = (timestamp: number) => {
             const deltaTime = timestamp - lastFrameTimeRef.current;
             if (deltaTime < 16) {
@@ -306,6 +357,8 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
                 drawAbstractTheme(t, w, h);
             } else if (theme === 'cosmic') {
                 drawCosmicTheme(t, w, h);
+            } else if (theme === 'aurora') {
+                drawAuroraTheme(t, w, h);
             }
 
             ctx.globalCompositeOperation = 'source-over';
