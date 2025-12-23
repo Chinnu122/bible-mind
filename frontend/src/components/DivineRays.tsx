@@ -4,8 +4,8 @@ import { useSettings } from '../contexts/SettingsContext';
 export default function DivineRays() {
     const { theme } = useSettings();
 
-    // Only show rays on divine or christmas themes
-    if (theme !== 'divine') return null;
+    // Only show rays on abstract theme (golden)
+    if (theme !== 'abstract') return null;
 
     return (
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
