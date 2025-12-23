@@ -11,11 +11,11 @@ interface Particle {
 }
 
 interface LiveWallpaperProps {
-    theme?: 'live-abstract' | 'divine' | 'midnight' | 'ethereal' | string;
+    theme?: 'nebula' | 'abstract' | 'cosmic' | string;
     isConcentrated?: boolean;
 }
 
-const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abstract', isConcentrated = false }) => {
+const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula', isConcentrated = false }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseRef = useRef({ x: 0, y: 0 });
 
@@ -47,40 +47,40 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
 
         const getThemeColors = () => {
             switch (theme) {
-                case 'divine':
-                    return ['#FFD700', '#FFF8DC', '#FFA500', '#ffffff', '#FFFAF0'];
-                case 'midnight':
-                    return ['#1E90FF', '#4169E1', '#9370DB', '#87CEFA', '#ffffff'];
-                case 'ethereal':
-                    return ['#E0FFFF', '#B0C4DE', '#F0F8FF', '#ffffff', '#AFEEEE'];
+                case 'nebula':
+                    return ['#a855f7', '#ec4899', '#3b82f6', '#8b5cf6', '#ffffff'];
+                case 'abstract':
+                    return ['#f59e0b', '#fbbf24', '#c48e2f', '#ffffff', '#fcd34d'];
+                case 'cosmic':
+                    return ['#06b6d4', '#3b82f6', '#6366f1', '#ffffff', '#22d3ee'];
                 default:
-                    return ['#C48E2F', '#7C3AED', '#ffffff', '#DAA520', '#4B0082'];
+                    return ['#a855f7', '#ec4899', '#3b82f6', '#8b5cf6', '#ffffff'];
             }
         };
 
         const getBgColors = () => {
             switch (theme) {
-                case 'divine': return ['#2a1a00', '#000000'];
-                case 'midnight': return ['#050510', '#0a0a25'];
-                case 'ethereal': return ['#0a1520', '#102035'];
-                default: return ['#020202', '#08080a'];
+                case 'nebula': return ['#0f0520', '#1a0a30'];
+                case 'abstract': return ['#0a0805', '#121008'];
+                case 'cosmic': return ['#020815', '#0a1525'];
+                default: return ['#0f0520', '#1a0a30'];
             }
         };
 
         const initParticles = () => {
             particles = [];
-            const particleCount = isConcentrated ? 60 : 100;
+            const particleCount = isConcentrated ? 80 : 150;
             const colors = getThemeColors();
 
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * (isConcentrated ? 2 : 3) + 0.5,
-                    speedX: (Math.random() - 0.5) * (isConcentrated ? 0.3 : 0.5),
-                    speedY: (Math.random() - 0.5) * (isConcentrated ? 0.3 : 0.5),
+                    size: Math.random() * 3 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
                     color: colors[Math.floor(Math.random() * colors.length)],
-                    alpha: Math.random() * 0.5 + 0.2,
+                    alpha: Math.random() * 0.6 + 0.2,
                 });
             }
         };
@@ -91,33 +91,33 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                     x: Math.random() * canvas.width,
                     y: Math.random() * (canvas.height / 2),
                     speed: Math.random() * 15 + 10,
-                    length: Math.random() * 80 + 50,
+                    length: Math.random() * 100 + 60,
                     angle: Math.PI / 4,
                     opacity: 1
                 });
             }
         };
 
-        // Advanced Nebula & Cloud Painting
+        // Rich Nebula & Cloud Effects
         const drawNebula = (t: number) => {
-            // MIDNIGHT: Rich, Multi-layered Galaxy
-            if (theme === 'midnight') {
-                // Layer 1: Deep Purple Cloud moving slow
+            // NEBULA THEME: Deep Space Galaxy
+            if (theme === 'nebula') {
+                // Purple Core
                 const g1 = ctx.createRadialGradient(
                     canvas.width * 0.3 + Math.sin(t * 0.001) * 200,
                     canvas.height * 0.4 + Math.cos(t * 0.001) * 100,
                     0,
                     canvas.width * 0.5,
                     canvas.height * 0.5,
-                    canvas.width * 0.6
+                    canvas.width * 0.7
                 );
-                g1.addColorStop(0, 'rgba(76, 29, 149, 0.15)');
-                g1.addColorStop(0.6, 'rgba(30, 27, 75, 0.05)');
+                g1.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
+                g1.addColorStop(0.5, 'rgba(139, 92, 246, 0.1)');
                 g1.addColorStop(1, 'rgba(0,0,0,0)');
                 ctx.fillStyle = g1;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Layer 2: Blue/Cyan Cloud moving opposite
+                // Pink Cloud
                 const g2 = ctx.createRadialGradient(
                     canvas.width * 0.7 - Math.sin(t * 0.0015) * 150,
                     canvas.height * 0.6 - Math.cos(t * 0.0015) * 100,
@@ -126,12 +126,12 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                     canvas.height * 0.5,
                     canvas.width * 0.5
                 );
-                g2.addColorStop(0, 'rgba(56, 189, 248, 0.1)');
+                g2.addColorStop(0, 'rgba(236, 72, 153, 0.15)');
                 g2.addColorStop(1, 'rgba(0,0,0,0)');
                 ctx.fillStyle = g2;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Layer 3: Pink/Magenta Highlights
+                // Blue Accent
                 const g3 = ctx.createRadialGradient(
                     canvas.width * 0.5 + Math.cos(t * 0.002) * 300,
                     canvas.height * 0.8 + Math.sin(t * 0.002) * 100,
@@ -140,81 +140,72 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                     canvas.height * 0.3,
                     400
                 );
-                g3.addColorStop(0, 'rgba(236, 72, 153, 0.08)');
+                g3.addColorStop(0, 'rgba(59, 130, 246, 0.12)');
                 g3.addColorStop(1, 'rgba(0,0,0,0)');
                 ctx.fillStyle = g3;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // DIVINE: Golden Haze & Clouds
-            if (theme === 'divine') {
-                const g1 = ctx.createRadialGradient(
-                    canvas.width * 0.5,
-                    0,
-                    100,
-                    canvas.width * 0.5,
-                    canvas.height * 0.4,
-                    canvas.height
-                );
-                g1.addColorStop(0, 'rgba(255, 215, 0, 0.15)'); // Bright Gold top
-                g1.addColorStop(0.5, 'rgba(218, 165, 32, 0.05)');
-                g1.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = g1;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-
-            // ETHEREAL: Northern Lights / Soft Waves
-            if (theme === 'ethereal') {
-                const g1 = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                g1.addColorStop(0, 'rgba(34, 211, 238, 0.05)');
-                g1.addColorStop(0.5, 'rgba(167, 139, 250, 0.05)');
-                g1.addColorStop(1, 'rgba(34, 211, 238, 0.05)');
-                ctx.fillStyle = g1;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Moving "Wave"
-                const waveY = canvas.height * 0.8 + Math.sin(t * 0.005) * 50;
-                const g2 = ctx.createRadialGradient(
-                    canvas.width * 0.5, waveY, 0,
-                    canvas.width * 0.5, waveY, canvas.width
-                );
-                g2.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
-                g2.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = g2;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            // LIVE ABSTRACT: Standard subtle gradient -> UPGRADED TO RICH NEBULA
-            if (theme === 'live-abstract') {
-                // Layer 1: Deep Purple/Blue foundation
+            // ABSTRACT THEME: Golden Particles
+            if (theme === 'abstract') {
+                // Central Gold Glow
                 const g1 = ctx.createRadialGradient(
                     canvas.width * 0.5, canvas.height * 0.5, 0,
                     canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.8
                 );
-                g1.addColorStop(0, 'rgba(76, 29, 149, 0.2)'); // Increased opacity
-                g1.addColorStop(0.6, 'rgba(30, 27, 75, 0.1)');
+                g1.addColorStop(0, 'rgba(196, 142, 47, 0.2)');
+                g1.addColorStop(0.5, 'rgba(245, 158, 11, 0.1)');
                 g1.addColorStop(1, 'rgba(0,0,0,0)');
                 ctx.fillStyle = g1;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Layer 2: Moving Golden gaseous clouds
+                // Moving Warm Cloud
                 const cloudX = canvas.width * 0.5 + Math.sin(t * 0.002) * 200;
                 const cloudY = canvas.height * 0.4 + Math.cos(t * 0.003) * 100;
-                const g2 = ctx.createRadialGradient(
-                    cloudX, cloudY, 0,
-                    cloudX, cloudY, 500
+                const g2 = ctx.createRadialGradient(cloudX, cloudY, 0, cloudX, cloudY, 500);
+                g2.addColorStop(0, 'rgba(251, 191, 36, 0.15)');
+                g2.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = g2;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // COSMIC THEME: Celestial Waves
+            if (theme === 'cosmic') {
+                // Cyan Core
+                const g1 = ctx.createRadialGradient(
+                    canvas.width * 0.5,
+                    canvas.height * 0.3 + Math.sin(t * 0.001) * 50,
+                    0,
+                    canvas.width * 0.5,
+                    canvas.height * 0.5,
+                    canvas.width * 0.7
                 );
-                g2.addColorStop(0, 'rgba(196, 142, 47, 0.15)'); // Visible Gold
+                g1.addColorStop(0, 'rgba(6, 182, 212, 0.2)');
+                g1.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = g1;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Blue Wave
+                const waveY = canvas.height * 0.7 + Math.sin(t * 0.005) * 80;
+                const g2 = ctx.createRadialGradient(
+                    canvas.width * 0.5, waveY, 0,
+                    canvas.width * 0.5, waveY, canvas.width
+                );
+                g2.addColorStop(0, 'rgba(99, 102, 241, 0.15)');
                 g2.addColorStop(1, 'rgba(0,0,0,0)');
                 ctx.fillStyle = g2;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Layer 3: Accent Highlights (Cyan/Magenta) for "Space" feel
-                const highlightX = canvas.width * 0.2 + Math.cos(t * 0.001) * 300;
+                // Indigo Accent
                 const g3 = ctx.createRadialGradient(
-                    highlightX, canvas.height * 0.8, 0,
-                    highlightX, canvas.height * 0.8, 400
+                    canvas.width * 0.2 + Math.cos(t * 0.001) * 200,
+                    canvas.height * 0.5,
+                    0,
+                    canvas.width * 0.2,
+                    canvas.height * 0.5,
+                    400
                 );
-                g3.addColorStop(0, 'rgba(124, 58, 237, 0.1)'); // Violet
+                g3.addColorStop(0, 'rgba(79, 70, 229, 0.1)');
                 g3.addColorStop(1, 'rgba(0,0,0,0)');
                 ctx.fillStyle = g3;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -234,9 +225,9 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Layer: Artistic Nebula/Clouds
-            ctx.globalCompositeOperation = 'screen'; // Additive blending for glow
+            ctx.globalCompositeOperation = 'screen';
             drawNebula(time);
-            ctx.globalCompositeOperation = 'source-over'; // Restore normal blending
+            ctx.globalCompositeOperation = 'source-over';
 
             // Shooting Stars
             createShootingStar();
@@ -281,7 +272,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.alpha * (isConcentrated ? 0.3 : 0.7);
+                ctx.globalAlpha = p.alpha * (isConcentrated ? 0.4 : 0.8);
                 ctx.fill();
                 ctx.globalAlpha = 1.0;
 
@@ -294,9 +285,9 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                 if (p.y > canvas.height) p.y = 0;
             });
 
-            // Lines (only for default/midnight)
-            if (!isConcentrated && (theme === 'live-abstract' || theme === 'midnight')) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            // Connection Lines
+            if (!isConcentrated) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
                 ctx.lineWidth = 0.5;
                 for (let i = 0; i < particles.length; i++) {
                     for (let j = i + 1; j < particles.length; j++) {
@@ -304,7 +295,7 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'live-abs
                         const dy = particles[i].y - particles[j].y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
 
-                        if (distance < 120) {
+                        if (distance < 100) {
                             ctx.beginPath();
                             ctx.moveTo(particles[i].x, particles[i].y);
                             ctx.lineTo(particles[j].x, particles[j].y);

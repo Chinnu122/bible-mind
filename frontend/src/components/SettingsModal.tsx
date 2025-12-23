@@ -1,13 +1,18 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSettings } from '../contexts/SettingsContext';
-import { X, Volume2, VolumeX, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity } from 'lucide-react';
+import { useSettings, Theme } from '../contexts/SettingsContext';
+import { X, Volume2, VolumeX, Zap, Paintbrush, Music, Info, Monitor, Type, CloudRain, Church, Sparkles, EyeOff, Wind, Flame, Activity, Stars, Orbit } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsModal() {
-    const { soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, fontFamily, setFontFamily, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
+    const { theme, setTheme, soundEnabled, setSoundEnabled, setIsSettingsOpen, particles, setParticles, volume, setVolume, fontSize, setFontSize, fontFamily, setFontFamily, atmosphere, setAtmosphere, zenMode, setZenMode } = useSettings();
     const [activeTab, setActiveTab] = useState<'visuals' | 'sound' | 'about' | 'atmosphere'>('visuals');
 
-    // Themes removed as per user request
+    // 3 Premium Themes with Live Backgrounds
+    const themes: { id: Theme; name: string; icon: any; color: string; desc: string }[] = [
+        { id: 'nebula', name: 'Nebula', icon: Stars, color: 'from-purple-600 via-pink-500 to-blue-600', desc: 'Deep Space Galaxy' },
+        { id: 'abstract', name: 'Abstract', icon: Zap, color: 'from-gold-500 via-amber-400 to-yellow-300', desc: 'Dynamic Particles' },
+        { id: 'cosmic', name: 'Cosmic', icon: Orbit, color: 'from-cyan-500 via-blue-600 to-indigo-700', desc: 'Celestial Waves' },
+    ];
 
 
     const tabVariant = {
@@ -86,9 +91,36 @@ export default function SettingsModal() {
                             >
                                 <section>
                                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <Monitor size={14} /> Display Settings
+                                        <Monitor size={14} /> Live Backgrounds
                                     </h3>
-                                    {/* Themes removed as per user request */}
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {themes.map((t) => (
+                                            <button
+                                                key={t.id}
+                                                onClick={() => setTheme(t.id)}
+                                                className={`group relative h-24 rounded-2xl border-2 transition-all duration-300 overflow-hidden text-left ${theme === t.id ? 'border-gold-500 shadow-gold-500/20 shadow-lg scale-[1.02]' : 'border-white/5 hover:border-white/20'
+                                                    }`}
+                                            >
+                                                <div className={`absolute inset-0 bg-gradient-to-r ${t.color} opacity-30 group-hover:opacity-40 transition-opacity`} />
+                                                <div className="absolute inset-0 p-5 flex items-center justify-between z-10">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center ${theme === t.id ? 'text-gold-400' : 'text-slate-300'}`}>
+                                                            <t.icon size={24} />
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="font-bold text-lg text-crema-50">{t.name}</h4>
+                                                            <p className="text-xs text-slate-400">{t.desc}</p>
+                                                        </div>
+                                                    </div>
+                                                    {theme === t.id && (
+                                                        <motion.div layoutId="activeCheck" className="w-6 h-6 rounded-full bg-gold-500 flex items-center justify-center">
+                                                            <div className="w-2 h-2 rounded-full bg-black" />
+                                                        </motion.div>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
                                 </section>
 
                                 <section>
