@@ -312,11 +312,11 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
     // Theme-based background
     const getBgClass = () => {
         switch (theme) {
-            case 'nebula': return 'from-purple-900/50 to-pink-900/50';
-            case 'abstract': return 'from-amber-900/50 to-orange-900/50';
-            case 'dark': return 'from-zinc-900/50 to-slate-900/50';
-            case 'aurora': return 'from-emerald-900/50 to-teal-900/50';
-            default: return 'from-purple-900/50 to-pink-900/50';
+            case 'nebula': return 'from-purple-900 to-pink-900';
+            case 'abstract': return 'from-amber-900 to-orange-900';
+            case 'dark': return 'from-zinc-900 to-slate-900';
+            case 'aurora': return 'from-emerald-900 to-teal-900';
+            default: return 'from-purple-900 to-pink-900';
         }
     };
 
@@ -335,7 +335,7 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
                 initial={{ scale: 0.9, y: 50 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 50 }}
-                className={`relative w-full max-w-4xl h-[85vh] bg-gradient-to-br ${getBgClass()} backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/10`}
+                className={`relative w-full max-w-4xl h-[85vh] bg-gray-900 bg-gradient-to-br ${getBgClass()} backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20`}
             >
                 {/* Header Controls */}
                 <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
