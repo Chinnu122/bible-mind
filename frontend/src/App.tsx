@@ -16,6 +16,7 @@ import CharacterOfDay from './components/CharacterOfDay';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
 import AtmospherePlayer from './components/AtmospherePlayer';
+import HolidayManager from './components/holiday/HolidayManager';
 import VerseGallery from './components/VerseGallery';
 import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
@@ -99,6 +100,7 @@ function AppLayout() {
       <GoldenDustCursor />
       <ClickSound />
       <AtmospherePlayer />
+      <HolidayManager />
 
       {/* Scroll Progress Indicator */}
       <motion.div
