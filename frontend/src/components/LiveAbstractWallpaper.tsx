@@ -20,11 +20,11 @@ interface ShootingStar {
 }
 
 interface LiveWallpaperProps {
-    theme?: 'nebula' | 'abstract' | 'cosmic' | string;
+    theme?: 'nebula' | 'abstract' | 'cosmic' | 'aurora' | 'forest' | string;
     isConcentrated?: boolean;
 }
 
-const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula', isConcentrated = false }) => {
+const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'forest', isConcentrated = false }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseRef = useRef({ x: 0, y: 0 });
     const particlesRef = useRef<Particle[]>([]);
@@ -45,8 +45,11 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
                 return ['#71717a', '#a1a1aa', '#d4d4d8', '#e4e4e7', '#52525b', '#3f3f46'];
             case 'aurora':
                 return ['#10b981', '#14b8a6', '#06b6d4', '#22d3ee', '#34d399', '#2dd4bf'];
+            case 'forest':
+                // Soft, muted forest greens and warm golden rays
+                return ['#2d5016', '#4a7c23', '#6b8f47', '#a8c686', '#d4b896', '#8b7355'];
             default:
-                return ['#a855f7', '#ec4899', '#3b82f6', '#8b5cf6', '#ffffff'];
+                return ['#2d5016', '#4a7c23', '#6b8f47', '#a8c686']; // Default to forest
         }
     }, [theme]);
 
@@ -57,7 +60,8 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
             case 'cosmic':
             case 'dark': return ['#09090b', '#18181b', '#0f0f10'];
             case 'aurora': return ['#021210', '#041a18', '#031512'];
-            default: return ['#0d0015', '#1a0530'];
+            case 'forest': return ['#0a1408', '#0d1a0c', '#081208']; // Deep calming forest green
+            default: return ['#0a1408', '#0d1a0c', '#081208']; // Default to forest
         }
     }, [theme]);
 
@@ -324,6 +328,49 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
             ctx.fillRect(0, 0, w, h);
         };
 
+        // FOREST - Calming nature background with tree silhouettes and gentle light
+        const drawForestTheme = (t: number, w: number, h: number) => {
+            // Soft moonlight/sunlight glow from top
+            const lightX = w * 0.6 + Math.sin(t * 0.0002) * 30;
+            const lightY = h * 0.15;
+            const g1 = ctx.createRadialGradient(lightX, lightY, 0, lightX, lightY, w * 0.5);
+            g1.addColorStop(0, 'rgba(255, 250, 220, 0.12)');
+            g1.addColorStop(0.3, 'rgba(255, 245, 200, 0.06)');
+            g1.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g1;
+            ctx.fillRect(0, 0, w, h);
+
+            // Gentle vertical light rays (god rays effect)
+            ctx.globalAlpha = 0.03 + Math.sin(t * 0.0003) * 0.01;
+            for (let i = 0; i < 5; i++) {
+                const rayX = w * (0.3 + i * 0.12) + Math.sin(t * 0.0002 + i) * 20;
+                const rayGrad = ctx.createLinearGradient(rayX, 0, rayX, h);
+                rayGrad.addColorStop(0, 'rgba(255, 250, 220, 0.8)');
+                rayGrad.addColorStop(0.4, 'rgba(255, 245, 210, 0.3)');
+                rayGrad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = rayGrad;
+                ctx.fillRect(rayX - 30, 0, 60, h * 0.7);
+            }
+            ctx.globalAlpha = 1;
+
+            // Ambient forest floor glow
+            const g2 = ctx.createRadialGradient(w * 0.5, h * 0.95, 0, w * 0.5, h * 0.95, w * 0.8);
+            g2.addColorStop(0, 'rgba(45, 80, 22, 0.15)');
+            g2.addColorStop(0.5, 'rgba(30, 60, 15, 0.08)');
+            g2.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g2;
+            ctx.fillRect(0, 0, w, h);
+
+            // Soft ambient mist
+            const mistY = h * 0.7 + Math.sin(t * 0.0003) * 20;
+            const g3 = ctx.createLinearGradient(0, mistY - 100, 0, mistY + 100);
+            g3.addColorStop(0, 'rgba(0,0,0,0)');
+            g3.addColorStop(0.5, 'rgba(100, 140, 80, 0.04)');
+            g3.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g3;
+            ctx.fillRect(0, 0, w, h);
+        };
+
         const draw = (timestamp: number) => {
             const deltaTime = timestamp - lastFrameTimeRef.current;
             if (deltaTime < 16) {
@@ -357,6 +404,11 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'nebula',
                 drawCosmicTheme(t, w, h);
             } else if (theme === 'aurora') {
                 drawAuroraTheme(t, w, h);
+            } else if (theme === 'forest') {
+                drawForestTheme(t, w, h);
+            } else {
+                // Default to forest
+                drawForestTheme(t, w, h);
             }
 
             ctx.globalCompositeOperation = 'source-over';
