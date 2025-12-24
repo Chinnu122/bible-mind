@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star } from 'lucide-react';
+import { Sparkles, Crown, Heart, Flame, BookOpen, Scroll, Users, Cross, Music, Compass, Sword, Shield, Feather, Waves, Cloud } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotebookModal from './NotebookModal';
 import GenesisBook from './GenesisBook';
@@ -100,6 +100,31 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         return colors[id % colors.length];
     };
 
+    // Function to get themed icon for each book
+    const getBookIcon = (title: string) => {
+        const iconMap: Record<string, React.ReactNode> = {
+            'Genesis': <Sparkles size={24} className="text-gold-300" />,
+            'Exodus': <Waves size={24} className="text-blue-300" />,
+            'Leviticus': <Flame size={24} className="text-orange-300" />,
+            'Numbers': <Users size={24} className="text-teal-300" />,
+            'Deuteronomy': <Scroll size={24} className="text-amber-300" />,
+            'Joshua': <Sword size={24} className="text-gray-300" />,
+            'Judges': <Shield size={24} className="text-bronze-300" />,
+            'Ruth': <Heart size={24} className="text-rose-300" />,
+            'Psalms': <Music size={24} className="text-purple-300" />,
+            'Proverbs': <Compass size={24} className="text-emerald-300" />,
+            'Job': <Cloud size={24} className="text-slate-300" />,
+            'Isaiah': <Feather size={24} className="text-sky-300" />,
+            'Matthew': <Cross size={24} className="text-gold-300" />,
+            'Mark': <Cross size={24} className="text-red-300" />,
+            'Luke': <Cross size={24} className="text-blue-300" />,
+            'John': <Cross size={24} className="text-green-300" />,
+            'Acts': <Flame size={24} className="text-orange-300" />,
+            'Revelation': <Crown size={24} className="text-gold-300" />,
+        };
+        return iconMap[title] || <BookOpen size={24} className="text-gold-300/50" />;
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -150,8 +175,10 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                     <h3 className="font-main text-lg lg:text-xl text-gold-100 leading-tight drop-shadow-md">{book.title}</h3>
                                 </div>
 
-                                <div className="relative z-10">
-                                    <Star size={16} className="text-gold-500 mb-2 mx-auto opacity-80" />
+                                <div className="relative z-10 flex-1 flex items-center justify-center">
+                                    <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
+                                        {getBookIcon(book.title)}
+                                    </div>
                                 </div>
 
                                 <div className="relative z-10 w-full pb-4">
