@@ -103,16 +103,17 @@ const VisualsGallery: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: index * 0.05 }}
                                 onClick={() => setSelectedImage(photo)}
-                                className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-gold-500/50 transition-all shadow-lg"
+                                className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-gold-500/20 hover:border-gold-500/60 transition-all shadow-lg bg-black"
                             >
                                 <img
                                     src={photo.src}
                                     alt={photo.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 bg-[#0a0a0a]"
                                     loading="lazy"
+                                    style={{ backgroundColor: '#0a0a0a' }}
                                 />
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform">
+                                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent translate-y-full group-hover:translate-y-0 transition-transform">
                                     <span className="text-xs font-medium text-crema-100">{photo.title}</span>
                                 </div>
                             </motion.div>

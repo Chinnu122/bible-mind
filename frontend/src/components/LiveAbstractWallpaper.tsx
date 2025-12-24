@@ -33,6 +33,13 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'forest',
     const timeRef = useRef(0);
     const lastFrameTimeRef = useRef(0);
 
+    // Mobile detection for performance optimization
+    const isMobile = typeof window !== 'undefined' && (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        window.innerWidth < 768 ||
+        'ontouchstart' in window
+    );
+
     // Memoized theme colors - each theme has unique colors
     const getThemeColors = useCallback(() => {
         switch (theme) {
@@ -80,8 +87,9 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'forest',
         const ctx = canvas.getContext('2d', { alpha: false });
         if (!ctx) return;
 
-        // Responsive particle count
+        // Responsive particle count - REDUCED for mobile
         const getParticleCount = () => {
+            if (isMobile) return isConcentrated ? 15 : 25; // Much fewer particles on mobile
             const area = window.innerWidth * window.innerHeight;
             const baseCount = isConcentrated ? 50 : 100;
             if (area < 500000) return Math.floor(baseCount * 0.5);
@@ -373,12 +381,14 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'forest',
 
         const draw = (timestamp: number) => {
             const deltaTime = timestamp - lastFrameTimeRef.current;
-            if (deltaTime < 16) {
+            // MOBILE: Target 30fps (33ms), DESKTOP: Target 60fps (16ms)
+            const frameThreshold = isMobile ? 33 : 16;
+            if (deltaTime < frameThreshold) {
                 animationRef.current = requestAnimationFrame(draw);
                 return;
             }
             lastFrameTimeRef.current = timestamp;
-            timeRef.current += deltaTime * 0.06;
+            timeRef.current += deltaTime * (isMobile ? 0.03 : 0.06); // Slower animation on mobile
 
             const w = window.innerWidth;
             const h = window.innerHeight;
@@ -475,11 +485,11 @@ const LiveAbstractWallpaper: React.FC<LiveWallpaperProps> = ({ theme = 'forest',
             }
             ctx.globalAlpha = 1.0;
 
-            // Connection Lines (desktop only)
-            if (!isConcentrated && w > 768) {
+            // Connection Lines (desktop only - SKIP on mobile for performance)
+            if (!isConcentrated && !isMobile && w > 768) {
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
                 ctx.lineWidth = 0.4;
-                const len = particles.length;
+                const len = Math.min(particles.length, 50); // Limit connections
                 for (let i = 0; i < len; i++) {
                     for (let j = i + 1; j < len; j++) {
                         const dx = particles[i].x - particles[j].x;

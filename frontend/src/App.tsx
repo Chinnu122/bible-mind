@@ -25,13 +25,16 @@ import BooksPage from './components/BooksPage';
 import Dashboard from './components/Dashboard';
 import PricingPage from './components/PricingPage';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
+import NebulaBackground from './components/NebulaBackground';
 import LivingPrismIntro from './components/LivingPrismIntro';
 import MagneticButton from './components/MagneticButton';
 import GoldenDustCursor from './components/GoldenDustCursor';
 import DivineRays from './components/DivineRays';
 import Logo from './components/Logo';
+import MobileDrawer from './components/MobileDrawer';
+import DownloadPage from './components/DownloadPage';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download';
 
 interface UserData {
   id: string;
@@ -44,6 +47,7 @@ function AppLayout() {
   const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewState>('landing');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
   const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
 
@@ -82,8 +86,8 @@ function AppLayout() {
       );
     }
 
-    // Always use generative background (Live Abstract) for all themes
-    return <LiveAbstractWallpaper theme={theme} isConcentrated={zenMode} />;
+    // Always use NebulaBackground for calming reading experience
+    return <NebulaBackground />;
   };
 
   // Navigation Items Configuration
@@ -132,6 +136,18 @@ function AppLayout() {
         {isSettingsOpen && <SettingsModal />}
       </AnimatePresence>
 
+      {/* Mobile Drawer */}
+      <MobileDrawer
+        isOpen={mobileDrawerOpen}
+        onClose={() => setMobileDrawerOpen(false)}
+        navItems={navItems}
+        currentView={view}
+        onNavigate={(id) => navigateTo(id as ViewState)}
+        loggedInUser={loggedInUser}
+        onLogout={() => { localStorage.removeItem('bible-mind-user'); setLoggedInUser(null); }}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
+
       <AnimatePresence mode="wait">
         {showIntro ? (
           <LivingPrismIntro onComplete={() => setShowIntro(false)} />
@@ -159,6 +175,7 @@ function AppLayout() {
                 {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}
                 {view === 'books' && <BooksPage key="books" onBack={() => setView('dashboard')} />}
                 {view === 'pricing' && <PricingPage key="pricing" onBack={() => setView('dashboard')} />}
+                {view === 'download' && <DownloadPage key="download" onBack={() => setView('landing')} />}
               </AnimatePresence>
             </motion.main>
 
@@ -248,8 +265,21 @@ function AppLayout() {
 
             {/* Mobile Bottom Bar - Hidden in Zen Mode */}
             {!zenMode && (
-              <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#050505]/95 backdrop-blur-xl border-t border-gold-500/10 pb-6">
+              <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#0a0a0a] border-t border-gold-500/10 pb-6">
                 <div className="flex justify-around items-center p-3">
+                  {/* Hamburger Menu Button */}
+                  <button
+                    onClick={() => setMobileDrawerOpen(true)}
+                    className="flex flex-col items-center gap-1 text-slate-500 hover:text-gold-400"
+                  >
+                    <div className="space-y-1">
+                      <div className="w-5 h-0.5 bg-current rounded"></div>
+                      <div className="w-5 h-0.5 bg-current rounded"></div>
+                      <div className="w-5 h-0.5 bg-current rounded"></div>
+                    </div>
+                    <span className="text-[9px] uppercase tracking-wider">Menu</span>
+                  </button>
+
                   {/* Main Nav Items (4 items) */}
                   {navItems.slice(0, 4).map((item) => (
                     <button
