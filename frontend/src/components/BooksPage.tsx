@@ -103,23 +103,81 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     // Function to get themed icon for each book
     const getBookIcon = (title: string) => {
         const iconMap: Record<string, React.ReactNode> = {
+            // Pentateuch (Torah)
             'Genesis': <Sparkles size={24} className="text-gold-300" />,
             'Exodus': <Waves size={24} className="text-blue-300" />,
             'Leviticus': <Flame size={24} className="text-orange-300" />,
             'Numbers': <Users size={24} className="text-teal-300" />,
             'Deuteronomy': <Scroll size={24} className="text-amber-300" />,
+            // Historical Books
             'Joshua': <Sword size={24} className="text-gray-300" />,
-            'Judges': <Shield size={24} className="text-bronze-300" />,
+            'Judges': <Shield size={24} className="text-amber-400" />,
             'Ruth': <Heart size={24} className="text-rose-300" />,
+            '1 Samuel': <Crown size={24} className="text-purple-300" />,
+            '2 Samuel': <Crown size={24} className="text-indigo-300" />,
+            '1 Kings': <Crown size={24} className="text-gold-400" />,
+            '2 Kings': <Crown size={24} className="text-amber-300" />,
+            '1 Chronicles': <Scroll size={24} className="text-orange-300" />,
+            '2 Chronicles': <Scroll size={24} className="text-red-300" />,
+            'Ezra': <BookOpen size={24} className="text-blue-300" />,
+            'Nehemiah': <Shield size={24} className="text-stone-300" />,
+            'Esther': <Crown size={24} className="text-pink-300" />,
+            // Wisdom/Poetry
+            'Job': <Cloud size={24} className="text-slate-300" />,
             'Psalms': <Music size={24} className="text-purple-300" />,
             'Proverbs': <Compass size={24} className="text-emerald-300" />,
-            'Job': <Cloud size={24} className="text-slate-300" />,
+            'Ecclesiastes': <Compass size={24} className="text-gray-300" />,
+            'Song of Solomon': <Heart size={24} className="text-red-300" />,
+            // Major Prophets
             'Isaiah': <Feather size={24} className="text-sky-300" />,
+            'Jeremiah': <Feather size={24} className="text-blue-300" />,
+            'Lamentations': <Cloud size={24} className="text-gray-400" />,
+            'Ezekiel': <Sparkles size={24} className="text-emerald-300" />,
+            'Daniel': <Crown size={24} className="text-amber-300" />,
+            // Minor Prophets
+            'Hosea': <Heart size={24} className="text-rose-400" />,
+            'Joel': <Flame size={24} className="text-red-300" />,
+            'Amos': <Shield size={24} className="text-green-300" />,
+            'Obadiah': <Feather size={24} className="text-amber-300" />,
+            'Jonah': <Waves size={24} className="text-cyan-300" />,
+            'Micah': <Compass size={24} className="text-teal-300" />,
+            'Nahum': <Sword size={24} className="text-red-400" />,
+            'Habakkuk': <Feather size={24} className="text-purple-300" />,
+            'Zephaniah': <Cloud size={24} className="text-indigo-300" />,
+            'Haggai': <BookOpen size={24} className="text-amber-300" />,
+            'Zechariah': <Sparkles size={24} className="text-gold-300" />,
+            'Malachi': <Flame size={24} className="text-orange-400" />,
+            // Gospels
             'Matthew': <Cross size={24} className="text-gold-300" />,
             'Mark': <Cross size={24} className="text-red-300" />,
             'Luke': <Cross size={24} className="text-blue-300" />,
             'John': <Cross size={24} className="text-green-300" />,
+            // History
             'Acts': <Flame size={24} className="text-orange-300" />,
+            // Pauline Epistles
+            'Romans': <Scroll size={24} className="text-red-300" />,
+            '1 Corinthians': <Users size={24} className="text-blue-300" />,
+            '2 Corinthians': <Users size={24} className="text-indigo-300" />,
+            'Galatians': <Feather size={24} className="text-green-300" />,
+            'Ephesians': <Shield size={24} className="text-purple-300" />,
+            'Philippians': <Heart size={24} className="text-pink-300" />,
+            'Colossians': <Crown size={24} className="text-gold-300" />,
+            '1 Thessalonians': <Cloud size={24} className="text-sky-300" />,
+            '2 Thessalonians': <Cloud size={24} className="text-blue-300" />,
+            '1 Timothy': <BookOpen size={24} className="text-emerald-300" />,
+            '2 Timothy': <BookOpen size={24} className="text-teal-300" />,
+            'Titus': <Scroll size={24} className="text-amber-300" />,
+            'Philemon': <Heart size={24} className="text-rose-300" />,
+            // General Epistles
+            'Hebrews': <Cross size={24} className="text-purple-300" />,
+            'James': <Compass size={24} className="text-green-300" />,
+            '1 Peter': <Shield size={24} className="text-blue-300" />,
+            '2 Peter': <Shield size={24} className="text-indigo-300" />,
+            '1 John': <Heart size={24} className="text-red-300" />,
+            '2 John': <Heart size={24} className="text-rose-300" />,
+            '3 John': <Heart size={24} className="text-pink-300" />,
+            'Jude': <Sword size={24} className="text-orange-300" />,
+            // Apocalyptic
             'Revelation': <Crown size={24} className="text-gold-300" />,
         };
         return iconMap[title] || <BookOpen size={24} className="text-gold-300/50" />;
