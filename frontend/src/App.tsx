@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown
+  Settings, User, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download
 } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
@@ -101,6 +101,7 @@ function AppLayout() {
     { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
     { id: 'reviews', icon: MessageSquare, label: 'Community' },
     { id: 'pricing', icon: Crown, label: 'Pricing' },
+    { id: 'download', icon: Download, label: 'Download' },
   ];
 
   /* Main App Layout */
