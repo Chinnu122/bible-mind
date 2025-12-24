@@ -12,7 +12,7 @@ interface Particle {
 
 export default function FireworksEffect() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { enableEffects, level } = usePerformance();
+    const { enableEffects, level, targetFps } = usePerformance();
 
     useEffect(() => {
         if (!enableEffects) return;
@@ -31,15 +31,15 @@ export default function FireworksEffect() {
         // Pool to reuse particle objects
         const particlePool: Particle[] = [];
         const activeParticles: Particle[] = [];
-        const maxParticles = level === 'high' ? 500 : level === 'medium' ? 200 : 100;
-        const particlesPerBurst = level === 'high' ? 50 : level === 'medium' ? 25 : 12;
+        const maxParticles = level === 'high' ? 800 : level === 'medium' ? 400 : 200;
+        const particlesPerBurst = level === 'high' ? 80 : level === 'medium' ? 40 : 20;
 
-        const colors = ['#FFD700', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF'];
+        const colors = ['#FFD700', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF', '#FFA500'];
 
         const getParticle = (x: number, y: number, color: string): Particle => {
             let particle = particlePool.pop();
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 3 + 1;
+            const speed = Math.random() * 4 + 2;
 
             if (particle) {
                 particle.x = x;
@@ -68,8 +68,7 @@ export default function FireworksEffect() {
 
         let animationId: number;
         let lastTime = 0;
-        const targetFps = 30;
-        const frameInterval = 1000 / targetFps;
+        const frameInterval = 1000 / targetFps; // Use 120fps from context
 
         const draw = (timestamp: number) => {
             const elapsed = timestamp - lastTime;
@@ -78,10 +77,10 @@ export default function FireworksEffect() {
                 lastTime = timestamp - (elapsed % frameInterval);
 
                 // Trail effect
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
                 ctx.fillRect(0, 0, width, height);
 
-                if (Math.random() < 0.03) {
+                if (Math.random() < 0.05) {
                     createFirework();
                 }
 
@@ -90,7 +89,7 @@ export default function FireworksEffect() {
                     p.x += p.vx;
                     p.y += p.vy;
                     p.vy += 0.05;
-                    p.alpha -= 0.015;
+                    p.alpha -= 0.012;
 
                     if (p.alpha <= 0) {
                         particlePool.push(activeParticles.splice(i, 1)[0]);
@@ -99,11 +98,14 @@ export default function FireworksEffect() {
 
                     ctx.globalAlpha = p.alpha;
                     ctx.fillStyle = p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = p.color;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
             }
 
             animationId = requestAnimationFrame(draw);
@@ -124,7 +126,7 @@ export default function FireworksEffect() {
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', handleResize);
         };
-    }, [enableEffects, level]);
+    }, [enableEffects, level, targetFps]);
 
     if (!enableEffects) return null;
 

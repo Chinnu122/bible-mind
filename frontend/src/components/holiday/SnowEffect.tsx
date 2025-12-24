@@ -3,7 +3,7 @@ import { usePerformance } from '../../contexts/PerformanceContext';
 
 export default function SnowEffect() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { particleCount, enableEffects } = usePerformance();
+    const { particleCount, enableEffects, targetFps } = usePerformance();
 
     useEffect(() => {
         if (!enableEffects) return;
@@ -19,7 +19,7 @@ export default function SnowEffect() {
         canvas.width = width;
         canvas.height = height;
 
-        // Use adaptive particle count
+        // Use adaptive particle count from context
         const particles: { x: number; y: number; radius: number; speed: number; wind: number }[] = [];
 
         for (let i = 0; i < particleCount; i++) {
@@ -34,8 +34,7 @@ export default function SnowEffect() {
 
         let animationId: number;
         let lastTime = 0;
-        const targetFps = 30; // Cap at 30fps for better performance
-        const frameInterval = 1000 / targetFps;
+        const frameInterval = 1000 / targetFps; // Use targetFps from context (120fps)
 
         const draw = (timestamp: number) => {
             const elapsed = timestamp - lastTime;
@@ -85,7 +84,7 @@ export default function SnowEffect() {
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', handleResize);
         };
-    }, [particleCount, enableEffects]);
+    }, [particleCount, enableEffects, targetFps]);
 
     if (!enableEffects) return null;
 

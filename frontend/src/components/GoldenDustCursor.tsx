@@ -18,11 +18,11 @@ const GoldenDustCursor: React.FC = () => {
     const animationRef = useRef<number>(0);
     const lastTimeRef = useRef(0);
 
-    const { enableEffects, level } = usePerformance();
+    const { enableEffects, level, enableShadows, targetFps } = usePerformance();
 
     // Only show on desktop
     const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    const isEnabled = enableEffects && !isTouchDevice && level !== 'low';
+    const isEnabled = enableEffects && !isTouchDevice;
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
         positionRef.current = { x: e.clientX, y: e.clientY };
@@ -52,9 +52,8 @@ const GoldenDustCursor: React.FC = () => {
         window.addEventListener('resize', resizeCanvas, { passive: true });
         resizeCanvas();
 
-        const maxParticles = level === 'high' ? 50 : 25;
-        const targetFps = 30;
-        const frameInterval = 1000 / targetFps;
+        const maxParticles = level === 'high' ? 100 : 50;
+        const frameInterval = 1000 / targetFps; // Use 120fps from context
 
         const render = (timestamp: number) => {
             const elapsed = timestamp - lastTimeRef.current;
@@ -69,13 +68,13 @@ const GoldenDustCursor: React.FC = () => {
                 const dy = positionRef.current.y - lastPositionRef.current.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist > 2 && particlesRef.current.length < maxParticles) {
+                if (dist > 1 && particlesRef.current.length < maxParticles) {
                     particlesRef.current.push({
-                        x: positionRef.current.x + (Math.random() - 0.5) * 10,
-                        y: positionRef.current.y + (Math.random() - 0.5) * 10,
-                        size: Math.random() * 2 + 0.5,
-                        speedX: (Math.random() - 0.5) * 0.5,
-                        speedY: (Math.random() - 0.5) * 0.5,
+                        x: positionRef.current.x + (Math.random() - 0.5) * 15,
+                        y: positionRef.current.y + (Math.random() - 0.5) * 15,
+                        size: Math.random() * 3 + 1,
+                        speedX: (Math.random() - 0.5) * 0.8,
+                        speedY: (Math.random() - 0.5) * 0.8,
                         life: 1.0,
                     });
                 }
@@ -85,10 +84,10 @@ const GoldenDustCursor: React.FC = () => {
                 // Update and draw particles
                 for (let i = particlesRef.current.length - 1; i >= 0; i--) {
                     const p = particlesRef.current[i];
-                    p.life -= 0.03;
+                    p.life -= 0.02;
                     p.x += p.speedX;
                     p.y += p.speedY;
-                    p.size *= 0.96;
+                    p.size *= 0.97;
 
                     if (p.life <= 0) {
                         particlesRef.current.splice(i, 1);
@@ -98,8 +97,16 @@ const GoldenDustCursor: React.FC = () => {
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(255, 215, 0, ${p.life})`;
+
+                    if (enableShadows) {
+                        ctx.shadowBlur = 6;
+                        ctx.shadowColor = 'rgba(255, 200, 0, 0.8)';
+                    }
+
                     ctx.fill();
                 }
+
+                ctx.shadowBlur = 0;
             }
 
             animationRef.current = requestAnimationFrame(render);
@@ -111,7 +118,7 @@ const GoldenDustCursor: React.FC = () => {
             window.removeEventListener('resize', resizeCanvas);
             cancelAnimationFrame(animationRef.current);
         };
-    }, [isEnabled, level]);
+    }, [isEnabled, level, enableShadows, targetFps]);
 
     if (!isEnabled) return null;
 
