@@ -28,6 +28,7 @@ import LivingPrismIntro from './components/LivingPrismIntro';
 import MagneticButton from './components/MagneticButton';
 import GoldenDustCursor from './components/GoldenDustCursor';
 import DivineRays from './components/DivineRays';
+import Logo from './components/Logo';
 
 type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing';
 
@@ -115,7 +116,15 @@ function AppLayout() {
         style={{ scaleX: useScroll().scrollYProgress }}
       />
 
-      {/* Logo removed as per user request */}
+      {/* App Logo */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="fixed top-6 left-6 z-50 cursor-pointer"
+        onClick={() => navigateTo('landing')}
+      >
+        <Logo size="sm" />
+      </motion.div>
 
       {/* Settings Modal */}
       <AnimatePresence>
