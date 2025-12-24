@@ -70,15 +70,19 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ onBack }) => {
                 </div>
 
                 <a
-                    href="/app-debug.apk"
-                    download
+                    href="https://github.com/Chinnu122/bible-mind/releases"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-gradient-to-r from-gold-500 to-amber-500 text-black font-bold text-lg hover:from-gold-400 hover:to-amber-400 transition-all shadow-lg shadow-gold-500/20"
                 >
                     <Download size={24} />
-                    Download APK
+                    Get APK from GitHub
                 </a>
 
-                <p className="text-center text-slate-500 text-sm mt-3">
+                <p className="text-center text-slate-400 text-sm mt-3">
+                    Download from GitHub Releases
+                </p>
+                <p className="text-center text-slate-500 text-xs mt-1">
                     Requires {appInfo.minAndroid} or higher
                 </p>
             </div>
