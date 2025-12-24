@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut
+  Settings, User, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown
 } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
@@ -20,13 +20,14 @@ import VerseGallery from './components/VerseGallery';
 import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
 import Dashboard from './components/Dashboard';
+import PricingPage from './components/PricingPage';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
 import LivingPrismIntro from './components/LivingPrismIntro';
 import MagneticButton from './components/MagneticButton';
 import GoldenDustCursor from './components/GoldenDustCursor';
 import DivineRays from './components/DivineRays';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing';
 
 interface UserData {
   id: string;
@@ -85,6 +86,7 @@ function AppLayout() {
     { id: 'daily', icon: Calendar, label: 'Daily' },
     { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
     { id: 'reviews', icon: MessageSquare, label: 'Community' },
+    { id: 'pricing', icon: Crown, label: 'Pricing' },
   ];
 
   /* Main App Layout */
@@ -137,6 +139,7 @@ function AppLayout() {
                 {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('landing')} />}
                 {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}
                 {view === 'books' && <BooksPage key="books" onBack={() => setView('dashboard')} />}
+                {view === 'pricing' && <PricingPage key="pricing" onBack={() => setView('dashboard')} />}
               </AnimatePresence>
             </motion.main>
 
