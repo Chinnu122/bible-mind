@@ -5,9 +5,13 @@ import FireworksEffect from './FireworksEffect';
 import HolidayCountdown from './HolidayCountdown';
 import MegaIntro from './MegaIntro';
 
-type HolidayMode = 'none' | 'christmas-eve' | 'christmas-day' | 'new-year-countdown' | 'new-year-day';
+export type HolidayMode = 'none' | 'christmas-eve' | 'christmas-day' | 'new-year-countdown' | 'new-year-day';
 
-export default function HolidayManager() {
+interface HolidayManagerProps {
+    onModeChange?: (mode: HolidayMode) => void;
+}
+
+export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
     const [mode, setMode] = useState<HolidayMode>('none');
     const [showIntro, setShowIntro] = useState(false);
     const [introSeen, setIntroSeen] = useState<{ christmas: boolean; newyear: boolean }>({
@@ -56,6 +60,11 @@ export default function HolidayManager() {
         const interval = setInterval(checkDate, 60000); // Check every minute
         return () => clearInterval(interval);
     }, []);
+
+    // Notify parent of mode change
+    useEffect(() => {
+        if (onModeChange) onModeChange(mode);
+    }, [mode, onModeChange]);
 
     // Trigger Intro Logic
     useEffect(() => {

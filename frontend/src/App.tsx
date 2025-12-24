@@ -16,7 +16,8 @@ import CharacterOfDay from './components/CharacterOfDay';
 import ReviewBoard from './components/ReviewBoard';
 import DailyQuiz from './components/DailyQuiz';
 import AtmospherePlayer from './components/AtmospherePlayer';
-import HolidayManager from './components/holiday/HolidayManager';
+import HolidayManager, { HolidayMode } from './components/holiday/HolidayManager';
+import HolidayBackground from './components/holiday/HolidayBackground';
 import VerseGallery from './components/VerseGallery';
 import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
@@ -42,6 +43,7 @@ function AppLayout() {
   const [view, setView] = useState<ViewState>('landing');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
+  const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
 
   // Restore user from localStorage on app load
   useEffect(() => {
@@ -62,6 +64,11 @@ function AppLayout() {
 
   // Background Selection
   const renderBackground = () => {
+    // Holiday Mode Override
+    if (holidayMode !== 'none') {
+      return <HolidayBackground mode={holidayMode} />;
+    }
+
     if (customBackground) {
       return (
         <div
@@ -100,7 +107,7 @@ function AppLayout() {
       <GoldenDustCursor />
       <ClickSound />
       <AtmospherePlayer />
-      <HolidayManager />
+      <HolidayManager onModeChange={setHolidayMode} />
 
       {/* Scroll Progress Indicator */}
       <motion.div
