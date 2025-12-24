@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import SnowEffect from './SnowEffect';
-import FireworksEffect from './FireworksEffect';
 import HolidayCountdown from './HolidayCountdown';
 import MegaIntro from './MegaIntro';
 import ChristmasVideoPlayer from './ChristmasVideoPlayer';
@@ -168,14 +166,7 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
                 )}
             </AnimatePresence>
 
-            {/* Persistent Effects based on Mode */}
-            {(mode === 'christmas-eve' || mode === 'christmas-day') && (
-                <SnowEffect />
-            )}
-
-            {(mode === 'new-year-countdown' || mode === 'new-year-day') && (
-                <FireworksEffect />
-            )}
+            {/* Effects removed - user found them distracting */}
 
             {/* Countdowns */}
             <AnimatePresence>
