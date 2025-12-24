@@ -10,14 +10,11 @@ interface ChristmasVideoPlayerProps {
 export default function ChristmasVideoPlayer({ onComplete, videoSrc }: ChristmasVideoPlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMuted, setIsMuted] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
         const video = videoRef.current;
         if (video) {
-            video.play().then(() => {
-                setIsPlaying(true);
-            }).catch(err => {
+            video.play().catch(err => {
                 console.log('Autoplay blocked, muting and retrying:', err);
                 video.muted = true;
                 setIsMuted(true);
