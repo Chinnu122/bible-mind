@@ -9,6 +9,7 @@ import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
 import ClickSound from './components/ClickSound';
 import { SettingsProvider, useSettings } from './contexts/SettingsContext';
+import { PerformanceProvider } from './contexts/PerformanceContext';
 import SettingsModal from './components/SettingsModal';
 import DailyVersePage from './components/DailyVersePage';
 import BibleStudyPage from './components/BibleStudyPage';
@@ -304,9 +305,11 @@ function AppLayout() {
 
 function App() {
   return (
-    <SettingsProvider>
-      <AppLayout />
-    </SettingsProvider>
+    <PerformanceProvider>
+      <SettingsProvider>
+        <AppLayout />
+      </SettingsProvider>
+    </PerformanceProvider>
   );
 }
 

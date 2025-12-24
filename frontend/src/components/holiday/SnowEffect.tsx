@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
+import { usePerformance } from '../../contexts/PerformanceContext';
 
 export default function SnowEffect() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { particleCount, enableEffects } = usePerformance();
 
     useEffect(() => {
+        if (!enableEffects) return;
+
         const canvas = canvasRef.current;
         if (!canvas) return;
 
@@ -15,8 +19,8 @@ export default function SnowEffect() {
         canvas.width = width;
         canvas.height = height;
 
+        // Use adaptive particle count
         const particles: { x: number; y: number; radius: number; speed: number; wind: number }[] = [];
-        const particleCount = 150;
 
         for (let i = 0; i < particleCount; i++) {
             particles.push({
@@ -28,36 +32,45 @@ export default function SnowEffect() {
             });
         }
 
-        const draw = () => {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.beginPath();
+        let animationId: number;
+        let lastTime = 0;
+        const targetFps = 30; // Cap at 30fps for better performance
+        const frameInterval = 1000 / targetFps;
 
-            particles.forEach((p) => {
-                ctx.moveTo(p.x, p.y);
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            });
+        const draw = (timestamp: number) => {
+            const elapsed = timestamp - lastTime;
 
-            ctx.fill();
-            update();
-            requestAnimationFrame(draw);
-        };
+            if (elapsed >= frameInterval) {
+                lastTime = timestamp - (elapsed % frameInterval);
 
-        const update = () => {
-            particles.forEach((p) => {
-                p.y += p.speed;
-                p.x += p.wind;
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
 
-                if (p.y > height) {
-                    p.y = -10;
-                    p.x = Math.random() * width;
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    ctx.moveTo(p.x, p.y);
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+
+                    // Update position
+                    p.y += p.speed;
+                    p.x += p.wind;
+
+                    if (p.y > height) {
+                        p.y = -10;
+                        p.x = Math.random() * width;
+                    }
+                    if (p.x > width) p.x = 0;
+                    if (p.x < 0) p.x = width;
                 }
-                if (p.x > width) p.x = 0;
-                if (p.x < 0) p.x = width;
-            });
+
+                ctx.fill();
+            }
+
+            animationId = requestAnimationFrame(draw);
         };
 
-        let animationId = requestAnimationFrame(draw);
+        animationId = requestAnimationFrame(draw);
 
         const handleResize = () => {
             width = window.innerWidth;
@@ -72,7 +85,9 @@ export default function SnowEffect() {
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', handleResize);
         };
-    }, []);
+    }, [particleCount, enableEffects]);
+
+    if (!enableEffects) return null;
 
     return (
         <canvas
