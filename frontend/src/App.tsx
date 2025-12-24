@@ -33,6 +33,7 @@ import DivineRays from './components/DivineRays';
 import Logo from './components/Logo';
 import MobileDrawer from './components/MobileDrawer';
 import DownloadPage from './components/DownloadPage';
+import UpdateChecker from './components/UpdateChecker';
 
 type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download';
 
@@ -115,6 +116,7 @@ function AppLayout() {
       <ClickSound />
       <AtmospherePlayer />
       <HolidayManager onModeChange={setHolidayMode} />
+      <UpdateChecker />
 
       {/* Scroll Progress Indicator */}
       <motion.div
