@@ -4,6 +4,7 @@ import SnowEffect from './SnowEffect';
 import FireworksEffect from './FireworksEffect';
 import HolidayCountdown from './HolidayCountdown';
 import MegaIntro from './MegaIntro';
+import ChristmasVideoPlayer from './ChristmasVideoPlayer';
 
 export type HolidayMode = 'none' | 'christmas-eve' | 'christmas-day' | 'new-year-countdown' | 'new-year-day';
 
@@ -14,9 +15,11 @@ interface HolidayManagerProps {
 export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
     const [mode, setMode] = useState<HolidayMode>('none');
     const [showIntro, setShowIntro] = useState(false);
-    const [introSeen, setIntroSeen] = useState<{ christmas: boolean; newyear: boolean }>({
+    const [showVideo, setShowVideo] = useState(false);
+    const [introSeen, setIntroSeen] = useState<{ christmas: boolean; newyear: boolean; christmasVideo: boolean }>({
         christmas: false,
-        newyear: false
+        newyear: false,
+        christmasVideo: false
     });
 
     useEffect(() => {
@@ -149,6 +152,22 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
                 )}
             </AnimatePresence>
 
+            {/* Christmas Video Player */}
+            <AnimatePresence>
+                {showVideo && (
+                    <ChristmasVideoPlayer
+                        key="christmas-video"
+                        videoSrc="/videos/christmas-video.mp4"
+                        onComplete={() => {
+                            setShowVideo(false);
+                            const updated = { ...introSeen, christmasVideo: true };
+                            setIntroSeen(updated);
+                            localStorage.setItem('bible-mind-holiday-intros', JSON.stringify(updated));
+                        }}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* Persistent Effects based on Mode */}
             {(mode === 'christmas-eve' || mode === 'christmas-day') && (
                 <SnowEffect />
@@ -163,7 +182,13 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
                 {mode === 'christmas-eve' && (
                     <HolidayCountdown
                         targetDate={christmasTarget}
-                        onComplete={() => setMode('christmas-day')}
+                        onComplete={() => {
+                            setMode('christmas-day');
+                            // Show video if not seen
+                            if (!introSeen.christmasVideo) {
+                                setShowVideo(true);
+                            }
+                        }}
                         label="CHRISTMAS COUNTDOWN"
                     />
                 )}
