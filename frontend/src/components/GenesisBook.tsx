@@ -116,6 +116,223 @@ const genesisStories: StoryPage[] = [
         te: { title: "తోట విడిచిపెట్టడం", paragraphs: ["దేవుడు సర్పాన్ని ఎప్పటికీ పొట్ట మీద ప్రాకమని శిక్షించాడు. హవ్వకు ప్రసవంలో నొప్పి ఉంటుందని, ఆదాము ఆహారం కోసం కష్టపడాలని చెప్పాడు.", "దేవుడు ఆదాము హవ్వలకు జంతు చర్మంతో దుస్తులు చేసాడు. అప్పుడు, విచారంగా, ఆయన వారిని ఏదెను తోట నుండి బయటకు పంపాడు.", "దేవుడు ప్రవేశద్వారం వద్ద మండే కత్తులతో దేవదూతలను ఉంచాడు, వారు జీవ వృక్షం వద్దకు ఎప్పటికీ తిరిగి రాకుండా. కానీ దేవుడు ఇంకా వారిని ప్రేమించాడు మరియు ఒక రోజు వారిని రక్షించే ప్రణాళిక కలిగి ఉన్నాడు."] },
         hi: { title: "बाग छोड़ना", paragraphs: ["भगवान ने सांप को हमेशा के लिए पेट के बल रेंगने की सजा दी। उसने हव्वा से कहा कि उसे प्रसव में दर्द होगा, और आदम को भोजन के लिए कड़ी मेहनत करनी होगी।", "भगवान ने आदम और हव्वा के लिए पशु की खाल के कपड़े बनाए। फिर, दुख से, उसने उन्हें अदन के बाग से बाहर भेज दिया।", "भगवान ने प्रवेश द्वार पर जलती तलवारों वाले स्वर्गदूतों को रखा ताकि वे जीवन के पेड़ पर कभी न लौट सकें। लेकिन भगवान अभी भी उनसे प्यार करता था और एक दिन उन्हें बचाने की योजना थी।"] }
     },
+    // Cain & Abel Stories (Pages 16-20)
+    {
+        page: 16, ref: "Genesis 4:1-2", theme: "cain",
+        en: { title: "Two Brothers", paragraphs: ["Adam and Eve had their first son and named him Cain. Later, they had another son named Abel.", "As they grew up, Cain became a farmer who grew crops. Abel became a shepherd who cared for sheep.", "Both brothers worked hard, but they were very different from each other."] },
+        te: { title: "ఇద్దరు సోదరులు", paragraphs: ["ఆదాము హవ్వలకు మొదటి కొడుకు పుట్టాడు, వారు అతనికి కయీను అని పేరు పెట్టారు. తర్వాత, వారికి హేబెలు అనే మరొక కొడుకు పుట్టాడు.", "వారు పెరిగేకొద్దీ, కయీను పంటలు పండించే రైతు అయ్యాడు. హేబెలు గొర్రెలను చూసుకునే గొర్రెల కాపరి అయ్యాడు.", "ఇద్దరు సోదరులు కష్టపడి పని చేసారు, కానీ వారు ఒకరికొకరు చాలా భిన్నంగా ఉన్నారు."] },
+        hi: { title: "दो भाई", paragraphs: ["आदम और हव्वा का पहला बेटा हुआ जिसे उन्होंने कैन नाम दिया। बाद में, उनका एक और बेटा हाबिल हुआ।", "जैसे-जैसे वे बड़े हुए, कैन एक किसान बन गया जो फसल उगाता था। हाबिल एक चरवाहा बन गया जो भेड़ों की देखभाल करता था।", "दोनों भाइयों ने कड़ी मेहनत की, लेकिन वे एक दूसरे से बहुत अलग थे।"] }
+    },
+    {
+        page: 17, ref: "Genesis 4:3-5", theme: "cain",
+        en: { title: "The Offerings", paragraphs: ["One day, both brothers brought offerings to God. Cain brought some of his crops from the ground.", "Abel brought the best portions from his firstborn lambs. He gave his very best to God.", "God was pleased with Abel's offering, but not with Cain's. This made Cain very angry and jealous."] },
+        te: { title: "అర్పణలు", paragraphs: ["ఒక రోజు, ఇద్దరు సోదరులు దేవునికి అర్పణలు తెచ్చారు. కయీను నేల నుండి తన పంటలో కొంత తెచ్చాడు.", "హేబెలు తన మొదటి గొర్రెపిల్లల నుండి ఉత్తమమైన భాగాలను తెచ్చాడు. అతను తన అత్యుత్తమమైనది దేవునికి ఇచ్చాడు.", "దేవుడు హేబెలు అర్పణతో సంతోషించాడు, కానీ కయీను అర్పణతో కాదు. ఇది కయీనును చాలా కోపంగా మరియు అసూయగా చేసింది."] },
+        hi: { title: "भेंटें", paragraphs: ["एक दिन, दोनों भाइयों ने भगवान को भेंट चढ़ाई। कैन ने अपनी फसल में से कुछ लाया।", "हाबिल ने अपने पहलौठे मेमनों में से सबसे अच्छे हिस्से लाए। उसने अपना सर्वश्रेष्ठ भगवान को दिया।", "भगवान हाबिल की भेंट से प्रसन्न हुआ, लेकिन कैन की भेंट से नहीं। इससे कैन बहुत क्रोधित और ईर्ष्यालु हो गया।"] }
+    },
+    {
+        page: 18, ref: "Genesis 4:6-8", theme: "cain",
+        en: { title: "A Terrible Sin", paragraphs: ["God warned Cain, 'Why are you angry? If you do what is right, you will be accepted. But sin is waiting to control you.'", "But Cain did not listen. One day, he invited Abel to go out to the field with him.", "There, in a terrible rage, Cain attacked his brother Abel and killed him. It was the first murder in history."] },
+        te: { title: "భయంకరమైన పాపం", paragraphs: ["దేవుడు కయీనును హెచ్చరించాడు, 'నీకు కోపం ఎందుకు? నువ్వు సరిగ్గా చేస్తే, నిన్ను అంగీకరిస్తారు. కానీ పాపం నిన్ను నియంత్రించడానికి వేచి ఉంది.'", "కానీ కయీను వినలేదు. ఒక రోజు, అతను హేబెలును తనతో పొలానికి వెళ్ళమని ఆహ్వానించాడు.", "అక్కడ, భయంకరమైన కోపంతో, కయీను తన సోదరుడు హేబెలుపై దాడి చేసి చంపాడు. ఇది చరిత్రలో మొదటి హత్య."] },
+        hi: { title: "भयानक पाप", paragraphs: ["भगवान ने कैन को चेतावनी दी, 'तू क्रोधित क्यों है? यदि तू सही करेगा, तो स्वीकार किया जाएगा। लेकिन पाप तुझे नियंत्रित करने के लिए इंतजार कर रहा है।'", "लेकिन कैन ने नहीं सुना। एक दिन, उसने हाबिल को अपने साथ मैदान में जाने के लिए आमंत्रित किया।", "वहाँ, भयानक क्रोध में, कैन ने अपने भाई हाबिल पर हमला किया और उसे मार डाला। यह इतिहास की पहली हत्या थी।"] }
+    },
+    {
+        page: 19, ref: "Genesis 4:9-12", theme: "cain",
+        en: { title: "God's Question", paragraphs: ["God asked Cain, 'Where is your brother Abel?' Cain lied and said, 'I don't know. Am I my brother's keeper?'", "God said, 'What have you done? Your brother's blood cries out to me from the ground!'", "God cursed Cain: 'The ground will no longer produce crops for you. You will be a restless wanderer on the earth.'"] },
+        te: { title: "దేవుని ప్రశ్న", paragraphs: ["దేవుడు కయీనును అడిగాడు, 'నీ సోదరుడు హేబెలు ఎక్కడ?' కయీను అబద్ధం చెప్పి, 'నాకు తెలియదు. నేను నా సోదరుని కాపరినా?' అన్నాడు.", "దేవుడు చెప్పాడు, 'నువ్వు ఏం చేసావు? నీ సోదరుని రక్తం నేల నుండి నాకు మొరపెడుతోంది!'", "దేవుడు కయీనును శపించాడు: 'భూమి ఇకపై నీకు పంటలు ఇవ్వదు. నువ్వు భూమిపై విశ్రాంతి లేని సంచారిగా ఉంటావు.'"] },
+        hi: { title: "भगवान का प्रश्न", paragraphs: ["भगवान ने कैन से पूछा, 'तेरा भाई हाबिल कहाँ है?' कैन ने झूठ बोला, 'मुझे नहीं पता। क्या मैं अपने भाई का रखवाला हूँ?'", "भगवान ने कहा, 'तूने क्या किया? तेरे भाई का खून जमीन से मुझे पुकार रहा है!'", "भगवान ने कैन को शाप दिया: 'जमीन अब तेरे लिए फसल नहीं उगाएगी। तू पृथ्वी पर बेचैन भटकता रहेगा।'"] }
+    },
+    {
+        page: 20, ref: "Genesis 4:13-16", theme: "cain",
+        en: { title: "The Mark of Cain", paragraphs: ["Cain cried out, 'My punishment is too great! Everyone who finds me will try to kill me!'", "God showed mercy. He put a special mark on Cain so that no one would kill him.", "Cain left God's presence and went to live in the land of Nod, east of Eden. He started a family there, but he was always far from God."] },
+        te: { title: "కయీను గుర్తు", paragraphs: ["కయీను మొరపెట్టాడు, 'నా శిక్ష చాలా పెద్దది! నన్ను కనుగొనే ప్రతి ఒక్కరూ నన్ను చంపడానికి ప్రయత్నిస్తారు!'", "దేవుడు దయ చూపించాడు. ఎవరూ అతన్ని చంపకుండా కయీనుపై ప్రత్యేక గుర్తు పెట్టాడు.", "కయీను దేవుని సన్నిధి విడిచి ఏదెనుకు తూర్పున నోదు దేశంలో నివసించడానికి వెళ్ళాడు. అతను అక్కడ కుటుంబాన్ని ప్రారంభించాడు, కానీ అతను ఎప్పుడూ దేవునికి దూరంగా ఉన్నాడు."] },
+        hi: { title: "कैन की छाप", paragraphs: ["कैन ने रोते हुए कहा, 'मेरी सजा बहुत बड़ी है! जो कोई मुझे पाएगा वह मुझे मारने की कोशिश करेगा!'", "भगवान ने दया दिखाई। उन्होंने कैन पर एक विशेष चिह्न लगा दिया ताकि कोई उसे न मारे।", "कैन भगवान की उपस्थिति छोड़कर अदन के पूर्व में नोद देश में रहने चला गया। उसने वहाँ परिवार शुरू किया, लेकिन वह हमेशा भगवान से दूर रहा।"] }
+    },
+    // Noah's Flood (Pages 21-25)
+    {
+        page: 21, ref: "Genesis 6:5-8", theme: "noah",
+        en: { title: "A Wicked World", paragraphs: ["Many years passed. People multiplied on the earth, but they became very wicked.", "God saw that every thought of people's hearts was evil all the time. He was deeply sad.", "But there was one man who was different. His name was Noah, and he walked faithfully with God."] },
+        te: { title: "దుష్ట ప్రపంచం", paragraphs: ["చాలా సంవత్సరాలు గడిచాయి. భూమిపై ప్రజలు పెరిగారు, కానీ వారు చాలా దుష్టులు అయ్యారు.", "ప్రజల హృదయాల ప్రతి ఆలోచన ఎల్లప్పుడూ చెడుగా ఉందని దేవుడు చూసాడు. ఆయన చాలా బాధపడ్డాడు.", "కానీ ఒక మనిషి వేరుగా ఉన్నాడు. అతని పేరు నోవహు, అతను దేవునితో నమ్మకంగా నడిచాడు."] },
+        hi: { title: "दुष्ट दुनिया", paragraphs: ["कई साल बीत गए। पृथ्वी पर लोग बढ़ गए, लेकिन वे बहुत दुष्ट हो गए।", "भगवान ने देखा कि लोगों के दिलों की हर सोच हमेशा बुरी थी। वह बहुत दुखी हुआ।", "लेकिन एक आदमी अलग था। उसका नाम नूह था, और वह भगवान के साथ विश्वासपूर्वक चलता था।"] }
+    },
+    {
+        page: 22, ref: "Genesis 6:13-22", theme: "noah",
+        en: { title: "Building the Ark", paragraphs: ["God told Noah, 'I am going to bring a flood to destroy all life. But I will save you and your family.'", "God gave Noah instructions to build a huge boat called an ark. It would be 450 feet long, 75 feet wide, and 45 feet high!", "Noah obeyed God and began building the ark, even though people laughed at him."] },
+        te: { title: "ఓడ నిర్మాణం", paragraphs: ["దేవుడు నోవహుతో చెప్పాడు, 'నేను అన్ని జీవులను నాశనం చేయడానికి జలప్రళయం తీసుకురాబోతున్నాను. కానీ నిన్ను మరియు నీ కుటుంబాన్ని రక్షిస్తాను.'", "దేవుడు నోవహుకు ఓడ అనే పెద్ద పడవ నిర్మించడానికి సూచనలు ఇచ్చాడు. అది 450 అడుగుల పొడవు, 75 అడుగుల వెడల్పు, 45 అడుగుల ఎత్తు ఉంటుంది!", "ప్రజలు అతన్ని చూసి నవ్వినా, నోవహు దేవునికి విధేయుడై ఓడ నిర్మించడం ప్రారంభించాడు."] },
+        hi: { title: "जहाज बनाना", paragraphs: ["भगवान ने नूह से कहा, 'मैं सब जीवन को नष्ट करने के लिए जलप्रलय लाने वाला हूँ। लेकिन मैं तुझे और तेरे परिवार को बचाऊंगा।'", "भगवान ने नूह को एक विशाल नाव बनाने के निर्देश दिए जिसे जहाज कहते हैं। यह 450 फीट लंबा, 75 फीट चौड़ा और 45 फीट ऊंचा होगा!", "नूह ने भगवान की आज्ञा मानी और जहाज बनाना शुरू किया, भले ही लोग उस पर हँसते थे।"] }
+    },
+    {
+        page: 23, ref: "Genesis 7:1-16", theme: "noah",
+        en: { title: "Into the Ark", paragraphs: ["When the ark was finished, God told Noah to bring animals into it - two of every kind, and seven pairs of clean animals.", "Noah, his wife, his three sons, and their wives entered the ark. Then all the animals came in, two by two.", "When everyone was inside, God Himself shut the door of the ark."] },
+        te: { title: "ఓడలోకి", paragraphs: ["ఓడ పూర్తయినప్పుడు, దేవుడు నోవహుకు జంతువులను తీసుకురావమని చెప్పాడు - ప్రతి రకం రెండు, పరిశుద్ధ జంతువులు ఏడు జతలు.", "నోవహు, అతని భార్య, ముగ్గురు కొడుకులు మరియు వారి భార్యలు ఓడలో ప్రవేశించారు. అప్పుడు అన్ని జంతువులు రెండేసి వచ్చాయి.", "అందరూ లోపల ఉన్నప్పుడు, దేవుడు స్వయంగా ఓడ తలుపును మూసాడు."] },
+        hi: { title: "जहाज में", paragraphs: ["जब जहाज तैयार हो गया, भगवान ने नूह से जानवरों को लाने को कहा - हर प्रकार के दो, और शुद्ध जानवरों के सात जोड़े।", "नूह, उसकी पत्नी, उसके तीन बेटे और उनकी पत्नियां जहाज में प्रवेश किए। फिर सभी जानवर जोड़े में आए।", "जब सब अंदर थे, भगवान ने स्वयं जहाज का दरवाजा बंद कर दिया।"] }
+    },
+    {
+        page: 24, ref: "Genesis 7:17-24", theme: "noah",
+        en: { title: "The Great Flood", paragraphs: ["Then it began to rain. For forty days and forty nights, water poured from the sky and burst from the ground.", "The water rose higher and higher until even the highest mountains were covered.", "Everything that breathed on land died. Only Noah and those with him in the ark survived."] },
+        te: { title: "మహా జలప్రళయం", paragraphs: ["అప్పుడు వర్షం ప్రారంభమైంది. నలభై రోజులు నలభై రాత్రులు, ఆకాశం నుండి నీరు కురిసింది, భూమి నుండి పెల్లుబికింది.", "ఎత్తైన పర్వతాలు కూడా కప్పబడే వరకు నీరు ఎక్కువ ఎక్కువ పెరిగింది.", "భూమిపై శ్వాసించే ప్రతిదీ చనిపోయింది. నోవహు మరియు ఓడలో అతనితో ఉన్నవారు మాత్రమే బతికారు."] },
+        hi: { title: "महा जलप्रलय", paragraphs: ["फिर बारिश शुरू हुई। चालीस दिन और चालीस रात, आकाश से पानी बरसा और जमीन से फूट पड़ा।", "पानी इतना ऊंचा उठा कि सबसे ऊंचे पहाड़ भी डूब गए।", "जमीन पर सांस लेने वाला सब कुछ मर गया। केवल नूह और उसके साथ जहाज में रहने वाले बचे।"] }
+    },
+    {
+        page: 25, ref: "Genesis 8:15-22", theme: "noah",
+        en: { title: "The Rainbow Promise", paragraphs: ["After the flood waters dried up, God told Noah to come out of the ark with everyone.", "Noah built an altar and thanked God. God was pleased and made a promise.", "God put a rainbow in the sky and said, 'This is my promise: I will never again destroy the earth with a flood.'"] },
+        te: { title: "ఇంద్రధనస్సు వాగ్దానం", paragraphs: ["జలప్రళయ నీరు ఎండిపోయిన తర్వాత, దేవుడు నోవహును అందరితో ఓడ నుండి బయటకు రావమని చెప్పాడు.", "నోవహు బలిపీఠం నిర్మించి దేవునికి కృతజ్ఞతలు చెప్పాడు. దేవుడు సంతోషించి వాగ్దానం చేసాడు.", "దేవుడు ఆకాశంలో ఇంద్రధనస్సు ఉంచి చెప్పాడు, 'ఇది నా వాగ్దానం: జలప్రళయంతో భూమిని మళ్ళీ ఎప్పుడూ నాశనం చేయను.'"] },
+        hi: { title: "इंद्रधनुष वादा", paragraphs: ["बाढ़ का पानी सूखने के बाद, भगवान ने नूह को सबके साथ जहाज से बाहर आने को कहा।", "नूह ने एक वेदी बनाई और भगवान को धन्यवाद दिया। भगवान प्रसन्न हुआ और एक वादा किया।", "भगवान ने आकाश में इंद्रधनुष रखा और कहा, 'यह मेरा वादा है: मैं कभी भी जलप्रलय से पृथ्वी को नष्ट नहीं करूंगा।'"] }
+    },
+    // Tower of Babel (Pages 26-30)
+    {
+        page: 26, ref: "Genesis 11:1-2", theme: "babel",
+        en: { title: "One Language", paragraphs: ["After the flood, everyone on earth spoke the same language and used the same words.", "As people moved eastward, they found a plain in the land of Shinar and settled there.", "They learned to make bricks and tar for building. They were becoming very skilled."] },
+        te: { title: "ఒకే భాష", paragraphs: ["జలప్రళయం తర్వాత, భూమిపై అందరూ ఒకే భాష మాట్లాడారు మరియు ఒకే మాటలు వాడారు.", "ప్రజలు తూర్పుకు వెళ్తుండగా, షీనారు దేశంలో మైదానం కనుగొని అక్కడ స్థిరపడ్డారు.", "వారు నిర్మాణానికి ఇటుకలు మరియు తారు చేయడం నేర్చుకున్నారు. వారు చాలా నైపుణ్యం పొందుతున్నారు."] },
+        hi: { title: "एक भाषा", paragraphs: ["बाढ़ के बाद, पृथ्वी पर सभी एक ही भाषा बोलते थे और एक ही शब्दों का उपयोग करते थे।", "जैसे लोग पूर्व की ओर बढ़े, उन्होंने शिनार देश में एक मैदान पाया और वहाँ बस गए।", "उन्होंने निर्माण के लिए ईंटें और राल बनाना सीखा। वे बहुत कुशल हो रहे थे।"] }
+    },
+    {
+        page: 27, ref: "Genesis 11:3-4", theme: "babel",
+        en: { title: "Pride of Man", paragraphs: ["The people said, 'Come, let us build ourselves a city with a tower that reaches to the heavens!'", "They wanted to make a great name for themselves. They did not want to spread out as God had commanded.", "This was pride - they wanted to be as great as God, just like in the Garden of Eden."] },
+        te: { title: "మానవుని గర్వం", paragraphs: ["ప్రజలు చెప్పారు, 'రండి, ఆకాశాన్ని చేరే గోపురంతో మనకు ఒక నగరాన్ని నిర్మించుకుందాం!'", "వారు తమకు గొప్ప పేరు చేసుకోవాలనుకున్నారు. దేవుడు ఆజ్ఞాపించినట్లు వ్యాప్తి చెందాలనుకోలేదు.", "ఇది గర్వం - ఏదెను తోటలో వలే, వారు దేవునంత గొప్పగా ఉండాలనుకున్నారు."] },
+        hi: { title: "मनुष्य का घमंड", paragraphs: ["लोगों ने कहा, 'आओ, हम अपने लिए एक शहर और एक मीनार बनाएं जो आकाश तक पहुंचे!'", "वे अपना बड़ा नाम बनाना चाहते थे। वे भगवान की आज्ञा के अनुसार फैलना नहीं चाहते थे।", "यह घमंड था - वे अदन के बाग की तरह भगवान जितने महान बनना चाहते थे।"] }
+    },
+    {
+        page: 28, ref: "Genesis 11:5-7", theme: "babel",
+        en: { title: "God Comes Down", paragraphs: ["God came down to see the city and tower that the people were building.", "God said, 'If they can do this together, nothing will be impossible for them.'", "'Come,' said God, 'let us go down and confuse their language so they cannot understand each other.'"] },
+        te: { title: "దేవుడు దిగి వచ్చాడు", paragraphs: ["ప్రజలు నిర్మిస్తున్న నగరం మరియు గోపురం చూడటానికి దేవుడు దిగి వచ్చాడు.", "దేవుడు చెప్పాడు, 'వారు ఇది కలిసి చేయగలిగితే, వారికి ఏదీ అసాధ్యం కాదు.'", "'రండి,' దేవుడు చెప్పాడు, 'వారు ఒకరినొకరు అర్థం చేసుకోలేకపోయేలా వారి భాషను తికమకపరచడానికి దిగి వెళ్దాం.'"] },
+        hi: { title: "भगवान नीचे आया", paragraphs: ["भगवान उस शहर और मीनार को देखने नीचे आया जो लोग बना रहे थे।", "भगवान ने कहा, 'अगर वे यह साथ मिलकर कर सकते हैं, तो उनके लिए कुछ भी असंभव नहीं होगा।'", "'आओ,' भगवान ने कहा, 'नीचे जाएं और उनकी भाषा को भ्रमित करें ताकि वे एक दूसरे को न समझ सकें।'"] }
+    },
+    {
+        page: 29, ref: "Genesis 11:8-9", theme: "babel",
+        en: { title: "Languages Confused", paragraphs: ["Suddenly, the workers could not understand each other! One spoke one language, another spoke something completely different.", "They could no longer work together. Groups who spoke the same language formed.", "The building stopped. The place was called Babel, which means 'confused.'"] },
+        te: { title: "భాషలు తికమక", paragraphs: ["హఠాత్తుగా, కార్మికులు ఒకరినొకరు అర్థం చేసుకోలేకపోయారు! ఒకరు ఒక భాష మాట్లాడారు, మరొకరు పూర్తిగా భిన్నంగా మాట్లాడారు.", "వారు ఇక కలిసి పని చేయలేకపోయారు. ఒకే భాష మాట్లాడేవారు గుంపులు ఏర్పడ్డారు.", "నిర్మాణం ఆగిపోయింది. ఆ స్థలం 'తికమక' అని అర్థం వచ్చే బాబెలు అని పిలువబడింది."] },
+        hi: { title: "भाषाएं भ्रमित", paragraphs: ["अचानक, कार्यकर्ता एक दूसरे को नहीं समझ पाए! एक ने एक भाषा बोली, दूसरे ने कुछ बिल्कुल अलग।", "वे अब साथ काम नहीं कर सकते थे। एक ही भाषा बोलने वालों के समूह बने।", "निर्माण रुक गया। उस जगह का नाम बाबेल पड़ा, जिसका अर्थ है 'भ्रमित'।"] }
+    },
+    {
+        page: 30, ref: "Genesis 11:9", theme: "babel",
+        en: { title: "Scattered Across Earth", paragraphs: ["From Babel, God scattered the people across the whole earth. Different nations began.", "Each group took their new language with them. This is why today we have so many languages!", "But God's purpose continued. He chose one family to bless all nations - the family of Abraham."] },
+        te: { title: "భూమి అంతటా చెదరగొట్టబడ్డారు", paragraphs: ["బాబెలు నుండి, దేవుడు ప్రజలను భూమి అంతటా చెదరగొట్టాడు. వేర్వేరు దేశాలు ప్రారంభమయ్యాయి.", "ప్రతి గుంపు తమ కొత్త భాషను తమతో తీసుకెళ్ళారు. అందుకే నేడు మనకు చాలా భాషలు ఉన్నాయి!", "కానీ దేవుని ఉద్దేశం కొనసాగింది. అన్ని దేశాలను ఆశీర్వదించడానికి ఆయన ఒక కుటుంబాన్ని ఎంచుకున్నాడు - అబ్రహాము కుటుంబం."] },
+        hi: { title: "पृथ्वी पर बिखरे", paragraphs: ["बाबेल से, भगवान ने लोगों को पूरी पृथ्वी पर बिखेर दिया। विभिन्न राष्ट्र शुरू हुए।", "हर समूह अपनी नई भाषा साथ ले गया। इसीलिए आज हमारे पास इतनी भाषाएं हैं!", "लेकिन भगवान का उद्देश्य जारी रहा। उसने सभी राष्ट्रों को आशीर्वाद देने के लिए एक परिवार चुना - अब्राहम का परिवार।"] }
+    },
+    // Abraham's Call (Pages 31-35)
+    {
+        page: 31, ref: "Genesis 12:1-3", theme: "abraham",
+        en: { title: "God Calls Abram", paragraphs: ["In the city of Ur, there lived a man named Abram. God spoke to him with an amazing promise.", "'Leave your country and your father's house,' God said. 'Go to a land I will show you.'", "'I will make you a great nation. I will bless you. All peoples on earth will be blessed through you.'"] },
+        te: { title: "దేవుడు అబ్రామును పిలిచాడు", paragraphs: ["ఊరు అనే నగరంలో అబ్రాము అనే మనిషి ఉన్నాడు. దేవుడు అద్భుతమైన వాగ్దానంతో అతనితో మాట్లాడాడు.", "'నీ దేశాన్ని, నీ తండ్రి ఇంటిని విడిచిపెట్టు,' దేవుడు చెప్పాడు. 'నేను చూపించే దేశానికి వెళ్ళు.'", "'నిన్ను గొప్ప జాతిగా చేస్తాను. నిన్ను ఆశీర్వదిస్తాను. భూమిపై అన్ని ప్రజలు నీ ద్వారా ఆశీర్వదించబడతారు.'"] },
+        hi: { title: "भगवान ने अब्राम को बुलाया", paragraphs: ["ऊर शहर में अब्राम नाम का एक आदमी रहता था। भगवान ने एक अद्भुत वादे के साथ उससे बात की।", "'अपने देश और अपने पिता का घर छोड़ दे,' भगवान ने कहा। 'उस देश में जा जो मैं तुझे दिखाऊंगा।'", "'मैं तुझे एक महान राष्ट्र बनाऊंगा। मैं तुझे आशीर्वाद दूंगा। पृथ्वी के सभी लोग तेरे द्वारा आशीर्वादित होंगे।'"] }
+    },
+    {
+        page: 32, ref: "Genesis 12:4-9", theme: "abraham",
+        en: { title: "Journey to Canaan", paragraphs: ["Abram obeyed God. At 75 years old, he packed up everything and left with his wife Sarai and nephew Lot.", "They traveled to the land of Canaan. God appeared to Abram and said, 'To your descendants I will give this land.'", "Abram built an altar there to worship God. He trusted God's promise even though he had no children yet."] },
+        te: { title: "కనాను ప్రయాణం", paragraphs: ["అబ్రాము దేవునికి విధేయుడయ్యాడు. 75 ఏళ్ళ వయసులో, అతను తన భార్య శారయి మరియు మేనల్లుడు లోతుతో అన్నీ సర్దుకొని బయలుదేరాడు.", "వారు కనాను దేశానికి ప్రయాణించారు. దేవుడు అబ్రాముకు కనిపించి చెప్పాడు, 'నీ సంతానానికి ఈ దేశాన్ని ఇస్తాను.'", "అబ్రాము దేవుడిని ఆరాధించడానికి అక్కడ బలిపీఠం నిర్మించాడు. అతనికి ఇంకా పిల్లలు లేకపోయినా దేవుని వాగ్దానాన్ని నమ్మాడు."] },
+        hi: { title: "कनान की यात्रा", paragraphs: ["अब्राम ने भगवान की आज्ञा मानी। 75 साल की उम्र में, उसने सब कुछ पैक किया और अपनी पत्नी सारय और भतीजे लूत के साथ निकल पड़ा।", "वे कनान देश की यात्रा पर गए। भगवान अब्राम को दिखाई दिया और कहा, 'तेरी संतान को मैं यह देश दूंगा।'", "अब्राम ने वहाँ भगवान की पूजा के लिए एक वेदी बनाई। उसने भगवान के वादे पर भरोसा किया भले ही उसके अभी तक कोई बच्चे नहीं थे।"] }
+    },
+    {
+        page: 33, ref: "Genesis 13:5-18", theme: "abraham",
+        en: { title: "Abram and Lot Separate", paragraphs: ["Both Abram and Lot became very wealthy with flocks and herds. The land couldn't support them both together.", "Abram kindly said to Lot, 'Let's not quarrel. You choose which land you want, and I'll take the other.'", "Lot chose the beautiful Jordan valley. Abram stayed in Canaan. God promised him all the land as far as he could see."] },
+        te: { title: "అబ్రాము లోతు వేరుపడ్డారు", paragraphs: ["అబ్రాము లోతు ఇద్దరూ మందలు పశువులతో చాలా ధనవంతులయ్యారు. భూమి వారిద్దరినీ కలిసి భరించలేకపోయింది.", "అబ్రాము లోతుతో దయగా చెప్పాడు, 'మనం గొడవ పడవద్దు. నీకు కావలసిన భూమి ఎంచుకో, నేను మరొకటి తీసుకుంటా.'", "లోతు అందమైన యొర్దాను లోయను ఎంచుకున్నాడు. అబ్రాము కనానులో ఉన్నాడు. దేవుడు అతను చూడగలిగినంత వరకు అన్ని భూమిని వాగ్దానం చేసాడు."] },
+        hi: { title: "अब्राम और लूत अलग हुए", paragraphs: ["अब्राम और लूत दोनों भेड़-बकरियों और पशुओं के साथ बहुत धनी हो गए। जमीन उन दोनों को साथ नहीं रख सकती थी।", "अब्राम ने लूत से कृपापूर्वक कहा, 'हम झगड़ा न करें। तू चुन ले कौन सी जमीन चाहिए, मैं दूसरी ले लूंगा।'", "लूत ने सुंदर यर्दन घाटी चुनी। अब्राम कनान में रहा। भगवान ने उसे जहाँ तक वह देख सकता था वह सारी जमीन देने का वादा किया।"] }
+    },
+    {
+        page: 34, ref: "Genesis 15:1-6", theme: "abraham",
+        en: { title: "Counting the Stars", paragraphs: ["Years passed, but Abram still had no children. He wondered how God's promise could come true.", "God took Abram outside at night. 'Look at the stars,' God said. 'Count them if you can.'", "'That's how many descendants you will have!' Abram believed God, and God counted it as righteousness."] },
+        te: { title: "నక్షత్రాలు లెక్కించడం", paragraphs: ["సంవత్సరాలు గడిచాయి, కానీ అబ్రాముకు ఇంకా పిల్లలు లేరు. దేవుని వాగ్దానం ఎలా నిజం అవుతుందో అతను ఆశ్చర్యపోయాడు.", "దేవుడు రాత్రి అబ్రామును బయటకు తీసుకెళ్ళాడు. 'నక్షత్రాలను చూడు,' దేవుడు చెప్పాడు. 'నీకు చేతనైతే లెక్కించు.'", "'నీకు అంత మంది సంతానం ఉంటారు!' అబ్రాము దేవుడిని నమ్మాడు, దేవుడు దాన్ని నీతిగా లెక్కించాడు."] },
+        hi: { title: "तारों को गिनना", paragraphs: ["साल बीत गए, लेकिन अब्राम के अभी भी कोई बच्चे नहीं थे। उसे आश्चर्य था कि भगवान का वादा कैसे सच होगा।", "भगवान ने रात को अब्राम को बाहर ले गया। 'तारों को देख,' भगवान ने कहा। 'अगर गिन सके तो गिन।'", "'तेरी संतान इतनी होगी!' अब्राम ने भगवान पर विश्वास किया, और भगवान ने इसे धार्मिकता गिना।"] }
+    },
+    {
+        page: 35, ref: "Genesis 17:1-8", theme: "abraham",
+        en: { title: "A New Name", paragraphs: ["When Abram was 99 years old, God appeared again. 'I am God Almighty. Walk before me faithfully.'", "God changed Abram's name to Abraham, meaning 'father of many nations.' His wife Sarai became Sarah.", "God promised that kings would come from Abraham's family, and the land of Canaan would belong to his descendants forever."] },
+        te: { title: "కొత్త పేరు", paragraphs: ["అబ్రాము 99 ఏళ్ళ వయసులో, దేవుడు మళ్ళీ కనిపించాడు. 'నేను సర్వశక్తిమంతుడైన దేవుడిని. నా ముందు నమ్మకంగా నడువు.'", "దేవుడు అబ్రాము పేరును 'అనేక జాతుల తండ్రి' అని అర్థం వచ్చే అబ్రహాముగా మార్చాడు. అతని భార్య శారయి శారాగా మారింది.", "అబ్రహాము కుటుంబం నుండి రాజులు వస్తారని, కనాను దేశం అతని సంతానానికి ఎప్పటికీ చెందుతుందని దేవుడు వాగ్దానం చేసాడు."] },
+        hi: { title: "नया नाम", paragraphs: ["जब अब्राम 99 साल का था, भगवान फिर प्रकट हुआ। 'मैं सर्वशक्तिमान भगवान हूँ। मेरे सामने विश्वासपूर्वक चल।'", "भगवान ने अब्राम का नाम बदलकर अब्राहम रखा, जिसका अर्थ है 'बहुत राष्ट्रों का पिता।' उसकी पत्नी सारय सारा बन गई।", "भगवान ने वादा किया कि अब्राहम के परिवार से राजा आएंगे, और कनान देश उसकी संतान का हमेशा के लिए होगा।"] }
+    },
+    // Abraham & Sarah Stories (Pages 36-40)
+    {
+        page: 36, ref: "Genesis 18:1-15", theme: "sarah",
+        en: { title: "Three Visitors", paragraphs: ["One hot day, Abraham saw three men near his tent. He hurried to welcome them and offer food.", "One visitor was the Lord Himself! He said, 'This time next year, Sarah will have a son.'", "Sarah laughed to herself - she was 90 years old! The Lord asked, 'Is anything too hard for God?'"] },
+        te: { title: "ముగ్గురు సందర్శకులు", paragraphs: ["ఒక వేడి రోజున, అబ్రహాము తన గుడారం దగ్గర ముగ్గురు మనుషులను చూసాడు. అతను వారిని స్వాగతించడానికి మరియు ఆహారం అందించడానికి తొందరపడ్డాడు.", "ఒక సందర్శకుడు ప్రభువు స్వయంగా! ఆయన చెప్పాడు, 'వచ్చే సంవత్సరం ఈ సమయానికి, శారాకు కొడుకు పుట్టాడు.'", "శారా తనలో తాను నవ్వింది - ఆమె 90 ఏళ్ళు! ప్రభువు అడిగాడు, 'దేవునికి ఏదైనా కష్టమా?'"] },
+        hi: { title: "तीन आगंतुक", paragraphs: ["एक गर्म दिन, अब्राहम ने अपने तंबू के पास तीन आदमियों को देखा। वह उनका स्वागत करने और भोजन देने के लिए दौड़ पड़ा।", "एक आगंतुक स्वयं प्रभु थे! उन्होंने कहा, 'अगले साल इसी समय, सारा का एक बेटा होगा।'", "सारा मन ही मन हँसी - वह 90 साल की थी! प्रभु ने पूछा, 'क्या भगवान के लिए कुछ भी कठिन है?'"] }
+    },
+    {
+        page: 37, ref: "Genesis 21:1-7", theme: "sarah",
+        en: { title: "Isaac is Born", paragraphs: ["Just as God promised, Sarah became pregnant and gave birth to a son! Abraham was 100 years old.", "They named him Isaac, which means 'laughter.' Sarah said, 'God has brought me laughter!'", "Everyone who heard about it laughed with joy. God always keeps His promises, even when they seem impossible."] },
+        te: { title: "ఇస్సాకు పుట్టాడు", paragraphs: ["దేవుడు వాగ్దానం చేసినట్లే, శారా గర్భవతి అయి కొడుకును కన్నది! అబ్రహాముకు 100 ఏళ్ళు.", "వారు అతనికి 'నవ్వు' అని అర్థం వచ్చే ఇస్సాకు అని పేరు పెట్టారు. శారా చెప్పింది, 'దేవుడు నాకు నవ్వు తెచ్చాడు!'", "దాని గురించి విన్న ప్రతి ఒక్కరూ ఆనందంతో నవ్వారు. దేవుడు అసాధ్యమని అనిపించినప్పటికీ ఎల్లప్పుడూ తన వాగ్దానాలు నిలబెట్టుకుంటాడు."] },
+        hi: { title: "इसहाक का जन्म", paragraphs: ["जैसा भगवान ने वादा किया था, सारा गर्भवती हुई और उसने एक बेटे को जन्म दिया! अब्राहम 100 साल का था।", "उन्होंने उसका नाम इसहाक रखा, जिसका अर्थ है 'हँसी।' सारा ने कहा, 'भगवान ने मुझे हँसी दी है!'", "जिसने भी सुना वह खुशी से हँसा। भगवान हमेशा अपने वादे निभाता है, भले ही वे असंभव लगें।"] }
+    },
+    {
+        page: 38, ref: "Genesis 22:1-8", theme: "abraham",
+        en: { title: "The Greatest Test", paragraphs: ["God decided to test Abraham's faith. 'Take your son Isaac to Mount Moriah and offer him as a sacrifice.'", "Abraham's heart was breaking, but he trusted God. Early the next morning, he set out with Isaac.", "Isaac asked, 'Father, we have fire and wood, but where is the lamb?' Abraham replied, 'God will provide.'"] },
+        te: { title: "గొప్ప పరీక్ష", paragraphs: ["దేవుడు అబ్రహాము విశ్వాసాన్ని పరీక్షించాలని నిర్ణయించుకున్నాడు. 'నీ కొడుకు ఇస్సాకును మోరియా పర్వతానికి తీసుకెళ్ళి బలిగా అర్పించు.'", "అబ్రహాము హృదయం విరిగిపోతోంది, కానీ అతను దేవుడిని నమ్మాడు. మరుసటి రోజు పొద్దున్నే, అతను ఇస్సాకుతో బయలుదేరాడు.", "ఇస్సాకు అడిగాడు, 'తండ్రీ, మనకు నిప్పు మరియు కట్టెలు ఉన్నాయి, కానీ గొర్రెపిల్ల ఎక్కడ?' అబ్రహాము జవాబిచ్చాడు, 'దేవుడు సమకూరుస్తాడు.'"] },
+        hi: { title: "सबसे बड़ी परीक्षा", paragraphs: ["भगवान ने अब्राहम की विश्वास की परीक्षा लेने का फैसला किया। 'अपने बेटे इसहाक को मोरिय्याह पर्वत पर ले जा और उसे बलि के रूप में चढ़ा।'", "अब्राहम का दिल टूट रहा था, लेकिन उसने भगवान पर भरोसा किया। अगली सुबह जल्दी, वह इसहाक के साथ निकल पड़ा।", "इसहाक ने पूछा, 'पिता, हमारे पास आग और लकड़ी है, लेकिन मेमना कहाँ है?' अब्राहम ने जवाब दिया, 'भगवान प्रदान करेगा।'"] }
+    },
+    {
+        page: 39, ref: "Genesis 22:9-14", theme: "abraham",
+        en: { title: "God Provides", paragraphs: ["Abraham built an altar and laid Isaac on it. Just as he raised his knife, an angel called out, 'Abraham! Stop!'", "'Now I know you fear God, because you did not withhold your only son from me.'", "Abraham looked up and saw a ram caught in a bush. He sacrificed it instead. He named that place 'The Lord Will Provide.'"] },
+        te: { title: "దేవుడు సమకూర్చాడు", paragraphs: ["అబ్రహాము బలిపీఠం నిర్మించి ఇస్సాకును దానిపై ఉంచాడు. అతను కత్తి ఎత్తినప్పుడు, దేవదూత పిలిచాడు, 'అబ్రహామా! ఆగు!'", "'నీవు నా నుండి నీ ఏకైక కొడుకును తప్పించుకోలేదు కాబట్టి, నీవు దేవునికి భయపడతావని ఇప్పుడు నాకు తెలుసు.'", "అబ్రహాము పైకి చూసి పొదలో చిక్కుకున్న పొట్టేలును చూసాడు. అతను దాని బదులుగా బలి ఇచ్చాడు. అతను ఆ స్థలానికి 'ప్రభువు సమకూర్చాడు' అని పేరు పెట్టాడు."] },
+        hi: { title: "भगवान ने प्रदान किया", paragraphs: ["अब्राहम ने वेदी बनाई और इसहाक को उस पर रखा। जैसे ही उसने चाकू उठाया, एक स्वर्गदूत ने पुकारा, 'अब्राहम! रुक!'", "'अब मुझे पता है कि तू भगवान से डरता है, क्योंकि तूने अपने इकलौते बेटे को मुझसे नहीं रोका।'", "अब्राहम ने ऊपर देखा और एक मेढ़ा झाड़ी में फंसा देखा। उसने उसके बजाय उसे बलि दी। उसने उस जगह का नाम रखा 'प्रभु प्रदान करेगा।'"] }
+    },
+    {
+        page: 40, ref: "Genesis 22:15-18", theme: "abraham",
+        en: { title: "God's Blessing", paragraphs: ["God spoke again to Abraham: 'Because you obeyed me, I will surely bless you.'", "'Your descendants will be as numerous as the stars in the sky and the sand on the seashore.'", "'Through your offspring, all nations on earth will be blessed.' This promise would one day be fulfilled through Jesus!"] },
+        te: { title: "దేవుని ఆశీర్వాదం", paragraphs: ["దేవుడు మళ్ళీ అబ్రహాముతో మాట్లాడాడు: 'నీవు నాకు విధేయుడయినందున, నిన్ను తప్పకుండా ఆశీర్వదిస్తాను.'", "'నీ సంతానం ఆకాశంలో నక్షత్రాలంత, సముద్ర తీరంలో ఇసుకంత అసంఖ్యాకంగా ఉంటారు.'", "'నీ సంతానం ద్వారా, భూమిపై అన్ని దేశాలు ఆశీర్వదించబడతాయి.' ఈ వాగ్దానం ఒక రోజు యేసు ద్వారా నెరవేరుతుంది!"] },
+        hi: { title: "भगवान का आशीर्वाद", paragraphs: ["भगवान ने फिर अब्राहम से कहा: 'क्योंकि तूने मेरी आज्ञा मानी, मैं तुझे अवश्य आशीर्वाद दूंगा।'", "'तेरी संतान आकाश के तारों और समुद्र तट की रेत जितनी अनगिनत होगी।'", "'तेरी संतान के द्वारा, पृथ्वी के सभी राष्ट्र आशीर्वादित होंगे।' यह वादा एक दिन यीशु के माध्यम से पूरा होगा!"] }
+    },
+    // Isaac & Rebekah Stories (Pages 41-45)
+    {
+        page: 41, ref: "Genesis 24:1-14", theme: "isaac",
+        en: { title: "A Wife for Isaac", paragraphs: ["Abraham was now very old. He sent his servant to find a wife for Isaac from his homeland.", "The servant prayed, 'Lord, let the right girl offer water to me and my camels.'", "Before he finished praying, a beautiful young woman named Rebekah came to the well!"] },
+        te: { title: "ఇస్సాకు కోసం భార్య", paragraphs: ["అబ్రహాము ఇప్పుడు చాలా వృద్ధుడు. అతను తన స్వదేశం నుండి ఇస్సాకుకు భార్యను కనుగొనడానికి తన సేవకుడిని పంపాడు.", "సేవకుడు ప్రార్థించాడు, 'ప్రభూ, సరైన అమ్మాయి నాకు మరియు నా ఒంటెలకు నీరు అందించనీ.'", "అతను ప్రార్థన ముగించకముందే, రిబ్కా అనే అందమైన యువతి బావికి వచ్చింది!"] },
+        hi: { title: "इसहाक के लिए पत्नी", paragraphs: ["अब्राहम अब बहुत बूढ़ा था। उसने अपने सेवक को अपनी मातृभूमि से इसहाक के लिए पत्नी खोजने भेजा।", "सेवक ने प्रार्थना की, 'प्रभु, सही लड़की मुझे और मेरे ऊंटों को पानी पिलाए।'", "प्रार्थना खत्म होने से पहले, रिबका नाम की एक सुंदर युवती कुएं पर आई!"] }
+    },
+    {
+        page: 42, ref: "Genesis 24:15-27", theme: "isaac",
+        en: { title: "Rebekah's Kindness", paragraphs: ["Rebekah offered the servant a drink, then said, 'I'll draw water for your camels too!'", "She worked hard to water all ten camels. The servant knew God had answered his prayer.", "He gave Rebekah beautiful gold jewelry and asked about her family."] },
+        te: { title: "రిబ్కా దయ", paragraphs: ["రిబ్కా సేవకుడికి నీరు అందించింది, అప్పుడు చెప్పింది, 'మీ ఒంటెలకు కూడా నీరు తీస్తాను!'", "పది ఒంటెలకు నీరు ఇవ్వడానికి ఆమె కష్టపడింది. దేవుడు తన ప్రార్థనకు జవాబిచ్చాడని సేవకుడికి తెలుసు.", "అతను రిబ్కాకు అందమైన బంగారు ఆభరణాలు ఇచ్చి ఆమె కుటుంబం గురించి అడిగాడు."] },
+        hi: { title: "रिबका की दयालुता", paragraphs: ["रिबका ने सेवक को पानी पिलाया, फिर कहा, 'मैं तुम्हारे ऊंटों के लिए भी पानी निकालूंगी!'", "उसने सभी दस ऊंटों को पानी पिलाने के लिए कड़ी मेहनत की। सेवक जान गया कि भगवान ने उसकी प्रार्थना सुन ली।", "उसने रिबका को सुंदर सोने के गहने दिए और उसके परिवार के बारे में पूछा।"] }
+    },
+    {
+        page: 43, ref: "Genesis 24:50-67", theme: "isaac",
+        en: { title: "Isaac and Rebekah Meet", paragraphs: ["Rebekah agreed to go with the servant to marry Isaac. Her family blessed her.", "When they arrived, Isaac was in the field. He saw the camels coming.", "Isaac and Rebekah met and fell in love. They were married, and Isaac was comforted after his mother's death."] },
+        te: { title: "ఇస్సాకు రిబ్కా కలిసారు", paragraphs: ["రిబ్కా ఇస్సాకును పెళ్లి చేసుకోవడానికి సేవకుడితో వెళ్లడానికి అంగీకరించింది. ఆమె కుటుంబం ఆమెను ఆశీర్వదించింది.", "వారు చేరుకున్నప్పుడు, ఇస్సాకు పొలంలో ఉన్నాడు. ఒంటెలు వస్తున్నట్లు అతను చూసాడు.", "ఇస్సాకు రిబ్కాలు కలిసారు మరియు ప్రేమలో పడ్డారు. వారు పెళ్లి చేసుకున్నారు, తన తల్లి మరణం తర్వాత ఇస్సాకు ఓదార్పు పొందాడు."] },
+        hi: { title: "इसहाक और रिबका मिले", paragraphs: ["रिबका इसहाक से शादी करने के लिए सेवक के साथ जाने को राजी हो गई। उसके परिवार ने उसे आशीर्वाद दिया।", "जब वे पहुंचे, इसहाक खेत में था। उसने ऊंटों को आते देखा।", "इसहाक और रिबका मिले और प्यार हो गया। उनकी शादी हो गई, और अपनी माँ की मृत्यु के बाद इसहाक को सांत्वना मिली।"] }
+    },
+    {
+        page: 44, ref: "Genesis 25:19-26", theme: "isaac",
+        en: { title: "Twin Brothers", paragraphs: ["Rebekah was unable to have children. Isaac prayed for her, and God answered.", "Rebekah became pregnant with twins! They struggled inside her. God told her the older would serve the younger.", "The first baby was red and hairy - they named him Esau. The second held Esau's heel - they named him Jacob."] },
+        te: { title: "కవల సోదరులు", paragraphs: ["రిబ్కాకు పిల్లలు కలగలేదు. ఇస్సాకు ఆమె కోసం ప్రార్థించాడు, దేవుడు జవాబిచ్చాడు.", "రిబ్కా కవలలతో గర్భవతి అయింది! వారు ఆమె లోపల పోరాడారు. పెద్దవాడు చిన్నవాడికి సేవ చేస్తాడని దేవుడు ఆమెకు చెప్పాడు.", "మొదటి బిడ్డ ఎరుపు మరియు రోమాలతో ఉన్నాడు - వారు అతనికి ఏశావు అని పేరు పెట్టారు. రెండవ బిడ్డ ఏశావు మడమను పట్టుకున్నాడు - వారు అతనికి యాకోబు అని పేరు పెట్టారు."] },
+        hi: { title: "जुड़वां भाई", paragraphs: ["रिबका के बच्चे नहीं हो पा रहे थे। इसहाक ने उसके लिए प्रार्थना की, और भगवान ने सुनी।", "रिबका जुड़वां बच्चों से गर्भवती हुई! वे उसके अंदर संघर्ष कर रहे थे। भगवान ने उसे बताया कि बड़ा छोटे की सेवा करेगा।", "पहला बच्चा लाल और बालों वाला था - उन्होंने उसका नाम एसाव रखा। दूसरे ने एसाव की एड़ी पकड़ी थी - उन्होंने उसका नाम याकूब रखा।"] }
+    },
+    {
+        page: 45, ref: "Genesis 25:29-34", theme: "isaac",
+        en: { title: "The Birthright Sold", paragraphs: ["One day, Esau came home from hunting very hungry. Jacob was cooking stew.", "Esau said, 'Give me some of that stew!' Jacob replied, 'First sell me your birthright.'", "Esau foolishly agreed. He traded his special rights as firstborn for one bowl of stew!"] },
+        te: { title: "జ్యేష్ఠత్వం అమ్మబడింది", paragraphs: ["ఒక రోజు, ఏశావు వేటాడి చాలా ఆకలితో ఇంటికి వచ్చాడు. యాకోబు పులుసు వండుతున్నాడు.", "ఏశావు చెప్పాడు, 'ఆ పులుసులో కొంచెం నాకు ఇవ్వు!' యాకోబు జవాబిచ్చాడు, 'ముందు నీ జ్యేష్ఠత్వం నాకు అమ్ము.'", "ఏశావు మూర్ఖంగా అంగీకరించాడు. అతను ఒక గిన్నె పులుసు కోసం పెద్దవాడిగా తన ప్రత్యేక హక్కులను వదులుకున్నాడు!"] },
+        hi: { title: "जन्मसिद्ध अधिकार बेचा", paragraphs: ["एक दिन, एसाव शिकार से बहुत भूखा घर आया। याकूब स्टू बना रहा था।", "एसाव ने कहा, 'मुझे वह स्टू दे!' याकूब ने जवाब दिया, 'पहले मुझे अपना जन्मसिद्ध अधिकार बेच दे।'", "एसाव ने मूर्खता से सहमत हो गया। उसने एक कटोरी स्टू के लिए पहलौठे के अपने विशेष अधिकार बेच दिए!"] }
+    },
+    // Jacob's Journey (Pages 46-50)
+    {
+        page: 46, ref: "Genesis 27:1-29", theme: "jacob",
+        en: { title: "Jacob's Deception", paragraphs: ["When Isaac was old and blind, he wanted to bless Esau before he died.", "But Rebekah helped Jacob trick Isaac. Jacob dressed in Esau's clothes and wore goat skin on his arms.", "Isaac was fooled and gave Jacob the blessing meant for Esau. This would cause many problems."] },
+        te: { title: "యాకోబు మోసం", paragraphs: ["ఇస్సాకు వృద్ధుడు మరియు అంధుడు అయినప్పుడు, చనిపోయే ముందు ఏశావును ఆశీర్వదించాలనుకున్నాడు.", "కానీ రిబ్కా యాకోబుకు ఇస్సాకును మోసం చేయడానికి సహాయం చేసింది. యాకోబు ఏశావు బట్టలు వేసుకొని చేతులపై మేక చర్మం ధరించాడు.", "ఇస్సాకు మోసపోయి ఏశావు కోసం ఉద్దేశించిన ఆశీర్వాదం యాకోబుకు ఇచ్చాడు. ఇది చాలా సమస్యలకు కారణమవుతుంది."] },
+        hi: { title: "याकूब का धोखा", paragraphs: ["जब इसहाक बूढ़ा और अंधा था, वह मरने से पहले एसाव को आशीर्वाद देना चाहता था।", "लेकिन रिबका ने याकूब को इसहाक को धोखा देने में मदद की। याकूब ने एसाव के कपड़े पहने और अपनी बाहों पर बकरी की खाल लगाई।", "इसहाक धोखा खा गया और एसाव के लिए तय आशीर्वाद याकूब को दे दिया। इससे कई समस्याएं होंगी।"] }
+    },
+    {
+        page: 47, ref: "Genesis 28:10-15", theme: "jacob",
+        en: { title: "Jacob's Ladder", paragraphs: ["Esau was furious and wanted to kill Jacob. So Jacob fled to his uncle Laban's house.", "One night, using a stone as a pillow, Jacob had a dream. He saw a stairway to heaven with angels going up and down!", "God stood at the top and said, 'I am with you. I will bless you and bring you back to this land.'"] },
+        te: { title: "యాకోబు నిచ్చెన", paragraphs: ["ఏశావు చాలా కోపంగా ఉన్నాడు మరియు యాకోబును చంపాలనుకున్నాడు. అందుకే యాకోబు తన మేనమామ లాబాను ఇంటికి పారిపోయాడు.", "ఒక రాత్రి, రాయిని దిండుగా ఉపయోగించి, యాకోబు కల కన్నాడు. దేవదూతలు పైకి క్రిందికి వెళ్తూ ఆకాశానికి మెట్లు చూసాడు!", "దేవుడు పైన నిలబడి చెప్పాడు, 'నేను నీతో ఉన్నాను. నిన్ను ఆశీర్వదిస్తాను, ఈ దేశానికి తిరిగి తీసుకువస్తాను.'"] },
+        hi: { title: "याकूब की सीढ़ी", paragraphs: ["एसाव बहुत गुस्सा था और याकूब को मारना चाहता था। इसलिए याकूब अपने मामा लाबान के घर भाग गया।", "एक रात, पत्थर को तकिया बनाकर, याकूब ने सपना देखा। उसने स्वर्ग तक जाती सीढ़ी देखी जिस पर स्वर्गदूत ऊपर-नीचे जा रहे थे!", "भगवान ऊपर खड़ा था और बोला, 'मैं तेरे साथ हूँ। मैं तुझे आशीर्वाद दूंगा और इस देश में वापस लाऊंगा।'"] }
+    },
+    {
+        page: 48, ref: "Genesis 29:16-30", theme: "jacob",
+        en: { title: "Rachel and Leah", paragraphs: ["Jacob arrived at Laban's house and fell in love with his daughter Rachel.", "He agreed to work seven years to marry her. But Laban tricked him and gave him Leah instead!", "Jacob had to work seven more years for Rachel. Now he knew how it felt to be deceived."] },
+        te: { title: "రాహేలు మరియు లేయా", paragraphs: ["యాకోబు లాబాను ఇంటికి చేరుకొని అతని కుమార్తె రాహేలును ప్రేమించాడు.", "ఆమెను పెళ్లి చేసుకోవడానికి ఏడు సంవత్సరాలు పని చేయడానికి అంగీకరించాడు. కానీ లాబాను అతన్ని మోసం చేసి లేయాను ఇచ్చాడు!", "రాహేలు కోసం యాకోబు మరో ఏడు సంవత్సరాలు పని చేయాల్సి వచ్చింది. ఇప్పుడు మోసం ఎలా ఉంటుందో అతనికి తెలిసింది."] },
+        hi: { title: "राहेल और लिआ", paragraphs: ["याकूब लाबान के घर पहुंचा और उसकी बेटी राहेल से प्यार हो गया।", "उसने राहेल से शादी करने के लिए सात साल काम करने का वादा किया। लेकिन लाबान ने उसे धोखा दिया और इसके बजाय लिआ दे दी!", "याकूब को राहेल के लिए सात और साल काम करना पड़ा। अब उसे पता चला कि धोखा खाना कैसा लगता है।"] }
+    },
+    {
+        page: 49, ref: "Genesis 32:22-30", theme: "jacob",
+        en: { title: "Wrestling with God", paragraphs: ["After twenty years, Jacob was returning home. He was afraid to face Esau.", "That night, a man wrestled with Jacob until dawn. Jacob refused to let go until he was blessed.", "The man changed Jacob's name to Israel, meaning 'he struggles with God.' Jacob realized he had wrestled with God Himself!"] },
+        te: { title: "దేవునితో పోరాటం", paragraphs: ["ఇరవై సంవత్సరాల తర్వాత, యాకోబు ఇంటికి తిరిగి వస్తున్నాడు. ఏశావును ఎదుర్కోవడానికి భయపడ్డాడు.", "ఆ రాత్రి, ఒక మనిషి తెల్లవారు వరకు యాకోబుతో పోరాడాడు. ఆశీర్వాదం పొందే వరకు యాకోబు వదలలేదు.", "ఆ మనిషి యాకోబు పేరును 'దేవునితో పోరాడతాడు' అని అర్థం వచ్చే ఇశ్రాయేలుగా మార్చాడు. దేవునితోనే పోరాడానని యాకోబు గ్రహించాడు!"] },
+        hi: { title: "भगवान से कुश्ती", paragraphs: ["बीस साल बाद, याकूब घर लौट रहा था। वह एसाव का सामना करने से डर रहा था।", "उस रात, एक आदमी ने सुबह तक याकूब से कुश्ती की। याकूब ने आशीर्वाद मिलने तक उसे नहीं छोड़ा।", "उस आदमी ने याकूब का नाम इस्राएल रख दिया, जिसका अर्थ है 'वह भगवान से लड़ता है।' याकूब को पता चला कि उसने स्वयं भगवान से कुश्ती की थी!"] }
+    },
+    {
+        page: 50, ref: "Genesis 33:1-11", theme: "jacob",
+        en: { title: "Brothers Reunited", paragraphs: ["The next day, Jacob saw Esau coming with 400 men. He bowed down seven times as he approached.", "But Esau ran to Jacob and hugged him! He had forgiven his brother. They both wept with joy.", "Jacob's family became the twelve tribes of Israel. God's promise to Abraham was being fulfilled through them."] },
+        te: { title: "సోదరులు తిరిగి కలిసారు", paragraphs: ["మరుసటి రోజు, యాకోబు 400 మంది మనుషులతో ఏశావు వస్తున్నట్లు చూసాడు. అతను సమీపించేటప్పుడు ఏడు సార్లు సాగిలపడ్డాడు.", "కానీ ఏశావు యాకోబు వద్దకు పరిగెత్తి అతన్ని కౌగిలించుకున్నాడు! అతను తన సోదరుడిని క్షమించాడు. ఇద్దరూ ఆనందంతో ఏడ్చారు.", "యాకోబు కుటుంబం ఇశ్రాయేలు పన్నెండు గోత్రాలు అయింది. వారి ద్వారా అబ్రహాముకు దేవుని వాగ్దానం నెరవేరుతోంది."] },
+        hi: { title: "भाई फिर मिले", paragraphs: ["अगले दिन, याकूब ने एसाव को 400 आदमियों के साथ आते देखा। वह पास आते हुए सात बार झुका।", "लेकिन एसाव याकूब की ओर दौड़ा और उसे गले लगा लिया! उसने अपने भाई को माफ कर दिया था। दोनों खुशी से रोए।", "याकूब का परिवार इस्राएल के बारह गोत्र बना। अब्राहम से भगवान का वादा उनके द्वारा पूरा हो रहा था।"] }
+    },
 ];
 
 // Theme-based illustration
@@ -126,7 +343,11 @@ const Illustration = ({ theme }: { theme: string }) => {
         day5: 'from-blue-400 to-cyan-500', day6: 'from-amber-200 to-orange-300',
         day7: 'from-yellow-100 to-amber-200',
         adam: 'from-emerald-400 to-teal-600', eve: 'from-rose-300 to-pink-500',
-        serpent: 'from-green-700 to-emerald-900', fall: 'from-red-700 to-rose-900'
+        serpent: 'from-green-700 to-emerald-900', fall: 'from-red-700 to-rose-900',
+        cain: 'from-red-800 to-red-950', noah: 'from-blue-600 to-cyan-800',
+        babel: 'from-amber-600 to-orange-800', abraham: 'from-amber-400 to-yellow-600',
+        sarah: 'from-pink-400 to-rose-600', isaac: 'from-teal-400 to-cyan-600',
+        jacob: 'from-violet-500 to-purple-700'
     };
 
     const icons: Record<string, React.ReactNode> = {
@@ -140,7 +361,14 @@ const Illustration = ({ theme }: { theme: string }) => {
         adam: <div className="flex flex-col items-center gap-2"><TreeDeciduous size={48} className="text-white" /><span className="text-xs text-white/80">Garden of Eden</span></div>,
         eve: <div className="flex gap-3"><Users size={48} className="text-white" /><Heart size={32} className="text-red-300" /></div>,
         serpent: <AlertTriangle size={64} className="text-yellow-400" />,
-        fall: <div className="flex gap-3"><Apple size={48} className="text-red-400" /><Sword size={48} className="text-orange-300" /></div>
+        fall: <div className="flex gap-3"><Apple size={48} className="text-red-400" /><Sword size={48} className="text-orange-300" /></div>,
+        cain: <div className="flex flex-col items-center"><AlertTriangle size={48} className="text-red-300" /><span className="text-xs text-white/80">Cain & Abel</span></div>,
+        noah: <div className="flex flex-col items-center"><Cloud size={48} className="text-white" /><span className="text-xs text-white/80">Noah's Ark</span></div>,
+        babel: <div className="flex flex-col items-center"><TreeDeciduous size={48} className="text-amber-200" /><span className="text-xs text-white/80">Tower of Babel</span></div>,
+        abraham: <div className="flex flex-col items-center"><Sun size={48} className="text-yellow-200" /><span className="text-xs text-white/80">Abraham</span></div>,
+        sarah: <div className="flex gap-3"><Users size={48} className="text-white" /><Heart size={32} className="text-pink-200" /></div>,
+        isaac: <div className="flex flex-col items-center"><Moon size={48} className="text-cyan-200" /><span className="text-xs text-white/80">Isaac</span></div>,
+        jacob: <div className="flex flex-col items-center"><Users size={48} className="text-purple-200" /><span className="text-xs text-white/80">Jacob</span></div>
     };
 
     return (
