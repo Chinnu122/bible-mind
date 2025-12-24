@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { Check, Crown, Sparkles, Gift, Clock, ArrowLeft, Star, Heart, Zap, Users, Shield } from 'lucide-react';
 
