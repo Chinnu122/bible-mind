@@ -92,6 +92,10 @@ class BibleAPI {
     return this.fetch<StrongsDefinition[]>(`/search/strongs?q=${encodeURIComponent(query)}`);
   }
 
+  async getAllStrongs(): Promise<StrongsDefinition[]> {
+    return this.fetch<StrongsDefinition[]>('/strongs/all');
+  }
+
   // Search
   async searchVerses(query: string, limit: number = 20): Promise<BibleVerse[]> {
     return this.fetch<BibleVerse[]>(`/search?q=${encodeURIComponent(query)}&limit=${limit}`);

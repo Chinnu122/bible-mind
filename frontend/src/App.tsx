@@ -35,6 +35,7 @@ import MobileDrawer from './components/MobileDrawer';
 import DownloadPage from './components/DownloadPage';
 import UpdateChecker from './components/UpdateChecker';
 import WordSearch from './components/WordSearch';
+import HebrewGreekGlossary from './components/HebrewGreekGlossary';
 
 type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download';
 
@@ -52,6 +53,7 @@ function AppLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
   const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
+  const [showGlossary, setShowGlossary] = useState(false);
 
   // Restore user from localStorage on app load
   useEffect(() => {
@@ -119,6 +121,10 @@ function AppLayout() {
       <HolidayManager onModeChange={setHolidayMode} />
       <UpdateChecker />
       <WordSearch />
+      <HebrewGreekGlossary
+        isOpen={showGlossary}
+        onClose={() => setShowGlossary(false)}
+      />
 
       {/* Scroll Progress Indicator */}
       <motion.div
