@@ -110,34 +110,24 @@ router.get('/:number', (req: Request, res: Response) => {
  * Get multi-language translations (Telugu, Hindi, Greek) for a Strong's number
  */
 router.get('/:number/multilang', (req: Request, res: Response) => {
-  const strongsNum = req.params.number.toUpperCase();
+  const strongsNum = req.params.number;
+  const translations = dataStore.getStrongsMultiLang(strongsNum) || {};
 
-  // Multi-language data - in production, load from TeluguHindiStrongs.csv
-  const multiLangData: Record<string, { telugu: string; hindi: string; greek: string }> = {
-    'H7225': { telugu: 'ఆరంభము - మొదటిది', hindi: 'आरंभ - प्रथम', greek: 'ἀρχή (archē)' },
-    'H0430': { telugu: 'ఎలోహీమ్ - దేవుడు', hindi: 'एलोहीम - परमेश्वर', greek: 'θεός (theos)' },
-    'H1254': { telugu: 'బారా - సృష్టించు', hindi: 'बारा - सृजना करना', greek: 'κτίζω (ktizō)' },
-    'H8064': { telugu: 'షామయిమ్ - ఆకాశము', hindi: 'शामयिम - आकाश', greek: 'οὐρανός (ouranos)' },
-    'H0776': { telugu: 'ఎరెత్స్ - భూమి', hindi: 'एरेट्स - पृथ्वी', greek: 'γῆ (gē)' },
-    'H3068': { telugu: 'యహ్వే - ప్రభువు', hindi: 'यहवे - यहोवा', greek: 'κύριος (kyrios)' },
-    'H0157': { telugu: 'ఆహబ్ - ప్రేమించు', hindi: 'आहब् - प्रेम करना', greek: 'ἀγαπάω (agapaō)' },
-    'H7965': { telugu: 'షాలోమ్ - శాంతి', hindi: 'शालोम - शांति', greek: 'εἰρήνη (eirēnē)' },
-    'H0001': { telugu: 'అబ్ - తండ్రి', hindi: 'अब् - पिता', greek: 'πατήρ (patēr)' },
-    'H0113': { telugu: 'ఆదోన్ - ప్రభువు', hindi: 'आदोन - स्वामी', greek: 'κύριος (kyrios)' },
-    'H0119': { telugu: 'ఆదమ్ - ఎర్రగా చేయు', hindi: 'आदम - लाल होना', greek: 'πυρρός (pyrros)' },
-    'H0120': { telugu: 'ఆదామ్ - మానవుడు', hindi: 'आदाम - मनुष्य', greek: 'ἄνθρωπος (anthrōpos)' },
-    'H0136': { telugu: 'అదోనాయ్ - ప్రభువు', hindi: 'अदोनाय - प्रभु', greek: 'κύριος (kyrios)' },
-    'H4325': { telugu: 'మయిమ్ - నీళ్ళు', hindi: 'मयिम - पानी', greek: 'ὕδωρ (hydōr)' },
-    'H5315': { telugu: 'నెఫెష్ - ప్రాణము', hindi: 'नेफेश - प्राण', greek: 'ψυχή (psychē)' },
-    'H7307': { telugu: 'రూాచ్ - ఆత్మ', hindi: 'रूआख - आत्मा', greek: 'πνεῦμα (pneuma)' },
+  // For Greek Strong's numbers, we can at least provide the lemma as a "Greek" field.
+  const def = dataStore.getStrongs(strongsNum);
+  const greekFallback = def && def.language === 'G'
+    ? `${def.word}${def.gloss ? ` - ${def.gloss}` : ''}`
+    : undefined;
+
+  const payload = {
+    ...translations,
+    ...(greekFallback ? { greek: greekFallback } : {})
   };
-
-  const translations = multiLangData[strongsNum];
 
   res.json({
     success: true,
-    data: translations || null,
-    meta: { strongsNumber: strongsNum }
+    data: Object.keys(payload).length > 0 ? payload : null,
+    meta: { strongsNumber: (def?.strongsNumber || strongsNum).toUpperCase() }
   });
 });
 

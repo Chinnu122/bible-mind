@@ -1,16 +1,38 @@
 import fs from 'fs';
 import path from 'path';
 import csvParser from 'csv-parser';
-import { BibleVerse, BibleBook, StrongsDefinition } from '../types';
+import { BibleVerse, BibleBook, StrongsDefinition, StrongsMultiLang } from '../types';
 
 // In-memory data store
 class DataStore {
   private verses: Map<string, BibleVerse> = new Map();
   private books: Map<number, BibleBook> = new Map();
   private strongs: Map<string, StrongsDefinition> = new Map();
+  private strongsMultiLang: Map<string, StrongsMultiLang> = new Map();
   private versesByBook: Map<number, BibleVerse[]> = new Map();
   private versesByChapter: Map<string, BibleVerse[]> = new Map();
   private isLoaded: boolean = false;
+
+  private normalizeStrongsNumber(input: string): string {
+    const trimmed = (input || '').trim().toUpperCase();
+    if (!trimmed) return trimmed;
+
+    const first = trimmed[0];
+    const hasPrefix = first === 'H' || first === 'G' || first === 'A';
+    const prefix = hasPrefix ? first : 'H';
+    const rawDigits = (hasPrefix ? trimmed.slice(1) : trimmed).replace(/\D/g, '');
+
+    if (!rawDigits) return trimmed;
+
+    if (prefix === 'G') {
+      const n = parseInt(rawDigits, 10);
+      if (Number.isNaN(n)) return trimmed;
+      return `G${n}`;
+    }
+
+    // Hebrew / Aramaic in our dataset are stored as 4-digit (e.g., H0430)
+    return `${prefix}${rawDigits.padStart(4, '0')}`;
+  }
 
   async loadAllData(): Promise<void> {
     if (this.isLoaded) return;
@@ -23,6 +45,7 @@ class DataStore {
       this.loadVerses(),
       this.loadHebrewStrongs(),
       this.loadGreekStrongs(),
+      this.loadTeluguHindiStrongs(),
     ]);
 
     this.isLoaded = true;
@@ -186,7 +209,7 @@ class DataStore {
 
     if (parts.length >= 9 && parts[0]) {
       const def: StrongsDefinition = {
-        strongsNumber: `H${parts[0]}`,
+        strongsNumber: this.normalizeStrongsNumber(`H${parts[0]}`),
         word: parts[1] || '',
         gloss: parts[2] || '',
         language: (parts[3] || 'H') as 'H' | 'A' | 'G',
@@ -219,7 +242,7 @@ class DataStore {
       // Parse TSV: Number, Lemma, Origin, Root, RootLemma, | (separator)
       const parts = line.split('\t');
       if (parts.length >= 2 && parts[0]) {
-        const strongsNumber = parts[0].trim(); // Already includes 'G' prefix
+        const strongsNumber = this.normalizeStrongsNumber(parts[0].trim());
         const lemma = parts[1]?.trim() || '';
         const origin = parts[2]?.trim() || '';
         const root = parts[3]?.trim() || '';
@@ -239,6 +262,41 @@ class DataStore {
         this.strongs.set(def.strongsNumber, def);
       }
     }
+  }
+
+  private async loadTeluguHindiStrongs(): Promise<void> {
+    const filePath = path.join(__dirname, '../../data/TeluguHindiStrongs.csv');
+
+    if (!fs.existsSync(filePath)) {
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csvParser())
+        .on('data', (row) => {
+          const strongsNumberRaw = (row.strongs_number || row.strongsNumber || row.strongs || '').toString();
+          const strongsNumber = this.normalizeStrongsNumber(strongsNumberRaw);
+          if (!strongsNumber) return;
+
+          const teluguWord = (row.telugu_word || '').toString().trim();
+          const teluguMeaning = (row.telugu_meaning || '').toString().trim();
+          const hindiWord = (row.hindi_word || '').toString().trim();
+          const hindiMeaning = (row.hindi_meaning || '').toString().trim();
+
+          const telugu = teluguWord || teluguMeaning
+            ? `${teluguWord}${teluguWord && teluguMeaning ? ' - ' : ''}${teluguMeaning}`
+            : undefined;
+          const hindi = hindiWord || hindiMeaning
+            ? `${hindiWord}${hindiWord && hindiMeaning ? ' - ' : ''}${hindiMeaning}`
+            : undefined;
+
+          if (!telugu && !hindi) return;
+          this.strongsMultiLang.set(strongsNumber, { telugu, hindi });
+        })
+        .on('end', resolve)
+        .on('error', reject);
+    });
   }
 
   // Getters
@@ -272,12 +330,13 @@ class DataStore {
   }
 
   getStrongs(strongsNumber: string): StrongsDefinition | undefined {
-    // Normalize the input
-    let normalized = strongsNumber.toUpperCase();
-    if (!normalized.startsWith('H') && !normalized.startsWith('G')) {
-      normalized = 'H' + normalized;
-    }
+    const normalized = this.normalizeStrongsNumber(strongsNumber);
     return this.strongs.get(normalized);
+  }
+
+  getStrongsMultiLang(strongsNumber: string): StrongsMultiLang | undefined {
+    const normalized = this.normalizeStrongsNumber(strongsNumber);
+    return this.strongsMultiLang.get(normalized);
   }
 
   searchStrongs(query: string): StrongsDefinition[] {

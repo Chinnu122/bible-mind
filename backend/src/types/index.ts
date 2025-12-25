@@ -47,6 +47,12 @@ export interface StrongsDefinition {
   rootWord: string;
 }
 
+export interface StrongsMultiLang {
+  telugu?: string;
+  hindi?: string;
+  greek?: string;
+}
+
 // Person in the Bible
 export interface BiblePerson {
   personId: string;
