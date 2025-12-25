@@ -282,11 +282,34 @@ class DataStore {
 
   searchStrongs(query: string): StrongsDefinition[] {
     const lowerQuery = query.toLowerCase();
-    return Array.from(this.strongs.values()).filter(
-      s => s.word.toLowerCase().includes(lowerQuery) ||
+
+    // Strip Hebrew vowel points (nikkud) for better matching
+    const stripNikkud = (str: string) => str.replace(/[\u0591-\u05C7]/g, '');
+    const cleanQuery = stripNikkud(query);
+
+    const results = Array.from(this.strongs.values()).filter(s => {
+      const cleanWord = stripNikkud(s.word);
+      const strongsNum = s.strongsNumber.toLowerCase();
+
+      // Match by: Hebrew word (with or without nikkud), Strong's number, gloss, root
+      return cleanWord.includes(cleanQuery) ||
+        cleanQuery.includes(cleanWord) ||
+        s.word.toLowerCase().includes(lowerQuery) ||
+        strongsNum.includes(lowerQuery) ||
         s.gloss.toLowerCase().includes(lowerQuery) ||
-        s.rootWord.toLowerCase().includes(lowerQuery)
-    ).slice(0, 50);
+        s.rootWord.toLowerCase().includes(lowerQuery);
+    });
+
+    // Sort results: prioritize exact word matches first
+    results.sort((a, b) => {
+      const aClean = stripNikkud(a.word);
+      const bClean = stripNikkud(b.word);
+      const aExact = aClean === cleanQuery ? 0 : (cleanQuery.includes(aClean) ? 1 : 2);
+      const bExact = bClean === cleanQuery ? 0 : (cleanQuery.includes(bClean) ? 1 : 2);
+      return aExact - bExact;
+    });
+
+    return results.slice(0, 100);
   }
 
   searchVerses(query: string, limit: number = 100): BibleVerse[] {
