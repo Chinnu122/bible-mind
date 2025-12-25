@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Loader2, Book, Globe } from 'lucide-react';
+import { bibleAPI, BibleVerse } from '../api/bibleApi';
 
 interface SearchResult {
     book: string;
@@ -30,36 +31,24 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
         setSearched(true);
 
         try {
-            // Search API call - searches across all languages
-            const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
-            if (response.ok) {
-                const data = await response.json();
-                setResults(data.results || []);
-            } else {
-                // Fallback: local demo results for now
-                setResults([
-                    {
-                        book: 'John',
-                        chapter: 3,
-                        verse: 16,
-                        englishText: 'For God so loved the world, that he gave his only begotten Son...',
-                        teluguText: 'దేవుడు లోకమును ఎంతో ప్రేమించెను...',
-                        hebrewText: undefined,
-                        greekText: 'Οὕτω γὰρ ἠγάπησεν ὁ Θεὸς τὸν κόσμον...'
-                    },
-                    {
-                        book: '1 John',
-                        chapter: 4,
-                        verse: 8,
-                        englishText: 'He that loveth not knoweth not God; for God is love.',
-                        teluguText: 'ప్రేమించనివాడు దేవుని ఎరుగడు...',
-                        hebrewText: undefined,
-                        greekText: 'ὁ μὴ ἀγαπῶν οὐκ ἔγνω τὸν Θεόν...'
-                    }
-                ]);
-            }
+            // Use the bibleAPI to search verses
+            const verses: BibleVerse[] = await bibleAPI.searchVerses(searchQuery, 50);
+
+            // Convert API response to SearchResult format
+            const formattedResults: SearchResult[] = verses.map(verse => ({
+                book: verse.bookName,
+                chapter: verse.chapter,
+                verse: verse.verse,
+                englishText: verse.kjvText || verse.webText,
+                teluguText: undefined, // Add Telugu when available in API
+                hebrewText: verse.hebrewText || undefined,
+                greekText: verse.greekText || undefined
+            }));
+
+            setResults(formattedResults);
         } catch (error) {
             console.error('Search failed:', error);
+            // Fallback: search locally if API fails
             setResults([]);
         } finally {
             setLoading(false);

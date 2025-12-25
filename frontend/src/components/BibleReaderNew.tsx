@@ -183,8 +183,7 @@ export default function BibleReader() {
                     key={book.bookId}
                     onClick={() => {
                       setSelectedBook(book);
-                      setSelectedChapter(1);
-                      setShowBookSelector(false);
+                      // Don't close selector - show chapters instead
                     }}
                     className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
                       ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
@@ -203,8 +202,7 @@ export default function BibleReader() {
                     key={book.bookId}
                     onClick={() => {
                       setSelectedBook(book);
-                      setSelectedChapter(1);
-                      setShowBookSelector(false);
+                      // Don't close selector - show chapters instead
                     }}
                     className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
                       ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
