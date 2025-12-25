@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Book, Loader2, Volume2, Square } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Book, Loader2, Volume2, Square, Wand2 } from 'lucide-react';
 import { bibleAPI, BibleBook, BibleVerse } from '../api/bibleApi';
 import LayeredVerseView from './LayeredVerseView';
+import LessonBuilder from './LessonBuilder';
 import { useSettings } from '../contexts/SettingsContext';
 
 export default function BibleReader() {
@@ -11,6 +12,7 @@ export default function BibleReader() {
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [verses, setVerses] = useState<BibleVerse[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<BibleVerse | null>(null);
+  const [showLessonBuilder, setShowLessonBuilder] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showBookSelector, setShowBookSelector] = useState(false);
@@ -304,6 +306,18 @@ export default function BibleReader() {
               {selectedBook && (
                 <div className="mt-6 pt-4 border-t border-white/10">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Book Info</p>
+                  <div className="flex items-center gap-2 mb-4">
+                    <button className="p-2 hover:bg-white/10 rounded-full text-white transition-colors">
+                      <Volume2 size={20} />
+                    </button>
+                    <button
+                      onClick={() => setShowLessonBuilder(true)}
+                      className="p-2 hover:bg-white/10 rounded-full text-gold-400 hover:text-gold-200 transition-colors"
+                      title="Create Lesson PDF"
+                    >
+                      <Wand2 size={20} />
+                    </button>
+                  </div>
                   <p className="text-2xl font-serif text-gold-300">{selectedBook.hebrewName}</p>
                   <p className="text-sm text-gray-400 italic">{selectedBook.hebrewTransliteration}</p>
                   <p className="text-sm text-gray-500 mt-2">"{selectedBook.hebrewMeaning}"</p>
@@ -317,11 +331,13 @@ export default function BibleReader() {
       {/* Verse Detail Panel */}
       <AnimatePresence>
         {selectedVerse && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <div
               onClick={() => setSelectedVerse(null)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
@@ -329,7 +345,27 @@ export default function BibleReader() {
               verse={selectedVerse}
               onClose={() => setSelectedVerse(null)}
             />
-          </>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Lesson Builder Modal */}
+      <AnimatePresence>
+        {showLessonBuilder && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed inset-0 z-[60]"
+          >
+            <LessonBuilder
+              initialVerse={{
+                ref: `${selectedBook?.bookName || 'Genesis'} ${selectedChapter}:${selectedVerse?.verse || 1}`,
+                text: selectedVerse?.kjvText || 'Select a verse to begin...'
+              }}
+              onClose={() => setShowLessonBuilder(false)}
+            />
+          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
