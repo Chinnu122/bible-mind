@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, Image as ImageIcon, Sparkles, Languages, ChevronRight } from 'lucide-react';
 import { BibleVerse, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
+import VerseArtGallery from './VerseArtGallery';
+import ArtUpload from './ArtUpload';
 
 interface LayeredVerseViewProps {
     verse: BibleVerse;
@@ -15,6 +17,7 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
     const [activeLayer, setActiveLayer] = useState<LayerType>('text');
     const [lexiconWord, setLexiconWord] = useState<StrongsDefinition | null>(null);
     const [lexiconLoading, setLexiconLoading] = useState(false);
+    const [showUpload, setShowUpload] = useState(false);
 
     // Mock function to simulate fetching Strong's definition
     // In a real implementation, we'd parse the verse text for Strong's numbers or clickable words
@@ -182,19 +185,27 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="h-full flex flex-col items-center justify-center p-8 text-center"
+                                className="h-full relative"
                             >
-                                <div className="p-6 rounded-full bg-white/5 mb-6">
-                                    <ImageIcon size={48} className="text-gold-500/50" />
-                                </div>
-                                <h3 className="text-2xl text-crema-100 font-serif mb-2">Community Art Gallery</h3>
-                                <p className="text-slate-400 max-w-md mx-auto mb-8">
-                                    Visual interpretations of this verse from our global community.
-                                    (Coming soon in Phase 2)
-                                </p>
-                                <button className="px-6 py-3 rounded-full border border-gold-500/30 text-gold-400 hover:bg-gold-500/10 transition-colors">
-                                    Upload Artwork
-                                </button>
+                                {showUpload ? (
+                                    <div className="h-full p-4">
+                                        <ArtUpload
+                                            verseRef={`${verse.bookName} ${verse.chapter}:${verse.verse}`}
+                                            onClose={() => setShowUpload(false)}
+                                            onUploadSuccess={() => {
+                                                setShowUpload(false);
+                                                // Ideally refresh gallery here
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="h-full p-4">
+                                        <VerseArtGallery
+                                            verseRef={`${verse.bookName} ${verse.chapter}:${verse.verse}`}
+                                            onUploadClick={() => setShowUpload(true)}
+                                        />
+                                    </div>
+                                )}
                             </motion.div>
                         )}
 
