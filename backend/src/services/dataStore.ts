@@ -289,15 +289,28 @@ class DataStore {
     ).slice(0, 50);
   }
 
-  searchVerses(query: string, limit: number = 20): BibleVerse[] {
+  searchVerses(query: string, limit: number = 100): BibleVerse[] {
     const lowerQuery = query.toLowerCase();
     const results: BibleVerse[] = [];
 
     for (const verse of this.verses.values()) {
       if (results.length >= limit) break;
 
-      if (verse.kjvText.toLowerCase().includes(lowerQuery) ||
-        verse.webText.toLowerCase().includes(lowerQuery)) {
+      // Search across ALL language texts
+      const searchableTexts = [
+        verse.kjvText,
+        verse.webText,
+        verse.hebrewText,
+        verse.greekText,
+        verse.jpsText,
+        verse.brentonText
+      ].filter(Boolean); // Filter out undefined/null values
+
+      const found = searchableTexts.some(text =>
+        text && text.toLowerCase().includes(lowerQuery)
+      );
+
+      if (found) {
         results.push(verse);
       }
     }

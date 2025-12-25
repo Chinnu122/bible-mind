@@ -9,7 +9,7 @@ const router = Router();
  */
 router.get('/', (req: Request, res: Response) => {
   const query = req.query.q as string;
-  const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+  const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
   const bookFilter = req.query.book as string;
 
   if (!query || query.length < 2) {
@@ -43,8 +43,8 @@ router.get('/', (req: Request, res: Response) => {
   res.json({
     success: true,
     data: formattedResults,
-    meta: { 
-      total: formattedResults.length, 
+    meta: {
+      total: formattedResults.length,
       query,
       limit
     }
@@ -57,7 +57,7 @@ router.get('/', (req: Request, res: Response) => {
  */
 router.get('/strongs', (req: Request, res: Response) => {
   const query = req.query.q as string;
-  
+
   if (!query || query.length < 2) {
     res.status(400).json({
       success: false,
