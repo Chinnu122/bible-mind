@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Book, Loader2, Globe, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
-import { StrongsDefinition } from '../api/bibleApi';
+import { StrongsDefinition, API_BASE_URL } from '../api/bibleApi';
 
 interface MultiLangMeaning {
     telugu?: string;
@@ -22,51 +22,52 @@ interface LexiconPanelProps {
     onClose: () => void;
 }
 
-// Mock multi-language data - in production, would be fetched from API
-const getMultiLangMeanings = (strongsNumber: string): MultiLangMeaning => {
-    const meanings: Record<string, MultiLangMeaning> = {
-        'H7225': { telugu: 'ఆరంభము - మొదటిది', hindi: 'आरंभ - प्रथम', greek: 'ἀρχή (archē)' },
-        'H0430': { telugu: 'ఎలోహీమ్ - దేవుడు', hindi: 'एलोहीम - परमेश्वर', greek: 'θεός (theos)' },
-        'H1254': { telugu: 'బారా - సృష్టించు', hindi: 'बारा - सृजना करना', greek: 'κτίζω (ktizō)' },
-        'H8064': { telugu: 'షామయిమ్ - ఆకాశము', hindi: 'शामयिम - आकाश', greek: 'οὐρανός (ouranos)' },
-        'H0776': { telugu: 'ఎరెత్స్ - భూమి', hindi: 'एरेट्स - पृथ्वी', greek: 'γῆ (gē)' },
-        'H3068': { telugu: 'యహ్వే - ప్రభువు', hindi: 'यहवे - यहोवा', greek: 'κύριος (kyrios)' },
-        'H0157': { telugu: 'ఆహబ్ - ప్రేమించు', hindi: 'आहब् - प्रेम करना', greek: 'ἀγαπάω (agapaō)' },
-        'H7965': { telugu: 'షాలోమ్ - శాంతి', hindi: 'शालोम - शांति', greek: 'εἰρήνη (eirēnē)' },
-    };
-    return meanings[strongsNumber] || {};
+// Fetch multi-language data from API
+const fetchMultiLangMeanings = async (strongsNumber: string): Promise<MultiLangMeaning> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/strongs/${strongsNumber}/multilang`);
+        const json = await response.json();
+        return json.data || {};
+    } catch (error) {
+        console.error('Error fetching multi-lang:', error);
+        return {};
+    }
 };
 
-// Mock occurrence locations - in production, would be fetched from API
-const getOccurrenceLocations = (strongsNumber: string): OccurrenceLocation[] => {
-    // Mock data showing where the word appears
-    const locations: Record<string, OccurrenceLocation[]> = {
-        'H7225': [
-            { book: 'Genesis', chapter: 1, verse: 1, text: 'In the beginning God created...' },
-            { book: 'Genesis', chapter: 10, verse: 10, text: 'The beginning of his kingdom...' },
-            { book: 'Exodus', chapter: 23, verse: 19, text: 'The first of the firstfruits...' },
-            { book: 'Deuteronomy', chapter: 11, verse: 12, text: 'From the beginning of the year...' },
-            { book: 'Job', chapter: 8, verse: 7, text: 'Though thy beginning was small...' },
-            { book: 'Proverbs', chapter: 1, verse: 7, text: 'The fear of the LORD is the beginning...' },
-            { book: 'Proverbs', chapter: 8, verse: 22, text: 'The LORD possessed me in the beginning...' },
-            { book: 'Isaiah', chapter: 46, verse: 10, text: 'Declaring the end from the beginning...' },
-        ],
-    };
-    return locations[strongsNumber] || [
-        { book: 'Genesis', chapter: 1, verse: 1, text: 'First occurrence in scripture...' },
-    ];
+// Fetch occurrence locations from API
+const fetchOccurrenceLocations = async (strongsNumber: string): Promise<OccurrenceLocation[]> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/strongs/${strongsNumber}/occurrences`);
+        const json = await response.json();
+        return json.data || [];
+    } catch (error) {
+        console.error('Error fetching occurrences:', error);
+        return [];
+    }
 };
 
 const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) => {
     const [multiLang, setMultiLang] = useState<MultiLangMeaning>({});
     const [occurrences, setOccurrences] = useState<OccurrenceLocation[]>([]);
     const [currentOccIndex, setCurrentOccIndex] = useState(0);
+    const [loadingExtra, setLoadingExtra] = useState(false);
 
     useEffect(() => {
-        if (word) {
-            setMultiLang(getMultiLangMeanings(word.strongsNumber));
-            setOccurrences(getOccurrenceLocations(word.strongsNumber));
-            setCurrentOccIndex(0);
+        if (word && word.strongsNumber && word.strongsNumber !== 'Unknown' && word.strongsNumber !== 'Error') {
+            setLoadingExtra(true);
+            Promise.all([
+                fetchMultiLangMeanings(word.strongsNumber),
+                fetchOccurrenceLocations(word.strongsNumber)
+            ]).then(([multiLangData, occurrenceData]) => {
+                setMultiLang(multiLangData);
+                setOccurrences(occurrenceData);
+                setCurrentOccIndex(0);
+            }).finally(() => {
+                setLoadingExtra(false);
+            });
+        } else {
+            setMultiLang({});
+            setOccurrences([]);
         }
     }, [word]);
 
@@ -129,7 +130,12 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) =
                             </div>
 
                             {/* Multi-Language Translations */}
-                            {(multiLang.telugu || multiLang.hindi || multiLang.greek) && (
+                            {loadingExtra ? (
+                                <div className="mt-6 p-4 rounded-xl bg-white/5 flex items-center justify-center">
+                                    <Loader2 size={20} className="animate-spin text-purple-400 mr-2" />
+                                    <span className="text-sm text-slate-400">Loading translations...</span>
+                                </div>
+                            ) : (multiLang.telugu || multiLang.hindi || multiLang.greek) && (
                                 <div className="mt-6 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20">
                                     <div className="flex items-center gap-2 text-purple-300 mb-4">
                                         <Globe size={16} />
@@ -217,8 +223,8 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) =
                                                 key={idx}
                                                 onClick={() => setCurrentOccIndex(idx)}
                                                 className={`w-2 h-2 rounded-full transition-all ${currentOccIndex === idx
-                                                        ? 'bg-gold-400 scale-125'
-                                                        : 'bg-white/20 hover:bg-white/40'
+                                                    ? 'bg-gold-400 scale-125'
+                                                    : 'bg-white/20 hover:bg-white/40'
                                                     }`}
                                             />
                                         ))}

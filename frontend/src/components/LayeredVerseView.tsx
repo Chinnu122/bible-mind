@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, Sparkles, Languages, ChevronRight } from 'lucide-react';
-import { BibleVerse, StrongsDefinition } from '../api/bibleApi';
+import { bibleAPI, BibleVerse, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
 
 interface LayeredVerseViewProps {
@@ -16,33 +16,51 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
     const [lexiconWord, setLexiconWord] = useState<StrongsDefinition | null>(null);
     const [lexiconLoading, setLexiconLoading] = useState(false);
 
-    // Mock function to simulate fetching Strong's definition
-    // In a real implementation, we'd parse the verse text for Strong's numbers or clickable words
-    const handleWordClick = async (_word: string) => {
-        // For MVP, just demonstrate logic
+    // Search for Hebrew word in Strong's database
+    const handleWordClick = async (word: string) => {
         setLexiconLoading(true);
         setActiveLayer('lexicon');
-        try {
-            // This is just a placeholder example. Real usage depends on having Strong's tagged text
-            // const def = await bibleAPI.getStrongs('H0001'); 
-            // setLexiconWord(def);
 
-            // Simulating API call
-            setTimeout(() => {
-                setLexiconLoading(false);
+        try {
+            // Clean the word (remove punctuation, vowel points for better matching)
+            const cleanWord = word.replace(/[^\u0590-\u05FF]/g, ''); // Keep only Hebrew characters
+
+            // Search for the word in Strong's database
+            const results = await bibleAPI.searchStrongs(cleanWord);
+
+            if (results && results.length > 0) {
+                // Find the best match - exact word match preferred
+                const exactMatch = results.find(r => r.word === cleanWord || r.word.includes(cleanWord));
+                const bestMatch = exactMatch || results[0];
+                setLexiconWord(bestMatch);
+            } else {
+                // If no results, show a placeholder with the word
                 setLexiconWord({
-                    strongsNumber: "H7225",
-                    word: "רֵאשִׁית",
-                    gloss: "beginning, chief, first, principal thing",
+                    strongsNumber: "Unknown",
+                    word: cleanWord,
+                    gloss: "Definition not found in database. Try searching the glossary.",
                     language: "Hebrew",
-                    partOfSpeech: "Noun Feminine",
-                    gender: "Feminine",
-                    occurrences: 51,
-                    firstOccurrence: "Genesis 1:1",
-                    rootWord: "from the same as H7218"
+                    partOfSpeech: "Unknown",
+                    gender: "",
+                    occurrences: 0,
+                    firstOccurrence: "",
+                    rootWord: ""
                 });
-            }, 500);
-        } catch (e) {
+            }
+        } catch (error) {
+            console.error('Error fetching Strong\'s definition:', error);
+            setLexiconWord({
+                strongsNumber: "Error",
+                word: word,
+                gloss: "Failed to fetch definition. Please try again.",
+                language: "Hebrew",
+                partOfSpeech: "",
+                gender: "",
+                occurrences: 0,
+                firstOccurrence: "",
+                rootWord: ""
+            });
+        } finally {
             setLexiconLoading(false);
         }
     };
