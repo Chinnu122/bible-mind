@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Book, Loader2, Volume2, Square } from 'lucide-react';
 import { bibleAPI, BibleBook, BibleVerse } from '../api/bibleApi';
-import VerseDetailPanel from './VerseDetailPanel';
+import LayeredVerseView from './LayeredVerseView';
 import { useSettings } from '../contexts/SettingsContext';
 
 export default function BibleReader() {
@@ -325,7 +325,7 @@ export default function BibleReader() {
               onClick={() => setSelectedVerse(null)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
-            <VerseDetailPanel
+            <LayeredVerseView
               verse={selectedVerse}
               onClose={() => setSelectedVerse(null)}
             />
