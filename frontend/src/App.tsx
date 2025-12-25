@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download
+  Settings, User, Home, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download, Library
 } from 'lucide-react';
 import Hero from './components/Hero';
 import BibleReaderNew from './components/BibleReaderNew';
@@ -97,10 +97,9 @@ function AppLayout() {
   // Navigation Items Configuration
   const navItems = [
     { id: 'landing', icon: Home, label: 'Home' },
-    { id: 'dashboard', icon: TrendingUp, label: 'Dashboard' },
     { id: 'reader', icon: BookOpen, label: 'Read' },
     { id: 'videos', icon: ImageIcon, label: 'Visuals' },
-    { id: 'books', icon: BookOpen, label: 'Books' },
+    { id: 'books', icon: Library, label: 'Books' },
     { id: 'daily', icon: Calendar, label: 'Daily' },
     { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
     { id: 'reviews', icon: MessageSquare, label: 'Community' },

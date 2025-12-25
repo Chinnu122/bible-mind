@@ -22,6 +22,8 @@ import reviewsRouter from './routes/reviews';
 import quizRouter from './routes/quiz';
 import authRouter from './routes/auth';
 import dailyVerseRouter from './routes/dailyVerse';
+import exportRouter from './routes/export';
+import aiRouter from './routes/ai';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -90,6 +92,8 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/quiz', quizRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/daily-verse', dailyVerseRouter);
+app.use('/api/export', exportRouter);
+app.use('/api/ai', aiRouter);
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));

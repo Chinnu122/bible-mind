@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BookOpen, Image as ImageIcon, Sparkles, Languages, ChevronRight } from 'lucide-react';
+import { X, BookOpen, Sparkles, Languages, ChevronRight } from 'lucide-react';
 import { BibleVerse, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
-import VerseArtGallery from './VerseArtGallery';
-import ArtUpload from './ArtUpload';
 
 interface LayeredVerseViewProps {
     verse: BibleVerse;
     onClose: () => void;
 }
 
-type LayerType = 'text' | 'lexicon' | 'art' | 'context';
+type LayerType = 'text' | 'lexicon' | 'context';
 
 const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) => {
     const [activeLayer, setActiveLayer] = useState<LayerType>('text');
     const [lexiconWord, setLexiconWord] = useState<StrongsDefinition | null>(null);
     const [lexiconLoading, setLexiconLoading] = useState(false);
-    const [showUpload, setShowUpload] = useState(false);
 
     // Mock function to simulate fetching Strong's definition
     // In a real implementation, we'd parse the verse text for Strong's numbers or clickable words
@@ -53,7 +50,6 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
     const tabs = [
         { id: 'text', label: 'Text', icon: BookOpen },
         { id: 'lexicon', label: 'Lexicon', icon: Languages },
-        { id: 'art', label: 'Art', icon: ImageIcon },
         { id: 'context', label: 'AI Context', icon: Sparkles },
     ];
 
@@ -179,35 +175,7 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
                             </motion.div>
                         )}
 
-                        {activeLayer === 'art' && (
-                            <motion.div
-                                key="art"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                className="h-full relative"
-                            >
-                                {showUpload ? (
-                                    <div className="h-full p-4">
-                                        <ArtUpload
-                                            verseRef={`${verse.bookName} ${verse.chapter}:${verse.verse}`}
-                                            onClose={() => setShowUpload(false)}
-                                            onUploadSuccess={() => {
-                                                setShowUpload(false);
-                                                // Ideally refresh gallery here
-                                            }}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="h-full p-4">
-                                        <VerseArtGallery
-                                            verseRef={`${verse.bookName} ${verse.chapter}:${verse.verse}`}
-                                            onUploadClick={() => setShowUpload(true)}
-                                        />
-                                    </div>
-                                )}
-                            </motion.div>
-                        )}
+
 
                         {activeLayer === 'context' && (
                             <motion.div
