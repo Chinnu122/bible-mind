@@ -31,8 +31,8 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
         setSearched(true);
 
         try {
-            // Use the bibleAPI to search verses
-            const verses: BibleVerse[] = await bibleAPI.searchVerses(searchQuery, 50);
+            // Use the bibleAPI to search verses (search up to 500 results)
+            const verses: BibleVerse[] = await bibleAPI.searchVerses(searchQuery, 500);
 
             // Convert API response to SearchResult format
             const formattedResults: SearchResult[] = verses.map(verse => ({
