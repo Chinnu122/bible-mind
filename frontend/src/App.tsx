@@ -34,6 +34,7 @@ import Logo from './components/Logo';
 import MobileDrawer from './components/MobileDrawer';
 import DownloadPage from './components/DownloadPage';
 import UpdateChecker from './components/UpdateChecker';
+import WordSearch from './components/WordSearch';
 
 type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download';
 
@@ -117,6 +118,7 @@ function AppLayout() {
       <AtmospherePlayer />
       <HolidayManager onModeChange={setHolidayMode} />
       <UpdateChecker />
+      <WordSearch />
 
       {/* Scroll Progress Indicator */}
       <motion.div
