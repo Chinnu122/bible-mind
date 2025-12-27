@@ -130,15 +130,15 @@ export default function SettingsModal() {
                                     </h3>
                                     <div className="bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center justify-between mb-4">
                                         <span className="text-crema-50 font-medium">Reading Size</span>
-                                        <div className="flex bg-black/20 rounded-lg p-1">
-                                            {['normal', 'large'].map((size) => (
+                                        <div className="flex bg-black/20 rounded-lg p-1 overflow-x-auto">
+                                            {['small', 'normal', 'large', 'extra-large'].map((size) => (
                                                 <button
                                                     key={size}
                                                     onClick={() => setFontSize(size as any)}
-                                                    className={`px-4 py-1.5 rounded-md text-sm transition-all capitalize ${fontSize === size ? 'bg-white/10 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
+                                                    className={`px-3 py-1.5 rounded-md text-xs md:text-sm transition-all capitalize whitespace-nowrap ${fontSize === size ? 'bg-white/10 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'
                                                         }`}
                                                 >
-                                                    {size}
+                                                    {size.replace('-', ' ')}
                                                 </button>
                                             ))}
                                         </div>

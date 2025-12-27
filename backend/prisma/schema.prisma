@@ -1,0 +1,246 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// CORE BIBLE DATA
+// ============================================
+
+model Book {
+  id                    Int      @id @default(autoincrement())
+  bookId                Int      @unique
+  bookName              String
+  hebrewName            String?
+  hebrewTransliteration String?
+  hebrewMeaning         String?
+  greekName             String?
+  greekTransliteration  String?
+  greekMeaning          String?
+  chapterCount          Int
+  verseCount            Int
+  shortName             String
+  usxCode               String?
+  testament             String   // 'old' | 'new'
+  
+  verses                Verse[]
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Verse {
+  id                  Int      @id @default(autoincrement())
+  bookId              Int
+  chapter             Int
+  verse               Int
+  
+  // Original Texts
+  hebrewText          String?  // Masoretic with niqqud
+  greekText           String?  // Septuagint / NT Greek
+  transliteration     String?
+  
+  // Translations (JSONB for flexibility)
+  translations        Json     @default("{}")
+  // Structure: { kjv: "...", web: "...", jps: "...", brenton: "...", telugu: "...", hindi: "..." }
+  
+  // Morphological Analysis (JSONB)
+  morphology          Json?    
+  // Structure: [{ word: "בְּרֵאשִׁית", lemma: "רֵאשִׁית", strongNumber: "H7225", pos: "noun", ... }]
+  
+  // Strong's Numbers Array
+  strongNumbers       String[]
+  
+  // Cross-references
+  crossReferences     String[]
+  
+  // Audio
+  audioUrls           Json?    // { kjv: "url", hebrew: "url" }
+  
+  // Metadata
+  lastUpdated         DateTime @default(now())
+  revisionNumber      Int      @default(1)
+  
+  // Relations
+  book                Book     @relation(fields: [bookId], references: [bookId])
+  annotations         Annotation[]
+  
+  @@unique([bookId, chapter, verse])
+  @@index([bookId, chapter])
+  @@index([strongNumbers])
+}
+
+// ============================================
+// LEXICON / DICTIONARY
+// ============================================
+
+model LexiconEntry {
+  id                Int      @id @default(autoincrement())
+  strongNumber      String   @unique
+  lemma             String   // Root word
+  language          String   // 'H' (Hebrew), 'A' (Aramaic), 'G' (Greek)
+  
+  // Definition
+  gloss             String   // Short definition
+  definition        String?  // Extended definition
+  
+  // Part of Speech
+  partOfSpeech      String?
+  gender            String?
+  
+  // Multilingual Meanings
+  teluguMeaning     String?
+  hindiMeaning      String?
+  
+  // Usage Data
+  occurrences       Int      @default(0)
+  firstOccurrence   String?
+  
+  // Root and Derivation
+  rootWord          String?
+  derivedFrom       String?  // Strong's number it derives from
+  
+  // Examples and Usage (JSONB)
+  examples          Json?    // [{ reference: "Gen 1:1", text: "...", context: "..." }]
+  
+  // Pronunciation
+  transliteration   String?
+  pronunciation     String?  // IPA or audio hint
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([lemma])
+  @@index([language])
+}
+
+// ============================================
+// USER SYSTEM
+// ============================================
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  displayName     String?
+  passwordHash    String?   // For email/password auth
+  
+  // OAuth
+  authProvider    String?   // 'google', 'apple', 'email'
+  providerId      String?   // External OAuth ID
+  
+  // Profile
+  avatarUrl       String?
+  preferences     Json      @default("{}")
+  // Structure: { theme: "dark", fontSize: "normal", language: "english" }
+  
+  // Reading Progress
+  lastReadBook    Int?
+  lastReadChapter Int?
+  lastReadVerse   Int?
+  
+  // Relations
+  annotations     Annotation[]
+  readingPlans    UserReadingPlan[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([email])
+  @@index([authProvider, providerId])
+}
+
+model Annotation {
+  id          String   @id @default(cuid())
+  userId      String
+  verseId     Int
+  
+  // Content
+  selection   String?  // Selected text range
+  note        String?  // User's note
+  highlight   String?  // Highlight color
+  
+  // Visibility
+  visibility  String   @default("private") // 'private', 'shared', 'public'
+  
+  // Metadata
+  tags        String[]
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verse       Verse    @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([verseId])
+  @@index([visibility])
+}
+
+// ============================================
+// READING PLANS
+// ============================================
+
+model ReadingPlan {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  duration    Int      // Days
+  
+  // Schedule (JSONB)
+  schedule    Json     // [{ day: 1, readings: [{ book: 1, chapter: 1 }] }]
+  
+  isPublic    Boolean  @default(false)
+  
+  userPlans   UserReadingPlan[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model UserReadingPlan {
+  id            String   @id @default(cuid())
+  userId        String
+  planId        String
+  
+  startDate     DateTime
+  currentDay    Int      @default(1)
+  
+  // Progress (JSONB)
+  completedDays Json     @default("[]") // [1, 2, 3, ...]
+  
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan          ReadingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([userId, planId])
+}
+
+// ============================================
+// CONTENT VERSIONING (Editorial)
+// ============================================
+
+model VerseRevision {
+  id          Int      @id @default(autoincrement())
+  bookId      Int
+  chapter     Int
+  verse       Int
+  
+  // Snapshot of data at revision
+  data        Json     // Full verse data at this revision
+  
+  // Editorial Info
+  editorId    String?
+  changeNote  String?
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([bookId, chapter, verse])
+}

@@ -36,8 +36,11 @@ import DownloadPage from './components/DownloadPage';
 import UpdateChecker from './components/UpdateChecker';
 import WordSearch from './components/WordSearch';
 import HebrewGreekGlossary from './components/HebrewGreekGlossary';
+import LanguageSelector from './components/LanguageSelector';
+import { BibleProvider } from './contexts/BibleContext';
+import AdvancedSearchPage from './components/AdvancedSearchPage';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search';
 
 interface UserData {
   id: string;
@@ -54,6 +57,7 @@ function AppLayout() {
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
   const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
   const [showGlossary, setShowGlossary] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // Restore user from localStorage on app load
   useEffect(() => {
@@ -119,7 +123,15 @@ function AppLayout() {
       <AtmospherePlayer />
       <HolidayManager onModeChange={setHolidayMode} />
       <UpdateChecker />
-      <WordSearch />
+      <WordSearch
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onOpen={() => setSearchOpen(true)}
+        onAdvancedSearch={() => {
+          setSearchOpen(false);
+          navigateTo('search');
+        }}
+      />
       <HebrewGreekGlossary
         isOpen={showGlossary}
         onClose={() => setShowGlossary(false)}
@@ -139,6 +151,15 @@ function AppLayout() {
         onClick={() => navigateTo('landing')}
       >
         <Logo size="sm" />
+      </motion.div>
+
+      {/* Language Selector (Top Right) */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="fixed top-6 right-6 z-50"
+      >
+        <LanguageSelector />
       </motion.div>
 
       {/* Settings Modal */}
@@ -171,9 +192,17 @@ function AppLayout() {
                   pt-20 pb-32 px-4 md:px-8 max-w-[1600px] mx-auto`}
             >
               <AnimatePresence mode="wait">
-                {view === 'landing' && <Hero key="landing" onStart={() => setView('dashboard')} />}
+                {view === 'landing' && (
+                  <Hero
+                    key="landing"
+                    onStart={() => setView('dashboard')}
+                    onSearch={() => setSearchOpen(true)}
+                    onStudy={() => setView('study')}
+                  />
+                )}
                 {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
                 {view === 'reader' && <BibleReaderNew key="reader" />}
+                {view === 'search' && <AdvancedSearchPage key="search" onNavigate={() => setView('reader')} onBack={() => setView('landing')} />}
                 {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
                 {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
                 {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
@@ -347,7 +376,9 @@ function App() {
   return (
     <PerformanceProvider>
       <SettingsProvider>
-        <AppLayout />
+        <BibleProvider>
+          <AppLayout />
+        </BibleProvider>
       </SettingsProvider>
     </PerformanceProvider>
   );

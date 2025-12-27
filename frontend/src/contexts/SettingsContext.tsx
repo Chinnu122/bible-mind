@@ -1,14 +1,17 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type Theme = 'nebula' | 'abstract' | 'dark' | 'aurora';
-export type FontSize = 'normal' | 'large';
+export type FontSize = 'small' | 'normal' | 'large' | 'extra-large';
 export type FontFamily = 'sans' | 'serif' | 'mono';
+export type Language = 'english' | 'telugu' | 'hindi';
 
 export type Atmosphere = 'rain' | 'celestial' | 'monastery' | 'relax' | 'focus' | 'meditate' | 'none';
 
 interface SettingsContextType {
     theme: Theme;
     setTheme: (t: Theme) => void;
+    language: Language;
+    setLanguage: (l: Language) => void;
     soundEnabled: boolean;
     setSoundEnabled: (v: boolean) => void;
     particles: boolean;
@@ -33,6 +36,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
     const [theme, setTheme] = useState<Theme>('nebula');
+    const [language, setLanguage] = useState<Language>('english');
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [particles, setParticles] = useState(true);
     const [volume, setVolume] = useState(0.5);
@@ -46,6 +50,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     // Initialize from local storage
     useEffect(() => {
         const savedTheme = localStorage.getItem('bible-mind-theme') as Theme;
+        const savedLanguage = localStorage.getItem('bible-mind-language') as Language;
         const savedVolume = localStorage.getItem('bible-mind-volume');
         const savedFontSize = localStorage.getItem('bible-mind-fontsize') as FontSize;
         const savedFontFamily = localStorage.getItem('bible-mind-fontfamily') as FontFamily;
@@ -53,6 +58,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         const savedBg = localStorage.getItem('bible-mind-bg');
 
         if (savedTheme) setTheme(savedTheme);
+        if (savedLanguage) setLanguage(savedLanguage);
         if (savedVolume) setVolume(parseFloat(savedVolume));
         if (savedFontSize) setFontSize(savedFontSize);
         if (savedFontFamily) setFontFamily(savedFontFamily);
@@ -62,6 +68,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         localStorage.setItem('bible-mind-theme', theme);
+        localStorage.setItem('bible-mind-language', language);
         localStorage.setItem('bible-mind-volume', volume.toString());
         localStorage.setItem('bible-mind-fontsize', fontSize);
         localStorage.setItem('bible-mind-fontfamily', fontFamily);
@@ -90,11 +97,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         for (let i = 0; i < audioElements.length; i++) {
             audioElements[i].volume = volume;
         }
-    }, [theme, volume, fontSize, fontFamily, atmosphere, customBackground]);
+    }, [theme, language, volume, fontSize, fontFamily, atmosphere, customBackground]);
 
     return (
         <SettingsContext.Provider value={{
             theme, setTheme,
+            language, setLanguage,
             soundEnabled, setSoundEnabled,
             particles, setParticles,
             volume, setVolume,

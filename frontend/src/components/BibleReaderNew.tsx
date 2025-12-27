@@ -1,15 +1,25 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Book, Loader2, Volume2, Square, Wand2 } from 'lucide-react';
-import { bibleAPI, BibleBook, BibleVerse } from '../api/bibleApi';
-import LayeredVerseView from './LayeredVerseView';
+import { ChevronLeft, ChevronRight, Loader2, Volume2, Square, Wand2, X, Type, Settings2 } from 'lucide-react';
+import { bibleAPI, BibleVerse, BibleBook, StrongsDefinition } from '../api/bibleApi';
+import LexiconPanel from './LexiconPanel';
 import LessonBuilder from './LessonBuilder';
 import { useSettings } from '../contexts/SettingsContext';
+import { useBible } from '../contexts/BibleContext';
+
+type TranslationVersion = 'kjv' | 'web' | 'jps' | 'brenton';
 
 export default function BibleReader() {
-  const [books, setBooks] = useState<BibleBook[]>([]);
-  const [selectedBook, setSelectedBook] = useState<BibleBook | null>(null);
-  const [selectedChapter, setSelectedChapter] = useState(1);
+  const {
+    currentBook: selectedBook,
+    currentChapter: selectedChapter,
+    books,
+    setBook: setSelectedBook,
+    setChapter: setSelectedChapter,
+    loading: contextLoading,
+    error: contextError
+  } = useBible();
+
   const [verses, setVerses] = useState<BibleVerse[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<BibleVerse | null>(null);
   const [showLessonBuilder, setShowLessonBuilder] = useState(false);
@@ -17,7 +27,13 @@ export default function BibleReader() {
   const [error, setError] = useState<string | null>(null);
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const { fontSize } = useSettings();
+  const { fontSize, setFontSize, fontFamily, setIsSettingsOpen } = useSettings();
+
+  const [translationVersion, setTranslationVersion] = useState<TranslationVersion>('kjv');
+
+  // Lexicon State
+  const [lexiconWord, setLexiconWord] = useState<StrongsDefinition | null>(null);
+  const [lexiconLoading, setLexiconLoading] = useState(false);
 
   // Stop audio on unmount or change
   useEffect(() => {
@@ -42,27 +58,54 @@ export default function BibleReader() {
     }
   };
 
-  // Load books on mount
-  useEffect(() => {
-    async function loadBooks() {
-      try {
-        setLoading(true);
-        const booksData = await bibleAPI.getBooks();
-        setBooks(booksData);
-        if (booksData.length > 0) {
-          setSelectedBook(booksData[0]); // Start with Genesis
-        } else {
-          setError("No books found. Please check API connection.");
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to load books:', error);
-        setError("Failed to connect to Bible API. Please refresh or try again later.");
-        setLoading(false);
+  const handleWordClick = async (word: string) => {
+    setLexiconLoading(true);
+    // Ensure Right Pane is visible or open it if it was closed (not applicable in this fixed layout but good for mobile)
+
+    try {
+      // Clean the word (remove punctuation, vowel points for better matching)
+      // Improve regex to include Greek unicode ranges if needed, currently mainly Hebrew
+      const cleanWord = word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '');
+
+      // Search for the word in Strong's database
+      const results = await bibleAPI.searchStrongs(cleanWord);
+
+      if (results && results.length > 0) {
+        // Find the best match - exact word match preferred
+        const exactMatch = results.find(r => r.word === cleanWord || r.word.includes(cleanWord));
+        const bestMatch = exactMatch || results[0];
+        setLexiconWord(bestMatch);
+      } else {
+        // If no results, show a placeholder with the word
+        setLexiconWord({
+          strongsNumber: "Unknown",
+          word: cleanWord,
+          gloss: "Definition not found in database.",
+          language: selectedBook?.testament === 'old' ? "Hebrew" : "Greek",
+          partOfSpeech: "Unknown",
+          gender: "",
+          occurrences: 0,
+          firstOccurrence: "",
+          rootWord: ""
+        });
       }
+    } catch (error) {
+      console.error('Error fetching Strong\'s definition:', error);
+      setLexiconWord({
+        strongsNumber: "Error",
+        word: word,
+        gloss: "Failed to fetch definition. Please try again.",
+        language: "Unknown",
+        partOfSpeech: "",
+        gender: "",
+        occurrences: 0,
+        firstOccurrence: "",
+        rootWord: ""
+      });
+    } finally {
+      setLexiconLoading(false);
     }
-    loadBooks();
-  }, []);
+  };
 
   // Load chapter when book or chapter changes
   useEffect(() => {
@@ -87,7 +130,7 @@ export default function BibleReader() {
 
   const goToPrevChapter = () => {
     if (selectedChapter > 1) {
-      setSelectedChapter(prev => prev - 1);
+      setSelectedChapter(selectedChapter - 1);
     } else if (selectedBook) {
       // Go to previous book's last chapter
       const currentIndex = books.findIndex(b => b.bookId === selectedBook.bookId);
@@ -101,7 +144,7 @@ export default function BibleReader() {
 
   const goToNextChapter = () => {
     if (selectedBook && selectedChapter < selectedBook.chapterCount) {
-      setSelectedChapter(prev => prev + 1);
+      setSelectedChapter(selectedChapter + 1);
     } else if (selectedBook) {
       // Go to next book's first chapter
       const currentIndex = books.findIndex(b => b.bookId === selectedBook.bookId);
@@ -112,239 +155,227 @@ export default function BibleReader() {
     }
   };
 
+  const cycleFontSize = () => {
+    const sizes: ('small' | 'normal' | 'large' | 'extra-large')[] = ['small', 'normal', 'large', 'extra-large'];
+    const currentIndex = sizes.indexOf(fontSize);
+    const nextIndex = (currentIndex + 1) % sizes.length;
+    setFontSize(sizes[nextIndex]);
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="pt-24 px-4 md:px-12 max-w-7xl mx-auto pb-20 min-h-screen"
-    >
-      {/* Navigation Header */}
-      <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={goToPrevChapter}
-          className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
+    <div className={`flex flex-col h-screen pt-20 overflow-hidden bg-[#0a0a0a] font-${fontFamily}`}>
+      {/* Top Controls Bar */}
+      <div className="flex-none px-4 md:px-8 py-4 border-b border-white/5 flex items-center justify-between bg-[#0a0a0a] z-20">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={goToPrevChapter}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
 
-        <div className="flex flex-col items-center gap-4">
-          {/* Audio Button */}
-          {verses.length > 0 && (
-            <button
-              onClick={handleSpeak}
-              className={`p-3 rounded-full transition-all flex items-center gap-2 ${isSpeaking ? 'bg-red-500/20 text-red-300 animate-pulse' : 'bg-white/5 text-white hover:bg-white/10'}`}
-              title={isSpeaking ? "Stop Reading" : "Listen to Chapter"}
-            >
-              {isSpeaking ? <Square className="w-5 h-5 fill-current" /> : <Volume2 className="w-5 h-5" />}
-              <span className="hidden md:inline text-sm font-medium">{isSpeaking ? 'Stop' : 'Listen'}</span>
-            </button>
-          )}
-
-          {/* Book/Chapter Title */}
-          <div className="text-center">
+          <div className="text-center relative">
             <button
               onClick={() => setShowBookSelector(!showBookSelector)}
-              className="flex items-center gap-2 text-gold-400 hover:text-gold-300 transition-colors"
+              className="group flex flex-col items-center"
             >
-              <Book className="w-5 h-5" />
-              <span className="text-sm uppercase tracking-widest">Select Book</span>
-            </button>
-            <h1 className="text-3xl md:text-5xl font-serif text-gold-200 mt-2">
-              {selectedBook?.bookName} {selectedChapter}
-            </h1>
-            {selectedBook && (
-              <p className="text-sm text-gray-500 mt-1 font-serif italic">
-                {selectedBook.hebrewName} • {selectedBook.hebrewTransliteration}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <button
-          onClick={goToNextChapter}
-          className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-      </div>
-
-      {/* Book Selector */}
-      <AnimatePresence>
-        {showBookSelector && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-8 overflow-hidden"
-          >
-            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-              <h3 className="text-gold-400 text-sm uppercase tracking-widest mb-4">Old Testament</h3>
-              <div className="grid grid-cols-4 md:grid-cols-8 gap-2 mb-6">
-                {books.filter(b => b.testament === 'old').map(book => (
-                  <button
-                    key={book.bookId}
-                    onClick={() => {
-                      setSelectedBook(book);
-                      // Don't close selector - show chapters instead
-                    }}
-                    className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
-                      ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
-                      : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                      }`}
-                  >
-                    {book.shortName}
-                  </button>
-                ))}
-              </div>
-
-              <h3 className="text-gold-400 text-sm uppercase tracking-widest mb-4">New Testament</h3>
-              <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-                {books.filter(b => b.testament === 'new').map(book => (
-                  <button
-                    key={book.bookId}
-                    onClick={() => {
-                      setSelectedBook(book);
-                      // Don't close selector - show chapters instead
-                    }}
-                    className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
-                      ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
-                      : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                      }`}
-                  >
-                    {book.shortName}
-                  </button>
-                ))}
-              </div>
-
-              {/* Chapter selector */}
+              <h1 className="text-xl md:text-2xl font-serif text-gold-200 flex items-center gap-2">
+                {selectedBook?.bookName} {selectedChapter}
+                <ChevronRight className={`w-4 h-4 text-gold-500/50 transition-transform ${showBookSelector ? 'rotate-90' : ''}`} />
+              </h1>
               {selectedBook && (
-                <div className="mt-6 pt-6 border-t border-white/10">
-                  <h3 className="text-gold-400 text-sm uppercase tracking-widest mb-4">
-                    {selectedBook.bookName} Chapters
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from({ length: selectedBook.chapterCount }, (_, i) => i + 1).map(ch => (
+                <span className="text-xs text-gray-500 font-serif italic group-hover:text-gold-400 transition-colors">
+                  {selectedBook.hebrewName} • {selectedBook.hebrewTransliteration}
+                </span>
+              )}
+            </button>
+            <AnimatePresence>
+              {showBookSelector && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[90vw] max-w-4xl bg-[#0f0f0f] border border-gold-500/20 rounded-2xl shadow-2xl z-50 p-6 overflow-hidden max-h-[70vh] overflow-y-auto"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-gold-400 text-sm uppercase tracking-widest">Select Book</h3>
+                    <button onClick={() => setShowBookSelector(false)}><X className="w-5 h-5 text-slate-500" /></button>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
+                    {books.map(book => (
                       <button
-                        key={ch}
+                        key={book.bookId}
                         onClick={() => {
-                          setSelectedChapter(ch);
+                          setSelectedBook(book);
+                          setSelectedChapter(1);
                           setShowBookSelector(false);
                         }}
-                        className={`w-10 h-10 rounded-lg transition-all ${selectedChapter === ch
+                        className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
                           ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
                           : 'bg-white/5 hover:bg-white/10 text-gray-300'
                           }`}
                       >
-                        {ch}
+                        {book.shortName}
                       </button>
                     ))}
                   </div>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Verses */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-8">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 text-gold-400 animate-spin" />
-            </div>
-          ) : error ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="text-red-400 mb-2 font-serif text-xl">Connection Error</div>
-              <p className="text-gray-400 mb-2">{error}</p>
-              <div className="text-xs text-gray-600 mb-4 bg-black/20 p-2 rounded font-mono">
-                Connecting to: {bibleAPI['baseUrl']}
-              </div>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors"
-              >
-                Retry Connection
-              </button>
-            </div>
-          ) : (
-            <div className={`space-y-4 font-serif leading-loose text-gray-300 ${fontSize === 'large' ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}`}>
-              {verses.map((verse, index) => (
-                <motion.div
-                  key={verse.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.02 }}
-                  onClick={() => setSelectedVerse(verse)}
-                  className={`
-                    relative p-4 rounded-xl cursor-pointer transition-all duration-300
-                    ${selectedVerse?.id === verse.id
-                      ? 'bg-gold-900/20 border-gold-500/30 shadow-[0_0_30px_-10px_rgba(196,142,47,0.3)]'
-                      : 'hover:bg-white/5 border-transparent hover:border-white/10'}
-                    border
-                  `}
-                >
-                  <span className="text-sm font-sans text-gold-500/70 font-bold mr-3">
-                    {verse.verse}
-                  </span>
-                  {verse.kjvText}
                 </motion.div>
-              ))}
-            </div>
-          )}
+              )}
+            </AnimatePresence>
+          </div>
+
+          <button
+            onClick={goToNextChapter}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Sidebar */}
-        <div className="hidden lg:block lg:col-span-4">
-          <div className="sticky top-32">
-            <div className="p-6 rounded-2xl bg-gradient-to-b from-white/5 to-transparent border border-white/5">
-              <h3 className="text-gold-400 font-medium mb-4">Study Notes</h3>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                Click on any verse to view the original Hebrew or Greek text,
-                transliteration, and Strong's definitions.
-              </p>
-              {selectedBook && (
-                <div className="mt-6 pt-4 border-t border-white/10">
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Book Info</p>
-                  <div className="flex items-center gap-2 mb-4">
-                    <button className="p-2 hover:bg-white/10 rounded-full text-white transition-colors">
-                      <Volume2 size={20} />
-                    </button>
-                    <button
-                      onClick={() => setShowLessonBuilder(true)}
-                      className="p-2 hover:bg-white/10 rounded-full text-gold-400 hover:text-gold-200 transition-colors"
-                      title="Create Lesson PDF"
-                    >
-                      <Wand2 size={20} />
-                    </button>
-                  </div>
-                  <p className="text-2xl font-serif text-gold-300">{selectedBook.hebrewName}</p>
-                  <p className="text-sm text-gray-400 italic">{selectedBook.hebrewTransliteration}</p>
-                  <p className="text-sm text-gray-500 mt-2">"{selectedBook.hebrewMeaning}"</p>
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          {verses.length > 0 && (
+            <button
+              onClick={handleSpeak}
+              className={`p-2 rounded-full transition-all ${isSpeaking ? 'bg-red-500/20 text-red-300 animate-pulse' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+              title={isSpeaking ? "Stop Reading" : "Listen to Chapter"}
+            >
+              {isSpeaking ? <Square className="w-5 h-5 fill-current" /> : <Volume2 className="w-5 h-5" />}
+            </button>
+          )}
+          <button
+            onClick={cycleFontSize}
+            className="p-2 rounded-full bg-white/5 hover:text-gold-400 text-slate-400 transition-colors"
+            title={`Font Size: ${fontSize}`}
+          >
+            <Type className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="p-2 rounded-full bg-white/5 hover:text-gold-400 text-slate-400 transition-colors"
+            title="Open Settings"
+          >
+            <Settings2 className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setShowLessonBuilder(true)}
+            className="p-2 rounded-full bg-white/5 hover:text-gold-400 text-slate-400 transition-colors"
+            title="Create Lesson"
+          >
+            <Wand2 className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
-      {/* Verse Detail Panel */}
+      {/* Main 3-Pane Content */}
+      <div className="flex-1 flex overflow-hidden">
+
+        {/* Left Pane: Original Text (Hebrew/Greek) */}
+        <div className="flex-1 overflow-y-auto min-w-[300px] border-r border-white/5 bg-[#0a0a0a] scrollbar-thin scrollbar-thumb-white/10">
+          <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10 p-4 border-b border-white/5 flex items-center justify-between">
+            <span className="text-xs font-bold text-gold-500/70 uppercase tracking-widest">
+              {selectedBook?.testament === 'old' ? 'Original Hebrew' : 'Original Greek'}
+            </span>
+          </div>
+          <div className="p-6 md:p-8 space-y-8 pb-32">
+            {loading ? (
+              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-gold-500" /></div>
+            ) : (
+              verses.map((verse) => (
+                <div key={verse.id} className="relative group">
+                  <span className="absolute -left-4 top-1 text-xs font-sans text-slate-600 font-bold">{verse.verse}</span>
+                  <p
+                    className={`text-2xl md:text-3xl font-serif leading-loose text-slate-300 ${selectedBook?.testament === 'old' ? 'text-right font-hebrew' : 'text-left'}`}
+                    dir={selectedBook?.testament === 'old' ? 'rtl' : 'ltr'}
+                  >
+                    {(selectedBook?.testament === 'old' ? verse.hebrewText : verse.greekText)?.split(' ').map((word, i) => (
+                      <span
+                        key={i}
+                        onClick={() => handleWordClick(word)}
+                        className={`
+                                            inline-block px-1 rounded cursor-pointer transition-colors
+                                            ${lexiconWord?.word === word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '') ? 'bg-gold-500/30 text-gold-200' : 'hover:text-gold-400 hover:bg-white/5'}
+                                        `}
+                      >
+                        {word}{' '}
+                      </span>
+                    )) || <span className="text-sm italic text-slate-500">Original text not available</span>}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Center Pane: Translation */}
+        <div className="flex-1 overflow-y-auto min-w-[300px] bg-[#0c0c0c] scrollbar-thin scrollbar-thumb-white/10 hidden md:block">
+          <div className="sticky top-0 bg-[#0c0c0c]/95 backdrop-blur z-10 px-4 py-3 border-b border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-crema-100/50 uppercase tracking-widest">
+                Translation:
+              </span>
+              <select
+                value={translationVersion}
+                onChange={(e) => setTranslationVersion(e.target.value as TranslationVersion)}
+                className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-crema-100 focus:outline-none focus:border-gold-500/50 font-sans cursor-pointer hover:bg-white/10 transition-colors"
+              >
+                <option value="kjv">KJV (King James)</option>
+                <option value="web">WEB (World English)</option>
+                <option value="jps">JPS (Jewish Pub. Soc.)</option>
+                <option value="brenton">Brenton (Septuagint)</option>
+              </select>
+            </div>
+          </div>
+          <div className="p-6 md:p-8 space-y-8 pb-32">
+            {loading ? (
+              <div className="flex justify-center p-10"><Loader2 className="animate-spin text-slate-700" /></div>
+            ) : (
+              verses.map((verse) => (
+                <div key={verse.id} className="relative">
+                  <span className="absolute -left-4 top-1 text-xs font-sans text-slate-700 font-bold">{verse.verse}</span>
+                  <p className={`leading-relaxed text-crema-100 ${fontSize === 'small' ? 'text-base' :
+                    fontSize === 'large' ? 'text-2xl' :
+                      fontSize === 'extra-large' ? 'text-3xl' : 'text-xl'
+                    } font-${fontFamily}`}>
+                    {verse[`${translationVersion}Text` as keyof BibleVerse] || verse.kjvText || verse.webText}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Right Pane: Notes / Lexicon (Sidebar) */}
+        <div className="w-[350px] lg:w-[400px] border-l border-white/5 bg-[#0a0a0a] flex-col hidden xl:flex">
+          <LexiconPanel
+            word={lexiconWord}
+            loading={lexiconLoading}
+            onClose={() => setLexiconWord(null)}
+          />
+        </div>
+
+      </div>
+
+      {/* Mobile Verse Detail Overlay */}
       <AnimatePresence>
         {selectedVerse && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 xl:hidden"
           >
             <div
               onClick={() => setSelectedVerse(null)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
-            <LayeredVerseView
-              verse={selectedVerse}
-              onClose={() => setSelectedVerse(null)}
-            />
+            {/* Re-using LexiconPanel or LayeredVerseView for mobile modal if desired */}
+            <div className="relative z-50 w-full max-w-lg h-[60vh]">
+              <LexiconPanel
+                word={lexiconWord}
+                loading={lexiconLoading}
+                onClose={() => setSelectedVerse(null)}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -368,6 +399,7 @@ export default function BibleReader() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+
+    </div>
   );
 }

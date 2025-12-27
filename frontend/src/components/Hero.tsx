@@ -1,11 +1,44 @@
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronRight, Sparkles, Search, BookOpen } from 'lucide-react';
+import { useSettings } from '../contexts/SettingsContext';
 
 interface HeroProps {
   onStart: () => void;
+  onSearch: () => void;
+  onStudy: () => void;
 }
 
-export default function Hero({ onStart }: HeroProps) {
+const translations = {
+  english: {
+    start: "Start Reading",
+    search: "Search",
+    study: "Study",
+    title: "The Living Word",
+    subtitle: "Original Hebrew • Meaningful Translations • Multilingual Search",
+    desc: "Experience scripture like never before. Dive deep into the original Hebrew and Greek meanings with a single touch."
+  },
+  telugu: {
+    start: "చదవండి",
+    search: "శోధించండి",
+    study: "ధ్యానించండి",
+    title: "జీవ వాక్యం",
+    subtitle: "అసలైన హీబ్రూ • అర్థవంతమైన అనువాదాలు • బహుభాషా శోధన",
+    desc: "లేఖనాలను మునుపెన్నడూ లేని విధంగా అనుభవించండి. ఒక్క స్పర్శతో అసలైన హీబ్రూ మరియు గ్రీకు అర్థాలను తెలుసుకోండి."
+  },
+  hindi: {
+    start: "पढ़ना शुरू करें",
+    search: "खोजें",
+    study: "अध्ययन करें",
+    title: "जीवित वचन",
+    subtitle: "मूल हिब्रू • सार्थक अनुवाद • बहुभाषी खोज",
+    desc: "शास्त्रों का ऐसा अनुभव पहले कभी नहीं किया। एक स्पर्श के साथ मूल हिब्रू और ग्रीक अर्थों में गहराई से उतरें।"
+  }
+};
+
+export default function Hero({ onStart, onSearch, onStudy }: HeroProps) {
+  const { language } = useSettings();
+  const t = translations[language] || translations.english;
+
   // 3D Tilt Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -32,7 +65,7 @@ export default function Hero({ onStart }: HeroProps) {
   };
 
   // Typewriter Variance
-  const sentence = "The Living Word".split("");
+  const sentence = t.title.split("");
   const letter = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0 }
@@ -51,7 +84,7 @@ export default function Hero({ onStart }: HeroProps) {
       {/* Glassmorphism Card Container */}
       <motion.div
         style={{ rotateX: springRotateX, rotateY: springRotateY, transformStyle: 'preserve-3d' }}
-        className="relative z-10 w-full max-w-3xl mx-4 sm:mx-6 md:mx-auto"
+        className="relative z-10 w-full max-w-4xl mx-4 sm:mx-6 md:mx-auto"
       >
         {/* Glass Card */}
         <div className="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl overflow-hidden">
@@ -79,10 +112,11 @@ export default function Hero({ onStart }: HeroProps) {
             </motion.div>
 
             <motion.h1
+              key={language} // Re-animate on language change
               initial="hidden"
               animate="visible"
               transition={{ staggerChildren: 0.08, delayChildren: 0.5 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-crema-100 via-gold-300 to-crema-100"
+              className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-crema-100 via-gold-300 to-crema-100"
             >
               {sentence.map((char, index) => (
                 <motion.span key={index} variants={letter} className="inline-block">
@@ -92,32 +126,73 @@ export default function Hero({ onStart }: HeroProps) {
             </motion.h1>
 
             <motion.p
+              key={`sub-${language}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2 }}
+              className="text-gold-400 font-medium tracking-widest uppercase text-xs sm:text-sm mb-6"
+            >
+              {t.subtitle}
+            </motion.p>
+
+            <motion.p
+              key={`desc-${language}`}
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 1.5, duration: 0.8 }}
               className="text-base sm:text-lg md:text-xl text-slate-300 mb-10 font-light leading-relaxed max-w-xl mx-auto"
             >
-              Experience scripture like never before. Dive deep into the original Hebrew and Greek meanings with a single touch.
+              {t.desc}
             </motion.p>
 
-            <motion.button
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ delay: 1.8, type: 'spring', stiffness: 300 }}
-              onClick={onStart}
-              className="group relative px-8 py-4 bg-gradient-to-r from-gold-500 to-amber-500 rounded-full overflow-hidden shadow-lg shadow-gold-500/30 hover:shadow-gold-500/50 transition-shadow"
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.8 }}
+              className="flex flex-wrap items-center justify-center gap-4"
             >
-              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative flex items-center gap-3 text-black font-semibold tracking-wide">
-                START READING
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onStart}
+                className="group relative px-8 py-4 bg-gradient-to-r from-gold-500 to-amber-500 rounded-full overflow-hidden shadow-lg shadow-gold-500/30 hover:shadow-gold-500/50 transition-shadow min-w-[180px]"
+              >
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative flex items-center justify-center gap-3 text-black font-semibold tracking-wide">
+                  <span>{t.start}</span>
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onSearch}
+                className="group relative px-8 py-4 bg-white/5 border border-white/10 rounded-full overflow-hidden hover:bg-white/10 transition-colors min-w-[140px]"
+              >
+                <div className="relative flex items-center justify-center gap-3 text-crema-100 font-medium tracking-wide">
+                  <Search className="w-4 h-4 text-gold-400" />
+                  <span>{t.search}</span>
+                </div>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onStudy}
+                className="group relative px-8 py-4 bg-white/5 border border-white/10 rounded-full overflow-hidden hover:bg-white/10 transition-colors min-w-[140px]"
+              >
+                <div className="relative flex items-center justify-center gap-3 text-crema-100 font-medium tracking-wide">
+                  <BookOpen className="w-4 h-4 text-gold-400" />
+                  <span>{t.study}</span>
+                </div>
+              </motion.button>
+            </motion.div>
           </div>
         </div>
       </motion.div>
     </motion.div>
   );
 }
+

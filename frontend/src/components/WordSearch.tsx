@@ -15,10 +15,13 @@ interface SearchResult {
 
 interface WordSearchProps {
     onVerseClick?: (book: string, chapter: number, verse: number) => void;
+    isOpen: boolean;
+    onClose: () => void;
+    onOpen: () => void;
+    onAdvancedSearch?: () => void;
 }
 
-const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick, isOpen, onClose, onOpen, onAdvancedSearch }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(false);
@@ -74,7 +77,7 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
         <>
             {/* Search Button */}
             <button
-                onClick={() => setIsOpen(true)}
+                onClick={onOpen}
                 className="fixed top-6 right-20 z-50 p-3 rounded-full bg-[#0a0a0a]/80 border border-gold-500/20 text-gold-400 hover:bg-gold-500/10 transition-colors backdrop-blur-md"
                 title="Search Bible"
             >
@@ -90,7 +93,7 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
+                            onClick={onClose}
                             className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
                         />
 
@@ -123,15 +126,23 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
                                             {loading ? <Loader2 size={18} className="animate-spin" /> : 'Search'}
                                         </button>
                                         <button
-                                            onClick={() => setIsOpen(false)}
+                                            onClick={onClose}
                                             className="p-2 text-slate-400 hover:text-white transition-colors"
                                         >
                                             <X size={20} />
                                         </button>
                                     </div>
-                                    <p className="text-xs text-slate-500 mt-2 flex items-center gap-2">
-                                        <Globe size={12} />
-                                        Searches in English, Telugu, Hebrew, and Greek
+                                    <p className="text-xs text-slate-500 mt-2 flex items-center gap-2 justify-between">
+                                        <span className="flex items-center gap-2">
+                                            <Globe size={12} />
+                                            Searches in English, Telugu, Hebrew, and Greek
+                                        </span>
+                                        <button
+                                            onClick={onAdvancedSearch}
+                                            className="text-gold-400 hover:text-white transition-colors underline decoration-gold-500/30 hover:decoration-gold-500"
+                                        >
+                                            Advanced Search
+                                        </button>
                                     </p>
                                 </div>
 
@@ -151,7 +162,7 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick }) => {
                                                     transition={{ delay: i * 0.05 }}
                                                     onClick={() => {
                                                         onVerseClick?.(result.book, result.chapter, result.verse);
-                                                        setIsOpen(false);
+                                                        onClose();
                                                     }}
                                                     className="p-4 hover:bg-white/5 cursor-pointer transition-colors"
                                                 >

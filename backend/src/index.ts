@@ -7,11 +7,11 @@ import fs from 'fs';
 import { dataStore } from './services/dataStore';
 import { initCronJobs, triggerImageGen } from './cronJobs';
 
-// Routes
 import booksRouter from './routes/books';
 import versesRouter from './routes/verses';
 import strongsRouter from './routes/strongs';
 import searchRouter from './routes/search';
+import v2SearchRouter from './routes/searchRoutes';
 import languagesRouter from './routes/languages';
 import downloadRouter from './routes/download';
 import notesRouter from './routes/notes';
@@ -24,6 +24,7 @@ import authRouter from './routes/auth';
 import dailyVerseRouter from './routes/dailyVerse';
 import exportRouter from './routes/export';
 import aiRouter from './routes/ai';
+import v2AuthRouter from './routes/authRoutesV2';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -94,6 +95,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/daily-verse', dailyVerseRouter);
 app.use('/api/export', exportRouter);
 app.use('/api/ai', aiRouter);
+app.use('/api/v2/search', v2SearchRouter); // ElasticSearch-powered advanced search
+app.use('/api/v2/auth', v2AuthRouter); // OAuth + JWT authentication
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));
