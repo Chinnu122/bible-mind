@@ -11,4 +11,9 @@ export default defineConfig({
   datasource: {
     url: process.env["DATABASE_URL"],
   },
+  // Use library engine to avoid needing a driver adapter
+  client: {
+    engineType: "library",
+  },
 });
+
