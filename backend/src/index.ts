@@ -25,6 +25,7 @@ import dailyVerseRouter from './routes/dailyVerse';
 import exportRouter from './routes/export';
 import aiRouter from './routes/ai';
 import v2AuthRouter from './routes/authRoutesV2';
+import updateRouter from './routes/update';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -97,6 +98,7 @@ app.use('/api/export', exportRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/v2/search', v2SearchRouter); // ElasticSearch-powered advanced search
 app.use('/api/v2/auth', v2AuthRouter); // OAuth + JWT authentication
+app.use('/api/update', updateRouter); // App update check and APK download
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));

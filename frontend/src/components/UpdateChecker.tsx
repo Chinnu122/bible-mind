@@ -31,19 +31,29 @@ const UpdateChecker: React.FC = () => {
                 return;
             }
 
-            // Fetch version info
-            const response = await fetch('/version.json?' + now);
+            // Fetch version info from backend API
+            const apiBase = import.meta.env.VITE_API_URL || 'https://bible-mind-api.onrender.com';
+            const response = await fetch(`${apiBase}/api/update/check?version=${APP_VERSION}&versionCode=290`);
             if (!response.ok) return;
 
-            const data: VersionInfo = await response.json();
+            const result = await response.json();
+            if (!result.success) return;
+
+            const data = result.data;
             localStorage.setItem(VERSION_CHECK_KEY, now.toString());
 
-            // Compare versions
-            if (isNewerVersion(data.version, APP_VERSION)) {
+            // Check if update is available
+            if (data.updateAvailable) {
                 // Check if user already dismissed this version
                 const dismissedVersion = localStorage.getItem(DISMISSED_VERSION_KEY);
-                if (dismissedVersion !== data.version || data.forceUpdate) {
-                    setVersionInfo(data);
+                if (dismissedVersion !== data.currentVersion || data.forceUpdate) {
+                    setVersionInfo({
+                        version: data.currentVersion,
+                        releaseDate: data.publishedAt,
+                        downloadUrl: `${apiBase}${data.downloadUrl}`,
+                        forceUpdate: data.forceUpdate,
+                        changelog: data.releaseNotes.split('\n').filter((line: string) => line.trim().startsWith('-')).map((line: string) => line.replace(/^-\s*/, ''))
+                    });
                     setShowModal(true);
                 }
             }
