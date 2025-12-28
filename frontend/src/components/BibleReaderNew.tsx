@@ -194,12 +194,14 @@ export default function BibleReader() {
               onClick={() => setShowBookSelector(!showBookSelector)}
               className="group flex flex-col items-center"
             >
-              <h1 className="text-xl md:text-2xl font-serif text-gold-200 flex items-center gap-2">
-                {selectedBook?.bookName} {selectedChapter}
-                <ChevronRight className={`w-4 h-4 text-gold-500/50 transition-transform ${showBookSelector ? 'rotate-90' : ''}`} />
+              <div className="text-xs text-gold-500 uppercase tracking-[0.2em] mb-1 font-sans">Currently Reading</div>
+              <h1 className="text-2xl md:text-3xl font-serif text-gold-200 flex items-center gap-2 font-bold">
+                {selectedBook?.bookName || 'Select Book'}
+                <span className="text-gold-400">Chapter {selectedChapter}</span>
+                <ChevronRight className={`w-5 h-5 text-gold-500/50 transition-transform ${showBookSelector ? 'rotate-90' : ''}`} />
               </h1>
               {selectedBook && (
-                <span className="text-xs text-gray-500 font-serif italic group-hover:text-gold-400 transition-colors">
+                <span className="text-sm text-gray-400 font-serif italic group-hover:text-gold-400 transition-colors mt-1">
                   {selectedBook.hebrewName} • {selectedBook.hebrewTransliteration}
                 </span>
               )}

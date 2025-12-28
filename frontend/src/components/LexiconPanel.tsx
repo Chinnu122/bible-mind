@@ -185,22 +185,31 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
                             )}
 
                             {/* Greek Equivalents (Hebrew → Greek Septuagint mapping) */}
-                            {!loadingExtra && multiLang.greekEquivalents && multiLang.greekEquivalents.length > 0 && (
+                            {word.language === 'H' || word.language === 'A' ? (
                                 <div className="mt-6 p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/10 border border-cyan-500/20">
                                     <div className="flex items-center gap-2 text-cyan-300 mb-4">
                                         <Globe size={16} />
-                                        <h3 className="text-xs uppercase tracking-widest">Greek Equivalents (Septuagint)</h3>
+                                        <h3 className="text-xs uppercase tracking-widest">Greek Equivalent (LXX/Septuagint)</h3>
                                     </div>
-                                    <div className="space-y-2">
-                                        {multiLang.greekEquivalents.map((eq, idx) => (
-                                            <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-white/5">
-                                                <span className="text-xs font-mono text-cyan-400">{eq.strongsNumber}</span>
-                                                <span className="text-crema-100 font-serif text-lg">{eq.lemma}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    {loadingExtra ? (
+                                        <div className="flex items-center gap-2 text-slate-400">
+                                            <Loader2 size={16} className="animate-spin" />
+                                            <span className="text-sm">Loading Greek translation...</span>
+                                        </div>
+                                    ) : multiLang.greekEquivalents && multiLang.greekEquivalents.length > 0 ? (
+                                        <div className="space-y-2">
+                                            {multiLang.greekEquivalents.map((eq, idx) => (
+                                                <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-white/5">
+                                                    <span className="text-xs font-mono text-cyan-400">{eq.strongsNumber}</span>
+                                                    <span className="text-crema-100 font-serif text-lg">{eq.lemma}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-sm text-slate-500 italic">No Greek equivalent found in Septuagint mapping.</p>
+                                    )}
                                 </div>
-                            )}
+                            ) : null}
 
                             {/* Occurrence Slider */}
                             {occurrences.length > 0 && (
