@@ -49,7 +49,7 @@ interface UserData {
 }
 
 function AppLayout() {
-  const { theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode } = useSettings();
+  const { theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode, language } = useSettings();
   const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewState>('landing');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -98,17 +98,56 @@ function AppLayout() {
     return <NebulaBackground />;
   };
 
+  // Navigation Translations
+  const navTranslations = {
+    english: {
+      landing: 'Home',
+      reader: 'Read',
+      videos: 'Visuals',
+      books: 'Books',
+      daily: 'Daily',
+      quiz: 'Quiz',
+      reviews: 'Community',
+      pricing: 'Pricing',
+      download: 'Download'
+    },
+    telugu: {
+      landing: 'ప్రారంభం', // Home
+      reader: 'చదవండి', // Read
+      videos: 'దృశ్యాలు', // Visuals
+      books: 'పుస్తకాలు', // Books
+      daily: 'దినచర్య', // Daily
+      quiz: 'ప్రశ్నలు', // Quiz
+      reviews: 'సమాజం', // Community
+      pricing: 'ధరలు', // Pricing
+      download: 'డౌన్‌లోడ్' // Download
+    },
+    hindi: {
+      landing: 'होम',
+      reader: 'पढ़ें',
+      videos: 'दृश्य',
+      books: 'किताबें',
+      daily: 'दैनिक',
+      quiz: 'प्रश्नोत्तरी',
+      reviews: 'समुदाय',
+      pricing: 'मूल्य',
+      download: 'डाउनलोड'
+    }
+  };
+
+  const t = navTranslations[language as keyof typeof navTranslations] || navTranslations.english;
+
   // Navigation Items Configuration
   const navItems = [
-    { id: 'landing', icon: Home, label: 'Home' },
-    { id: 'reader', icon: BookOpen, label: 'Read' },
-    { id: 'videos', icon: ImageIcon, label: 'Visuals' },
-    { id: 'books', icon: Library, label: 'Books' },
-    { id: 'daily', icon: Calendar, label: 'Daily' },
-    { id: 'quiz', icon: CheckCircle, label: 'Quiz' },
-    { id: 'reviews', icon: MessageSquare, label: 'Community' },
-    { id: 'pricing', icon: Crown, label: 'Pricing' },
-    { id: 'download', icon: Download, label: 'Download' },
+    { id: 'landing', icon: Home, label: t.landing },
+    { id: 'reader', icon: BookOpen, label: t.reader },
+    { id: 'videos', icon: ImageIcon, label: t.videos },
+    { id: 'books', icon: Library, label: t.books },
+    { id: 'daily', icon: Calendar, label: t.daily },
+    { id: 'quiz', icon: CheckCircle, label: t.quiz },
+    { id: 'reviews', icon: MessageSquare, label: t.reviews },
+    { id: 'pricing', icon: Crown, label: t.pricing },
+    { id: 'download', icon: Download, label: t.download },
   ];
 
   /* Main App Layout */

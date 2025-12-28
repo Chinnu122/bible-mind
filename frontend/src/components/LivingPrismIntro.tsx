@@ -8,7 +8,7 @@ interface LivingPrismIntroProps {
 const LivingPrismIntro: React.FC<LivingPrismIntroProps> = ({ onComplete }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [step, setStep] = useState(0); // 0: v1, 1: v2, 2: v3, 3: Logo, 4: Done
+    const [step, setStep] = useState(3); // Start directly at Logo step
 
     useEffect(() => {
         // --- 1. The Living Prism Engine (Low Poly) ---
@@ -56,11 +56,11 @@ const LivingPrismIntro: React.FC<LivingPrismIntroProps> = ({ onComplete }) => {
         const config = {
             gridSize: 100,
             speed: 0.005,
-            hueBase: 200,
-            hueRange: 60,
-            sat: 50,
-            light: 50,
-            contrast: 1.0
+            hueBase: 45, // Gold/Logo base
+            hueRange: 15,
+            sat: 100,
+            light: 60,
+            contrast: 1.2
         };
         const targetConfig = { ...config };
 
@@ -164,51 +164,14 @@ const LivingPrismIntro: React.FC<LivingPrismIntroProps> = ({ onComplete }) => {
         initMesh();
         drawPrism();
 
-        // --- Mood Director exposure ---
-        // We'll expose a function to change mood based on step
-        const updateMood = (moodIdx: number) => {
-            switch (moodIdx) {
-                case 1: // Lamp
-                    targetConfig.hueBase = 200; targetConfig.hueRange = 10; targetConfig.sat = 0;
-                    targetConfig.light = 92; targetConfig.contrast = 0.3; targetConfig.speed = 0.008;
-                    break;
-                case 2: // Sword
-                    targetConfig.hueBase = 350; targetConfig.hueRange = 40; targetConfig.sat = 80;
-                    targetConfig.light = 20; targetConfig.contrast = 2.0; targetConfig.speed = 0.02;
-                    break;
-                case 3: // Eternal
-                    targetConfig.hueBase = 210; targetConfig.hueRange = 50; targetConfig.sat = 60;
-                    targetConfig.light = 40; targetConfig.contrast = 1.0; targetConfig.speed = 0.003;
-                    break;
-                case 4: // Logo
-                    targetConfig.hueBase = 45; targetConfig.hueRange = 15; targetConfig.sat = 100;
-                    targetConfig.light = 60; targetConfig.contrast = 1.2; targetConfig.speed = 0.002;
-                    break;
-            }
-        };
-
-        // --- Timeline Logic ---
-        // React-controlled based on `step` state, but we need to sync the mood
-        if (step === 0) updateMood(1);
-        if (step === 1) updateMood(2);
-        if (step === 2) updateMood(3);
-        if (step === 3) updateMood(4);
-
         return () => {
             window.removeEventListener('resize', handleResize);
             cancelAnimationFrame(animationFrameId);
         };
-    }, [step]); // Re-run mood update when step changes (optimized to not re-init mesh if possible, but simpler here)
+    }, []);
 
     // Sequencing
     useEffect(() => {
-        // v1 (0s) -> v2 (7s) -> v3 (14s) -> Logo (21s) -> Done
-        // Based on user request timeline:
-        // 0-6.5s: v1
-        // 7.5-13.5s: v2
-        // 14.5-21.5s: v3
-        // 22.5s: Logo
-
         const sequence = async () => {
             if (audioRef.current) {
                 try {
@@ -217,18 +180,9 @@ const LivingPrismIntro: React.FC<LivingPrismIntroProps> = ({ onComplete }) => {
                 } catch (e) { console.log('Audio autoplay blocked'); }
             }
 
-            setStep(0); // Mood 1
-            await new Promise(r => setTimeout(r, 7000));
-
-            setStep(1); // Mood 2
-            await new Promise(r => setTimeout(r, 7000));
-
-            setStep(2); // Mood 3
-            await new Promise(r => setTimeout(r, 7000));
-
-            setStep(3); // Mood 4 (Logo)
-            // Wait for logo to be seen
-            await new Promise(r => setTimeout(r, 5000));
+            // Directly show Logo (step 3 set initially)
+            // Wait for logo presentation then complete
+            await new Promise(r => setTimeout(r, 6000)); // 6 seconds for logo soak
 
             onComplete();
         };
@@ -237,87 +191,33 @@ const LivingPrismIntro: React.FC<LivingPrismIntroProps> = ({ onComplete }) => {
     }, [onComplete]);
 
     const skipIntro = () => {
-        setStep(3);
-        setTimeout(onComplete, 2000); // Quick logo flash then done
+        onComplete();
     };
 
     return (
         <div className="fixed inset-0 z-50 bg-black font-serif text-white overflow-hidden cursor-none">
             <audio ref={audioRef} src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_30704c7c64.mp3" />
 
-            <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+            <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-50" /> {/* Dimmed background for blackshaded feel */}
 
             <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                 <AnimatePresence mode="wait">
-                    {step === 0 && (
-                        <motion.div
-                            key="v1"
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 1.05, y: -30, filter: 'blur(10px)' }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="text-center p-8 rounded-sm border border-white/10 bg-white/20 backdrop-blur-md shadow-2xl max-w-4xl"
-                        >
-                            <p className="text-3xl md:text-5xl mb-4 font-normal text-black drop-shadow-md">
-                                "Your word is a lamp for my feet,<br />a light on my path."
-                            </p>
-                            <span className="inline-block border-b border-black/30 pb-1 text-sm md:text-base tracking-[0.3em] uppercase text-black/80 font-bold">
-                                Psalm 119:105
-                            </span>
-                        </motion.div>
-                    )}
-
-                    {step === 1 && (
-                        <motion.div
-                            key="v2"
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 1.05, y: -30, filter: 'blur(10px)' }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="text-center p-8 rounded-sm border border-white/15 bg-white/5 backdrop-blur-md shadow-2xl max-w-4xl"
-                        >
-                            <p className="text-3xl md:text-5xl mb-4 font-normal text-white drop-shadow-lg">
-                                "For the word of God is alive and active.<br />Sharper than any double-edged sword."
-                            </p>
-                            <span className="inline-block border-b border-white/30 pb-1 text-sm md:text-base tracking-[0.3em] uppercase text-white/90 font-bold">
-                                Hebrews 4:12
-                            </span>
-                        </motion.div>
-                    )}
-
-                    {step === 2 && (
-                        <motion.div
-                            key="v3"
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 1.05, y: -30, filter: 'blur(10px)' }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="text-center p-8 rounded-sm border border-white/15 bg-white/5 backdrop-blur-md shadow-2xl max-w-4xl"
-                        >
-                            <p className="text-3xl md:text-5xl mb-4 font-normal text-white drop-shadow-lg">
-                                "The grass withers and the flowers fall,<br />but the word of our God endures forever."
-                            </p>
-                            <span className="inline-block border-b border-white/30 pb-1 text-sm md:text-base tracking-[0.3em] uppercase text-white/90 font-bold">
-                                Isaiah 40:8
-                            </span>
-                        </motion.div>
-                    )}
-
                     {step === 3 && (
                         <motion.div
                             key="logo"
-                            initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
-                            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                            transition={{ duration: 2.5, ease: "easeOut" }}
+                            initial={{ opacity: 0, scale: 0.5, filter: 'blur(20px)' }}
+                            animate={{ opacity: 1, scale: 1.2, filter: 'blur(0px)' }}
+                            exit={{ scale: 20, opacity: 0 }} // Zoom in finish
+                            transition={{ duration: 4, ease: "easeInOut" }}
                             className="flex flex-col items-center"
                         >
-                            <div className="text-6xl md:text-8xl text-white mb-6 animate-pulse drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]">
+                            <div className="text-6xl md:text-9xl text-gold-500 mb-8 animate-pulse drop-shadow-[0_0_50px_rgba(255,215,0,0.6)] shadow-black">
                                 ◈
                             </div>
-                            <h1 className="text-5xl md:text-7xl font-bold tracking-[0.2em] uppercase text-white drop-shadow-2xl font-serif">
+                            <h1 className="text-6xl md:text-8xl font-bold tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-400 to-black drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] font-serif border-black">
                                 Bible Mind
                             </h1>
-                            <p className="mt-6 text-sm md:text-lg tracking-[0.8em] uppercase text-white/70">
+                            <p className="mt-8 text-sm md:text-xl tracking-[1em] uppercase text-gray-400 drop-shadow-md">
                                 Wisdom • Truth • Life
                             </p>
                         </motion.div>
@@ -327,20 +227,21 @@ const LivingPrismIntro: React.FC<LivingPrismIntroProps> = ({ onComplete }) => {
 
             {/* Progress Line */}
             <motion.div
-                className="absolute bottom-0 left-0 h-[3px] bg-white z-50 shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+                className="absolute bottom-0 left-0 h-[2px] bg-gold-500/50 z-50 shadow-[0_0_15px_rgba(255,215,0,0.5)]"
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
-                transition={{ duration: 28, ease: "linear" }}
+                transition={{ duration: 6, ease: "linear" }}
             />
 
             <button
                 onClick={skipIntro}
-                className="absolute bottom-10 right-10 z-[60] px-6 py-3 bg-white/10 border border-white/20 text-white font-serif text-xs uppercase tracking-[0.1em] hover:bg-white/20 backdrop-blur-sm transition-all cursor-pointer pointer-events-auto"
+                className="absolute bottom-10 right-10 z-[60] px-6 py-3 bg-black/50 border border-white/10 text-white/50 hover:text-white font-serif text-xs uppercase tracking-[0.1em] hover:bg-black/80 backdrop-blur-sm transition-all cursor-pointer pointer-events-auto rounded-full"
             >
-                Skip Intro
+                Start Now
             </button>
         </div>
     );
 };
 
 export default LivingPrismIntro;
+
