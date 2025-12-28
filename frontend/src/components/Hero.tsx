@@ -65,7 +65,9 @@ export default function Hero({ onStart, onSearch, onStudy }: HeroProps) {
   };
 
   // Typewriter Variance
-  const sentence = t.title.split("");
+  // Use Intl.Segmenter for correct grapheme splitting (fixes Telugu "dotted circle" issues)
+  const segmenter = new Intl.Segmenter(language === 'telugu' ? 'te' : language === 'hindi' ? 'hi' : 'en', { granularity: 'grapheme' });
+  const sentence = Array.from(segmenter.segment(t.title)).map(s => s.segment);
   const letter = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0 }
