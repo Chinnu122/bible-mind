@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Loader2, Volume2, Square, Wand2, X, Type, Settings2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, Volume2, Square, Wand2, X, Type, Settings2, BookOpen } from 'lucide-react';
 import { bibleAPI, BibleVerse, BibleBook, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
 import LessonBuilder from './LessonBuilder';
@@ -8,6 +8,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useBible } from '../contexts/BibleContext';
 
 type TranslationVersion = 'kjv' | 'web' | 'jps' | 'brenton' | 'telugu' | 'parallel';
+type OriginalTextMode = 'hebrew' | 'greek' | 'both';
 
 export default function BibleReader() {
   const {
@@ -32,10 +33,14 @@ export default function BibleReader() {
 
   const [translationVersion, setTranslationVersion] = useState<TranslationVersion>('kjv');
   const [teluguChapter, setTeluguChapter] = useState<Record<number, string>>({});
+  const [originalTextMode, setOriginalTextMode] = useState<OriginalTextMode>('both');
 
   // Lexicon State
   const [lexiconWord, setLexiconWord] = useState<StrongsDefinition | null>(null);
   const [lexiconLoading, setLexiconLoading] = useState(false);
+
+  // Word translation cache for inline hints
+  const [wordTranslations, setWordTranslations] = useState<Map<string, string>>(new Map());
 
   // Stop audio on unmount or change
   useEffect(() => {
@@ -62,11 +67,9 @@ export default function BibleReader() {
 
   const handleWordClick = async (word: string) => {
     setLexiconLoading(true);
-    // Ensure Right Pane is visible or open it if it was closed (not applicable in this fixed layout but good for mobile)
 
     try {
       // Clean the word (remove punctuation, vowel points for better matching)
-      // Improve regex to include Greek unicode ranges if needed, currently mainly Hebrew
       const cleanWord = word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '');
 
       // Search for the word in Strong's database
@@ -77,6 +80,15 @@ export default function BibleReader() {
         const exactMatch = results.find(r => r.word === cleanWord || r.word.includes(cleanWord));
         const bestMatch = exactMatch || results[0];
         setLexiconWord(bestMatch);
+
+        // Cache the translation for inline display
+        if (bestMatch.gloss) {
+          setWordTranslations(prev => {
+            const newMap = new Map(prev);
+            newMap.set(cleanWord, bestMatch.gloss);
+            return newMap;
+          });
+        }
       } else {
         // If no results, show a placeholder with the word
         setLexiconWord({
@@ -194,18 +206,51 @@ export default function BibleReader() {
               onClick={() => setShowBookSelector(!showBookSelector)}
               className="group flex flex-col items-center"
             >
-              <div className="text-xs text-gold-500 uppercase tracking-[0.2em] mb-1 font-sans">Currently Reading</div>
-              <h1 className="text-2xl md:text-3xl font-serif text-gold-200 flex items-center gap-2 font-bold">
+              <h1 className="text-2xl md:text-4xl font-serif text-gold-200 flex items-center gap-3 font-bold">
                 {selectedBook?.bookName || 'Select Book'}
-                <span className="text-gold-400">Chapter {selectedChapter}</span>
                 <ChevronRight className={`w-5 h-5 text-gold-500/50 transition-transform ${showBookSelector ? 'rotate-90' : ''}`} />
               </h1>
-              {selectedBook && (
-                <span className="text-sm text-gray-400 font-serif italic group-hover:text-gold-400 transition-colors mt-1">
-                  {selectedBook.hebrewName} • {selectedBook.hebrewTransliteration}
-                </span>
-              )}
+              <div className="flex items-center gap-3 mt-2">
+                <span className="text-lg text-gold-400 font-medium">Chapter {selectedChapter}</span>
+                {selectedBook && (
+                  <span className="text-sm text-gray-400 font-serif italic">
+                    {selectedBook.hebrewName} • {selectedBook.greekName || selectedBook.hebrewTransliteration}
+                  </span>
+                )}
+              </div>
             </button>
+
+            {/* Hebrew/Greek Toggle */}
+            <div className="flex items-center justify-center gap-2 mt-3">
+              <button
+                onClick={() => setOriginalTextMode('hebrew')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${originalTextMode === 'hebrew'
+                  ? 'bg-amber-500/30 text-amber-200 border border-amber-500/50'
+                  : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                  }`}
+              >
+                Hebrew (OT)
+              </button>
+              <button
+                onClick={() => setOriginalTextMode('both')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${originalTextMode === 'both'
+                  ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
+                  : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                  }`}
+              >
+                Both
+              </button>
+              <button
+                onClick={() => setOriginalTextMode('greek')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${originalTextMode === 'greek'
+                  ? 'bg-cyan-500/30 text-cyan-200 border border-cyan-500/50'
+                  : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                  }`}
+              >
+                Greek (NT)
+              </button>
+            </div>
+
             <AnimatePresence>
               {showBookSelector && (
                 <motion.div
@@ -289,7 +334,10 @@ export default function BibleReader() {
         {/* Left Pane: Original Text (Hebrew & Greek) */}
         <div className="flex-1 overflow-y-auto min-w-[320px] border-r border-white/5 bg-[#0a0a0a] scrollbar-thin scrollbar-thumb-white/10">
           <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10 p-4 border-b border-white/5 flex items-center justify-between">
-            <span className="text-xs font-bold text-gold-500/70 uppercase tracking-widest">Original Text</span>
+            <span className="text-xs font-bold text-gold-500/70 uppercase tracking-widest">
+              {originalTextMode === 'hebrew' ? 'Hebrew Bible (תנ״ך)' : originalTextMode === 'greek' ? 'Greek Bible (Κοινή)' : 'Original Text'}
+            </span>
+            <span className="text-xs text-slate-500">Click any word for meaning</span>
           </div>
           <div className="p-6 md:p-8 space-y-8 pb-32">
             {loading ? (
@@ -299,49 +347,61 @@ export default function BibleReader() {
                 <div key={verse.id} className="relative group space-y-4">
                   <span className="absolute -left-4 top-1 text-xs font-sans text-slate-600 font-bold">{verse.verse}</span>
 
-                  {verse.hebrewText ? (
+                  {(originalTextMode === 'hebrew' || originalTextMode === 'both') && verse.hebrewText ? (
                     <div>
                       <div className="text-[11px] uppercase tracking-[0.25em] text-slate-500 mb-1 text-right">Hebrew</div>
                       <p
                         className="text-2xl md:text-3xl font-serif leading-loose text-slate-200 text-right font-hebrew"
                         dir="rtl"
                       >
-                        {verse.hebrewText.split(' ').map((word, i) => (
-                          <span
-                            key={`h-${i}`}
-                            onClick={() => handleWordClick(word)}
-                            className={`inline-block px-1 rounded cursor-pointer transition-colors ${lexiconWord?.word === word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '') ? 'bg-gold-500/30 text-gold-200' : 'hover:text-gold-400 hover:bg-white/5'}`}
-                          >
-                            {word}{' '}
-                          </span>
-                        ))}
+                        {verse.hebrewText.split(' ').map((word, i) => {
+                          const cleanWord = word.replace(/[^\u0590-\u05FF]/g, '');
+                          const translation = wordTranslations.get(cleanWord);
+                          const isSelected = lexiconWord?.word === cleanWord;
+                          return (
+                            <span
+                              key={`h-${i}`}
+                              onClick={() => handleWordClick(word)}
+                              title={translation ? `${cleanWord}: ${translation}` : 'Click for meaning'}
+                              className={`inline-block px-1 rounded cursor-pointer transition-all ${isSelected ? 'bg-gold-500/30 text-gold-200 ring-2 ring-gold-500/50' : 'hover:text-gold-400 hover:bg-white/5'} ${translation ? 'border-b border-dotted border-gold-500/30' : ''}`}
+                            >
+                              {word}{' '}
+                            </span>
+                          );
+                        })}
                       </p>
                     </div>
-                  ) : (
-                    <p className="text-sm italic text-slate-600">Hebrew text unavailable.</p>
-                  )}
+                  ) : (originalTextMode === 'hebrew' || originalTextMode === 'both') ? (
+                    <p className="text-sm italic text-slate-600">Hebrew text unavailable for this verse.</p>
+                  ) : null}
 
-                  {verse.greekText ? (
+                  {(originalTextMode === 'greek' || originalTextMode === 'both') && verse.greekText ? (
                     <div>
-                      <div className="text-[11px] uppercase tracking-[0.25em] text-slate-500 mb-1">Greek</div>
+                      <div className="text-[11px] uppercase tracking-[0.25em] text-cyan-500 mb-1">Greek (Κοινή)</div>
                       <p
                         className="text-xl md:text-2xl font-serif leading-loose text-slate-200"
                         dir="ltr"
                       >
-                        {verse.greekText.split(' ').map((word, i) => (
-                          <span
-                            key={`g-${i}`}
-                            onClick={() => handleWordClick(word)}
-                            className={`inline-block px-1 rounded cursor-pointer transition-colors ${lexiconWord?.word === word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '') ? 'bg-gold-500/30 text-gold-200' : 'hover:text-gold-400 hover:bg-white/5'}`}
-                          >
-                            {word}{' '}
-                          </span>
-                        ))}
+                        {verse.greekText.split(' ').map((word, i) => {
+                          const cleanWord = word.replace(/[^\u0370-\u03FF]/g, '');
+                          const translation = wordTranslations.get(cleanWord);
+                          const isSelected = lexiconWord?.word === cleanWord;
+                          return (
+                            <span
+                              key={`g-${i}`}
+                              onClick={() => handleWordClick(word)}
+                              title={translation ? `${cleanWord}: ${translation}` : 'Click for meaning'}
+                              className={`inline-block px-1 rounded cursor-pointer transition-all ${isSelected ? 'bg-cyan-500/30 text-cyan-200 ring-2 ring-cyan-500/50' : 'hover:text-cyan-400 hover:bg-white/5'} ${translation ? 'border-b border-dotted border-cyan-500/30' : ''}`}
+                            >
+                              {word}{' '}
+                            </span>
+                          );
+                        })}
                       </p>
                     </div>
-                  ) : (
-                    <p className="text-sm italic text-slate-600">Greek text unavailable.</p>
-                  )}
+                  ) : (originalTextMode === 'greek' || originalTextMode === 'both') ? (
+                    <p className="text-sm italic text-slate-600">Greek text unavailable for this verse.</p>
+                  ) : null}
                 </div>
               ))
             )}

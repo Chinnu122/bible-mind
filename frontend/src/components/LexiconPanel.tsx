@@ -120,20 +120,24 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
                                 <span className="text-gold-500/70">•</span>
                                 <span className="text-slate-300 italic">{word.partOfSpeech}</span>
                             </div>
+
+                            {/* Telugu Translation - Most Prominent */}
+                            {multiLang.telugu && (
+                                <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-center">
+                                    <div className="text-[10px] uppercase tracking-widest text-emerald-400 mb-1">Telugu Translation (తెలుగు)</div>
+                                    <div className="text-xl font-serif text-emerald-200">{multiLang.telugu}</div>
+                                </div>
+                            )}
+
                             {/* Quick gloss badges */}
-                            <div className="mt-4 flex flex-wrap gap-2 justify-center text-xs">
+                            <div className="mt-3 flex flex-wrap gap-2 justify-center text-xs">
                                 {word.gloss && (
-                                    <span className="px-3 py-1 rounded-full bg-gold-500/10 text-gold-200 border border-gold-500/30">
+                                    <span className="px-3 py-1.5 rounded-full bg-gold-500/10 text-gold-200 border border-gold-500/30">
                                         English: {word.gloss}
                                     </span>
                                 )}
-                                {multiLang.telugu && (
-                                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-200 border border-emerald-500/30">
-                                        Telugu: {multiLang.telugu}
-                                    </span>
-                                )}
                                 {(multiLang.greek || word.language?.toLowerCase().startsWith('g')) && (
-                                    <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-200 border border-blue-500/30">
+                                    <span className="px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-200 border border-blue-500/30">
                                         Greek: {multiLang.greek || `${word.word}${word.gloss ? ` – ${word.gloss}` : ''}`}
                                     </span>
                                 )}
