@@ -119,9 +119,15 @@ router.get('/:number/multilang', (req: Request, res: Response) => {
     ? `${def.word}${def.gloss ? ` - ${def.gloss}` : ''}`
     : undefined;
 
+  // For Hebrew Strong's numbers, get Greek equivalents (Septuagint mapping)
+  const greekEquivalents = def && (def.language === 'H' || def.language === 'A')
+    ? dataStore.getGreekEquivalents(strongsNum)
+    : [];
+
   const payload = {
     ...translations,
-    ...(greekFallback ? { greek: greekFallback } : {})
+    ...(greekFallback ? { greek: greekFallback } : {}),
+    ...(greekEquivalents.length > 0 ? { greekEquivalents } : {})
   };
 
   res.json({

@@ -7,6 +7,7 @@ interface MultiLangMeaning {
     telugu?: string;
     hindi?: string;
     greek?: string;
+    greekEquivalents?: Array<{ strongsNumber: string; lemma: string; origin: string }>;
 }
 
 interface OccurrenceLocation {
@@ -20,6 +21,7 @@ interface LexiconPanelProps {
     word?: StrongsDefinition | null;
     loading: boolean;
     onClose: () => void;
+    onJumpToOccurrence?: (book: string, chapter: number, verse: number) => void;
 }
 
 // Fetch multi-language data from API
@@ -46,7 +48,7 @@ const fetchOccurrenceLocations = async (strongsNumber: string): Promise<Occurren
     }
 };
 
-const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) => {
+const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJumpToOccurrence }) => {
     const [multiLang, setMultiLang] = useState<MultiLangMeaning>({});
     const [occurrences, setOccurrences] = useState<OccurrenceLocation[]>([]);
     const [currentOccIndex, setCurrentOccIndex] = useState(0);
@@ -118,12 +120,30 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) =
                                 <span className="text-gold-500/70">•</span>
                                 <span className="text-slate-300 italic">{word.partOfSpeech}</span>
                             </div>
+                            {/* Quick gloss badges */}
+                            <div className="mt-4 flex flex-wrap gap-2 justify-center text-xs">
+                                {word.gloss && (
+                                    <span className="px-3 py-1 rounded-full bg-gold-500/10 text-gold-200 border border-gold-500/30">
+                                        English: {word.gloss}
+                                    </span>
+                                )}
+                                {multiLang.telugu && (
+                                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-200 border border-emerald-500/30">
+                                        Telugu: {multiLang.telugu}
+                                    </span>
+                                )}
+                                {(multiLang.greek || word.language?.toLowerCase().startsWith('g')) && (
+                                    <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-200 border border-blue-500/30">
+                                        Greek: {multiLang.greek || `${word.word}${word.gloss ? ` – ${word.gloss}` : ''}`}
+                                    </span>
+                                )}
+                            </div>
                         </div>
 
                         {/* Definition */}
                         <div className="space-y-4">
                             <div>
-                                <h3 className="text-xs uppercase tracking-widest text-gold-500/70 mb-2">Definition</h3>
+                                <h3 className="text-xs uppercase tracking-widest text-gold-500/70 mb-2">English Meaning</h3>
                                 <p className="text-crema-100 leading-relaxed text-lg">
                                     {word.gloss}
                                 </p>
@@ -160,6 +180,24 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) =
                                                 <span className="text-crema-100 font-serif text-lg">{multiLang.greek}</span>
                                             </div>
                                         )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Greek Equivalents (Hebrew → Greek Septuagint mapping) */}
+                            {!loadingExtra && multiLang.greekEquivalents && multiLang.greekEquivalents.length > 0 && (
+                                <div className="mt-6 p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/10 border border-cyan-500/20">
+                                    <div className="flex items-center gap-2 text-cyan-300 mb-4">
+                                        <Globe size={16} />
+                                        <h3 className="text-xs uppercase tracking-widest">Greek Equivalents (Septuagint)</h3>
+                                    </div>
+                                    <div className="space-y-2">
+                                        {multiLang.greekEquivalents.map((eq, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-white/5">
+                                                <span className="text-xs font-mono text-cyan-400">{eq.strongsNumber}</span>
+                                                <span className="text-crema-100 font-serif text-lg">{eq.lemma}</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             )}
@@ -208,8 +246,22 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose }) =
                                         exit={{ opacity: 0, x: -20 }}
                                         className="p-4 rounded-xl bg-white/5 border border-white/10"
                                     >
-                                        <div className="text-gold-400 font-medium mb-2">
-                                            {occurrences[currentOccIndex]?.book} {occurrences[currentOccIndex]?.chapter}:{occurrences[currentOccIndex]?.verse}
+                                        <div className="flex items-center justify-between gap-3 mb-2">
+                                            <div className="text-gold-400 font-medium">
+                                                {occurrences[currentOccIndex]?.book} {occurrences[currentOccIndex]?.chapter}:{occurrences[currentOccIndex]?.verse}
+                                            </div>
+                                            {onJumpToOccurrence && (
+                                                <button
+                                                    onClick={() => occurrences[currentOccIndex] && onJumpToOccurrence(
+                                                        occurrences[currentOccIndex].book,
+                                                        occurrences[currentOccIndex].chapter,
+                                                        occurrences[currentOccIndex].verse
+                                                    )}
+                                                    className="text-xs px-2 py-1 rounded-lg bg-gold-500/20 text-gold-200 hover:bg-gold-500/30 transition-colors"
+                                                >
+                                                    Open
+                                                </button>
+                                            )}
                                         </div>
                                         <p className="text-slate-300 text-sm italic">
                                             "{occurrences[currentOccIndex]?.text}"

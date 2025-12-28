@@ -53,6 +53,12 @@ export interface StrongsMultiLang {
   greek?: string;
 }
 
+export interface GreekEquivalent {
+  strongsNumber: string;
+  lemma: string;
+  origin: string;
+}
+
 // Person in the Bible
 export interface BiblePerson {
   personId: string;

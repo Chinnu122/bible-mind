@@ -7,7 +7,7 @@ import LessonBuilder from './LessonBuilder';
 import { useSettings } from '../contexts/SettingsContext';
 import { useBible } from '../contexts/BibleContext';
 
-type TranslationVersion = 'kjv' | 'web' | 'jps' | 'brenton';
+type TranslationVersion = 'kjv' | 'web' | 'jps' | 'brenton' | 'telugu' | 'parallel';
 
 export default function BibleReader() {
   const {
@@ -16,6 +16,7 @@ export default function BibleReader() {
     books,
     setBook: setSelectedBook,
     setChapter: setSelectedChapter,
+    goToVerse,
     loading: contextLoading,
     error: contextError
   } = useBible();
@@ -30,6 +31,7 @@ export default function BibleReader() {
   const { fontSize, setFontSize, fontFamily, setIsSettingsOpen } = useSettings();
 
   const [translationVersion, setTranslationVersion] = useState<TranslationVersion>('kjv');
+  const [teluguChapter, setTeluguChapter] = useState<Record<number, string>>({});
 
   // Lexicon State
   const [lexiconWord, setLexiconWord] = useState<StrongsDefinition | null>(null);
@@ -114,9 +116,22 @@ export default function BibleReader() {
 
       setLoading(true);
       setError(null);
+      setTeluguChapter({});
       try {
-        const chapterData = await bibleAPI.getChapter(selectedBook.bookId, selectedChapter);
+        const [chapterData, teluguData] = await Promise.all([
+          bibleAPI.getChapter(selectedBook.bookId, selectedChapter),
+          bibleAPI.getTeluguChapter(selectedBook.bookId, selectedChapter).catch(() => null)
+        ]);
+
         setVerses(chapterData.verses);
+
+        if (teluguData && teluguData.verses) {
+          const telMap: Record<number, string> = {};
+          teluguData.verses.forEach(v => {
+            telMap[v.verse] = v.teluguText;
+          });
+          setTeluguChapter(telMap);
+        }
       } catch (error) {
         console.error('Failed to load chapter:', error);
         setError("Failed to load chapter content.");
@@ -269,37 +284,62 @@ export default function BibleReader() {
       {/* Main 3-Pane Content */}
       <div className="flex-1 flex overflow-hidden">
 
-        {/* Left Pane: Original Text (Hebrew/Greek) */}
-        <div className="flex-1 overflow-y-auto min-w-[300px] border-r border-white/5 bg-[#0a0a0a] scrollbar-thin scrollbar-thumb-white/10">
+        {/* Left Pane: Original Text (Hebrew & Greek) */}
+        <div className="flex-1 overflow-y-auto min-w-[320px] border-r border-white/5 bg-[#0a0a0a] scrollbar-thin scrollbar-thumb-white/10">
           <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10 p-4 border-b border-white/5 flex items-center justify-between">
-            <span className="text-xs font-bold text-gold-500/70 uppercase tracking-widest">
-              {selectedBook?.testament === 'old' ? 'Original Hebrew' : 'Original Greek'}
-            </span>
+            <span className="text-xs font-bold text-gold-500/70 uppercase tracking-widest">Original Text</span>
           </div>
           <div className="p-6 md:p-8 space-y-8 pb-32">
             {loading ? (
               <div className="flex justify-center p-10"><Loader2 className="animate-spin text-gold-500" /></div>
             ) : (
               verses.map((verse) => (
-                <div key={verse.id} className="relative group">
+                <div key={verse.id} className="relative group space-y-4">
                   <span className="absolute -left-4 top-1 text-xs font-sans text-slate-600 font-bold">{verse.verse}</span>
-                  <p
-                    className={`text-2xl md:text-3xl font-serif leading-loose text-slate-300 ${selectedBook?.testament === 'old' ? 'text-right font-hebrew' : 'text-left'}`}
-                    dir={selectedBook?.testament === 'old' ? 'rtl' : 'ltr'}
-                  >
-                    {(selectedBook?.testament === 'old' ? verse.hebrewText : verse.greekText)?.split(' ').map((word, i) => (
-                      <span
-                        key={i}
-                        onClick={() => handleWordClick(word)}
-                        className={`
-                                            inline-block px-1 rounded cursor-pointer transition-colors
-                                            ${lexiconWord?.word === word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '') ? 'bg-gold-500/30 text-gold-200' : 'hover:text-gold-400 hover:bg-white/5'}
-                                        `}
+
+                  {verse.hebrewText ? (
+                    <div>
+                      <div className="text-[11px] uppercase tracking-[0.25em] text-slate-500 mb-1 text-right">Hebrew</div>
+                      <p
+                        className="text-2xl md:text-3xl font-serif leading-loose text-slate-200 text-right font-hebrew"
+                        dir="rtl"
                       >
-                        {word}{' '}
-                      </span>
-                    )) || <span className="text-sm italic text-slate-500">Original text not available</span>}
-                  </p>
+                        {verse.hebrewText.split(' ').map((word, i) => (
+                          <span
+                            key={`h-${i}`}
+                            onClick={() => handleWordClick(word)}
+                            className={`inline-block px-1 rounded cursor-pointer transition-colors ${lexiconWord?.word === word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '') ? 'bg-gold-500/30 text-gold-200' : 'hover:text-gold-400 hover:bg-white/5'}`}
+                          >
+                            {word}{' '}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm italic text-slate-600">Hebrew text unavailable.</p>
+                  )}
+
+                  {verse.greekText ? (
+                    <div>
+                      <div className="text-[11px] uppercase tracking-[0.25em] text-slate-500 mb-1">Greek</div>
+                      <p
+                        className="text-xl md:text-2xl font-serif leading-loose text-slate-200"
+                        dir="ltr"
+                      >
+                        {verse.greekText.split(' ').map((word, i) => (
+                          <span
+                            key={`g-${i}`}
+                            onClick={() => handleWordClick(word)}
+                            className={`inline-block px-1 rounded cursor-pointer transition-colors ${lexiconWord?.word === word.replace(/[^\u0590-\u05FF\u0370-\u03FF]/g, '') ? 'bg-gold-500/30 text-gold-200' : 'hover:text-gold-400 hover:bg-white/5'}`}
+                          >
+                            {word}{' '}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm italic text-slate-600">Greek text unavailable.</p>
+                  )}
                 </div>
               ))
             )}
@@ -318,10 +358,12 @@ export default function BibleReader() {
                 onChange={(e) => setTranslationVersion(e.target.value as TranslationVersion)}
                 className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-crema-100 focus:outline-none focus:border-gold-500/50 font-sans cursor-pointer hover:bg-white/10 transition-colors"
               >
-                <option value="kjv">KJV (King James)</option>
-                <option value="web">WEB (World English)</option>
-                <option value="jps">JPS (Jewish Pub. Soc.)</option>
-                <option value="brenton">Brenton (Septuagint)</option>
+                <option value="kjv">KJV (English)</option>
+                <option value="web">WEB (English)</option>
+                <option value="jps">JPS (English)</option>
+                <option value="brenton">Brenton (Greek)</option>
+                <option value="telugu">Telugu (తెలుగు)</option>
+                <option value="parallel">English + Telugu</option>
               </select>
             </div>
           </div>
@@ -332,12 +374,26 @@ export default function BibleReader() {
               verses.map((verse) => (
                 <div key={verse.id} className="relative">
                   <span className="absolute -left-4 top-1 text-xs font-sans text-slate-700 font-bold">{verse.verse}</span>
-                  <p className={`leading-relaxed text-crema-100 ${fontSize === 'small' ? 'text-base' :
+                  <div className={`leading-relaxed text-crema-100 ${fontSize === 'small' ? 'text-base' :
                     fontSize === 'large' ? 'text-2xl' :
                       fontSize === 'extra-large' ? 'text-3xl' : 'text-xl'
-                    } font-${fontFamily}`}>
-                    {verse[`${translationVersion}Text` as keyof BibleVerse] || verse.kjvText || verse.webText}
-                  </p>
+                    } font-${fontFamily} space-y-2`}>
+                    {(() => {
+                      const teluguText = teluguChapter[verse.verse];
+                      if (translationVersion === 'telugu') {
+                        return teluguText || <span className="text-sm italic text-slate-500">Telugu text not available for this verse.</span>;
+                      }
+                      if (translationVersion === 'parallel') {
+                        return (
+                          <>
+                            <div>{verse.kjvText || verse.webText}</div>
+                            <div className="text-emerald-200 font-serif">{teluguText || <span className="text-sm italic text-slate-500">Telugu text not available.</span>}</div>
+                          </>
+                        );
+                      }
+                      return verse[`${translationVersion}Text` as keyof BibleVerse] || verse.kjvText || verse.webText;
+                    })()}
+                  </div>
                 </div>
               ))
             )}
@@ -350,6 +406,11 @@ export default function BibleReader() {
             word={lexiconWord}
             loading={lexiconLoading}
             onClose={() => setLexiconWord(null)}
+            onJumpToOccurrence={(book, chapter, verse) => {
+              goToVerse(book, chapter, verse);
+              setShowLessonBuilder(false);
+              setSelectedVerse(null);
+            }}
           />
         </div>
 

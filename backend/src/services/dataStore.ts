@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import csvParser from 'csv-parser';
-import { BibleVerse, BibleBook, StrongsDefinition, StrongsMultiLang } from '../types';
+import { BibleVerse, BibleBook, StrongsDefinition, StrongsMultiLang, GreekEquivalent } from '../types';
 
 // In-memory data store
 class DataStore {
@@ -9,6 +9,7 @@ class DataStore {
   private books: Map<number, BibleBook> = new Map();
   private strongs: Map<string, StrongsDefinition> = new Map();
   private strongsMultiLang: Map<string, StrongsMultiLang> = new Map();
+  private hebrewToGreek: Map<string, GreekEquivalent[]> = new Map();
   private versesByBook: Map<number, BibleVerse[]> = new Map();
   private versesByChapter: Map<string, BibleVerse[]> = new Map();
   private isLoaded: boolean = false;
@@ -260,6 +261,14 @@ class DataStore {
           rootWord: root,
         };
         this.strongs.set(def.strongsNumber, def);
+
+        // Build Hebrew-to-Greek mapping from origin field (e.g., "H175")
+        if (origin && origin.startsWith('H')) {
+          const hebrewNum = this.normalizeStrongsNumber(origin);
+          const existing = this.hebrewToGreek.get(hebrewNum) || [];
+          existing.push({ strongsNumber, lemma, origin });
+          this.hebrewToGreek.set(hebrewNum, existing);
+        }
       }
     }
   }
@@ -337,6 +346,11 @@ class DataStore {
   getStrongsMultiLang(strongsNumber: string): StrongsMultiLang | undefined {
     const normalized = this.normalizeStrongsNumber(strongsNumber);
     return this.strongsMultiLang.get(normalized);
+  }
+
+  getGreekEquivalents(hebrewNumber: string): GreekEquivalent[] {
+    const normalized = this.normalizeStrongsNumber(hebrewNumber);
+    return this.hebrewToGreek.get(normalized) || [];
   }
 
   searchStrongs(query: string): StrongsDefinition[] {

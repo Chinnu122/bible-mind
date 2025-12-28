@@ -29,6 +29,11 @@ export interface BibleVerse {
   reference?: string;
 }
 
+export interface TeluguVerse {
+  verse: number;
+  teluguText: string;
+}
+
 export interface StrongsDefinition {
   strongsNumber: string;
   word: string;
@@ -81,6 +86,10 @@ class BibleAPI {
 
   async getVerse(bookId: number | string, chapter: number, verse: number): Promise<BibleVerse> {
     return this.fetch<BibleVerse>(`/verses/${bookId}/${chapter}/${verse}`);
+  }
+
+  async getTeluguChapter(bookId: number | string, chapter: number): Promise<{ bookId: number; chapter: number; verses: TeluguVerse[] }> {
+    return this.fetch(`/telugu/${bookId}/${chapter}`);
   }
 
   // Strong's
