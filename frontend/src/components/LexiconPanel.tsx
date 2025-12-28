@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Book, Loader2, Globe, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { X, Book, Loader2, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { StrongsDefinition, API_BASE_URL } from '../api/bibleApi';
 
 interface MultiLangMeaning {
     telugu?: string;
     hindi?: string;
-    greek?: string;
-    greekEquivalents?: Array<{ strongsNumber: string; lemma: string; origin: string }>;
 }
 
 interface OccurrenceLocation {
