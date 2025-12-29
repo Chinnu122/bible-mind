@@ -30,6 +30,7 @@ export default function BibleReader() {
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showChapterSelector, setShowChapterSelector] = useState(false);
   const [showVerseSelector, setShowVerseSelector] = useState(false);
+  const [testamentFilter, setTestamentFilter] = useState<'old' | 'new'>('old'); // OT/NT filter
   const [searchQuery, setSearchQuery] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { fontSize, setFontSize, fontFamily, setIsSettingsOpen } = useSettings();
@@ -44,6 +45,16 @@ export default function BibleReader() {
 
   // Word translation cache for inline hints
   const [wordTranslations, setWordTranslations] = useState<Map<string, string>>(new Map());
+
+  // Auto-detect testament and switch original text mode accordingly
+  useEffect(() => {
+    if (selectedBook) {
+      const isOldTestament = selectedBook.bookId <= 39;
+      setOriginalTextMode(isOldTestament ? 'hebrew' : 'greek');
+      // Also update testament filter to match current book
+      setTestamentFilter(isOldTestament ? 'old' : 'new');
+    }
+  }, [selectedBook]);
 
   // Stop audio on unmount or change
   useEffect(() => {
@@ -266,23 +277,46 @@ export default function BibleReader() {
                     <h3 className="text-gold-400 text-sm uppercase tracking-widest">Select Book</h3>
                     <button onClick={() => setShowBookSelector(false)}><X className="w-5 h-5 text-slate-500" /></button>
                   </div>
+
+                  {/* Testament Tabs */}
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      onClick={() => setTestamentFilter('old')}
+                      className={`flex-1 py-3 px-4 rounded-xl font-medium text-sm transition-all ${testamentFilter === 'old' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
+                    >
+                      <span className="block text-lg">📜</span>
+                      <span>Old Testament</span>
+                      <span className="block text-[10px] uppercase text-slate-500">Hebrew Bible (39 books)</span>
+                    </button>
+                    <button
+                      onClick={() => setTestamentFilter('new')}
+                      className={`flex-1 py-3 px-4 rounded-xl font-medium text-sm transition-all ${testamentFilter === 'new' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
+                    >
+                      <span className="block text-lg">✝️</span>
+                      <span>New Testament</span>
+                      <span className="block text-[10px] uppercase text-slate-500">Greek Bible (27 books)</span>
+                    </button>
+                  </div>
+
                   <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
-                    {books.map(book => (
-                      <button
-                        key={book.bookId}
-                        onClick={() => {
-                          setSelectedBook(book);
-                          setSelectedChapter(1);
-                          setShowBookSelector(false);
-                        }}
-                        className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
-                          ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
-                          : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                          }`}
-                      >
-                        {book.shortName}
-                      </button>
-                    ))}
+                    {books
+                      .filter(book => testamentFilter === 'old' ? book.bookId <= 39 : book.bookId >= 40)
+                      .map(book => (
+                        <button
+                          key={book.bookId}
+                          onClick={() => {
+                            setSelectedBook(book);
+                            setSelectedChapter(1);
+                            setShowBookSelector(false);
+                          }}
+                          className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
+                            ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
+                            : 'bg-white/5 hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                          {book.shortName}
+                        </button>
+                      ))}
                   </div>
                 </motion.div>
               )}
