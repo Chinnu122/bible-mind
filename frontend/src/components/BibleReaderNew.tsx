@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Loader2, Volume2, Square, Wand2, X, Type, Settings2, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Loader2, Volume2, Square, Wand2, X, Type, Settings2, BookOpen, Search, List } from 'lucide-react';
 import { bibleAPI, BibleVerse, BibleBook, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
 import LessonBuilder from './LessonBuilder';
@@ -28,6 +28,9 @@ export default function BibleReader() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showBookSelector, setShowBookSelector] = useState(false);
+  const [showChapterSelector, setShowChapterSelector] = useState(false);
+  const [showVerseSelector, setShowVerseSelector] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { fontSize, setFontSize, fontFamily, setIsSettingsOpen } = useSettings();
 
@@ -326,6 +329,110 @@ export default function BibleReader() {
             <Wand2 className="w-5 h-5" />
           </button>
         </div>
+      </div>
+
+      {/* Secondary Navigation Bar - Quick Access */}
+      <div className="flex-none px-4 md:px-8 py-2 border-b border-white/5 bg-[#0a0a0a]/90 backdrop-blur flex items-center gap-4 flex-wrap z-10">
+        {/* Search Input */}
+        <div className="relative flex-1 min-w-[200px] max-w-[400px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Search verses (English/Telugu)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/50 focus:bg-white/10 transition-all"
+          />
+        </div>
+
+        {/* Chapter Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowChapterSelector(!showChapterSelector)}
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <List className="w-4 h-4 text-gold-500" />
+            <span className="text-sm font-medium">Chapter {selectedChapter}</span>
+            <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${showChapterSelector ? 'rotate-180' : ''}`} />
+          </button>
+          <AnimatePresence>
+            {showChapterSelector && selectedBook && (
+              <motion.div
+                initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                className="absolute top-full left-0 mt-2 bg-[#0f0f0f] border border-gold-500/20 rounded-xl shadow-2xl z-50 p-3 max-h-[300px] overflow-y-auto w-[200px]"
+              >
+                <div className="grid grid-cols-5 gap-1">
+                  {Array.from({ length: selectedBook.chapterCount }, (_, i) => i + 1).map(ch => (
+                    <button
+                      key={ch}
+                      onClick={() => {
+                        setSelectedChapter(ch);
+                        setShowChapterSelector(false);
+                      }}
+                      className={`p-2 text-sm rounded-lg transition-all ${selectedChapter === ch
+                        ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
+                        : 'bg-white/5 hover:bg-white/10 text-gray-300'
+                        }`}
+                    >
+                      {ch}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Verse Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowVerseSelector(!showVerseSelector)}
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <BookOpen className="w-4 h-4 text-amber-500" />
+            <span className="text-sm font-medium">Jump to Verse</span>
+            <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${showVerseSelector ? 'rotate-180' : ''}`} />
+          </button>
+          <AnimatePresence>
+            {showVerseSelector && verses.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                className="absolute top-full left-0 mt-2 bg-[#0f0f0f] border border-gold-500/20 rounded-xl shadow-2xl z-50 p-3 max-h-[300px] overflow-y-auto w-[200px]"
+              >
+                <div className="grid grid-cols-5 gap-1">
+                  {verses.map(v => (
+                    <button
+                      key={v.verse}
+                      onClick={() => {
+                        document.getElementById(`verse-${v.verse}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        setShowVerseSelector(false);
+                      }}
+                      className="p-2 text-sm rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 transition-all"
+                    >
+                      {v.verse}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Translation Selector (Compact) */}
+        <select
+          value={translationVersion}
+          onChange={(e) => setTranslationVersion(e.target.value as TranslationVersion)}
+          className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-gold-500/50 cursor-pointer hover:bg-white/10 transition-colors"
+        >
+          <option value="kjv">KJV (English)</option>
+          <option value="web">WEB (English)</option>
+          <option value="telugu">Telugu (తెలుగు)</option>
+          <option value="parallel">English + Telugu</option>
+        </select>
       </div>
 
       {/* Main 3-Pane Content */}

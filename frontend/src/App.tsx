@@ -26,7 +26,9 @@ import Dashboard from './components/Dashboard';
 import PricingPage from './components/PricingPage';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
 import NebulaBackground from './components/NebulaBackground';
+import AbstractLinesWallpaper from './components/AbstractLinesWallpaper';
 import LivingPrismIntro from './components/LivingPrismIntro';
+import LogoIntro from './components/LogoIntro';
 import MagneticButton from './components/MagneticButton';
 import GoldenDustCursor from './components/GoldenDustCursor';
 import DivineRays from './components/DivineRays';
@@ -94,8 +96,8 @@ function AppLayout() {
       );
     }
 
-    // Always use NebulaBackground for calming reading experience
-    return <NebulaBackground />;
+    // Use AbstractLinesWallpaper for concentrated, modern aesthetic
+    return <AbstractLinesWallpaper />;
   };
 
   // Navigation Translations
@@ -220,7 +222,7 @@ function AppLayout() {
 
       <AnimatePresence mode="wait">
         {showIntro ? (
-          <LivingPrismIntro onComplete={() => setShowIntro(false)} />
+          <LogoIntro onComplete={() => setShowIntro(false)} />
         ) : (
           <LayoutGroup>
             {/* Main Content Container - Glass Effect */}
