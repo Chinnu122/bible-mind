@@ -22,17 +22,7 @@ interface LexiconPanelProps {
     onJumpToOccurrence?: (book: string, chapter: number, verse: number) => void;
 }
 
-// Fetch multi-language data from API
-const fetchMultiLangMeanings = async (strongsNumber: string): Promise<MultiLangMeaning> => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/strongs/${strongsNumber}/multilang`);
-        const json = await response.json();
-        return json.data || {};
-    } catch (error) {
-        console.error('Error fetching multi-lang:', error);
-        return {};
-    }
-};
+// Multi-language data is now loaded directly from the dictionary
 
 // Fetch occurrence locations from API
 const fetchOccurrenceLocations = async (strongsNumber: string): Promise<OccurrenceLocation[]> => {
@@ -53,18 +43,20 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
     const [loadingExtra, setLoadingExtra] = useState(false);
 
     useEffect(() => {
+        // Now we get english and telugu directly from the word object (via local dictionary)
         if (word && word.strongsNumber && word.strongsNumber !== 'Unknown' && word.strongsNumber !== 'Error') {
+            // Set telugu from the word object if available
+            setMultiLang({ telugu: word.telugu || '' });
+
+            // Optionally load occurrences from API if available
             setLoadingExtra(true);
-            Promise.all([
-                fetchMultiLangMeanings(word.strongsNumber),
-                fetchOccurrenceLocations(word.strongsNumber)
-            ]).then(([multiLangData, occurrenceData]) => {
-                setMultiLang(multiLangData);
-                setOccurrences(occurrenceData);
-                setCurrentOccIndex(0);
-            }).finally(() => {
-                setLoadingExtra(false);
-            });
+            fetchOccurrenceLocations(word.strongsNumber)
+                .then((occurrenceData) => {
+                    setOccurrences(occurrenceData);
+                    setCurrentOccIndex(0);
+                })
+                .catch(() => setOccurrences([]))
+                .finally(() => setLoadingExtra(false));
         } else {
             setMultiLang({});
             setOccurrences([]);
@@ -128,18 +120,18 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
                             {/* Quick gloss badges */}
                             <div className="mt-4 space-y-3">
                                 {/* Telugu Translation - Most Prominent */}
-                                {multiLang.telugu && (
+                                {(word.telugu || multiLang.telugu) && (
                                     <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-center">
                                         <div className="text-[10px] uppercase tracking-widest text-emerald-400 mb-1">Telugu Translation</div>
-                                        <div className="text-xl font-serif text-emerald-200">{multiLang.telugu}</div>
+                                        <div className="text-xl font-serif text-emerald-200">{word.telugu || multiLang.telugu}</div>
                                     </div>
                                 )}
 
-                                {/* English and Telugu badges only */}
+                                {/* English badge */}
                                 <div className="flex flex-wrap gap-2 justify-center text-xs">
-                                    {word.gloss && (
+                                    {(word.english || word.gloss) && (
                                         <span className="px-3 py-1.5 rounded-full bg-gold-500/10 text-gold-200 border border-gold-500/30">
-                                            English: {word.gloss}
+                                            English: {word.english || word.gloss}
                                         </span>
                                     )}
                                 </div>
@@ -155,7 +147,7 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
                                     English Meaning
                                 </h3>
                                 <p className="text-crema-100 leading-relaxed text-lg font-serif">
-                                    {word.gloss || 'Definition not available'}
+                                    {word.english || word.gloss || 'Definition not available'}
                                 </p>
                             </div>
 
@@ -165,13 +157,8 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
                                     <span className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">తె</span>
                                     Telugu Meaning (తెలుగు)
                                 </h3>
-                                {loadingExtra ? (
-                                    <div className="flex items-center gap-2 text-slate-400">
-                                        <Loader2 size={14} className="animate-spin" />
-                                        <span className="text-sm">Loading...</span>
-                                    </div>
-                                ) : multiLang.telugu ? (
-                                    <p className="text-emerald-100 leading-relaxed text-xl font-serif">{multiLang.telugu}</p>
+                                {word.telugu || multiLang.telugu ? (
+                                    <p className="text-emerald-100 leading-relaxed text-xl font-serif">{word.telugu || multiLang.telugu}</p>
                                 ) : (
                                     <p className="text-slate-500 text-sm italic">Telugu translation not available for this word.</p>
                                 )}
