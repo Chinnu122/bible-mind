@@ -24,7 +24,7 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
         text.split('').forEach((char, i) => {
             const span = document.createElement('span');
             span.className = 'char';
-            span.style.animationDelay = `${4.5 + (i * 0.1)}s`;
+            span.style.animationDelay = `${2.0 + (i * 0.05)}s`; // Faster: start at 2s, 0.05s per char
             span.innerHTML = char === ' ' ? '&nbsp;' : char;
             titleRef.current?.appendChild(span);
         });
@@ -52,12 +52,12 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
         };
     }, []);
 
-    // Auto-complete after animation
+    // Auto-complete after animation - FASTER: 5 seconds total
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsVisible(false);
-            setTimeout(onComplete, 500);
-        }, 10000); // 10 seconds total animation
+            setTimeout(onComplete, 300);
+        }, 5000); // 5 seconds total animation (was 10)
 
         return () => clearTimeout(timer);
     }, [onComplete]);
@@ -137,7 +137,7 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
                             align-items: center;
                             transform-style: preserve-3d;
                             will-change: transform, opacity;
-                            animation: finalWarp 2.5s 7.5s var(--transition-epic) forwards;
+                            animation: finalWarp 1.5s 3.5s var(--transition-epic) forwards;
                         }
 
                         @keyframes finalWarp {
@@ -158,7 +158,7 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
                             box-shadow: 0 60px 100px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.1);
                             opacity: 0;
                             transform: scale(0.2) rotateX(-60deg);
-                            animation: badgeRise 1.8s var(--transition-smooth) forwards;
+                            animation: badgeRise 1.0s var(--transition-smooth) forwards;
                             will-change: transform, opacity;
                         }
 
@@ -187,14 +187,14 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
                             stroke-width: 3.5;
                             stroke-dasharray: 1000;
                             stroke-dashoffset: 1000;
-                            animation: drawSvg 2.5s 1.2s var(--transition-smooth) forwards;
+                            animation: drawSvg 1.2s 0.6s var(--transition-smooth) forwards;
                         }
 
                         .svg-cross {
                             fill: var(--gold);
                             opacity: 0;
                             transform-origin: center;
-                            animation: crossLand 1.2s 3.5s var(--transition-epic) forwards;
+                            animation: crossLand 0.8s 1.5s var(--transition-epic) forwards;
                         }
 
                         @keyframes drawSvg {
@@ -213,7 +213,7 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
                             width: 170px;
                             opacity: 0;
                             transform: translateY(30px) rotateX(-90deg);
-                            animation: bookOpen 1.5s 2.2s var(--transition-smooth) forwards;
+                            animation: bookOpen 0.8s 1.0s var(--transition-smooth) forwards;
                         }
 
                         @keyframes bookOpen {
@@ -247,7 +247,7 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
                             opacity: 0;
                             pointer-events: none;
                             z-index: 20;
-                            animation: hitTrigger 1s 3.5s var(--transition-epic);
+                            animation: hitTrigger 0.6s 1.5s var(--transition-epic);
                         }
 
                         @keyframes hitTrigger {
@@ -319,12 +319,12 @@ export default function LogoIntro({ onComplete }: LogoIntroProps) {
                             </div>
                         </div>
 
-                        {/* Text Wrap */}
-                        <div className="absolute bottom-[15%] text-center">
+                        {/* Text Wrap - Directly BELOW the logo badge */}
+                        <div className="mt-8 text-center">
                             <div ref={titleRef} className="flex gap-[10px] justify-center" />
                             <p
                                 className="text-[14px] tracking-[16px] text-[#bfa37c] uppercase mt-[15px] opacity-0"
-                                style={{ animation: 'fadeIn 2s 5.5s ease forwards' }}
+                                style={{ animation: 'fadeIn 1s 2.8s ease forwards' }}
                             >
                                 Wisdom & Understanding
                             </p>
