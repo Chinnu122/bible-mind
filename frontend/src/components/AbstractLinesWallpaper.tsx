@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * AbstractLinesWallpaper - Flowing lines background like motionbgs.com
- * Canvas-based animated abstract lines with gradient colors
+ * AbstractLinesWallpaper - Smooth flowing neon curves
+ * Replicates the "Abstract Lines" style from motionbgs.com
  */
 export default function AbstractLinesWallpaper() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,144 +17,93 @@ export default function AbstractLinesWallpaper() {
 
         let width = window.innerWidth;
         let height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
 
-        // Line configuration
-        const lineCount = 50;
-        const lines: Line[] = [];
-
-        interface Line {
-            x: number;
-            y: number;
-            length: number;
-            speed: number;
-            angle: number;
-            angleSpeed: number;
-            width: number;
-            hue: number;
-            opacity: number;
-            points: { x: number; y: number }[];
-        }
-
-        // Initialize lines
-        for (let i = 0; i < lineCount; i++) {
-            lines.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                length: 50 + Math.random() * 150,
-                speed: 0.3 + Math.random() * 0.7,
-                angle: Math.random() * Math.PI * 2,
-                angleSpeed: (Math.random() - 0.5) * 0.02,
-                width: 1 + Math.random() * 2,
-                hue: 200 + Math.random() * 60, // Blue to purple range
-                opacity: 0.1 + Math.random() * 0.3,
-                points: []
-            });
-        }
-
-        // Initialize point trails
-        lines.forEach(line => {
-            for (let j = 0; j < 20; j++) {
-                line.points.push({ x: line.x, y: line.y });
-            }
-        });
-
-        function animate() {
-            if (!ctx) return;
-
-            // Fade effect for trails
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
-            ctx.fillRect(0, 0, width, height);
-
-            lines.forEach(line => {
-                // Update position
-                line.angle += line.angleSpeed;
-                line.x += Math.cos(line.angle) * line.speed;
-                line.y += Math.sin(line.angle) * line.speed;
-
-                // Wrap around screen
-                if (line.x < -50) line.x = width + 50;
-                if (line.x > width + 50) line.x = -50;
-                if (line.y < -50) line.y = height + 50;
-                if (line.y > height + 50) line.y = -50;
-
-                // Update point trail
-                line.points.pop();
-                line.points.unshift({ x: line.x, y: line.y });
-
-                // Draw line with gradient
-                ctx.beginPath();
-                ctx.moveTo(line.points[0].x, line.points[0].y);
-
-                for (let i = 1; i < line.points.length; i++) {
-                    const point = line.points[i];
-                    ctx.lineTo(point.x, point.y);
-                }
-
-                const gradient = ctx.createLinearGradient(
-                    line.points[0].x, line.points[0].y,
-                    line.points[line.points.length - 1].x, line.points[line.points.length - 1].y
-                );
-                gradient.addColorStop(0, `hsla(${line.hue}, 80%, 60%, ${line.opacity})`);
-                gradient.addColorStop(0.5, `hsla(${line.hue + 30}, 70%, 50%, ${line.opacity * 0.7})`);
-                gradient.addColorStop(1, `hsla(${line.hue + 60}, 60%, 40%, 0)`);
-
-                ctx.strokeStyle = gradient;
-                ctx.lineWidth = line.width;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.stroke();
-
-                // Add glow effect
-                ctx.shadowColor = `hsla(${line.hue}, 100%, 70%, 0.5)`;
-                ctx.shadowBlur = 10;
-            });
-
-            // Draw connecting lines between nearby points
-            ctx.shadowBlur = 0;
-            for (let i = 0; i < lines.length; i++) {
-                for (let j = i + 1; j < lines.length; j++) {
-                    const dx = lines[i].x - lines[j].x;
-                    const dy = lines[i].y - lines[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 150) {
-                        const opacity = (1 - dist / 150) * 0.15;
-                        ctx.beginPath();
-                        ctx.moveTo(lines[i].x, lines[i].y);
-                        ctx.lineTo(lines[j].x, lines[j].y);
-                        ctx.strokeStyle = `rgba(100, 150, 255, ${opacity})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            animationRef.current = requestAnimationFrame(animate);
-        }
-
-        // Handle resize
-        const handleResize = () => {
+        const resize = () => {
             width = window.innerWidth;
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, width, height);
         };
+        resize();
+        window.addEventListener('resize', resize);
 
-        window.addEventListener('resize', handleResize);
+        // Curve configuration
+        const curves: Curve[] = [];
+        const curveCount = 30;
 
-        // Initial clear
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, width, height);
+        interface Curve {
+            y: number;
+            amplitude: number;
+            frequency: number;
+            phase: number;
+            speed: number;
+            color: string;
+            width: number;
+        }
 
-        // Start animation
+        // Initialize curves
+        for (let i = 0; i < curveCount; i++) {
+            const hue = 220 + Math.random() * 100; // Blue to Pink/Purple range (220-320)
+            curves.push({
+                y: height * 0.1 + Math.random() * height * 0.8,
+                amplitude: 20 + Math.random() * 100,
+                frequency: 0.002 + Math.random() * 0.005,
+                phase: Math.random() * Math.PI * 2,
+                speed: 0.005 + Math.random() * 0.015,
+                color: `hsla(${hue}, 70%, 60%, 0.5)`,
+                width: 1 + Math.random() * 3
+            });
+        }
+
+        function animate() {
+            if (!ctx) return;
+
+            // Clear with slight trail effect
+            ctx.fillStyle = 'rgba(10, 10, 20, 0.1)'; // Dark background with trail
+            ctx.fillRect(0, 0, width, height);
+
+            // Global composite for glowing effect
+            ctx.globalCompositeOperation = 'lighter';
+
+            curves.forEach(curve => {
+                curve.phase += curve.speed;
+
+                ctx.beginPath();
+                ctx.strokeStyle = curve.color;
+                ctx.lineWidth = curve.width;
+
+                // Draw sine wave
+                for (let x = 0; x < width; x += 5) {
+                    // Combine multiple sine waves for more organic feel
+                    const y = curve.y +
+                        Math.sin(x * curve.frequency + curve.phase) * curve.amplitude +
+                        Math.sin(x * curve.frequency * 2 + curve.phase * 1.5) * (curve.amplitude * 0.5);
+
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+
+                // Add Glow
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = curve.color;
+
+                ctx.stroke();
+
+                // Reset shadow for next operations
+                ctx.shadowBlur = 0;
+            });
+
+            ctx.globalCompositeOperation = 'source-over';
+            animationRef.current = requestAnimationFrame(animate);
+        }
+
         animate();
 
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', resize);
             cancelAnimationFrame(animationRef.current);
         };
     }, []);
@@ -162,9 +111,9 @@ export default function AbstractLinesWallpaper() {
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 z-0"
+            className="fixed inset-0 z-0 bg-slate-950"
             style={{
-                background: 'linear-gradient(135deg, #0a0a0f 0%, #0d1117 50%, #0a0a1a 100%)'
+                background: 'linear-gradient(to bottom right, #050510, #100520)'
             }}
         />
     );

@@ -109,6 +109,11 @@ async function loadLocalDictionary(): Promise<Record<string, DictionaryEntry>> {
   }
 }
 
+// Helper to strip Hebrew vowel points (Nikud)
+function stripHebrewVowels(text: string): string {
+  return text.replace(/[\u0591-\u05C7]/g, "");
+}
+
 // Convert dictionary entry to StrongsDefinition
 function entryToDefinition(entry: DictionaryEntry): StrongsDefinition {
   return {
@@ -179,30 +184,63 @@ class BibleAPI {
     return null;
   }
 
+
+
   // Search by original word (Hebrew/Greek) - Uses local dictionary
   async searchStrongs(query: string): Promise<StrongsDefinition[]> {
     const dict = await loadLocalDictionary();
     const results: StrongsDefinition[] = [];
 
-    // Clean the query - remove punctuation and vowel points for Hebrew
-    const cleanQuery = query.replace(/[^\u0590-\u05FF\u0370-\u03FF\u0041-\u007A]/g, '').toLowerCase();
+    // Clean the query - remove punctuation. 
+    // Vowels are removed separately for comparison.
+    const cleanQueryRaw = query.replace(/[^\u0590-\u05FF\u0370-\u03FF\u0041-\u007A]/g, '').toLowerCase();
+    const cleanQueryStripped = stripHebrewVowels(cleanQueryRaw);
 
-    // First try exact match
-    if (wordIndex?.has(cleanQuery)) {
-      const strongsNums = wordIndex.get(cleanQuery)!;
+    // First try exact match (using wordIndex which maps cleanWord -> [strongsNums])
+    // Search index using exact (with vowels) or stripped? 
+    // Let's try raw first.
+    if (wordIndex?.has(cleanQueryRaw)) {
+      const strongsNums = wordIndex.get(cleanQueryRaw)!;
       for (const sn of strongsNums) {
         const entry = dict[sn];
         if (entry) results.push(entryToDefinition(entry));
       }
     }
 
+    // Also try looking up stripped version in index if we built it that way
+    // (We didn't build stripped index yet, so skip)
+
     // Then search by partial match
     if (results.length === 0) {
+      // Limit to 20 results for performance
+      let count = 0;
       for (const [_, entry] of Object.entries(dict)) {
+        if (count >= 20) break;
+
         const entryWord = entry.word?.toLowerCase().trim() || '';
-        if (entryWord.includes(cleanQuery) || cleanQuery.includes(entryWord)) {
+        const entryWordStripped = stripHebrewVowels(entryWord);
+
+        // Check 1: Exact match with stripped vowels (High confidence)
+        if (entryWordStripped === cleanQueryStripped) {
           results.push(entryToDefinition(entry));
-          if (results.length >= 10) break;
+          count++;
+          continue;
+        }
+
+        // Check 2: Substring match (Medium confidence)
+        // E.g. Query "Bereshit" (stripped BRSHT) includes Entry "Reshit" (stripped RSHT)
+        if (cleanQueryStripped.includes(entryWordStripped) && entryWordStripped.length > 2) {
+          // Length check to avoid matching single letters
+          results.push(entryToDefinition(entry));
+          count++;
+          continue;
+        }
+
+        // Check 3: Entry includes Query (rare for clicked word, but good for search bar)
+        if (entryWordStripped.includes(cleanQueryStripped)) {
+          results.push(entryToDefinition(entry));
+          count++;
+          continue;
         }
       }
     }
