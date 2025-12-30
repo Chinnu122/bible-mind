@@ -604,19 +604,41 @@ export default function BibleReader() {
           </div>
         </div>
 
-        {/* Right Pane: Notes / Lexicon (Sidebar) */}
-        <div className="w-[350px] lg:w-[400px] bg-[#0a0a0a] flex-col hidden xl:flex">
-          <LexiconPanel
-            word={lexiconWord}
-            loading={lexiconLoading}
-            onClose={() => setLexiconWord(null)}
-            onJumpToOccurrence={(book, chapter, verse) => {
-              goToVerse(book, chapter, verse);
-              setShowLessonBuilder(false);
-              setSelectedVerse(null);
-            }}
-          />
-        </div>
+        {/* Right Pane: Sliding Lexicon Panel Overlay */}
+        <AnimatePresence>
+          {lexiconWord && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30"
+                onClick={() => setLexiconWord(null)}
+              />
+              {/* Sliding Panel from Right */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                className="fixed right-0 top-0 bottom-0 w-[380px] max-w-[90vw] bg-[#0a0a0a] shadow-2xl z-40 overflow-hidden"
+              >
+                <LexiconPanel
+                  word={lexiconWord}
+                  loading={lexiconLoading}
+                  onClose={() => setLexiconWord(null)}
+                  onJumpToOccurrence={(book, chapter, verse) => {
+                    goToVerse(book, chapter, verse);
+                    setShowLessonBuilder(false);
+                    setSelectedVerse(null);
+                    setLexiconWord(null); // Close panel after jumping
+                  }}
+                />
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
       </div>
 
