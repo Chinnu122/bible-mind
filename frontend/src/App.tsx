@@ -236,7 +236,7 @@ function AppLayout() {
                 {view === 'landing' && (
                   <Hero
                     key="landing"
-                    onStart={() => setView('dashboard')}
+                    onStart={() => setView('reader')}
                     onSearch={() => setSearchOpen(true)}
                     onStudy={() => setView('study')}
                   />

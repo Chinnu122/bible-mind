@@ -168,14 +168,14 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
 
             {/* Effects removed - user found them distracting */}
 
-            {/* Countdowns */}
+            {/* Countdowns - Hidden per user request */}
+            {/* 
             <AnimatePresence>
                 {mode === 'christmas-eve' && (
                     <HolidayCountdown
                         targetDate={christmasTarget}
                         onComplete={() => {
                             setMode('christmas-day');
-                            // Show video if not seen
                             if (!introSeen.christmasVideo) {
                                 setShowVideo(true);
                             }
@@ -192,6 +192,7 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
                     />
                 )}
             </AnimatePresence>
+            */}
         </>
     );
 }
