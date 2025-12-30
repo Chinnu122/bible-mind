@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, Loader2, Volume2, Square, Wand2, X, Type, Settings2, BookOpen, Search, List } from 'lucide-react';
 import { bibleAPI, BibleVerse, BibleBook, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
+import WordPopupModal from './WordPopupModal';
 import LessonBuilder from './LessonBuilder';
 import { useSettings } from '../contexts/SettingsContext';
 import { useBible } from '../contexts/BibleContext';
@@ -574,31 +575,49 @@ export default function BibleReader() {
             {loading ? (
               <div className="flex justify-center p-10"><Loader2 className="animate-spin text-slate-700" /></div>
             ) : (
-              verses.map((verse) => (
-                <div key={verse.id} className="relative">
-                  <span className="absolute -left-4 top-1 text-xs font-sans text-slate-700 font-bold">{verse.verse}</span>
-                  <div className={`leading-relaxed text-crema-100 ${fontSize === 'small' ? 'text-base' :
-                    fontSize === 'large' ? 'text-2xl' :
-                      fontSize === 'extra-large' ? 'text-3xl' : 'text-xl'
-                    } font-${fontFamily} space-y-2`}>
-                    {(() => {
-                      const teluguText = teluguChapter[verse.verse];
-                      if (translationVersion === 'telugu') {
-                        return teluguText || <span className="text-sm italic text-slate-500">Telugu text not available for this verse.</span>;
-                      }
-                      if (translationVersion === 'parallel') {
-                        return (
-                          <>
-                            <div>{verse.kjvText || verse.webText}</div>
-                            <div className="text-emerald-200 font-serif">{teluguText || <span className="text-sm italic text-slate-500">Telugu text not available.</span>}</div>
-                          </>
-                        );
-                      }
-                      return verse[`${translationVersion}Text` as keyof BibleVerse] || verse.kjvText || verse.webText;
-                    })()}
+              verses.map((verse) => {
+                const teluguText = teluguChapter[verse.verse];
+                const englishText = (verse.kjvText || verse.webText || '') as string;
+
+                // Helper to render clickable words
+                const renderClickableText = (text: string) => {
+                  if (!text) return null;
+                  return text.split(' ').map((word, i) => (
+                    <span
+                      key={i}
+                      onClick={() => handleWordClick(word)}
+                      className="hover:bg-gold-500/20 hover:text-gold-200 cursor-pointer rounded px-0.5 transition-colors"
+                    >
+                      {word}{' '}
+                    </span>
+                  ));
+                };
+
+                return (
+                  <div key={verse.id} id={`verse-${verse.verse}`} className="relative group py-2">
+                    <span className="absolute -left-6 top-3 text-sm font-sans text-gold-500/60 font-bold">{verse.verse}</span>
+                    <div className={`leading-relaxed text-crema-100 ${fontSize === 'small' ? 'text-base' :
+                      fontSize === 'large' ? 'text-2xl' :
+                        fontSize === 'extra-large' ? 'text-3xl' : 'text-xl'
+                      } font-${fontFamily}`}>
+                      {translationVersion === 'telugu' ? (
+                        teluguText ? renderClickableText(teluguText) :
+                          <span className="text-sm italic text-slate-500">Telugu text not available for this verse.</span>
+                      ) : translationVersion === 'parallel' ? (
+                        <>
+                          <div className="mb-2">{renderClickableText(englishText)}</div>
+                          <div className="text-emerald-200 font-serif">
+                            {teluguText ? renderClickableText(teluguText) :
+                              <span className="text-sm italic text-slate-500">Telugu text not available.</span>}
+                          </div>
+                        </>
+                      ) : (
+                        renderClickableText(englishText)
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
@@ -664,6 +683,13 @@ export default function BibleReader() {
         )}
       </AnimatePresence>
 
-    </div>
+      {/* Word Meaning Popup Modal */}
+      <WordPopupModal
+        word={lexiconWord}
+        loading={lexiconLoading}
+        onClose={() => setLexiconWord(null)}
+      />
+
+    </div >
   );
 }

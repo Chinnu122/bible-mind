@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { usePerformance } from '../../contexts/PerformanceContext';
+import AbstractLinesWallpaper from '../AbstractLinesWallpaper';
 
 type HolidayMode = 'none' | 'christmas-eve' | 'christmas-day' | 'new-year-countdown' | 'new-year-day';
 
@@ -42,13 +43,13 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
 
     return (
         <div className="fixed inset-0 z-0 overflow-hidden">
-            {/* Base Background Layer */}
-            <div
-                className={`absolute inset-0 ${isChristmas
-                    ? 'bg-gradient-to-b from-[#0f2e1c] via-[#1a472a] to-[#05100a]'
-                    : 'bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#000000]'
-                    }`}
-            />
+            {/* Use AbstractLinesWallpaper as base layer for New Year (animated lines) */}
+            {!isChristmas && <AbstractLinesWallpaper />}
+
+            {/* Christmas uses its own gradient */}
+            {isChristmas && (
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0f2e1c] via-[#1a472a] to-[#05100a]" />
+            )}
 
             {/* Christmas Tree Abstract Silhouette (Only for Xmas, high perf only) */}
             {isChristmas && level === 'high' && (
