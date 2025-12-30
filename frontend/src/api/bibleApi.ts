@@ -49,7 +49,7 @@ export interface CrossReference {
   chapter: number;
   verse: number;
   reference: string;
-  score: number;
+  votes: number;
 }
 
 export interface CrossReferencesResponse {
