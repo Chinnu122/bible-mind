@@ -9,6 +9,8 @@
  */
 
 import { Client } from '@elastic/elasticsearch';
+// @ts-ignore
+import Sanscript from '@indic-transliteration/sanscript';
 
 // ElasticSearch Client Singleton
 const esClient = new Client({
@@ -319,6 +321,19 @@ export async function searchVerses(options: SearchOptions): Promise<SearchResult
                 { match: { webText: { query, boost: 6 } } },
                 { match: { transliteration: { query, boost: 7 } } }
             );
+
+            // Attempt Romanized Telugu -> Telugu Script conversion
+            try {
+                // Try ITRANS and HK schemes commonly used for Romanized input
+                const teluguScript = Sanscript.t(query, 'itrans', 'telugu');
+                if (teluguScript && teluguScript !== query) {
+                    shouldClauses.push(
+                        { match: { teluguText: { query: teluguScript, boost: 9 } } }
+                    );
+                }
+            } catch (e) {
+                // Ignore transliteration errors
+            }
     }
 
     // Add fuzzy fallback for all languages

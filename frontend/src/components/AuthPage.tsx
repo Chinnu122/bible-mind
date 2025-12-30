@@ -36,7 +36,7 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
         setLoading(true);
 
         try {
-            const endpoint = mode === 'signin' ? '/auth/login' : '/auth/register';
+            const endpoint = mode === 'signin' ? '/v2/auth/login' : '/v2/auth/register';
             const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -49,10 +49,14 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
                 throw new Error(data.error || 'Authentication failed');
             }
 
-            const user: UserData = data.data;
-            localStorage.setItem('bible-mind-user', JSON.stringify(user));
+            // Save user and tokens
+            // V2 returns data.data = { user, tokens }
+            localStorage.setItem('bible-mind-user', JSON.stringify(data.data));
             setSuccess(data.message || 'Success!');
-            onAuthSuccess?.(user);
+
+            if (onAuthSuccess) {
+                onAuthSuccess(data.data.user);
+            }
 
             setTimeout(() => onBack(), 1000);
         } catch (err: any) {

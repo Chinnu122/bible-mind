@@ -10,11 +10,11 @@ import re
 from pathlib import Path
 
 # Paths to data sources
-BASE_DIR = Path(__file__).parent
-ALAMO_POLYGLOT = BASE_DIR / "AlamoPolyglot.csv"
+BASE_DIR = Path(__file__).parent.parent.parent  # Project root (d:\projects\Bible Mind)
+ALAMO_POLYGLOT = BASE_DIR / "tools" / "⚙️ Generators" / "AlamoPolyglot.csv"
 STRONGS_EN_TE = BASE_DIR / "backend" / "data" / "StrongsConcordance-EnglishTelugu.csv"
 TELUGU_GENESIS = BASE_DIR / "backend" / "data" / "telugu" / "Genesis.json"
-OUTPUT_DIR = BASE_DIR / "Genesis-Word-Meanings"
+OUTPUT_DIR = BASE_DIR / "output" / "📖 Word Meanings" / "Genesis-Word-Meanings"
 
 # Import curated Hebrew words from external dictionary
 from hebrew_word_dict import CURATED_HEBREW_WORDS
@@ -126,8 +126,23 @@ def find_word_info(word, strongs_by_number):
             'pos': extra.get('pos', '')
         }
     
-    # Try without prefix (ו, ה, ב, כ, ל, מ)
+    # Try normalized matching (removes vowel points for comparison)
     normalized = normalize_hebrew(word)
+    
+    # First try exact normalized match (same consonants)
+    for curated_word, data in CURATED_HEBREW_WORDS.items():
+        if normalize_hebrew(curated_word) == normalized:
+            strongs, translit, meaning, telugu = data
+            extra = strongs_by_number.get(strongs, {})
+            return {
+                'strongs': strongs,
+                'translit': translit,
+                'english': meaning,
+                'telugu': telugu or extra.get('telugu', ''),
+                'pos': extra.get('pos', '')
+            }
+    
+    # Try without common prefixes (ו, ה, ב, כ, ל, מ, ש)
     prefixes = ['ו', 'ה', 'ב', 'כ', 'ל', 'מ', 'ש']
     
     for prefix in prefixes:
@@ -165,6 +180,8 @@ def find_word_info(word, strongs_by_number):
                             }
     
     return None
+
+
 
 
 def transliterate_hebrew(word):

@@ -1,257 +1,228 @@
 import { Router, Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
+import { prisma } from '../services/database';
+import { requireAuth } from '../middleware/authMiddleware';
 
 const router = Router();
 
-// Simple file-based storage for notes
-const NOTES_DIR = path.join(__dirname, '../../data/notes');
-
-// Ensure notes directory exists
-if (!fs.existsSync(NOTES_DIR)) {
-    fs.mkdirSync(NOTES_DIR, { recursive: true });
-}
-
-interface Note {
-    id: string;
-    userId: string;
-    verseRef: string;
-    bookId: number;
-    chapter: number;
-    verse: number;
-    text: string;
-    highlightColor?: string;
-    isPublic?: boolean;
-    authorName?: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-const PUBLIC_NOTES_FILE = path.join(NOTES_DIR, 'community_notes.json');
-
-function loadPublicNotes(): Note[] {
-    if (!fs.existsSync(PUBLIC_NOTES_FILE)) return [];
-    try {
-        return JSON.parse(fs.readFileSync(PUBLIC_NOTES_FILE, 'utf-8'));
-    } catch { return []; }
-}
-
-function savePublicNotes(notes: Note[]) {
-    fs.writeFileSync(PUBLIC_NOTES_FILE, JSON.stringify(notes, null, 2));
-}
-
-function getUserNotesPath(userId: string): string {
-    return path.join(NOTES_DIR, `${userId}.json`);
-}
-
-function loadUserNotes(userId: string): Note[] {
-    const filePath = getUserNotesPath(userId);
-    if (!fs.existsSync(filePath)) {
-        return [];
-    }
-    try {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        return JSON.parse(content);
-    } catch {
-        return [];
-    }
-}
-
-function saveUserNotes(userId: string, notes: Note[]): void {
-    const filePath = getUserNotesPath(userId);
-    fs.writeFileSync(filePath, JSON.stringify(notes, null, 2));
-}
-
-function generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
-}
+// Apply auth middleware to all routes
+router.use(requireAuth);
 
 /**
- * GET /api/notes/:userId
- * Get all notes for a user
+ * GET /api/notes
+ * Get all notes for the authenticated user
  */
-/**
- * GET /api/notes/public
- * Get all public community notes
- */
-router.get('/public', (_req: Request, res: Response) => {
-    const notes = loadPublicNotes();
-    res.json({
-        success: true,
-        data: notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()), // Newest first
-        meta: { total: notes.length }
-    });
+router.get('/', async (req: Request, res: Response) => {
+    try {
+        const userId = req.authUser!.id;
+        const notes = await prisma.annotation.findMany({
+            where: { userId },
+            include: {
+                verse: {
+                    select: {
+                        bookId: true,
+                        chapter: true,
+                        verse: true,
+                        book: { select: { bookName: true } }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json({
+            success: true,
+            data: notes,
+            meta: { total: notes.length }
+        });
+    } catch (error) {
+        console.error('Error fetching notes:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch notes' });
+    }
 });
 
 /**
- * GET /api/notes/:userId
- * Get all notes for a user
- */
-router.get('/:userId', (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const notes = loadUserNotes(userId);
-
-    res.json({
-        success: true,
-        data: notes,
-        meta: { total: notes.length }
-    });
-});
-
-/**
- * GET /api/notes/:userId/verse/:bookId/:chapter/:verse
+ * GET /api/notes/verse/:bookId/:chapter/:verse
  * Get notes for a specific verse
  */
-router.get('/:userId/verse/:bookId/:chapter/:verse', (req: Request, res: Response) => {
-    const { userId, bookId, chapter, verse } = req.params;
-    const notes = loadUserNotes(userId);
+router.get('/verse/:bookId/:chapter/:verse', async (req: Request, res: Response) => {
+    try {
+        const userId = req.authUser!.id;
+        const bookId = parseInt(req.params.bookId);
+        const chapter = parseInt(req.params.chapter);
+        const verseNum = parseInt(req.params.verse);
 
-    const verseNotes = notes.filter(n =>
-        n.bookId === parseInt(bookId) &&
-        n.chapter === parseInt(chapter) &&
-        n.verse === parseInt(verse)
-    );
+        // Find the verse ID first
+        const verse = await prisma.verse.findUnique({
+            where: {
+                bookId_chapter_verse: {
+                    bookId,
+                    chapter,
+                    verse: verseNum
+                }
+            }
+        });
 
-    res.json({
-        success: true,
-        data: verseNotes,
-        meta: { total: verseNotes.length }
-    });
+        if (!verse) {
+            // Return empty if verse doesn't exist (shouldn't happen for valid verses)
+            res.json({ success: true, data: [], meta: { total: 0 } });
+            return;
+        }
+
+        const notes = await prisma.annotation.findMany({
+            where: {
+                userId,
+                verseId: verse.id
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json({
+            success: true,
+            data: notes,
+            meta: { total: notes.length }
+        });
+    } catch (error) {
+        console.error('Error fetching verse notes:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch notes' });
+    }
 });
 
 /**
  * POST /api/notes
- * Create a new note (mark a verse)
+ * Create a new note
  */
-router.post('/', (req: Request, res: Response) => {
-    const { userId, verseRef, bookId, chapter, verse, text, highlightColor, isPublic, authorName } = req.body;
+router.post('/', async (req: Request, res: Response) => {
+    try {
+        const userId = req.authUser!.id;
+        const { bookId, chapter, verse, text, highlightColor, isPublic, selection } = req.body;
 
-    if (!userId || !bookId || !chapter || !verse) {
-        res.status(400).json({
-            success: false,
-            error: 'Missing required fields: userId, bookId, chapter, verse',
-            code: 400
+        if (!bookId || !chapter || !verse || !text) {
+            res.status(400).json({ success: false, error: 'Missing required fields' });
+            return; // Explicit return to satisfy void
+        }
+
+        // 1. Find the verse ID (or create if missing? No, verses should exist)
+        const verseRecord = await prisma.verse.findUnique({
+            where: {
+                bookId_chapter_verse: {
+                    bookId: parseInt(bookId),
+                    chapter: parseInt(chapter),
+                    verse: parseInt(verse)
+                }
+            }
         });
-        return;
+
+        if (!verseRecord) {
+            res.status(404).json({ success: false, error: 'Verse not found' });
+            return; // Explicit return
+        }
+
+        // 2. Create the annotation
+        const note = await prisma.annotation.create({
+            data: {
+                userId,
+                verseId: verseRecord.id,
+                note: text,
+                highlight: highlightColor || '#FFD700',
+                visibility: isPublic ? 'public' : 'private',
+                selection: selection || null,
+                tags: []
+            }
+        });
+
+        res.status(201).json({
+            success: true,
+            data: note,
+            message: 'Note created successfully'
+        });
+    } catch (error) {
+        console.error('Error creating note:', error);
+        res.status(500).json({ success: false, error: 'Failed to create note' });
     }
-
-    const notes = loadUserNotes(userId);
-    const now = new Date().toISOString();
-
-    const newNote: Note = {
-        id: generateId(),
-        userId,
-        verseRef: verseRef || `${bookId} ${chapter}:${verse}`,
-        bookId: parseInt(bookId),
-        chapter: parseInt(chapter),
-        verse: parseInt(verse),
-        text: text || '',
-        highlightColor: highlightColor || '#FFD700', // Default gold
-        isPublic: !!isPublic,
-        authorName: authorName || 'Anonymous',
-        createdAt: now,
-        updatedAt: now
-    };
-
-    if (isPublic) {
-        const publicNotes = loadPublicNotes();
-        publicNotes.push(newNote);
-        savePublicNotes(publicNotes);
-    }
-
-    // Always save to user's private collection too (or maybe not? Let's say yes for now so they can manage it)
-    notes.push(newNote);
-    saveUserNotes(userId, notes);
-
-    res.status(201).json({
-        success: true,
-        data: newNote,
-        message: 'Note created successfully'
-    });
 });
 
 /**
  * PUT /api/notes/:noteId
  * Update a note
  */
-router.put('/:noteId', (req: Request, res: Response) => {
-    const { noteId } = req.params;
-    const { userId, text, highlightColor } = req.body;
+router.put('/:noteId', async (req: Request, res: Response) => {
+    try {
+        const userId = req.authUser!.id;
+        const { noteId } = req.params;
+        const { text, highlightColor, isPublic } = req.body;
 
-    if (!userId) {
-        res.status(400).json({
-            success: false,
-            error: 'Missing required field: userId',
-            code: 400
+        // Verify ownership
+        const existingNote = await prisma.annotation.findUnique({
+            where: { id: noteId }
         });
-        return;
-    }
 
-    const notes = loadUserNotes(userId);
-    const noteIndex = notes.findIndex(n => n.id === noteId);
+        if (!existingNote) {
+            res.status(404).json({ success: false, error: 'Note not found' });
+            return;
+        }
 
-    if (noteIndex === -1) {
-        res.status(404).json({
-            success: false,
-            error: 'Note not found',
-            code: 404
+        if (existingNote.userId !== userId) {
+            res.status(403).json({ success: false, error: 'Unauthorized' });
+            return;
+        }
+
+        const updatedNote = await prisma.annotation.update({
+            where: { id: noteId },
+            data: {
+                note: text !== undefined ? text : undefined,
+                highlight: highlightColor !== undefined ? highlightColor : undefined,
+                visibility: isPublic !== undefined ? (isPublic ? 'public' : 'private') : undefined,
+                updatedAt: new Date()
+            }
         });
-        return;
+
+        res.json({
+            success: true,
+            data: updatedNote,
+            message: 'Note updated successfully'
+        });
+    } catch (error) {
+        console.error('Error updating note:', error);
+        res.status(500).json({ success: false, error: 'Failed to update note' });
     }
-
-    notes[noteIndex] = {
-        ...notes[noteIndex],
-        text: text !== undefined ? text : notes[noteIndex].text,
-        highlightColor: highlightColor !== undefined ? highlightColor : notes[noteIndex].highlightColor,
-        updatedAt: new Date().toISOString()
-    };
-
-    saveUserNotes(userId, notes);
-
-    res.json({
-        success: true,
-        data: notes[noteIndex],
-        message: 'Note updated successfully'
-    });
 });
 
 /**
  * DELETE /api/notes/:noteId
  * Delete a note
  */
-router.delete('/:noteId', (req: Request, res: Response) => {
-    const { noteId } = req.params;
-    const userId = req.query.userId as string;
+router.delete('/:noteId', async (req: Request, res: Response) => {
+    try {
+        const userId = req.authUser!.id;
+        const { noteId } = req.params;
 
-    if (!userId) {
-        res.status(400).json({
-            success: false,
-            error: 'Missing required query param: userId',
-            code: 400
+        // Verify ownership
+        const existingNote = await prisma.annotation.findUnique({
+            where: { id: noteId }
         });
-        return;
-    }
 
-    const notes = loadUserNotes(userId);
-    const noteIndex = notes.findIndex(n => n.id === noteId);
+        if (!existingNote) {
+            res.status(404).json({ success: false, error: 'Note not found' });
+            return;
+        }
 
-    if (noteIndex === -1) {
-        res.status(404).json({
-            success: false,
-            error: 'Note not found',
-            code: 404
+        if (existingNote.userId !== userId) {
+            res.status(403).json({ success: false, error: 'Unauthorized' });
+            return;
+        }
+
+        await prisma.annotation.delete({
+            where: { id: noteId }
         });
-        return;
+
+        res.json({
+            success: true,
+            message: 'Note deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting note:', error);
+        res.status(500).json({ success: false, error: 'Failed to delete note' });
     }
-
-    const deletedNote = notes.splice(noteIndex, 1)[0];
-    saveUserNotes(userId, notes);
-
-    res.json({
-        success: true,
-        data: deletedNote,
-        message: 'Note deleted successfully'
-    });
 });
 
 export default router;

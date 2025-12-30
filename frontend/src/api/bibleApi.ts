@@ -312,6 +312,30 @@ class BibleAPI {
   async searchVerses(query: string, limit: number = 20): Promise<BibleVerse[]> {
     return this.fetch<BibleVerse[]>(`/search?q=${encodeURIComponent(query)}&limit=${limit}`);
   }
+
+  // Telugu Search - Supports Roman transliteration (e.g., "devudu" -> "దేవుడు")
+  async searchTeluguVerses(query: string, limit: number = 50): Promise<{
+    bookId: number;
+    chapter: number;
+    verse: number;
+    teluguText: string;
+    englishName: string;
+    teluguName: string;
+    reference: string;
+    matchedWord?: string;
+  }[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/telugu/search?q=${encodeURIComponent(query)}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+      const json = await response.json();
+      return json.data || [];
+    } catch (error) {
+      console.error('Telugu search error:', error);
+      return [];
+    }
+  }
 }
 
 export const bibleAPI = new BibleAPI();

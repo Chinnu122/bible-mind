@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import HolidayCountdown from './HolidayCountdown';
 import MegaIntro from './MegaIntro';
 import ChristmasVideoPlayer from './ChristmasVideoPlayer';
 
@@ -37,21 +36,17 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
 
             let currentMode: HolidayMode = 'none';
 
-            // Christmas Eve: Dec 24
-            if (month === 11 && day === 24) {
-                currentMode = 'christmas-eve';
-            }
-            // Christmas Day: Dec 25
-            else if (month === 11 && day === 25) {
-                currentMode = 'christmas-day';
-            }
-            // New Year Countdown: Dec 26 - Dec 31
-            else if (month === 11 && day >= 26) {
-                currentMode = 'new-year-countdown';
-            }
-            // New Year Day: Jan 1
-            else if (month === 0 && day === 1) {
-                currentMode = 'new-year-day';
+            // Christmas Season: Dec 1 - Jan 5 (Broad range)
+            if (month === 11 || (month === 0 && day <= 5)) {
+                // Check specifically for main days to switch exact mode, but keep theme active
+                if (month === 11 && day === 24) currentMode = 'christmas-eve';
+                else if (month === 11 && day === 25) currentMode = 'christmas-day';
+                else if (month === 11 && day > 25) currentMode = 'new-year-countdown';
+                else if (month === 0 && day === 1) currentMode = 'new-year-day';
+                else {
+                    // Default seasonal fallback
+                    currentMode = month === 11 ? 'christmas-eve' : 'new-year-day';
+                }
             }
 
             setMode(currentMode);
@@ -86,13 +81,6 @@ export default function HolidayManager({ onModeChange }: HolidayManagerProps) {
         setIntroSeen(updatedSeen);
         localStorage.setItem('bible-mind-holiday-intros', JSON.stringify(updatedSeen));
     };
-
-    // Christmas Countdown Target
-    const christmasTarget = new Date(new Date().getFullYear(), 11, 25, 0, 0, 0);
-
-    // New Year Countdown Target
-    const nextYear = new Date().getMonth() === 11 ? new Date().getFullYear() + 1 : new Date().getFullYear();
-    const newYearTarget = new Date(nextYear, 0, 1, 0, 0, 0);
 
     // Theme Colors Injection
     useEffect(() => {

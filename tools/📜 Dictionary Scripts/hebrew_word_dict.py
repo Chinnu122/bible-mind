@@ -6294,9 +6294,9 @@ CURATED_HEBREW_WORDS = {
     'רוֹאשׁ רוֹשׁ': ('H7219', 'rvo\'sh rvosh', 'poison', ''),
     'רִאשָׁה': ('H7221', 'ri\'shah', 'a beginning', ''),
     'רוֹאשָׁה': ('H7222', 'rvo\'shah', 'the head', ''),
-    'רִאשׁוֹן רִאשׁוֹן': ('H7223', 'ri\'shvon ri\'shvon', 'in place', ''),
+    'רִאשׁוֹן רִאשׁוֹן': ('H7223', 'ri\'shvon ri\'shvon', 'first, former', 'మొదటివాడు'),
     'רִאשׁוֹנִי': ('H7224', 'ri\'shvoniy', 'first', ''),
-    'רֵאשִׁיתּ': ('H7225', 're\'shiyt', 'in place', 'ఆరంభము - మొదటిది'),
+    'רֵאשִׁיתּ': ('H7225', 're\'shiyt', 'beginning, first, chief', 'ఆరంభము - మొదటిది'),
     'רַאֲשׁוֹת': ('H7226', 'ra\'ashvot', 'a pillow', ''),
     'רַב': ('H7227', 'rav', 'many, great', 'అనేకము'),
     'רוֹב': ('H7230', 'rvob', 'all', ''),
@@ -8720,4 +8720,226 @@ CURATED_HEBREW_WORDS = {
     'בָּלַל': ('H1101', 'balal', 'confuse', 'కలగాపులగము చేయు'),
     'וַיָּפֶץ': ('H6327', 'vayyafets', 'and he scattered', 'చెదరగొట్టెను'),
     'וַיַּחְדְּלוּ': ('H2308', 'vayyachdelu', 'and they stopped', 'ఆపివేసిరి'),
+    # === CRITICAL HEBREW VOCABULARY FOR OLD TESTAMENT ===
+    # Creation and Beginning Terms
+    'רֵאשִׁית': ('H7225', "re'shiyt", 'beginning, first, chief', 'ఆరంభము - మొదటిది'),
+    'בְּרֵאשִׁית': ('H7225', "bere'shiyt", 'in the beginning', 'ఆరంభములో'),
+    'בָּרָא': ('H1254', "bara'", 'to create (from nothing)', 'సృష్టించు (శూన్యము నుండి)'),
+    'וַיִּבְרָא': ('H1254', "vayyibra'", 'and he created', 'మరియు సృష్టించెను'),
+    # Light and Darkness
+    'חֹשֶׁךְ': ('H2822', 'choshekh', 'darkness', 'చీకటి'),
+    'הַחֹשֶׁךְ': ('H2822', 'hachoshekh', 'the darkness', 'ఆ చీకటి'),
+    'וְחֹשֶׁךְ': ('H2822', 'vechoshekh', 'and darkness', 'మరియు చీకటి'),
+    'הָאוֹר': ('H216', "ha'or", 'the light', 'ఆ వెలుగు'),
+    # Spirit and Wind
+    'רוּחַ': ('H7307', 'ruach', 'spirit, wind, breath', 'ఆత్మ - గాలి - శ్వాస'),
+    'וְרוּחַ': ('H7307', 'veruach', 'and the spirit', 'మరియు ఆత్మ'),
+    # Seeing and Perceiving
+    'רָאָה': ('H7200', "ra'ah", 'to see, look, perceive', 'చూచు - దర్శించు'),
+    'וַיַּרְא': ('H7200', "vayyar'", 'and he saw', 'మరియు చూచెను'),
+    'יִרְאֶה': ('H7200', "yir'eh", 'he will see', 'అతడు చూచును'),
+    # Face and Surface
+    'פָּנִים': ('H6440', 'paniym', 'face, surface, presence', 'ముఖము - సముఖము'),
+    'פְּנֵי': ('H6440', 'peney', 'face of, surface of', 'ముఖము'),
+    # Deep and Abyss
+    'תְּהוֹם': ('H8415', 'tehom', 'deep, abyss, ocean depths', 'అగాధము - లోతు'),
+    # Hovering
+    'מְרַחֶפֶת': ('H7363', 'merachefet', 'hovering, moving', 'కదులుచుండు - పొదగుచుండు'),
+    'רָחַף': ('H7363', 'rachaf', 'to hover, flutter', 'కదులు'),
+    # Living Creatures
+    'חַיָּה': ('H2416', 'chayyah', 'living creature, animal', 'జంతువు - ప్రాణి'),
+    'הַחַיָּה': ('H2416', 'hachayyah', 'the living creature', 'ఆ జంతువు'),
+    'חַי': ('H2416', 'chay', 'living, alive', 'సజీవమైన'),
+    'חָיָה': ('H2421', 'chayah', 'to live', 'జీవించు'),
+    # All and Every
+    'כֹּל': ('H3605', 'kol', 'all, every, whole', 'అంతయు - ప్రతి'),
+    'כָּל': ('H3605', 'kal', 'all of', 'అందరు'),
+    # Separation
+    'בָּדַל': ('H914', 'badal', 'to separate, divide', 'వేరుచేయు - భేదించు'),
+    'וַיַּבְדֵּל': ('H914', 'vayyavdel', 'and he separated', 'మరియు వేరుచేసెను'),
+    'מַבְדִּיל': ('H914', 'mavdil', 'separating, dividing', 'వేరుచేయుచున్న'),
+    # Sea Creatures
+    'תַּנִּין': ('H8577', 'tannin', 'sea monster, dragon, serpent', 'సముద్ర జంతువు'),
+    'הַתַּנִּינִם': ('H8577', 'hattanninim', 'the great sea creatures', 'పెద్ద సముద్ర జంతువులు'),
+    # Making and Doing
+    'עָשָׂה': ('H6213', 'asah', 'to do, make', 'చేయు'),
+    'וַיַּעַשׂ': ('H6213', "vayya'as", 'and he made', 'మరియు చేసెను'),
+    # Speaking and Saying
+    'וַיֹּאמֶר': ('H559', 'vayyomer', 'and he said', 'మరియు చెప్పెను'),
+    'לֵאמֹר': ('H559', 'lemor', 'saying', 'చెప్పుచు'),
+    # Being and Existence
+    'הָיָה': ('H1961', 'hayah', 'to be, become, happen', 'ఉండు - అగు'),
+    'יְהִי': ('H1961', 'yehi', 'let there be', 'అగుగాక'),
+    'וַיְהִי': ('H1961', 'vayehi', 'and it was', 'మరియు అయెను'),
+    'וְהָיָה': ('H1961', 'vehayah', 'and it shall be', 'మరియు అగును'),
+    # Good
+    'טוֹב': ('H2896', 'tov', 'good', 'మంచి'),
+    # Water
+    'מַיִם': ('H4325', 'mayim', 'water, waters', 'నీళ్ళు - జలములు'),
+    'הַמָּיִם': ('H4325', 'hammayim', 'the waters', 'ఆ జలములు'),
+    # Sky and Heavens
+    'שָׁמַיִם': ('H8064', 'shamayim', 'heaven, sky', 'ఆకాశము'),
+    'הַשָּׁמַיִם': ('H8064', 'hashamayim', 'the heavens', 'ఆకాశములు'),
+    # Earth and Land
+    'אֶרֶץ': ('H776', 'erets', 'earth, land, ground', 'భూమి - దేశము'),
+    'הָאָרֶץ': ('H776', "ha'arets", 'the earth', 'భూమి'),
+    # Firmament/Expanse
+    'רָקִיעַ': ('H7549', "raqia'", 'expanse, firmament', 'ఆకాశ విశాలము'),
+    'הָרָקִיעַ': ('H7549', "haraqia'", 'the firmament', 'ఆ ఆకాశ విశాలము'),
+    # Day and Night
+    'יוֹם': ('H3117', 'yom', 'day', 'దినము'),
+    'הַיּוֹם': ('H3117', 'hayyom', 'the day, today', 'ఈ దినము'),
+    'לַיְלָה': ('H3915', 'laylah', 'night', 'రాత్రి'),
+    # Evening and Morning
+    'עֶרֶב': ('H6153', 'erev', 'evening', 'సాయంత్రము'),
+    'בֹּקֶר': ('H1242', 'boqer', 'morning', 'ఉదయము'),
+    # Numbers
+    'שֵׁנִי': ('H8145', 'sheni', 'second', 'రెండవ'),
+    'שְׁלִישִׁי': ('H7992', 'shelishi', 'third', 'మూడవ'),
+    'רְבִיעִי': ('H7243', "revi'i", 'fourth', 'నాల్గవ'),
+    'חֲמִישִׁי': ('H2549', 'chamishi', 'fifth', 'ఐదవ'),
+    'שִׁשִּׁי': ('H8345', 'shishi', 'sixth', 'ఆరవ'),
+    'שְׁבִיעִי': ('H7637', "shevi'i", 'seventh', 'ఏడవ'),
+    # Blessing
+    'בָּרַךְ': ('H1288', 'barak', 'to bless, kneel', 'ఆశీర్వదించు'),
+    'וַיְבָרֶךְ': ('H1288', 'vayevarekh', 'and he blessed', 'మరియు ఆశీర్వదించెను'),
+    # Fruit and Multiply
+    'פָּרָה': ('H6509', 'parah', 'to bear fruit, be fruitful', 'ఫలించు'),
+    'פְּרוּ': ('H6509', 'peru', 'be fruitful', 'ఫలించుడి'),
+    'רָבָה': ('H7235', 'ravah', 'to multiply, increase', 'విస్తరించు'),
+    'וּרְבוּ': ('H7235', 'urevu', 'and multiply', 'మరియు విస్తరించుడి'),
+    # Fill
+    'מָלֵא': ('H4390', 'male', 'to fill, be full', 'నింపు'),
+    'וּמִלְאוּ': ('H4390', "umil'u", 'and fill', 'మరియు నింపుడి'),
+    # Subdue and Rule
+    'כָּבַשׁ': ('H3533', 'kavash', 'to subdue, dominate', 'లోపరచు'),
+    'וְכִבְשֻׁהָ': ('H3533', 'vekhivshuha', 'and subdue it', 'దానిని లోపరచుకొనుడి'),
+    'רָדָה': ('H7287', 'radah', 'to rule, have dominion', 'ఏలు'),
+    'וּרְדוּ': ('H7287', 'uredu', 'and have dominion', 'మరియు ఏలుడి'),
+    # Image and Likeness
+    'צֶלֶם': ('H6754', 'tselem', 'image, likeness', 'రూపము - ప్రతిమ'),
+    'בְּצֶלֶם': ('H6754', 'betselem', 'in the image of', 'రూపములో'),
+    'דְּמוּת': ('H1823', 'demut', 'likeness, form', 'పోలిక'),
+    'כִּדְמוּתֵנוּ': ('H1823', 'kidmutenu', 'according to our likeness', 'మన పోలికలో'),
+    # Grass and Vegetation
+    'דֶּשֶׁא': ('H1877', "deshe'", 'grass, vegetation', 'గడ్డి'),
+    'עֵשֶׂב': ('H6212', 'esev', 'herb, plant', 'మొక్క'),
+    # Seed
+    'זֶרַע': ('H2233', 'zera', 'seed, offspring', 'విత్తనము - సంతానము'),
+    # Tree
+    'עֵץ': ('H6086', 'ets', 'tree, wood', 'చెట్టు - వృక్షము'),
+    # Fruit (noun)
+    'פְּרִי': ('H6529', 'peri', 'fruit', 'పండు - ఫలము'),
+    # Kind
+    'מִין': ('H4327', 'min', 'kind, species', 'జాతి'),
+    'לְמִינוֹ': ('H4327', 'lemino', 'according to its kind', 'దాని జాతి చొప్పున'),
+    'לְמִינָהּ': ('H4327', 'leminah', 'according to its kind (fem)', 'దాని జాతి చొప్పున'),
+    # Luminaries
+    'מָאוֹר': ('H3974', 'maor', 'light, luminary', 'జ్యోతి'),
+    'מְאוֹרֹת': ('H3974', 'meorot', 'lights, luminaries', 'జ్యోతులు'),
+    # Great/Large
+    'גָּדוֹל': ('H1419', 'gadol', 'great, large', 'గొప్ప - పెద్ద'),
+    'הַגָּדֹל': ('H1419', 'haggadol', 'the great', 'ఆ గొప్ప'),
+    # Small
+    'קָטָן': ('H6996', 'qatan', 'small, little', 'చిన్న'),
+    'הַקָּטֹן': ('H6996', 'haqqaton', 'the small', 'ఆ చిన్న'),
+    # Sun
+    'שֶׁמֶשׁ': ('H8121', 'shemesh', 'sun', 'సూర్యుడు'),
+    # Moon
+    'יָרֵחַ': ('H3394', 'yareach', 'moon', 'చంద్రుడు'),
+    # Star
+    'כּוֹכָב': ('H3556', 'kokhav', 'star', 'నక్షత్రము'),
+    'כּוֹכָבִים': ('H3556', 'kokhavim', 'stars', 'నక్షత్రములు'),
+    # Give/Place
+    'נָתַן': ('H5414', 'natan', 'to give, put, set', 'ఇచ్చు'),
+    'וַיִּתֵּן': ('H5414', 'vayyitten', 'and he gave/set', 'మరియు ఉంచెను'),
+    # Rule (for luminaries)
+    'מָשַׁל': ('H4910', 'mashal', 'to rule, have dominion', 'ఏలు'),
+    'לִמְשֹׁל': ('H4910', 'limshol', 'to rule', 'ఏలుటకు'),
+    # Swarm/Teem
+    'שָׁרַץ': ('H8317', 'sharats', 'to swarm, teem', 'విస్తరించు'),
+    'יִשְׁרְצוּ': ('H8317', 'yishretsu', 'let them swarm', 'విస్తరించుగాక'),
+    # Swarming creatures
+    'שֶׁרֶץ': ('H8318', 'sherets', 'swarming things, creeping things', 'ప్రాకుపురుగులు'),
+    # Soul/Living being
+    'נֶפֶשׁ': ('H5315', 'nephesh', 'soul, living being, life', 'ప్రాణము - ఆత్మ'),
+    # Fly/Bird
+    'עוֹף': ('H5775', 'of', 'bird, fowl', 'పక్షి'),
+    'הָעוֹף': ('H5775', "ha'of", 'the birds', 'పక్షులు'),
+    'עוּף': ('H5774', 'uf', 'to fly', 'ఎగురు'),
+    # Creep/Move
+    'רָמַשׂ': ('H7430', 'ramas', 'to creep, move', 'ప్రాకు'),
+    'הָרֹמֶשֶׂת': ('H7430', 'haromeset', 'the creeping', 'ప్రాకునది'),
+    'רֶמֶשׂ': ('H7431', 'remes', 'creeping things, reptiles', 'ప్రాకుపురుగులు'),
+    # Cattle/Beast
+    'בְּהֵמָה': ('H929', 'behemah', 'beast, cattle, animal', 'పశువు'),
+    'הַבְּהֵמָה': ('H929', 'habbehemah', 'the beast', 'ఆ పశువు'),
+    # Fish
+    'דָּג': ('H1709', 'dag', 'fish', 'చేప'),
+    'הַדָּגָה': ('H1709', 'haddagah', 'the fish (collective)', 'చేపలు'),
+    # Sea
+    'יָם': ('H3220', 'yam', 'sea', 'సముద్రము'),
+    'הַיָּם': ('H3220', 'hayyam', 'the sea', 'ఆ సముద్రము'),
+    'יַמִּים': ('H3220', 'yammim', 'seas', 'సముద్రములు'),
+    # Dry land
+    'יַבָּשָׁה': ('H3004', 'yabbashah', 'dry land', 'పొడినేల'),
+    # Place
+    'מָקוֹם': ('H4725', 'maqom', 'place', 'స్థలము'),
+    # Gather
+    'קָוָה': ('H6960', 'qavah', 'to gather, collect', 'కూడు'),
+    'יִקָּווּ': ('H6960', 'yiqqavu', 'let gather', 'కూడుగాక'),
+    # Appear
+    'תֵּרָאֶה': ('H7200', 'teraeh', 'let appear', 'కనబడుగాక'),
+    # Call/Name
+    'קָרָא': ('H7121', 'qara', 'to call, name, proclaim', 'పిలుచు'),
+    'וַיִּקְרָא': ('H7121', 'vayyiqra', 'and he called', 'మరియు పిలిచెను'),
+    # Very/Exceedingly
+    'מְאֹד': ('H3966', 'meod', 'very, exceedingly', 'మిక్కిలి'),
+    # Rest/Cease
+    'שָׁבַת': ('H7673', 'shavat', 'to cease, rest', 'విశ్రమించు'),
+    'וַיִּשְׁבֹּת': ('H7673', 'vayyishbot', 'and he rested', 'మరియు విశ్రమించెను'),
+    # Sanctify/Holy
+    'קָדַשׁ': ('H6942', 'qadash', 'to sanctify, be holy', 'పవిత్రపరచు'),
+    'וַיְקַדֵּשׁ': ('H6942', 'vayqaddesh', 'and he sanctified', 'మరియు పవిత్రపరచెను'),
+    'קֹדֶשׁ': ('H6944', 'qodesh', 'holy, sacred', 'పవిత్రము'),
+    # Complete/Finish
+    'כָּלָה': ('H3615', 'kalah', 'to complete, finish', 'ముగించు'),
+    'וַיְכֻלּוּ': ('H3615', 'vayekhullu', 'and they were finished', 'మరియు సంపూర్ణమాయెను'),
+    # Work
+    'מְלָאכָה': ('H4399', 'melakhah', 'work, occupation', 'పని'),
+    # Host/Army
+    'צָבָא': ('H6635', 'tsava', 'host, army', 'సేన'),
+    'צְבָאָם': ('H6635', "tseva'am", 'their host', 'వాటి సేనలు'),
+    # Man (male)
+    'זָכָר': ('H2145', 'zakar', 'male', 'పురుషుడు'),
+    # Woman (female)
+    'נְקֵבָה': ('H5347', 'neqevah', 'female', 'స్త్రీ'),
+    # Behold
+    'הִנֵּה': ('H2009', 'hinneh', 'behold, look', 'ఇదిగో'),
+    # Upon/Over
+    'עַל': ('H5921', 'al', 'upon, over, above', 'మీద'),
+    # Under/Below
+    'תַּחַת': ('H8478', 'tachat', 'under, below, instead of', 'క్రింద'),
+    # Between
+    'בֵּין': ('H996', 'beyn', 'between', 'మధ్య'),
+    # From/Out of
+    'מִן': ('H4480', 'min', 'from, out of', 'నుండి'),
+    # To/Toward
+    'אֶל': ('H413', 'el', 'to, toward', 'వైపు'),
+    # With
+    'עִם': ('H5973', 'im', 'with', 'తో'),
+    # In/Into
+    'בְּ': ('H871', 'be', 'in, with, by', 'లో'),
+    # And
+    'וְ': ('H0', 've', 'and', 'మరియు'),
+    # Which/That/Who
+    'אֲשֶׁר': ('H834', 'asher', 'which, who, that', 'ఏది - ఎవడు'),
+    # This
+    'זֶה': ('H2088', 'zeh', 'this', 'ఇది'),
+    'זֹאת': ('H2063', 'zot', 'this (fem)', 'ఇది'),
+    # === GOD NAMES ===
+    'אֱלֹהִים': ('H430', 'Elohim', 'God (plural of majesty)', 'దేవుడు'),
+    'יְהוָה': ('H3068', 'YHWH', 'LORD, Yahweh', 'యెహోవా'),
+    'אֵל': ('H410', 'El', 'God, mighty one', 'దేవుడు'),
+    'אֲדֹנָי': ('H136', 'Adonai', 'Lord, Master', 'ప్రభువు'),
 }

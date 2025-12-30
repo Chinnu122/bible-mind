@@ -33,6 +33,16 @@ export default function SimpleBibleReader() {
     // Search & Version State
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<BibleVerse[]>([]);
+    const [teluguSearchResults, setTeluguSearchResults] = useState<{
+        bookId: number;
+        chapter: number;
+        verse: number;
+        teluguText: string;
+        englishName: string;
+        teluguName: string;
+        reference: string;
+        matchedWord?: string;
+    }[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [showSearchResults, setShowSearchResults] = useState(false);
     const [selectedVersion, setSelectedVersion] = useState<'english' | 'telugu' | 'hebrew' | 'hindi'>('english');
@@ -63,7 +73,7 @@ export default function SimpleBibleReader() {
         }
     }, [selectedBook, selectedChapter]);
 
-    // Handle Search
+    // Handle Search - Now supports Telugu transliteration (e.g., "devudu" finds దేవుడు)
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
@@ -71,8 +81,14 @@ export default function SimpleBibleReader() {
         setIsSearching(true);
         setShowSearchResults(true);
         try {
-            const results = await bibleAPI.searchVerses(searchQuery);
-            setSearchResults(results);
+            // Search both English and Telugu in parallel
+            const [englishResults, teluguResults] = await Promise.all([
+                bibleAPI.searchVerses(searchQuery),
+                bibleAPI.searchTeluguVerses(searchQuery)
+            ]);
+
+            setSearchResults(englishResults);
+            setTeluguSearchResults(teluguResults);
         } catch (error) {
             console.error("Search failed", error);
         } finally {
@@ -192,10 +208,10 @@ export default function SimpleBibleReader() {
     };
 
     return (
-        <div className={`flex flex-col h-screen bg-[#0a0a0a] font-${fontFamily}`}>
+        <div className={`flex flex-col h-screen font-${fontFamily}`}>
 
             {/* Header */}
-            <div className="flex-none px-4 py-3 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur z-20 space-y-3">
+            <div className="flex-none px-4 py-3 z-20 space-y-3">
 
                 {/* Search Bar */}
                 <div className="max-w-4xl mx-auto w-full relative">
@@ -204,7 +220,7 @@ export default function SimpleBibleReader() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search verses (English or Telugu)..."
+                            placeholder="Search (English, Telugu, or Roman: devudu, yesu...)..."
                             className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-4 pr-10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500/50 focus:ring-1 focus:ring-gold-500/50 transition-all font-sans"
                         />
                         <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-gold-500">
@@ -345,29 +361,76 @@ export default function SimpleBibleReader() {
                             <div className="flex-1 overflow-y-auto p-4">
                                 {isSearching ? (
                                     <div className="flex justify-center p-8"><Loader2 className="animate-spin text-gold-500" /></div>
-                                ) : searchResults.length > 0 ? (
+                                ) : (searchResults.length > 0 || teluguSearchResults.length > 0) ? (
                                     <div className="space-y-4">
-                                        {searchResults.map((res: BibleVerse) => (
-                                            <div key={res.id} className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
-                                                onClick={() => {
-                                                    // Navigate to this verse
-                                                    const book = books.find(b => b.bookId === res.bookId);
-                                                    if (book) {
-                                                        setSelectedBook(book);
-                                                        setSelectedChapter(res.chapter);
-                                                        setShowSearchResults(false);
-                                                    }
-                                                }}
-                                            >
-                                                <div className="text-xs text-gold-500 font-bold mb-1">
-                                                    {res.bookName} {res.chapter}:{res.verse}
+                                        {/* Telugu Results Section (Roman transliteration matches) */}
+                                        {teluguSearchResults.length > 0 && (
+                                            <>
+                                                <div className="text-xs text-emerald-400 uppercase tracking-widest font-bold mb-2 flex items-center gap-2">
+                                                    <span>🇮🇳 Telugu Results</span>
+                                                    <span className="text-emerald-500/50">({teluguSearchResults.length} found)</span>
                                                 </div>
-                                                <p className="text-sm text-slate-300 line-clamp-2">{res.kjvText}</p>
-                                            </div>
-                                        ))}
+                                                {teluguSearchResults.map((res, idx) => (
+                                                    <div key={`telugu-${idx}`} className="p-3 rounded-lg bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 transition-colors cursor-pointer"
+                                                        onClick={() => {
+                                                            const book = books.find(b => b.bookId === res.bookId);
+                                                            if (book) {
+                                                                setSelectedBook(book);
+                                                                setSelectedChapter(res.chapter);
+                                                                setSelectedVersion('telugu');
+                                                                setShowSearchResults(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div className="text-xs text-emerald-400 font-bold mb-1 flex items-center gap-2">
+                                                            <span>{res.englishName} {res.chapter}:{res.verse}</span>
+                                                            <span className="text-emerald-500/50">• {res.teluguName}</span>
+                                                            {res.matchedWord && (
+                                                                <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
+                                                                    matched: {res.matchedWord}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-sm text-slate-300 line-clamp-2 font-telugu">{res.teluguText}</p>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+
+                                        {/* English Results Section */}
+                                        {searchResults.length > 0 && (
+                                            <>
+                                                <div className="text-xs text-gold-400 uppercase tracking-widest font-bold mb-2 mt-4 flex items-center gap-2">
+                                                    <span>🇺🇸 English Results</span>
+                                                    <span className="text-gold-500/50">({searchResults.length} found)</span>
+                                                </div>
+                                                {searchResults.map((res: BibleVerse) => (
+                                                    <div key={res.id} className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                                                        onClick={() => {
+                                                            const book = books.find(b => b.bookId === res.bookId);
+                                                            if (book) {
+                                                                setSelectedBook(book);
+                                                                setSelectedChapter(res.chapter);
+                                                                setShowSearchResults(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div className="text-xs text-gold-500 font-bold mb-1">
+                                                            {res.bookName} {res.chapter}:{res.verse}
+                                                        </div>
+                                                        <p className="text-sm text-slate-300 line-clamp-2">{res.kjvText}</p>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
                                     </div>
                                 ) : (
-                                    <div className="text-center text-slate-500 p-8">No results found</div>
+                                    <div className="text-center text-slate-500 p-8">
+                                        <p>No results found</p>
+                                        <p className="text-xs mt-2 text-slate-600">
+                                            💡 Tip: Try searching in Roman Telugu! (e.g., "devudu", "yesu", "prema")
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         </motion.div>

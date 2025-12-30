@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download, Library
+  Settings, User, Home, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
 } from 'lucide-react';
 import Hero from './components/Hero';
 import SimpleBibleReader from './components/SimpleBibleReader';
 // import BibleReaderNew from './components/BibleReaderNew';
 import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
+import NotesPage from './components/NotesPage';
 import ClickSound from './components/ClickSound';
 import { SettingsProvider, useSettings } from './contexts/SettingsContext';
 import { PerformanceProvider } from './contexts/PerformanceContext';
@@ -31,8 +32,6 @@ import MetallicWavesWallpaper from './components/MetallicWavesWallpaper';
 import LivingPrismIntro from './components/LivingPrismIntro';
 import LogoIntro from './components/LogoIntro';
 import MagneticButton from './components/MagneticButton';
-import GoldenDustCursor from './components/GoldenDustCursor';
-import DivineRays from './components/DivineRays';
 import Logo from './components/Logo';
 import MobileDrawer from './components/MobileDrawer';
 import DownloadPage from './components/DownloadPage';
@@ -106,6 +105,7 @@ function AppLayout() {
     english: {
       landing: 'Home',
       reader: 'Read',
+      notes: 'Notes',
       videos: 'Visuals',
       books: 'Books',
       daily: 'Daily',
@@ -117,6 +117,7 @@ function AppLayout() {
     telugu: {
       landing: 'ప్రారంభం', // Home
       reader: 'చదవండి', // Read
+      notes: 'నోట్స్', // Notes
       videos: 'దృశ్యాలు', // Visuals
       books: 'పుస్తకాలు', // Books
       daily: 'దినచర్య', // Daily
@@ -128,6 +129,7 @@ function AppLayout() {
     hindi: {
       landing: 'होम',
       reader: 'पढ़ें',
+      notes: 'नोट्स',
       videos: 'दृश्य',
       books: 'किताबें',
       daily: 'दैनिक',
@@ -144,6 +146,7 @@ function AppLayout() {
   const navItems = [
     { id: 'landing', icon: Home, label: t.landing },
     { id: 'reader', icon: BookOpen, label: t.reader },
+    { id: 'notes', icon: StickyNote, label: t.notes },
     { id: 'videos', icon: ImageIcon, label: t.videos },
     { id: 'books', icon: Library, label: t.books },
     { id: 'daily', icon: Calendar, label: t.daily },
@@ -159,8 +162,6 @@ function AppLayout() {
 
       {renderBackground()}
 
-      <DivineRays />
-      <GoldenDustCursor />
       <ClickSound />
       <AtmospherePlayer />
       <HolidayManager onModeChange={setHolidayMode} />
@@ -248,6 +249,7 @@ function AppLayout() {
                 {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
                 {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
                 {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
+                {view === 'notes' && <NotesPage key="notes" onBack={() => setView('landing')} onNavigateToAuth={() => setView('auth')} />}
                 {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('landing')} />}
                 {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
                 {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('landing')} />}
