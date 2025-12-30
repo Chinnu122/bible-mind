@@ -26,12 +26,19 @@ export default function SimpleBibleReader() {
     const [selectedVerseForStudy, setSelectedVerseForStudy] = useState<BibleVerse | null>(null);
     const [teluguVerses, setTeluguVerses] = useState<any[]>([]);
 
+    // Search & Version State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<BibleVerse[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [showSearchResults, setShowSearchResults] = useState(false);
+    const [selectedVersion, setSelectedVersion] = useState<'english' | 'telugu' | 'hebrew' | 'hindi'>('english');
+
     // Load verses when book/chapter changes
     useEffect(() => {
         if (selectedBook && selectedChapter) {
             setLoading(true);
 
-            // Load English Verses
+            // Load English/Original Verses
             bibleAPI.getChapter(selectedBook.bookId, selectedChapter)
                 .then(data => {
                     if ('verses' in data) {
@@ -43,7 +50,7 @@ export default function SimpleBibleReader() {
                 .catch(err => console.error('Failed to load verses:', err))
                 .finally(() => setLoading(false));
 
-            // Load Telugu Verses for study reference
+            // Load Telugu Verses (always load for study/switching)
             bibleAPI.getTeluguChapter(selectedBook.bookId, selectedChapter)
                 .then(data => {
                     if (data && data.verses) setTeluguVerses(data.verses);
@@ -51,6 +58,23 @@ export default function SimpleBibleReader() {
                 .catch(err => console.error('Failed to load Telugu verses:', err));
         }
     }, [selectedBook, selectedChapter]);
+
+    // Handle Search
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
+
+        setIsSearching(true);
+        setShowSearchResults(true);
+        try {
+            const results = await bibleAPI.searchVerses(searchQuery);
+            setSearchResults(results);
+        } catch (error) {
+            console.error("Search failed", error);
+        } finally {
+            setIsSearching(false);
+        }
+    };
 
     // Auto-detect testament filter based on selected book
     useEffect(() => {
@@ -67,6 +91,16 @@ export default function SimpleBibleReader() {
     const getTeluguText = (verseNum: number) => {
         const tVerse = teluguVerses.find(v => v.verse === verseNum);
         return tVerse ? tVerse.teluguText : 'Telugu translation loading...';
+    };
+
+    const getPrimaryText = (verse: BibleVerse) => {
+        switch (selectedVersion) {
+            case 'english': return verse.kjvText || verse.webText;
+            case 'telugu': return getTeluguText(verse.verse);
+            case 'hebrew': return verse.bookId <= 39 ? verse.hebrewText : verse.greekText; // Fallback to Greek for NT
+            case 'hindi': return "Hindi translation coming soon..."; // Placeholder
+            default: return verse.kjvText;
+        }
     };
 
     const goToPrevChapter = () => {
@@ -111,49 +145,82 @@ export default function SimpleBibleReader() {
     return (
         <div className={`flex flex-col h-screen bg-[#0a0a0a] font-${fontFamily}`}>
 
-            {/* Compact Header */}
-            <div className="flex-none px-4 py-3 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur z-20">
+            {/* Header */}
+            <div className="flex-none px-4 py-3 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur z-20 space-y-3">
+
+                {/* Search Bar */}
+                <div className="max-w-4xl mx-auto w-full relative">
+                    <form onSubmit={handleSearch} className="relative">
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search verses (English or Telugu)..."
+                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-4 pr-10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500/50 focus:ring-1 focus:ring-gold-500/50 transition-all font-sans"
+                        />
+                        <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-gold-500">
+                            {/* search icon placeholder, using text for now or Lucide if available */}
+                            🔍
+                        </button>
+                    </form>
+                </div>
+
                 <div className="flex items-center justify-between max-w-4xl mx-auto">
 
-                    {/* Book & Chapter Selector */}
-                    <div className="flex items-center gap-2">
+                    {/* Controls Row */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                        {/* Book Selector */}
                         <button
                             onClick={() => setShowBookSelector(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-gold-200 font-medium transition-all"
+                            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-gold-200 text-sm font-medium transition-all whitespace-nowrap"
                         >
-                            <Book className="w-4 h-4 text-gold-500" />
-                            <span>{selectedBook?.bookName || 'Select Book'}</span>
-                            <ChevronDown className="w-4 h-4 text-gold-500/50" />
+                            <Book className="w-3 h-3 text-gold-500" />
+                            <span>{selectedBook?.bookName || 'Book'}</span>
+                            <ChevronDown className="w-3 h-3 text-gold-500/50" />
                         </button>
 
+                        {/* Chapter Selector */}
                         <button
                             onClick={() => setShowChapterSelector(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white font-medium transition-all"
+                            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white text-sm font-medium transition-all whitespace-nowrap"
                         >
-                            <span>Chapter {selectedChapter}</span>
-                            <ChevronDown className="w-4 h-4 text-slate-500" />
+                            <span>Ch {selectedChapter}</span>
+                            <ChevronDown className="w-3 h-3 text-slate-500" />
                         </button>
+
+                        {/* Version Selector */}
+                        <div className="h-6 w-px bg-white/10 mx-1" />
+                        <select
+                            value={selectedVersion}
+                            onChange={(e) => setSelectedVersion(e.target.value as any)}
+                            className="bg-white/5 hover:bg-white/10 text-white text-xs py-1.5 px-2 rounded-lg border-none focus:ring-1 focus:ring-gold-500/50 cursor-pointer appearance-none"
+                        >
+                            <option value="english">🇺🇸 English (KJV)</option>
+                            <option value="telugu">🇮🇳 Telugu</option>
+                            <option value="hebrew">🇮🇱 Original (Heb/Gk)</option>
+                            <option value="hindi">🇮🇳 Hindi</option>
+                        </select>
                     </div>
 
                     {/* Navigation Arrows */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 pl-2">
                         <button
                             onClick={goToPrevChapter}
-                            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+                            className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                             onClick={goToNextChapter}
-                            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+                            className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all"
                         >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Main Content - English Bible Text */}
+            {/* Main Content - Dynamic Bible Text */}
             <div className="flex-1 overflow-y-auto">
                 <div className="max-w-3xl mx-auto px-6 py-8">
                     {loading ? (
@@ -165,21 +232,98 @@ export default function SimpleBibleReader() {
                             {verses.map((verse) => (
                                 <div
                                     key={verse.id}
-                                    onClick={() => handleVerseClick(verse)}
-                                    className="group relative hover:bg-white/5 p-4 rounded-xl -mx-4 transition-colors cursor-pointer"
+                                    className="group relative hover:bg-white/5 p-4 rounded-xl -mx-4 transition-colors"
                                 >
-                                    <span className="absolute left-0 top-5 text-xs text-gold-500/60 font-bold w-6 text-right">
+                                    <div className="absolute left-0 top-5 text-xs text-gold-500/60 font-bold w-6 text-right">
                                         {verse.verse}
-                                    </span>
-                                    <p className={`${getFontSizeClass()} text-crema-100 leading-relaxed font-serif pl-4`}>
-                                        {verse.kjvText || verse.webText}
-                                    </p>
+                                    </div>
+
+                                    <div className="pl-6">
+                                        <p
+                                            onClick={() => handleVerseClick(verse)}
+                                            className={`${getFontSizeClass()} text-crema-100 leading-relaxed font-serif cursor-pointer hover:text-gold-100 transition-colors`}
+                                            dir={selectedVersion === 'hebrew' && verse.bookId <= 39 ? 'rtl' : 'ltr'}
+                                        >
+                                            {getPrimaryText(verse)}
+                                        </p>
+
+                                        {/* Interaction Bar */}
+                                        <div className="flex items-center gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                className="text-[10px] uppercase tracking-wider text-slate-500 hover:text-gold-400 flex items-center gap-1"
+                                                title="View Cross references"
+                                            >
+                                                🔗 Refs
+                                            </button>
+                                            <button
+                                                onClick={() => handleVerseClick(verse)}
+                                                className="text-[10px] uppercase tracking-wider text-slate-500 hover:text-emerald-400 flex items-center gap-1"
+                                            >
+                                                📖 Study
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Search Results Modal */}
+            <AnimatePresence>
+                {showSearchResults && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
+                            onClick={() => setShowSearchResults(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 50, scale: 0.95 }}
+                            className="fixed inset-x-4 top-20 bottom-10 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[600px] bg-[#151515] rounded-2xl border border-gold-500/20 shadow-2xl z-50 flex flex-col overflow-hidden"
+                        >
+                            <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#0a0a0a]">
+                                <h2 className="text-lg font-bold text-gold-300">Search Results: "{searchQuery}"</h2>
+                                <button onClick={() => setShowSearchResults(false)} className="p-1 hover:bg-white/10 rounded-full">
+                                    <X className="w-5 h-5 text-slate-400" />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-4">
+                                {isSearching ? (
+                                    <div className="flex justify-center p-8"><Loader2 className="animate-spin text-gold-500" /></div>
+                                ) : searchResults.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {searchResults.map((res: BibleVerse) => (
+                                            <div key={res.id} className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                                                onClick={() => {
+                                                    // Navigate to this verse
+                                                    const book = books.find(b => b.bookId === res.bookId);
+                                                    if (book) {
+                                                        setSelectedBook(book);
+                                                        setSelectedChapter(res.chapter);
+                                                        setShowSearchResults(false);
+                                                    }
+                                                }}
+                                            >
+                                                <div className="text-xs text-gold-500 font-bold mb-1">
+                                                    {res.bookName} {res.chapter}:{res.verse}
+                                                </div>
+                                                <p className="text-sm text-slate-300 line-clamp-2">{res.kjvText}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center text-slate-500 p-8">No results found</div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* Book Selector Modal */}
             <AnimatePresence>
@@ -419,8 +563,8 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={`flex-1 py-4 text-sm font-medium transition-all relative ${activeTab === tab.id
-                                    ? 'text-gold-400'
-                                    : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                                ? 'text-gold-400'
+                                : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                 }`}
                         >
                             {tab.label}
@@ -456,8 +600,8 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                                             key={idx}
                                             onClick={() => handleWordClick(word)}
                                             className={`text-3xl font-serif p-2 rounded transition-all ${selectedWord === word
-                                                    ? 'bg-gold-500/20 text-gold-300 shadow-[0_0_15px_rgba(234,179,8,0.2)]'
-                                                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                                                ? 'bg-gold-500/20 text-gold-300 shadow-[0_0_15px_rgba(234,179,8,0.2)]'
+                                                : 'text-slate-300 hover:text-white hover:bg-white/5'
                                                 }`}
                                         >
                                             {word}
