@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { usePerformance } from '../../contexts/PerformanceContext';
-import AbstractLinesWallpaper from '../AbstractLinesWallpaper';
+import MetallicWavesWallpaper from '../MetallicWavesWallpaper';
 
 type HolidayMode = 'none' | 'christmas-eve' | 'christmas-day' | 'new-year-countdown' | 'new-year-day';
 
@@ -43,8 +43,8 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
 
     return (
         <div className="fixed inset-0 z-0 overflow-hidden">
-            {/* Abstract Lines Wallpaper as Base Layer */}
-            <AbstractLinesWallpaper />
+            {/* Metallic Waves Wallpaper as Base Layer */}
+            <MetallicWavesWallpaper />
 
             {/* Semi-transparent overlay to blend holiday colors with abstract lines */}
             <div

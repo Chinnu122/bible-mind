@@ -26,7 +26,7 @@ import Dashboard from './components/Dashboard';
 import PricingPage from './components/PricingPage';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
 import NebulaBackground from './components/NebulaBackground';
-import AbstractLinesWallpaper from './components/AbstractLinesWallpaper';
+import MetallicWavesWallpaper from './components/MetallicWavesWallpaper';
 import LivingPrismIntro from './components/LivingPrismIntro';
 import LogoIntro from './components/LogoIntro';
 import MagneticButton from './components/MagneticButton';
@@ -96,8 +96,8 @@ function AppLayout() {
       );
     }
 
-    // Use AbstractLinesWallpaper for concentrated, modern aesthetic
-    return <AbstractLinesWallpaper />;
+    // Use MetallicWavesWallpaper for metallic flowing waves effect
+    return <MetallicWavesWallpaper />;
   };
 
   // Navigation Translations
