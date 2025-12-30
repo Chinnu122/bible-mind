@@ -46,20 +46,20 @@ export default function AbstractLinesWallpaper() {
             const hue = 220 + Math.random() * 100; // Blue to Pink/Purple range (220-320)
             curves.push({
                 y: height * 0.1 + Math.random() * height * 0.8,
-                amplitude: 20 + Math.random() * 100,
-                frequency: 0.002 + Math.random() * 0.005,
+                amplitude: 30 + Math.random() * 120,
+                frequency: 0.002 + Math.random() * 0.004,
                 phase: Math.random() * Math.PI * 2,
-                speed: 0.005 + Math.random() * 0.015,
-                color: `hsla(${hue}, 70%, 60%, 0.5)`,
-                width: 1 + Math.random() * 3
+                speed: 0.008 + Math.random() * 0.02,
+                color: `hsla(${hue}, 80%, 65%, 0.8)`,
+                width: 2 + Math.random() * 4
             });
         }
 
         function animate() {
             if (!ctx) return;
 
-            // Clear with slight trail effect
-            ctx.fillStyle = 'rgba(10, 10, 20, 0.1)'; // Dark background with trail
+            // Clear with slight trail effect (slower fade = longer trails)
+            ctx.fillStyle = 'rgba(5, 5, 15, 0.05)'; // Slower fade for visible trails
             ctx.fillRect(0, 0, width, height);
 
             // Global composite for glowing effect
@@ -87,7 +87,7 @@ export default function AbstractLinesWallpaper() {
                 }
 
                 // Add Glow
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 25;
                 ctx.shadowColor = curve.color;
 
                 ctx.stroke();
