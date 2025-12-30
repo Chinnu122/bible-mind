@@ -43,13 +43,16 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
 
     return (
         <div className="fixed inset-0 z-0 overflow-hidden">
-            {/* Use AbstractLinesWallpaper as base layer for New Year (animated lines) */}
-            {!isChristmas && <AbstractLinesWallpaper />}
+            {/* Abstract Lines Wallpaper as Base Layer */}
+            <AbstractLinesWallpaper />
 
-            {/* Christmas uses its own gradient */}
-            {isChristmas && (
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0f2e1c] via-[#1a472a] to-[#05100a]" />
-            )}
+            {/* Semi-transparent overlay to blend holiday colors with abstract lines */}
+            <div
+                className={`absolute inset-0 ${isChristmas
+                    ? 'bg-gradient-to-b from-[#0f2e1c]/40 via-[#1a472a]/30 to-[#05100a]/50'
+                    : 'bg-gradient-to-b from-[#020617]/30 via-[#0f172a]/20 to-[#000000]/40'
+                    }`}
+            />
 
             {/* Christmas Tree Abstract Silhouette (Only for Xmas, high perf only) */}
             {isChristmas && level === 'high' && (
