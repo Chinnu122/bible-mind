@@ -306,8 +306,8 @@ export default function BibleReader() {
                           key={book.bookId}
                           onClick={() => {
                             setSelectedBook(book);
-                            setSelectedChapter(1);
                             setShowBookSelector(false);
+                            setShowChapterSelector(true); // Show chapter selector after book selection
                           }}
                           className={`px-3 py-2 text-sm rounded-lg transition-all ${selectedBook?.bookId === book.bookId
                             ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
@@ -404,6 +404,7 @@ export default function BibleReader() {
                       onClick={() => {
                         setSelectedChapter(ch);
                         setShowChapterSelector(false);
+                        setShowVerseSelector(true); // Show verse selector after chapter selection
                       }}
                       className={`p-2 text-sm rounded-lg transition-all ${selectedChapter === ch
                         ? 'bg-gold-500/30 text-gold-200 border border-gold-500/50'
