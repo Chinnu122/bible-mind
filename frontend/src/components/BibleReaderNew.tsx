@@ -204,7 +204,7 @@ export default function BibleReader() {
   };
 
   return (
-    <div className={`flex flex-col h-screen pt-20 overflow-hidden bg-[#0a0a0a] font-${fontFamily}`}>
+    <div className={`flex flex-col h-screen pt-0 overflow-hidden bg-[#0a0a0a] font-${fontFamily}`}>
       {/* Top Controls Bar */}
       <div className="flex-none px-4 md:px-8 py-4 border-b border-white/5 flex items-center justify-between bg-[#0a0a0a] z-20">
         <div className="flex items-center gap-4">
