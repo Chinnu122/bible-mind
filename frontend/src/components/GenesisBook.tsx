@@ -389,6 +389,10 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
     const { theme } = useSettings();
     const contentRef = useRef<HTMLDivElement>(null);
 
+    // Touch/swipe support for mobile
+    const touchStartX = useRef<number>(0);
+    const touchEndX = useRef<number>(0);
+
     const totalPages = genesisStories.length;
 
     const handleNext = () => {
@@ -402,6 +406,25 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
         if (currentPage > 0) {
             setCurrentPage(c => c - 1);
             if (contentRef.current) contentRef.current.scrollTop = 0;
+        }
+    };
+
+    // Touch handlers for swipe navigation
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        touchEndX.current = e.changedTouches[0].clientX;
+        const swipeDistance = touchStartX.current - touchEndX.current;
+        const minSwipeDistance = 50; // Minimum swipe distance in pixels
+
+        if (swipeDistance > minSwipeDistance) {
+            // Swiped left - go to next page
+            handleNext();
+        } else if (swipeDistance < -minSwipeDistance) {
+            // Swiped right - go to previous page
+            handlePrev();
         }
     };
 
@@ -424,8 +447,12 @@ export default function GenesisBook({ onClose }: GenesisBookProps) {
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/80" onClick={onClose} />
 
-            {/* Book Container */}
-            <div className={`relative w-full max-w-4xl h-[85vh] ${getBgColor()} rounded-3xl shadow-2xl overflow-hidden border border-white/20`}>
+            {/* Book Container - with touch/swipe support */}
+            <div
+                className={`relative w-full max-w-4xl h-[85vh] ${getBgColor()} rounded-3xl shadow-2xl overflow-hidden border border-white/20`}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+            >
 
                 {/* Header */}
                 <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
