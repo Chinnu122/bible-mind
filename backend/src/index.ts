@@ -26,6 +26,7 @@ import exportRouter from './routes/export';
 import aiRouter from './routes/ai';
 import v2AuthRouter from './routes/authRoutesV2';
 import updateRouter from './routes/update';
+import crossReferencesRouter from './routes/crossReferences';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -96,6 +97,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/daily-verse', dailyVerseRouter);
 app.use('/api/export', exportRouter);
 app.use('/api/ai', aiRouter);
+app.use('/api/cross-references', crossReferencesRouter);
 app.use('/api/v2/search', v2SearchRouter); // ElasticSearch-powered advanced search
 app.use('/api/v2/auth', v2AuthRouter); // OAuth + JWT authentication
 app.use('/api/update', updateRouter); // App update check and APK download

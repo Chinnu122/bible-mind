@@ -34,6 +34,34 @@ export interface TeluguVerse {
   teluguText: string;
 }
 
+export interface TeluguSingleVerse {
+  bookId: number;
+  chapter: number;
+  verse: number;
+  teluguText: string;
+  reference: string;
+  teluguReference: string;
+}
+
+export interface CrossReference {
+  bookId: number;
+  bookName: string;
+  chapter: number;
+  verse: number;
+  reference: string;
+  score: number;
+}
+
+export interface CrossReferencesResponse {
+  sourceVerse: {
+    bookId: number;
+    chapter: number;
+    verse: number;
+    reference: string;
+  };
+  crossReferences: CrossReference[];
+}
+
 export interface StrongsDefinition {
   strongsNumber: string;
   word: string;
@@ -172,6 +200,14 @@ class BibleAPI {
 
   async getTeluguChapter(bookId: number | string, chapter: number): Promise<{ bookId: number; chapter: number; verses: TeluguVerse[] }> {
     return this.fetch(`/telugu/${bookId}/${chapter}`);
+  }
+
+  async getTeluguVerse(bookId: number | string, chapter: number, verse: number): Promise<TeluguSingleVerse> {
+    return this.fetch(`/telugu/${bookId}/${chapter}/${verse}`);
+  }
+
+  async getCrossReferences(bookId: number | string, chapter: number, verse: number, limit: number = 8): Promise<CrossReferencesResponse> {
+    return this.fetch(`/cross-references/${bookId}/${chapter}/${verse}?limit=${limit}`);
   }
 
   // Strong's - Now uses local dictionary

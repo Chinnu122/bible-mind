@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, Loader2, Book, X } from 'lucide-react';
-import { bibleAPI, BibleVerse } from '../api/bibleApi';
+import { bibleAPI, BibleVerse, CrossReference } from '../api/bibleApi';
 import { useSettings } from '../contexts/SettingsContext';
 import { useBible } from '../contexts/BibleContext';
 
@@ -24,7 +24,11 @@ export default function SimpleBibleReader() {
     const { fontSize, fontFamily } = useSettings();
 
     const [selectedVerseForStudy, setSelectedVerseForStudy] = useState<BibleVerse | null>(null);
+    const [selectedVerseForRefs, setSelectedVerseForRefs] = useState<BibleVerse | null>(null);
     const [teluguVerses, setTeluguVerses] = useState<any[]>([]);
+
+    const [crossRefs, setCrossRefs] = useState<Array<CrossReference & { text?: string }>>([]);
+    const [loadingCrossRefs, setLoadingCrossRefs] = useState(false);
 
     // Search & Version State
     const [searchQuery, setSearchQuery] = useState('');
@@ -102,6 +106,51 @@ export default function SimpleBibleReader() {
             default: return verse.kjvText;
         }
     };
+
+    // Load cross references when requested
+    useEffect(() => {
+        const loadCrossReferences = async () => {
+            if (!selectedVerseForRefs) return;
+
+            setLoadingCrossRefs(true);
+            setCrossRefs([]);
+            try {
+                const resp = await bibleAPI.getCrossReferences(
+                    selectedVerseForRefs.bookId,
+                    selectedVerseForRefs.chapter,
+                    selectedVerseForRefs.verse,
+                    8
+                );
+
+                const refs = resp.crossReferences || [];
+
+                const refsWithText = await Promise.all(refs.map(async (r) => {
+                    try {
+                        if (selectedVersion === 'telugu') {
+                            const tv = await bibleAPI.getTeluguVerse(r.bookId, r.chapter, r.verse);
+                            return { ...r, text: tv.teluguText };
+                        }
+
+                        const v = await bibleAPI.getVerse(r.bookId, r.chapter, r.verse);
+                        const text = selectedVersion === 'hebrew'
+                            ? (v.bookId <= 39 ? v.hebrewText : v.greekText)
+                            : (v.kjvText || v.webText);
+                        return { ...r, text };
+                    } catch {
+                        return { ...r };
+                    }
+                }));
+
+                setCrossRefs(refsWithText);
+            } catch (e) {
+                console.error('Failed to load cross references:', e);
+            } finally {
+                setLoadingCrossRefs(false);
+            }
+        };
+
+        loadCrossReferences();
+    }, [selectedVerseForRefs, selectedVersion]);
 
     const goToPrevChapter = () => {
         if (!selectedBook) return;
@@ -250,6 +299,7 @@ export default function SimpleBibleReader() {
                                         {/* Interaction Bar */}
                                         <div className="flex items-center gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
+                                                onClick={() => setSelectedVerseForRefs(verse)}
                                                 className="text-[10px] uppercase tracking-wider text-slate-500 hover:text-gold-400 flex items-center gap-1"
                                                 title="View Cross references"
                                             >
@@ -460,7 +510,110 @@ export default function SimpleBibleReader() {
                     />
                 )}
             </AnimatePresence>
+
+            {/* Cross References Modal */}
+            <AnimatePresence>
+                {selectedVerseForRefs && (
+                    <CrossReferencesModal
+                        verse={selectedVerseForRefs}
+                        crossRefs={crossRefs}
+                        loading={loadingCrossRefs}
+                        version={selectedVersion}
+                        onClose={() => setSelectedVerseForRefs(null)}
+                        onNavigate={(ref) => {
+                            const book = books.find(b => b.bookId === ref.bookId);
+                            if (book) {
+                                setSelectedBook(book);
+                                setSelectedChapter(ref.chapter);
+                            }
+                            setSelectedVerseForRefs(null);
+                        }}
+                    />
+                )}
+            </AnimatePresence>
         </div>
+    );
+}
+
+interface CrossReferencesModalProps {
+    verse: BibleVerse;
+    crossRefs: Array<CrossReference & { text?: string }>;
+    loading: boolean;
+    version: 'english' | 'telugu' | 'hebrew' | 'hindi';
+    onClose: () => void;
+    onNavigate: (ref: CrossReference) => void;
+}
+
+function CrossReferencesModal({ verse, crossRefs, loading, version, onClose, onNavigate }: CrossReferencesModalProps) {
+    return (
+        <>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+                onClick={onClose}
+            />
+            <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                className="fixed inset-x-4 top-24 bottom-10 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[680px] bg-[#111111] rounded-2xl border border-gold-500/20 shadow-2xl z-[60] flex flex-col overflow-hidden"
+            >
+                <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#0a0a0a]">
+                    <div>
+                        <h2 className="text-lg font-bold text-gold-300">Cross References</h2>
+                        <div className="text-xs text-slate-500 mt-1">
+                            {verse.bookName} {verse.chapter}:{verse.verse} • {version === 'hebrew' ? 'Original' : version}
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full">
+                        <X className="w-5 h-5 text-slate-400" />
+                    </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4">
+                    {loading ? (
+                        <div className="flex items-center justify-center py-16">
+                            <Loader2 className="w-7 h-7 animate-spin text-gold-500" />
+                        </div>
+                    ) : crossRefs.length > 0 ? (
+                        <div className="space-y-3">
+                            {crossRefs.map((r) => (
+                                <button
+                                    key={`${r.bookId}-${r.chapter}-${r.verse}`}
+                                    onClick={() => onNavigate(r)}
+                                    className="w-full text-left p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                                >
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="text-sm font-bold text-gold-300">{r.reference}</div>
+                                        <div className="text-[10px] text-slate-500">Open</div>
+                                    </div>
+                                    {r.text ? (
+                                        <div
+                                            className="mt-2 text-sm text-slate-200 leading-relaxed"
+                                            dir={version === 'hebrew' && r.bookId <= 39 ? 'rtl' : 'ltr'}
+                                        >
+                                            {r.text}
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2 text-sm text-slate-500 italic">Text unavailable</div>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-slate-500 py-16">No cross references found</div>
+                    )}
+                </div>
+
+                <div className="p-4 border-t border-white/10 bg-[#0a0a0a]">
+                    <div className="text-[11px] text-slate-500">
+                        Cross references are computed automatically from the verse text.
+                    </div>
+                </div>
+            </motion.div>
+        </>
     );
 }
 

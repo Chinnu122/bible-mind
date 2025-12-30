@@ -338,6 +338,10 @@ class DataStore {
     return this.versesByBook.get(bookId) || [];
   }
 
+  getAllVerses(): BibleVerse[] {
+    return Array.from(this.verses.values());
+  }
+
   getStrongs(strongsNumber: string): StrongsDefinition | undefined {
     const normalized = this.normalizeStrongsNumber(strongsNumber);
     return this.strongs.get(normalized);

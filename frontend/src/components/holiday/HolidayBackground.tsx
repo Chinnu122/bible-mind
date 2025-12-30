@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { usePerformance } from '../../contexts/PerformanceContext';
-import MetallicWavesWallpaper from '../MetallicWavesWallpaper';
+import LiveAbstractWallpaper from '../LiveAbstractWallpaper';
 
 type HolidayMode = 'none' | 'christmas-eve' | 'christmas-day' | 'new-year-countdown' | 'new-year-day';
 
@@ -43,15 +43,12 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
 
     return (
         <div className="fixed inset-0 z-0 overflow-hidden">
-            {/* Metallic Waves Wallpaper as Base Layer */}
-            <MetallicWavesWallpaper />
+            {/* Live Abstract Wallpaper (Black/White) as Base Layer */}
+            <LiveAbstractWallpaper theme="dark" isConcentrated={level !== 'high'} />
 
-            {/* Semi-transparent overlay to blend holiday colors with abstract lines */}
+            {/* Semi-transparent overlay to keep content readable */}
             <div
-                className={`absolute inset-0 ${isChristmas
-                    ? 'bg-gradient-to-b from-[#0f2e1c]/40 via-[#1a472a]/30 to-[#05100a]/50'
-                    : 'bg-gradient-to-b from-[#020617]/30 via-[#0f172a]/20 to-[#000000]/40'
-                    }`}
+                className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/40"
             />
 
             {/* Christmas Tree Abstract Silhouette (Only for Xmas, high perf only) */}
@@ -60,7 +57,7 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
                     <div
                         className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[150vw] h-[120vh]"
                         style={{
-                            background: 'conic-gradient(from 180deg at 50% 10%, transparent 150deg, #14532d 180deg, transparent 210deg)',
+                            background: 'conic-gradient(from 180deg at 50% 10%, transparent 150deg, rgba(255,255,255,0.10) 180deg, transparent 210deg)',
                             filter: enableBlur ? 'blur(60px)' : 'none'
                         }}
                     />
@@ -73,10 +70,7 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
                     {bokehPositions.map((pos, i) => (
                         <motion.div
                             key={i}
-                            className={`absolute rounded-full ${enableBlur ? 'blur-2xl' : 'blur-md'} ${isChristmas
-                                ? (i % 3 === 0 ? 'bg-red-500/20' : i % 3 === 1 ? 'bg-amber-400/20' : 'bg-emerald-400/20')
-                                : (i % 2 === 0 ? 'bg-blue-500/10' : 'bg-gold-400/10')
-                                }`}
+                            className={`absolute rounded-full ${enableBlur ? 'blur-2xl' : 'blur-md'} ${i % 3 === 0 ? 'bg-white/10' : i % 3 === 1 ? 'bg-slate-200/10' : 'bg-zinc-200/10'}`}
                             style={{
                                 width: pos.width,
                                 height: pos.height,
@@ -104,7 +98,7 @@ export default function HolidayBackground({ mode }: HolidayBackgroundProps) {
                     {sparklePositions.map((pos, i) => (
                         <motion.div
                             key={`star-${i}`}
-                            className={`absolute rounded-full ${isChristmas ? 'bg-amber-200' : 'bg-white'}`}
+                            className="absolute rounded-full bg-white"
                             style={{
                                 width: pos.size,
                                 height: pos.size,
