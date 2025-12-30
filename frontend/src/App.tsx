@@ -4,7 +4,8 @@ import {
   Settings, User, Home, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download, Library
 } from 'lucide-react';
 import Hero from './components/Hero';
-import BibleReaderNew from './components/BibleReaderNew';
+import SimpleBibleReader from './components/SimpleBibleReader';
+// import BibleReaderNew from './components/BibleReaderNew';
 import TeluguPage from './components/TeluguPage';
 import AuthPage from './components/AuthPage';
 import ClickSound from './components/ClickSound';
@@ -242,7 +243,7 @@ function AppLayout() {
                   />
                 )}
                 {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
-                {view === 'reader' && <BibleReaderNew key="reader" />}
+                {view === 'reader' && <SimpleBibleReader key="reader" />}
                 {view === 'search' && <AdvancedSearchPage key="search" onNavigate={() => setView('reader')} onBack={() => setView('landing')} />}
                 {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
                 {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
