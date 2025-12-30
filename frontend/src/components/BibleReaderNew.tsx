@@ -206,7 +206,7 @@ export default function BibleReader() {
   return (
     <div className={`flex flex-col h-screen pt-0 overflow-hidden bg-[#0a0a0a] font-${fontFamily}`}>
       {/* Top Controls Bar */}
-      <div className="flex-none px-4 md:px-8 py-4 border-b border-white/5 flex items-center justify-between bg-[#0a0a0a] z-20">
+      <div className="flex-none px-4 md:px-8 py-4 flex items-center justify-between bg-[#0a0a0a] z-20">
         <div className="flex items-center gap-4">
           <button
             onClick={goToPrevChapter}
@@ -366,7 +366,7 @@ export default function BibleReader() {
       </div>
 
       {/* Secondary Navigation Bar - Quick Access */}
-      <div className="flex-none px-4 md:px-8 py-2 border-b border-white/5 bg-[#0a0a0a]/90 backdrop-blur flex items-center gap-4 flex-wrap z-10">
+      <div className="flex-none px-4 md:px-8 py-2 bg-[#0a0a0a]/90 backdrop-blur flex items-center gap-4 flex-wrap z-10">
         {/* Search Input */}
         <div className="relative flex-1 min-w-[200px] max-w-[400px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -474,8 +474,8 @@ export default function BibleReader() {
       <div className="flex-1 flex overflow-hidden">
 
         {/* Left Pane: Original Text (Hebrew & Greek) */}
-        <div className="flex-1 overflow-y-auto min-w-[320px] border-r border-white/5 bg-[#0a0a0a] scrollbar-thin scrollbar-thumb-white/10">
-          <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10 p-4 border-b border-white/5 flex items-center justify-between">
+        <div className="flex-1 overflow-y-auto min-w-[320px] bg-[#0a0a0a] scrollbar-thin scrollbar-thumb-white/10">
+          <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10 p-4 flex items-center justify-between">
             <span className="text-xs font-bold text-gold-500/70 uppercase tracking-widest">
               {originalTextMode === 'hebrew' ? 'Hebrew Bible (תנ״ך)' : originalTextMode === 'greek' ? 'Greek Bible (Κοινή)' : 'Original Text'}
             </span>
@@ -552,7 +552,7 @@ export default function BibleReader() {
 
         {/* Center Pane: Translation */}
         <div className="flex-1 overflow-y-auto min-w-[300px] bg-[#0c0c0c] scrollbar-thin scrollbar-thumb-white/10 hidden md:block">
-          <div className="sticky top-0 bg-[#0c0c0c]/95 backdrop-blur z-10 px-4 py-3 border-b border-white/5 flex items-center justify-between">
+          <div className="sticky top-0 bg-[#0c0c0c]/95 backdrop-blur z-10 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-crema-100/50 uppercase tracking-widest">
                 Translation:
@@ -605,7 +605,7 @@ export default function BibleReader() {
         </div>
 
         {/* Right Pane: Notes / Lexicon (Sidebar) */}
-        <div className="w-[350px] lg:w-[400px] border-l border-white/5 bg-[#0a0a0a] flex-col hidden xl:flex">
+        <div className="w-[350px] lg:w-[400px] bg-[#0a0a0a] flex-col hidden xl:flex">
           <LexiconPanel
             word={lexiconWord}
             loading={lexiconLoading}

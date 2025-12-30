@@ -72,9 +72,9 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
     };
 
     return (
-        <div className="bg-[#0a0a0a] border border-gold-500/20 rounded-2xl overflow-hidden h-full flex flex-col">
+        <div className="bg-[#0a0a0a] rounded-2xl overflow-hidden h-full flex flex-col">
             {/* Header */}
-            <div className="p-4 border-b border-gold-500/10 flex items-center justify-between bg-gold-500/5">
+            <div className="p-4 flex items-center justify-between bg-gold-500/5">
                 <div className="flex items-center gap-2 text-gold-400">
                     <Book size={18} />
                     <span className="font-serif font-medium tracking-wide">Word Lexicon</span>
