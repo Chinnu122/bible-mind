@@ -1,696 +1,1802 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bible Mind - Ultra Cinematic Experience</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Bible Mind — 30s Cinematic SaaS Promo</title>
 
-    <!-- Google Fonts -->
+    <!-- Fonts (premium + multilingual) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;600&family=Noto+Sans+Telugu:wght@400;700&family=Noto+Serif+Hebrew:wght@400;700&family=Cormorant+Garamond:ital,wght@1,500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;600&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Serif+Hebrew:wght@400;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
         :root {
-            /* Dynamic Theme Variables */
-            --bg-color: #050507;
-            --glass-bg: rgba(20, 20, 25, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-sub: #a0a0a0;
-            --accent: #C9A227;
-            /* Gold */
-            --accent-glow: rgba(201, 162, 39, 0.5);
+            /* Core palette */
+            --ink: #0B0C10;
+            --ink2: #10141B;
+            --paper: #F6F0E2;
+            --paper2: #EFE6D2;
+            --white: #FFFFFF;
 
-            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-        }
+            /* Accent (animated) */
+            --accent: #D4AF37;
+            --accent2: #E7D08A;
 
-        /* --- THEME CLASSES (Applied to Body via JS) --- */
-        body.theme-void {
-            --bg-color: #050507;
-            --accent: #C9A227;
-            --accent-glow: rgba(201, 162, 39, 0.5);
-        }
+            /* UI neutrals */
+            --text: #F2F2F2;
+            --muted: rgba(255, 255, 255, .70);
+            --muted2: rgba(255, 255, 255, .55);
+            --line: rgba(255, 255, 255, .12);
 
-        body.theme-parchment {
-            --bg-color: #1a1610;
-            /* Dark Brown/Warm */
-            --glass-bg: rgba(40, 35, 30, 0.5);
-            --accent: #FFD700;
-            --accent-glow: rgba(255, 215, 0, 0.4);
-        }
+            /* Glass */
+            --glassFill: rgba(255, 255, 255, .06);
+            --glassFill2: rgba(255, 255, 255, .09);
+            --glassStroke: rgba(255, 255, 255, .12);
 
-        body.theme-tech {
-            --bg-color: #05101a;
-            /* Deep Blue */
-            --glass-bg: rgba(10, 20, 40, 0.5);
-            --accent: #4FD1C5;
-            /* Cyan */
-            --accent-glow: rgba(79, 209, 197, 0.4);
-        }
+            /* Bloom */
+            --bloom: rgba(212, 175, 55, .18);
+            --bloom2: rgba(212, 175, 55, .10);
 
-        body.theme-peace {
-            --bg-color: #101010;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --accent: #E2E8F0;
-            /* Soft White */
-            --accent-glow: rgba(255, 255, 255, 0.3);
-        }
-
-        body.theme-glory {
-            --bg-color: #1a0f00;
-            --glass-bg: rgba(50, 40, 10, 0.4);
-            --accent: #FFA500;
-            --accent-glow: rgba(255, 165, 0, 0.6);
+            /* Timing feel */
+            --easeOut: cubic-bezier(.22, 1, .36, 1);
+            --easeInOut: cubic-bezier(.65, 0, .35, 1);
         }
 
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
+        html,
         body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: var(--bg-color);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-main);
-            transition: background-color 1.5s ease;
-            /* Smooth Theme Transition */
+            height: 100%;
         }
 
-        /* --- THREE.JS LAYER --- */
-        #canvas-container {
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            color: var(--text);
+            background: #000;
+        }
+
+        /* Background theme layers (animated opacity = smooth theme changes) */
+        .bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 900ms var(--easeOut);
+            filter: blur(0px);
+        }
+
+        #bg-void {
+            background:
+                radial-gradient(900px 520px at 50% 45%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 62%),
+                radial-gradient(900px 620px at 20% 70%, rgba(212, 175, 55, .10) 0%, rgba(212, 175, 55, 0) 70%),
+                radial-gradient(1200px 900px at 70% 30%, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0) 65%),
+                linear-gradient(180deg, #05060A 0%, #000 100%);
+        }
+
+        #bg-parchment {
+            background:
+                radial-gradient(1100px 700px at 50% 35%, rgba(246, 240, 226, .10) 0%, rgba(246, 240, 226, 0) 60%),
+                radial-gradient(1000px 700px at 50% 65%, rgba(212, 175, 55, .12) 0%, rgba(212, 175, 55, 0) 70%),
+                linear-gradient(180deg, #14110E 0%, #060[js]?? 90%);
+        }
+
+        /* Fix typo: keep it stable and premium */
+        #bg-parchment {
+            background:
+                radial-gradient(1100px 700px at 50% 35%, rgba(246, 240, 226, .10) 0%, rgba(246, 240, 226, 0) 60%),
+                radial-gradient(1000px 700px at 50% 65%, rgba(212, 175, 55, .10) 0%, rgba(212, 175, 55, 0) 70%),
+                linear-gradient(180deg, #14110E 0%, #05060A 100%);
+        }
+
+        #bg-tech {
+            background:
+                radial-gradient(900px 520px at 50% 45%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 62%),
+                radial-gradient(1000px 700px at 70% 55%, rgba(140, 190, 230, .12) 0%, rgba(140, 190, 230, 0) 70%),
+                radial-gradient(900px 600px at 25% 60%, rgba(212, 175, 55, .07) 0%, rgba(212, 175, 55, 0) 70%),
+                linear-gradient(180deg, #06111D 0%, #020508 100%);
+        }
+
+        #bg-glory {
+            background:
+                radial-gradient(1100px 700px at 50% 42%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 60%),
+                radial-gradient(900px 600px at 55% 58%, rgba(212, 175, 55, .22) 0%, rgba(212, 175, 55, 0) 70%),
+                linear-gradient(180deg, #0B0C10 0%, #000 100%);
+            filter: blur(1px);
+        }
+
+        .bg.on {
+            opacity: 1;
+        }
+
+        /* Three.js canvas */
+        #canvas-wrap {
+            position: fixed;
+            inset: 0;
             z-index: 1;
         }
 
-        /* --- UI LAYER (3D Perspective) --- */
-        #ui-stage {
+        /* UI stage with perspective for parallax depth */
+        #stage {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            perspective: 1500px;
-            /* Crucial for 3D zooms */
+            inset: 0;
+            z-index: 5;
+            display: grid;
+            place-items: center;
+            perspective: 1400px;
             pointer-events: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
+        /* Scenes */
         .scene {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            inset: 0;
+            display: grid;
+            place-items: center;
             opacity: 0;
-            transform-style: preserve-3d;
             visibility: hidden;
+            transform-style: preserve-3d;
         }
 
         .scene.active {
             visibility: visible;
         }
 
-        /* --- GLASS COMPONENTS --- */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
+        /* Premium glass system */
+        .glass {
+            background: linear-gradient(180deg, var(--glassFill2), var(--glassFill));
+            border: 1px solid var(--glassStroke);
             border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform-style: preserve-3d;
-            transition: all 0.5s ease;
+            backdrop-filter: blur(22px) saturate(1.2);
+            -webkit-backdrop-filter: blur(22px) saturate(1.2);
+            box-shadow:
+                0 34px 100px rgba(0, 0, 0, .40),
+                inset 0 1px 0 rgba(255, 255, 255, .10),
+                0 0 0 1px rgba(0, 0, 0, .15);
         }
 
-        /* SCENE 1: INTRO */
-        .intro-container {
+        .glow {
+            filter: drop-shadow(0 0 20px var(--bloom)) drop-shadow(0 0 60px var(--bloom2));
+        }
+
+        /* Small UI label style */
+        .kicker {
+            font-size: 12px;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            color: var(--accent);
+            opacity: .9;
+            font-weight: 600;
+        }
+
+        /* -------------------- Scene 1 (Intro) -------------------- */
+        #s1 .introWrap {
             text-align: center;
-            transform: translateZ(0px);
+            transform: translateZ(60px);
         }
 
-        .hebrew-giant {
-            font-family: 'Noto Serif Hebrew', serif;
-            font-size: 8rem;
-            color: var(--accent);
-            text-shadow: 0 0 50px var(--accent-glow);
+        .bigHeb {
+            font-family: "Noto Serif Hebrew", serif;
+            font-size: clamp(56px, 9vw, 120px);
+            color: rgba(255, 255, 255, .92);
+            text-shadow: 0 0 60px var(--bloom);
             opacity: 0;
-            display: inline-block;
+            line-height: 1.0;
+            letter-spacing: .03em;
         }
 
-        .intro-sub {
-            font-family: 'Cinzel';
-            font-size: 1.2rem;
-            letter-spacing: 10px;
-            margin-top: 20px;
+        .bigHeb.secondary {
+            font-size: clamp(34px, 5.6vw, 72px);
             opacity: 0;
-        }
-
-        /* SCENE 2: TRANSLATION */
-        .verse-card {
-            padding: 40px;
-            width: 800px;
-            text-align: center;
-            transform: translateZ(50px) rotateX(10deg);
-        }
-
-        .word-pill {
-            display: inline-block;
-            padding: 5px 12px;
-            margin: 5px;
-            border-radius: 8px;
-            transition: 0.3s;
-            cursor: pointer;
-            font-family: 'Noto Serif Hebrew';
-            font-size: 1.8rem;
-        }
-
-        .word-pill.active {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 20px var(--accent-glow);
-            transform: scale(1.2);
-        }
-
-        .trans-box {
-            margin-top: 30px;
-            padding: 20px;
-            border-top: 1px solid var(--glass-border);
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* SCENE 3: LEXICON */
-        .lexicon-layout {
-            display: flex;
-            gap: 30px;
-            transform: translateZ(100px);
-        }
-
-        .lex-left {
-            width: 300px;
-            text-align: right;
-        }
-
-        .lex-right {
-            width: 400px;
-            padding: 30px;
-            transform-origin: left center;
-            transform: rotateY(-15deg);
-        }
-
-        .strongs-num {
-            font-size: 0.8rem;
-            color: var(--accent);
-            letter-spacing: 2px;
-        }
-
-        .lex-def {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-top: 15px;
-        }
-
-        /* SCENE 7: SEARCH (The Hero Scene) */
-        .search-wrapper {
-            width: 700px;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        .search-bar {
-            height: 70px;
-            border-radius: 35px;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 30px var(--accent-glow);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .search-text {
-            font-size: 1.5rem;
-            margin-left: 15px;
-            color: #fff;
-            font-family: 'Inter';
-            border-right: 2px solid var(--accent);
-            padding-right: 5px;
-            animation: blink 0.8s infinite;
-        }
-
-        .results-container {
-            margin-top: 20px;
-            perspective: 1000px;
-        }
-
-        .result-item {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            opacity: 0;
-            transform: rotateX(-30deg) translateY(-20px);
-            transform-origin: top;
-            backdrop-filter: blur(10px);
-        }
-
-        .highlight {
-            background: var(--accent);
-            color: #000;
-            padding: 0 4px;
-            border-radius: 4px;
-        }
-
-        /* SCENE 8: FINAL */
-        .final-logo {
-            font-family: 'Cinzel';
-            font-size: 5rem;
-            letter-spacing: 5px;
-            color: var(--accent);
-            opacity: 0;
-        }
-
-        .final-sub {
-            font-size: 1rem;
-            letter-spacing: 8px;
             margin-top: 10px;
-            opacity: 0;
         }
 
-        /* UTILS */
-        @keyframes blink {
-            50% {
-                border-color: transparent;
+        .introLine {
+            margin-top: 18px;
+            font-family: Cinzel, serif;
+            letter-spacing: .55em;
+            text-transform: uppercase;
+            font-size: 12px;
+            opacity: 0;
+            color: var(--accent2);
+        }
+
+        /* -------------------- Scene 2 (Translation) -------------------- */
+        #s2 .wrap {
+            display: grid;
+            gap: 18px;
+            place-items: center;
+            transform-style: preserve-3d;
+        }
+
+        #s2 .verseCard {
+            width: min(1040px, 92vw);
+            padding: 28px 30px;
+            transform: translateZ(90px);
+        }
+
+        #s2 .hebrewLine {
+            direction: rtl;
+            text-align: center;
+            font-family: "Noto Serif Hebrew", serif;
+            font-size: clamp(26px, 4.3vw, 52px);
+            line-height: 1.7;
+            margin-top: 8px;
+            color: rgba(255, 255, 255, .95);
+        }
+
+        #s2 .w {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 3px 4px;
+            border-radius: 12px;
+            position: relative;
+            transform: translateZ(0);
+            transition: color 220ms var(--easeOut), transform 260ms var(--easeOut);
+            will-change: transform;
+        }
+
+        #s2 .w::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: rgba(212, 175, 55, .18);
+            opacity: 0;
+            transform: scale(.92);
+            transition: opacity 220ms var(--easeOut), transform 260ms var(--easeOut);
+            z-index: -1;
+        }
+
+        #s2 .w.active {
+            color: var(--paper);
+            transform: translateZ(20px) scale(1.07);
+        }
+
+        #s2 .w.active::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #s2 .panes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            width: min(1040px, 92vw);
+            transform: translateZ(120px);
+        }
+
+        @media (max-width: 860px) {
+            #s2 .panes {
+                grid-template-columns: 1fr;
             }
         }
 
-        #start-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .pane {
+            padding: 18px 18px 16px;
+            min-height: 116px;
+        }
+
+        .pane .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .pane .lang {
+            font-family: Cinzel, serif;
+            letter-spacing: .28em;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .85);
+        }
+
+        .pane .value {
+            font-size: 17px;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, .90);
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        .pane .value.tel {
+            font-family: "Noto Sans Telugu", sans-serif;
+            font-size: 18px;
+        }
+
+        /* subtle mapping line (active word -> panels) */
+        #s2 .mapLine {
+            width: min(860px, 86vw);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, .55), transparent);
+            opacity: 0;
+            transform: translateZ(110px) scaleX(.6);
+            border-radius: 2px;
+        }
+
+        /* -------------------- Scene 3 (Lexicon + Crossrefs) -------------------- */
+        #s3 .grid {
+            width: min(1100px, 92vw);
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            gap: 18px;
+            transform-style: preserve-3d;
+        }
+
+        @media (max-width: 920px) {
+            #s3 .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #s3 .left {
+            padding: 22px 22px 20px;
+            transform: translateZ(70px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #s3 .right {
+            padding: 22px 22px 20px;
+            transform: translateZ(110px);
+            opacity: 0;
+            transform-origin: left center;
+        }
+
+        #s3 .lemma {
+            font-family: "Noto Serif Hebrew", serif;
+            font-size: 58px;
+            text-align: left;
+            color: rgba(255, 255, 255, .95);
+            margin: 8px 0 2px;
+        }
+
+        #s3 .translit {
+            color: rgba(255, 255, 255, .75);
+            font-style: italic;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #s3 .def {
+            color: rgba(255, 255, 255, .80);
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        #s3 .telDef {
+            margin-top: 14px;
+            padding: 12px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .04);
+            font-family: "Noto Sans Telugu", sans-serif;
+            color: rgba(255, 255, 255, .92);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Crossref constellation (SVG) */
+        #s3 .xref {
+            margin-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, .10);
+            padding-top: 14px;
+        }
+
+        #s3 svg {
             width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 9999;
+            height: 180px;
+            display: block;
+        }
+
+        .xref-node {
+            fill: rgba(255, 255, 255, .92);
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, .22));
+            opacity: 0;
+        }
+
+        .xref-line {
+            stroke: rgba(212, 175, 55, .55);
+            stroke-width: 1.4;
+            stroke-linecap: round;
+            stroke-dasharray: 260;
+            stroke-dashoffset: 260;
+            opacity: .9;
+        }
+
+        .xref-label {
+            fill: rgba(255, 255, 255, .72);
+            font-size: 11px;
+            letter-spacing: .06em;
+            opacity: 0;
+        }
+
+        /* -------------------- Scene 4 (Daily Verse) -------------------- */
+        #s4 .card {
+            width: min(820px, 92vw);
+            padding: 30px 34px;
+            text-align: center;
+            transform: translateZ(120px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #s4 .card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 22px;
+            background: radial-gradient(800px 320px at 50% 35%, rgba(212, 175, 55, .18), transparent 70%);
+            opacity: .9;
+            z-index: -1;
+            filter: blur(0.2px);
+        }
+
+        #s4 .dv {
+            font-family: Cinzel, serif;
+            font-size: 11px;
+            letter-spacing: .35em;
+            text-transform: uppercase;
+            color: var(--accent);
+            opacity: .95;
+            margin-bottom: 14px;
+        }
+
+        #s4 .quote {
+            font-family: "Inter", sans-serif;
+            font-weight: 300;
+            font-size: clamp(20px, 2.6vw, 30px);
+            line-height: 1.55;
+            color: rgba(255, 255, 255, .94);
+        }
+
+        #s4 .ref {
+            margin-top: 14px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .72);
+        }
+
+        /* -------------------- Scene 5 (Character) -------------------- */
+        #s5 .char {
+            width: min(980px, 92vw);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 18px;
+            transform: translateZ(110px);
+            align-items: stretch;
+        }
+
+        @media (max-width: 860px) {
+            #s5 .char {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #s5 .portrait {
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background:
+                radial-gradient(220px 160px at 50% 30%, rgba(255, 255, 255, .10), rgba(255, 255, 255, 0) 70%),
+                linear-gradient(180deg, rgba(246, 240, 226, .18), rgba(255, 255, 255, .05));
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        #s5 .portrait svg {
+            width: 74%;
+            opacity: .9;
+            filter: drop-shadow(0 0 22px rgba(212, 175, 55, .12));
+        }
+
+        #s5 .info {
+            padding: 14px 14px 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            transition: opacity 1s;
         }
 
-        .btn-start {
-            padding: 15px 40px;
-            border: 1px solid var(--accent);
-            background: transparent;
+        #s5 .badge {
             color: var(--accent);
-            font-family: 'Cinzel';
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
+            font-size: 11px;
+            letter-spacing: .32em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
 
-        .btn-start:hover {
+        #s5 .name {
+            font-family: Cinzel, serif;
+            font-size: 34px;
+            letter-spacing: .06em;
+            margin: 0 0 6px;
+            color: rgba(255, 255, 255, .95);
+        }
+
+        #s5 .role {
+            color: rgba(255, 255, 255, .70);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        #s5 .desc {
+            color: rgba(255, 255, 255, .80);
+            line-height: 1.65;
+            font-size: 15px;
+        }
+
+        /* -------------------- Scene 6 (Kids) -------------------- */
+        #s6 .kidsWrap {
+            width: min(1100px, 92vw);
+            transform: translateZ(120px);
+            display: grid;
+            gap: 14px;
+        }
+
+        #s6 .kidsTop {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        #s6 .kidsTitle {
+            font-family: Cinzel, serif;
+            letter-spacing: .30em;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        #s6 .safe {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .04);
+            color: rgba(255, 255, 255, .78);
+            font-size: 12px;
+            letter-spacing: .08em;
+        }
+
+        #s6 .shelf {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 900px) {
+            #s6 .shelf {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .book {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background:
+                radial-gradient(300px 220px at 35% 30%, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 70%),
+                linear-gradient(145deg, rgba(246, 240, 226, .16), rgba(255, 255, 255, .04));
+            min-height: 200px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, .35);
+            transform-style: preserve-3d;
+        }
+
+        .book .label {
+            position: absolute;
+            left: 14px;
+            bottom: 12px;
+            font-family: Cinzel, serif;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .92);
+            text-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+        }
+
+        .book .art {
+            position: absolute;
+            inset: 0;
+            opacity: .9;
+            background:
+                radial-gradient(200px 160px at 30% 40%, rgba(255, 212, 140, .55), rgba(255, 255, 255, 0) 65%),
+                radial-gradient(220px 170px at 70% 55%, rgba(180, 220, 255, .45), rgba(255, 255, 255, 0) 65%),
+                radial-gradient(200px 160px at 55% 75%, rgba(190, 255, 210, .35), rgba(255, 255, 255, 0) 65%);
+            transform: translateZ(10px);
+        }
+
+        /* Page turn sheet */
+        .pageTurn {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, rgba(255, 255, 255, .0) 0%, rgba(246, 240, 226, .80) 55%, rgba(246, 240, 226, .0) 100%);
+            transform-origin: left center;
+            transform: rotateY(90deg);
+            opacity: .85;
+            pointer-events: none;
+        }
+
+        /* -------------------- Scene 7 (Search) -------------------- */
+        #s7 .searchWrap {
+            width: min(980px, 92vw);
+            transform: translateZ(140px);
+            display: grid;
+            gap: 12px;
+        }
+
+        #s7 .searchTitle {
+            text-align: center;
+            font-family: Cinzel, serif;
+            letter-spacing: .34em;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: var(--accent);
+            opacity: 0;
+        }
+
+        #s7 .searchBar {
+            height: 72px;
+            border-radius: 999px;
+            padding: 0 22px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(0, 0, 0, .34);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, .25), 0 25px 80px rgba(0, 0, 0, .45);
+            transform: translateZ(30px);
+            opacity: 0;
+        }
+
+        #s7 .searchIcon {
+            width: 20px;
+            height: 20px;
+            opacity: .85;
+            color: var(--accent2);
+        }
+
+        #s7 .typed {
+            flex: 1;
+            font-size: 20px;
+            color: rgba(255, 255, 255, .92);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        #s7 .caret {
+            width: 2px;
+            height: 22px;
             background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 30px var(--accent-glow);
+            opacity: .95;
+            animation: blink 1s infinite;
+            margin-left: 2px;
         }
 
-        .progress-bar {
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #s7 .toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .04);
+            min-width: 120px;
+            justify-content: space-between;
+        }
+
+        #s7 .tOpt {
+            font-size: 11px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .70);
+            padding: 8px 10px;
+            border-radius: 999px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #s7 .pill {
+            position: absolute;
+            width: 50%;
+            height: calc(100% - 12px);
+            top: 6px;
+            left: 6px;
+            border-radius: 999px;
+            background: rgba(212, 175, 55, .92);
+            box-shadow: 0 0 18px rgba(212, 175, 55, .26);
+            transform: translateX(0%);
+            z-index: 0;
+        }
+
+        #s7 .toggleWrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            width: 120px;
+            height: 44px;
+        }
+
+        #s7 .toggleWrap .tOpt {
+            width: 50%;
+            text-align: center;
+        }
+
+        #s7 .toggleWrap .tOpt.active {
+            color: rgba(10, 10, 12, .95);
+            font-weight: 600;
+        }
+
+        #s7 .results {
+            display: grid;
+            gap: 12px;
+            margin-top: 4px;
+            perspective: 1200px;
+        }
+
+        .res {
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .05);
+            opacity: 0;
+            transform: translateY(10px) rotateX(-12deg);
+            transform-origin: top center;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, .30);
+        }
+
+        .res .meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, .70);
+            font-size: 12px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(0, 0, 0, .25);
+            font-size: 10px;
+            letter-spacing: .18em;
+            color: rgba(255, 255, 255, .70);
+        }
+
+        .res .txt {
+            color: rgba(255, 255, 255, .90);
+            line-height: 1.55;
+            font-size: 16px;
+        }
+
+        .mark {
+            background: rgba(212, 175, 55, .22);
+            color: var(--paper);
+            padding: 0 4px;
+            border-radius: 6px;
+        }
+
+        .telLine {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, .10);
+            font-family: "Noto Sans Telugu", sans-serif;
+            color: rgba(255, 255, 255, .85);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* -------------------- Scene 8 (Final) -------------------- */
+        #s8 .finalWrap {
+            text-align: center;
+            transform: translateZ(140px);
+            display: grid;
+            gap: 14px;
+            place-items: center;
+        }
+
+        #s8 .orbit {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 980px;
+            opacity: 0;
+        }
+
+        .chip {
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .05);
+            color: rgba(255, 255, 255, .78);
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            transform: translateY(10px);
+            opacity: 0;
+        }
+
+        #s8 .logo {
+            font-family: Cinzel, serif;
+            font-size: clamp(44px, 6.5vw, 84px);
+            letter-spacing: .34em;
+            color: rgba(255, 255, 255, .95);
+            opacity: 0;
+            text-shadow: 0 0 90px rgba(212, 175, 55, .20);
+        }
+
+        #s8 .tagline {
+            font-size: 12px;
+            letter-spacing: .40em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            opacity: 0;
+        }
+
+        /* Progress bar */
+        #progress {
             position: fixed;
-            bottom: 0;
             left: 0;
+            bottom: 0;
             height: 4px;
-            background: var(--accent);
             width: 0%;
-            z-index: 100;
+            z-index: 20;
+            background: linear-gradient(90deg, var(--accent), rgba(255, 255, 255, .85));
+            box-shadow: 0 0 18px rgba(212, 175, 55, .22);
+            opacity: .9;
+        }
+
+        /* Start gate (audio unlock + start timeline) */
+        #gate {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(900px 520px at 50% 45%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 62%),
+                linear-gradient(180deg, #05060A 0%, #000 100%);
+        }
+
+        #gate .panel {
+            width: min(640px, 92vw);
+            padding: 26px 22px;
+            text-align: center;
+        }
+
+        #gate .brand {
+            font-family: Cinzel, serif;
+            font-size: 28px;
+            letter-spacing: .40em;
+            color: rgba(255, 255, 255, .95);
+            margin-bottom: 8px;
+        }
+
+        #gate .sub {
+            color: rgba(255, 255, 255, .66);
+            letter-spacing: .14em;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+
+        #gate .btnRow {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            pointer-events: auto;
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(255, 255, 255, .06);
+            color: rgba(255, 255, 255, .90);
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-family: Inter, sans-serif;
+            transition: transform 220ms var(--easeOut), background 220ms var(--easeOut), border-color 220ms var(--easeOut);
+        }
+
+        .btn.primary {
+            border-color: rgba(212, 175, 55, .55);
+            box-shadow: 0 0 40px rgba(212, 175, 55, .12);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, .10);
+        }
+
+        #gate .hint {
+            margin-top: 12px;
+            color: rgba(255, 255, 255, .45);
+            font-size: 11px;
+            letter-spacing: .10em;
         }
     </style>
 </head>
 
-<body class="theme-void">
+<body>
+    <!-- Theme layers -->
+    <div class="bg on" id="bg-void"></div>
+    <div class="bg" id="bg-parchment"></div>
+    <div class="bg" id="bg-tech"></div>
+    <div class="bg" id="bg-glory"></div>
 
-    <!-- AUDIO -->
-    <audio id="bg-audio">
-        <source src="https://assets.mixkit.co/music/preview/mixkit-cinematic-mystery-trailer-2794.mp3"
-            type="audio/mpeg">
+    <!-- Three.js -->
+    <div id="canvas-wrap"></div>
+
+    <!-- Progress -->
+    <div id="progress"></div>
+
+    <!-- Audio (autoplay is unlocked by Start button gesture) -->
+    <audio id="bgm" preload="auto" crossorigin="anonymous">
+        <!-- Cinematic Emotional (recommended for this concept) -->
+        <source src="https://assets.mixkit.co/music/preview/mixkit-cinematic-emotional-epic-610.mp3"
+            type="audio/mpeg" />
+        <!-- Epic Orchestral -->
+        <source src="https://www.bensound.com/bensound-music/bensound-epic.mp3" type="audio/mpeg" />
+        <!-- Modern Tech / Electronic -->
+        <source src="https://assets.mixkit.co/music/preview/mixkit-future-tech-vibes-1505.mp3" type="audio/mpeg" />
     </audio>
 
-    <!-- START OVERLAY -->
-    <div id="start-overlay">
-        <h1 style="font-family:'Cinzel'; color:white; font-size:2rem;">BIBLE MIND</h1>
-        <p style="color:#888; letter-spacing: 2px;">Cinematic Experience (30s)</p>
-        <button class="btn-start" onclick="startExperience()">BEGIN REVEAL</button>
+    <!-- Start Gate (required to reliably start audio + timeline) -->
+    <div id="gate">
+        <div class="panel glass glow">
+            <div class="brand">BIBLE MIND</div>
+            <div class="sub">30-second cinematic SaaS promo<br />Click once to start (enables audio).</div>
+            <div class="btnRow">
+                <button class="btn primary" id="startBtn">Start Experience</button>
+                <button class="btn" id="muteBtn">Start Muted</button>
+            </div>
+            <div class="hint">If audio is blocked by device settings, visuals still play.</div>
+        </div>
     </div>
 
-    <!-- 3D BACKGROUND -->
-    <div id="canvas-container"></div>
-    <div class="progress-bar" id="progress"></div>
+    <!-- UI Stage -->
+    <div id="stage" aria-hidden="true">
 
-    <!-- UI SCENES -->
-    <div id="ui-stage">
-
-        <!-- 1. INTRO (0-4s) -->
-        <div class="scene" id="scene1">
-            <div class="intro-container">
-                <div class="hebrew-giant" id="h1">בְּרֵאשִׁית</div>
-                <div class="hebrew-giant" id="h2" style="font-size: 4rem; display:block; margin-top:10px;">אֱלֹהִים
-                </div>
-                <div class="intro-sub" id="intro-text">THE WORD REVEALED</div>
+        <!-- Scene 1 -->
+        <section class="scene active" id="s1">
+            <div class="introWrap">
+                <div class="bigHeb" id="s1Heb1">בְּרֵאשִׁית</div>
+                <div class="bigHeb secondary" id="s1Heb2">אֱלֹהִים</div>
+                <div class="introLine" id="s1Line">THE WORD, MADE CLEAR</div>
             </div>
-        </div>
+        </section>
 
-        <!-- 2. TRANSLATION (4-8s) -->
-        <div class="scene" id="scene2">
-            <div class="glass-panel verse-card">
-                <div style="font-size:0.8rem; color:var(--accent); letter-spacing:3px; margin-bottom:20px;">GENESIS 1:1
+        <!-- Scene 2 -->
+        <section class="scene" id="s2">
+            <div class="wrap">
+                <div class="glass verseCard glow">
+                    <div class="kicker">GENESIS 1:1 — WORD BY WORD</div>
+                    <div class="hebrewLine" id="hebrewLine">
+                        <span class="w" data-i="0">בְּרֵאשִׁית</span>
+                        <span class="w" data-i="1">בָּרָא</span>
+                        <span class="w" data-i="2">אֱלֹהִים</span>
+                        <span class="w" data-i="3">אֵת</span>
+                        <span class="w" data-i="4">הַשָּׁמַיִם</span>
+                        <span class="w" data-i="5">וְאֵת</span>
+                        <span class="w" data-i="6">הָאָרֶץ</span>
+                    </div>
                 </div>
-                <div id="hebrew-line">
-                    <span class="word-pill">בְּרֵאשִׁית</span>
-                    <span class="word-pill">בָּרָא</span>
-                    <span class="word-pill">אֱלֹהִים</span>
-                    <span class="word-pill">אֵת</span>
-                </div>
-                <div class="trans-box" id="trans-telugu">
-                    <h2 style="font-family:'Noto Sans Telugu'; color:white;">ఆదియందు దేవుడు...</h2>
-                    <p style="color:#aaa; font-size:0.9rem;">In the beginning God...</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- 3. LEXICON (8-12s) -->
-        <div class="scene" id="scene3">
-            <div class="lexicon-layout">
-                <div class="glass-panel lex-left" style="padding:20px;">
-                    <h1 style="font-family:'Noto Serif Hebrew'; font-size:4rem; color:var(--accent);">דָבָר</h1>
-                    <h3 style="font-family:'Cinzel';">DAVAR</h3>
-                </div>
-                <div class="glass-panel lex-right">
-                    <div class="strongs-num">STRONG'S H1697</div>
-                    <h2 style="margin-top:10px;">Word / Matter</h2>
-                    <p class="lex-def">
-                        Changes theme based on context.<br>
-                        <span style="color:var(--accent)">1. Speech</span><br>
-                        <span style="color:var(--accent)">2. Commandment</span><br>
-                        <span style="color:var(--accent)">3. Prophecy</span>
-                    </p>
+                <div class="mapLine" id="mapLine"></div>
+
+                <div class="panes">
+                    <div class="glass pane">
+                        <div class="title">
+                            <div class="lang">TELUGU</div>
+                            <div class="kicker" style="opacity:.7; font-size:11px;">Meaning</div>
+                        </div>
+                        <div class="value tel" id="teluguMeaning"> </div>
+                    </div>
+                    <div class="glass pane">
+                        <div class="title">
+                            <div class="lang">ENGLISH</div>
+                            <div class="kicker" style="opacity:.7; font-size:11px;">Meaning</div>
+                        </div>
+                        <div class="value" id="englishMeaning"> </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 4. DAILY VERSE (12-16s) -->
-        <div class="scene" id="scene4">
-            <div class="glass-panel" style="padding:50px; text-align:center; width:600px;">
-                <div style="font-size:3rem; color:var(--accent);">❝</div>
-                <p style="font-family:'Cormorant Garamond'; font-size:2rem; font-style:italic;">
-                    The Lord is my shepherd;<br>I shall not want.
-                </p>
-                <div style="margin-top:20px; font-family:'Cinzel'; letter-spacing:2px; font-size:0.8rem;">PSALM 23:1
+        <!-- Scene 3 -->
+        <section class="scene" id="s3">
+            <div class="grid">
+                <div class="glass left glow">
+                    <div class="kicker">LEXICON + CROSS REFERENCES</div>
+                    <div class="lemma">אֱלֹהִים</div>
+                    <div class="translit">Elohim</div>
+                    <div class="def">
+                        Title for God; often understood as a plural of majesty.<br />
+                        Used across Torah and Prophets with theological weight.
+                    </div>
+                    <div class="telDef">దేవుడు — సర్వశక్తిమంతుడు; మహిమగల అధికారం సూచించును.</div>
+
+                    <div class="xref">
+                        <div class="kicker" style="margin-bottom:10px;">CONNECTED VERSES</div>
+                        <svg viewBox="0 0 1000 260" preserveAspectRatio="none">
+                            <!-- lines -->
+                            <line class="xref-line" x1="140" y1="180" x2="420" y2="70"></line>
+                            <line class="xref-line" x1="420" y1="70" x2="720" y2="120"></line>
+                            <line class="xref-line" x1="140" y1="180" x2="700" y2="210"></line>
+                            <line class="xref-line" x1="420" y1="70" x2="700" y2="210"></line>
+
+                            <!-- nodes -->
+                            <circle class="xref-node" cx="140" cy="180" r="8"></circle>
+                            <circle class="xref-node" cx="420" cy="70" r="8"></circle>
+                            <circle class="xref-node" cx="720" cy="120" r="8"></circle>
+                            <circle class="xref-node" cx="700" cy="210" r="8"></circle>
+
+                            <!-- labels -->
+                            <text class="xref-label" x="110" y="210">Gen 1:1</text>
+                            <text class="xref-label" x="388" y="50">Ps 19:1</text>
+                            <text class="xref-label" x="690" y="100">Isa 40:28</text>
+                            <text class="xref-label" x="670" y="240">Job 38:4</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="glass right glow" id="lexPanel">
+                    <div class="kicker">STRONG’S H430</div>
+                    <div
+                        style="margin-top:10px; font-family:Cinzel,serif; letter-spacing:.10em; font-size:22px; color:rgba(255,255,255,.94);">
+                        Elohim
+                    </div>
+                    <div style="margin-top:10px; color:rgba(255,255,255,.78); line-height:1.7; font-size:15px;">
+                        A deliberate study surface: quick meaning for the reader, deep detail when needed.
+                        Cross-references remain visual, not noisy.
+                    </div>
+                    <div
+                        style="margin-top:14px; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);">
+                        <div class="kicker" style="font-size:11px; opacity:.8;">TELUGU GLOSS</div>
+                        <div
+                            style="margin-top:6px; font-family:'Noto Sans Telugu',sans-serif; font-size:16px; color:rgba(255,255,255,.90); line-height:1.6;">
+                            దేవుని మహిమ, అధికారము, సృష్టి శక్తి సూచన.
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 5. CHARACTER (16-20s) -->
-        <div class="scene" id="scene5">
-            <div class="glass-panel" style="width:700px; height:400px; display:flex; overflow:hidden;">
-                <div
-                    style="width:40%; background:#333; background-image:url('https://images.unsplash.com/photo-1599707367072-cd6ad66acc40?auto=format&fit=crop&w=400&q=80'); background-size:cover;">
+        <!-- Scene 4 -->
+        <section class="scene" id="s4">
+            <div class="glass card glow" id="dailyCard">
+                <div class="dv">Daily Verse</div>
+                <div class="quote" id="dailyText">
+                    “The Lord is my shepherd; I shall not want.”
                 </div>
-                <div style="width:60%; padding:40px;">
-                    <div style="color:var(--accent); letter-spacing:2px; font-size:0.8rem;">CHARACTER PROFILE</div>
-                    <h1 style="font-family:'Cinzel'; font-size:2.5rem; margin:10px 0;">DAVID</h1>
-                    <p style="color:#ccc; line-height:1.6;">Shepherd. Warrior. King. A man after God's own heart who
-                        wrote the Psalms.</p>
+                <div class="ref">Psalm 23:1</div>
+            </div>
+        </section>
+
+        <!-- Scene 5 -->
+        <section class="scene" id="s5">
+            <div class="glass char glow" id="charCard">
+                <div class="portrait">
+                    <!-- clean illustrated silhouette (inline SVG, no external image) -->
+                    <svg viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg" role="img"
+                        aria-label="Character illustration">
+                        <defs>
+                            <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="rgba(255,255,255,0.85)" />
+                                <stop offset="1" stop-color="rgba(255,255,255,0.35)" />
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M120 28c26 0 47 21 47 47 0 15-7 28-18 37 24 10 41 33 41 60v72c0 10-8 18-18 18H68c-10 0-18-8-18-18v-72c0-27 17-50 41-60-11-9-18-22-18-37 0-26 21-47 47-47z"
+                            fill="url(#g)" opacity="0.95" />
+                        <path d="M60 246c18 18 38 26 60 26s42-8 60-26" stroke="rgba(212,175,55,0.35)" stroke-width="6"
+                            fill="none" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="info">
+                    <div class="badge">Character of the Day</div>
+                    <h2 class="name">David</h2>
+                    <div class="role">Shepherd · Psalmist · King</div>
+                    <div class="desc">
+                        Learn people and context—so verses don’t stay abstract.
+                        Profiles keep the tone serious, concise, and devotional.
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 6. KIDS (20-24s) -->
-        <div class="scene" id="scene6">
-            <div style="display:flex; gap:20px;">
-                <div class="glass-panel"
-                    style="width:200px; height:300px; background:linear-gradient(45deg, #ff9a9e, #fad0c4); display:flex; align-items:center; justify-content:center; transform:rotate(-5deg);">
-                    <h2 style="color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.2);">NOAH</h2>
+        <!-- Scene 6 -->
+        <section class="scene" id="s6">
+            <div class="kidsWrap">
+                <div class="kidsTop">
+                    <div class="kidsTitle">Kids Bible Story Books</div>
+                    <div class="safe">
+                        <span style="opacity:.9">Kids Mode</span>
+                        <span style="opacity:.55">Safe · Visual · Educational</span>
+                    </div>
                 </div>
-                <div class="glass-panel"
-                    style="width:200px; height:300px; background:linear-gradient(45deg, #a18cd1, #fbc2eb); display:flex; align-items:center; justify-content:center; transform:translateY(-20px);">
-                    <h2 style="color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.2);">MOSES</h2>
-                </div>
-                <div class="glass-panel"
-                    style="width:200px; height:300px; background:linear-gradient(45deg, #84fab0, #8fd3f4); display:flex; align-items:center; justify-content:center; transform:rotate(5deg);">
-                    <h2 style="color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.2);">JONAH</h2>
+                <div class="shelf">
+                    <div class="book" id="book1">
+                        <div class="art"></div>
+                        <div class="label">Noah’s Ark</div>
+                        <div class="pageTurn"></div>
+                    </div>
+                    <div class="book" id="book2">
+                        <div class="art"></div>
+                        <div class="label">David & Goliath</div>
+                        <div class="pageTurn"></div>
+                    </div>
+                    <div class="book" id="book3">
+                        <div class="art"></div>
+                        <div class="label">Daniel</div>
+                        <div class="pageTurn"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 7. SEARCH (24-27s) - THE HERO SHOT -->
-        <div class="scene" id="scene7">
-            <div class="search-wrapper">
-                <div class="search-bar" id="search-bar-el">
-                    <span style="font-size:1.5rem;">🔍</span>
-                    <span class="search-text" id="typed-target"></span>
+        <!-- Scene 7 -->
+        <section class="scene" id="s7">
+            <div class="searchWrap">
+                <div class="searchTitle" id="searchTitle">Search · Instant · Telugu-first</div>
+
+                <div class="searchBar glass glow" id="searchBar">
+                    <!-- icon -->
+                    <svg class="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M21 21l-4.3-4.3"></path>
+                    </svg>
+
+                    <div style="display:flex; align-items:center; gap:0; flex:1;">
+                        <div class="typed" id="typed"></div>
+                        <div class="caret"></div>
+                    </div>
+
+                    <div class="toggleWrap" id="toggleWrap" aria-hidden="true">
+                        <div class="pill" id="togglePill"></div>
+                        <div class="tOpt active" id="optEN">EN</div>
+                        <div class="tOpt" id="optTE">TE</div>
+                    </div>
                 </div>
-                <div class="results-container" id="results-list">
-                    <!-- Results injected via JS -->
+
+                <div class="results" id="results">
+                    <div class="res glass" id="res1">
+                        <div class="meta"><span>Ephesians 2:8</span><span class="tag">NT</span></div>
+                        <div class="txt">For by <span class="mark">grace</span> you have been saved through faith…</div>
+                    </div>
+                    <div class="res glass" id="res2">
+                        <div class="meta"><span>Lexicon</span><span class="tag">charis</span></div>
+                        <div class="txt"><span class="mark">Grace</span>: unmerited favor; gift freely given.</div>
+                    </div>
+                    <div class="res glass" id="res3">
+                        <div class="meta"><span>తెలుగు</span><span class="tag">TE</span></div>
+                        <div class="txt"> </div>
+                        <div class="telLine">మీరు విశ్వాసము ద్వారా <span class="mark">కృప</span> చేతనే
+                            రక్షింపబడియున్నారు…</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 8. FINALE (27-30s) -->
-        <div class="scene" id="scene8">
-            <div style="text-align:center;">
-                <div class="final-logo" id="final-logo">BIBLE MIND</div>
-                <div class="final-sub" id="final-sub">CLARITY • DEPTH • TRUTH</div>
+        <!-- Scene 8 -->
+        <section class="scene" id="s8">
+            <div class="finalWrap">
+                <div class="orbit" id="orbit">
+                    <div class="chip">Word-to-Word</div>
+                    <div class="chip">Hebrew · Telugu · English</div>
+                    <div class="chip">Lexicon</div>
+                    <div class="chip">Cross-References</div>
+                    <div class="chip">Daily Verse</div>
+                    <div class="chip">Character</div>
+                    <div class="chip">Kids Mode</div>
+                    <div class="chip">Fast Search</div>
+                </div>
+                <div class="logo" id="logo">BIBLE MIND</div>
+                <div class="tagline" id="tagline">CLARITY · DEPTH · TRUST</div>
             </div>
-        </div>
+        </section>
 
     </div>
 
     <script>
-        // --- THREE.JS BACKGROUND SETUP ---
-        const scene3D = new THREE.Scene();
-        // Fog handles the "Void" feel
-        scene3D.fog = new THREE.FogExp2(0x000000, 0.02);
+        (function () {
+            "use strict";
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
+            // Keep GSAP stable
+            gsap.ticker.lagSmoothing(1000, 16);
 
-        // PARTICLES
-        const geometry = new THREE.BufferGeometry();
-        const count = 3000;
-        const positions = new Float32Array(count * 3);
-        const colors = new Float32Array(count * 3); // To change theme colors
+            const $ = (sel) => document.querySelector(sel);
+            const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-        for (let i = 0; i < count * 3; i++) {
-            positions[i] = (Math.random() - 0.5) * 40; // Wide spread
-            colors[i] = 1; // Start white
-        }
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            // ---------------------------
+            // Theme layer helpers
+            // ---------------------------
+            const bgVoid = $("#bg-void");
+            const bgParch = $("#bg-parchment");
+            const bgTech = $("#bg-tech");
+            const bgGlory = $("#bg-glory");
 
-        const material = new THREE.PointsMaterial({
-            size: 0.05,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8
-        });
-        const particles = new THREE.Points(geometry, material);
-        scene3D.add(particles);
+            function setTheme(layerId, accentHex) {
+                // switch background layers
+                [bgVoid, bgParch, bgTech, bgGlory].forEach(el => el.classList.remove("on"));
+                if (layerId === "void") bgVoid.classList.add("on");
+                if (layerId === "parchment") bgParch.classList.add("on");
+                if (layerId === "tech") bgTech.classList.add("on");
+                if (layerId === "glory") bgGlory.classList.add("on");
 
-        camera.position.z = 10;
-        let cameraTargetZ = 10;
-        let cameraTargetX = 0;
+                // animate accent variables
+                gsap.to(document.documentElement, {
+                    duration: 0.9,
+                    ease: "power2.out",
+                    "--accent": accentHex,
+                    "--bloom": `${accentToRGBA(accentHex, 0.18)}`,
+                    "--bloom2": `${accentToRGBA(accentHex, 0.10)}`
+                });
 
-        // Render Loop
-        function animate3D() {
-            requestAnimationFrame(animate3D);
+                // sync particles tint too
+                gsap.to(particleTint, {
+                    duration: 0.9,
+                    ease: "power2.out",
+                    r: hexToRgb01(accentHex).r,
+                    g: hexToRgb01(accentHex).g,
+                    b: hexToRgb01(accentHex).b
+                });
+            }
 
-            // Smooth Camera Movement
-            camera.position.z += (cameraTargetZ - camera.position.z) * 0.05;
-            camera.position.x += (cameraTargetX - camera.position.x) * 0.05;
+            function accentToRGBA(hex, a) {
+                const c = hexToRgb(hex);
+                return `rgba(${c.r},${c.g},${c.b},${a})`;
+            }
+            function hexToRgb(hex) {
+                const h = hex.replace("#", "").trim();
+                const full = h.length === 3 ? h.split("").map(x => x + x).join("") : h;
+                const n = parseInt(full, 16);
+                return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+            }
+            function hexToRgb01(hex) {
+                const c = hexToRgb(hex);
+                return { r: c.r / 255, g: c.g / 255, b: c.b / 255 };
+            }
 
-            // Particle rotation
-            particles.rotation.y += 0.001;
-            particles.rotation.z += 0.0005;
+            // ---------------------------
+            // Three.js background (particles + Hebrew glyph sprites)
+            // ---------------------------
+            const wrap = $("#canvas-wrap");
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            wrap.appendChild(renderer.domElement);
 
-            renderer.render(scene3D, camera);
-        }
-        animate3D();
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
+            const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 80);
+            camera.position.set(0, 0, 10);
 
-        // --- GSAP TIMELINE & LOGIC ---
-        function startExperience() {
-            // Audio & Overlay
-            document.getElementById('start-overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('start-overlay').style.display = 'none', 1000);
+            // camera target object (GSAP animates this)
+            const camTarget = { x: 0, y: 0, z: 10, rx: 0, ry: 0 };
 
-            const audio = document.getElementById('bg-audio');
-            audio.volume = 0.6;
-            audio.play();
+            // Particles
+            const particleCount = 2200;
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(particleCount * 3);
+            const pVel = new Float32Array(particleCount * 3);
 
-            // Setup Timeline
-            const tl = gsap.timeline();
-            const body = document.body;
+            for (let i = 0; i < particleCount; i++) {
+                const ix = i * 3;
+                pPos[ix + 0] = (Math.random() - 0.5) * 18;
+                pPos[ix + 1] = (Math.random() - 0.5) * 10;
+                pPos[ix + 2] = (Math.random() - 0.5) * 16;
+                pVel[ix + 0] = (Math.random() - 0.5) * 0.006;
+                pVel[ix + 1] = (Math.random() - 0.5) * 0.004;
+                pVel[ix + 2] = (Math.random() - 0.5) * 0.004;
+            }
+            pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
 
-            // HELPER: Change Theme
-            const setTheme = (themeName, colorHex) => {
-                body.className = themeName;
-                // Tween Particle Colors
-                const colorObj = new THREE.Color(colorHex);
-                const colorsAttr = geometry.attributes.color;
-                // We animate a proxy object and update the buffer
-                gsap.to({}, {
-                    duration: 1,
-                    onUpdate: function () {
-                        // In a real app we'd lerp arrays, for now simple opacity shift effect
-                        material.color.set(colorHex);
+            // tint animated by theme
+            const particleTint = { r: 0xD4 / 255, g: 0xAF / 255, b: 0x37 / 255 };
+
+            const pMat = new THREE.PointsMaterial({
+                size: 0.04,
+                color: new THREE.Color(particleTint.r, particleTint.g, particleTint.b),
+                transparent: true,
+                opacity: 0.75,
+                depthWrite: false
+            });
+            const points = new THREE.Points(pGeo, pMat);
+            scene.add(points);
+
+            // Hebrew sprites (3D intro glyphs)
+            const glyphs = ["בְּרֵאשִׁית", "אֱלֹהִים", "דָּבָר"];
+            const sprites = [];
+
+            function makeTextSprite(text) {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = 512;
+                canvas.height = 512;
+
+                // background transparent
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // text
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = "700 96px 'Noto Serif Hebrew'";
+                ctx.fillStyle = "rgba(255,255,255,0.92)";
+                ctx.shadowColor = "rgba(212,175,55,0.45)";
+                ctx.shadowBlur = 30;
+                ctx.fillText(text, 256, 256);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+
+                const material = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
+                const sprite = new THREE.Sprite(material);
+                sprite.scale.set(3.2, 3.2, 1);
+                return sprite;
+            }
+
+            glyphs.forEach((g, i) => {
+                const sp = makeTextSprite(g);
+                sp.position.set((i - 1) * 2.8, (i === 1 ? -0.2 : 0.6 - i * 0.4), -3 - i * 0.8);
+                sp.userData = {
+                    baseY: sp.position.y,
+                    wobble: 0.25 + Math.random() * 0.25,
+                    phase: Math.random() * Math.PI * 2
+                };
+                sprites.push(sp);
+                scene.add(sp);
+            });
+
+            // Render loop
+            function tick() {
+                requestAnimationFrame(tick);
+
+                // Update particle color from tint (smooth theme sync)
+                pMat.color.setRGB(particleTint.r, particleTint.g, particleTint.b);
+
+                // Drift particles
+                const arr = pGeo.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    const ix = i * 3;
+                    arr[ix + 0] += pVel[ix + 0];
+                    arr[ix + 1] += pVel[ix + 1];
+                    arr[ix + 2] += pVel[ix + 2];
+
+                    // soft bounds
+                    if (arr[ix + 0] > 9 || arr[ix + 0] < -9) pVel[ix + 0] *= -1;
+                    if (arr[ix + 1] > 5 || arr[ix + 1] < -5) pVel[ix + 1] *= -1;
+                    if (arr[ix + 2] > 8 || arr[ix + 2] < -8) pVel[ix + 2] *= -1;
+                }
+                pGeo.attributes.position.needsUpdate = true;
+
+                points.rotation.y += 0.0009;
+                points.rotation.x += 0.0003;
+
+                // Float glyph sprites
+                const t = performance.now() * 0.001;
+                sprites.forEach(sp => {
+                    sp.position.y = sp.userData.baseY + Math.sin(t * sp.userData.wobble + sp.userData.phase) * 0.18;
+                });
+
+                // Smooth camera to target
+                camera.position.x += (camTarget.x - camera.position.x) * 0.06;
+                camera.position.y += (camTarget.y - camera.position.y) * 0.06;
+                camera.position.z += (camTarget.z - camera.position.z) * 0.06;
+                camera.rotation.x += (camTarget.rx - camera.rotation.x) * 0.06;
+                camera.rotation.y += (camTarget.ry - camera.rotation.y) * 0.06;
+
+                renderer.render(scene, camera);
+            }
+            tick();
+
+            function onResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            }
+            window.addEventListener("resize", onResize, { passive: true });
+
+            // ---------------------------
+            // Scene switching helpers
+            // ---------------------------
+            const scenes = $$(".scene");
+            function showScene(id) {
+                scenes.forEach(s => s.classList.remove("active"));
+                const el = document.getElementById(id);
+                if (el) el.classList.add("active");
+            }
+
+            // ---------------------------
+            // Translation mapping (Hebrew -> Telugu -> English)
+            // (Content is production-appropriate, concise, not overloaded)
+            // ---------------------------
+            const mapping = [
+                { h: "בְּרֵאשִׁית", te: "ఆదిలో", en: "In the beginning" },
+                { h: "בָּרָא", te: "సృజించాడు", en: "created" },
+                { h: "אֱלֹהִים", te: "దేవుడు", en: "God" },
+                { h: "אֵת", te: "ను (వ్యాకరణ సూచకము)", en: "(direct-object marker)" },
+                { h: "הַשָּׁמַיִם", te: "ఆకాశములు", en: "the heavens" },
+                { h: "וְאֵת", te: "మరియు (వ్యాకరణ సూచకము)", en: "and (marker)" },
+                { h: "הָאָרֶץ", te: "భూమి", en: "the earth" }
+            ];
+
+            const wordEls = $$("#hebrewLine .w");
+            const telEl = $("#teluguMeaning");
+            const enEl = $("#englishMeaning");
+            const mapLine = $("#mapLine");
+
+            function setMeaning(i) {
+                const m = mapping[i];
+                // Telugu-first: update Telugu first, then English with a tiny delay in timeline
+                telEl.textContent = m.te;
+                enEl.textContent = m.en;
+            }
+
+            // ---------------------------
+            // Search typing (no TextPlugin; fully contained)
+            // ---------------------------
+            const typedEl = $("#typed");
+            const togglePill = $("#togglePill");
+            const optEN = $("#optEN");
+            const optTE = $("#optTE");
+            const res1 = $("#res1");
+            const res2 = $("#res2");
+            const res3 = $("#res3");
+
+            function typeTo(element, text, duration) {
+                const obj = { p: 0 };
+                element.textContent = "";
+                return gsap.to(obj, {
+                    p: text.length,
+                    duration,
+                    ease: "none",
+                    onUpdate: () => {
+                        const n = Math.floor(obj.p);
+                        element.textContent = text.slice(0, n);
                     }
                 });
-            };
+            }
 
-            // 0s: SCENE 1 (INTRO - VOID)
+            function toggleTo(lang) { // "EN" or "TE"
+                if (lang === "EN") {
+                    optEN.classList.add("active");
+                    optTE.classList.remove("active");
+                    gsap.to(togglePill, { x: "0%", duration: 0.35, ease: "power2.out" });
+                } else {
+                    optTE.classList.add("active");
+                    optEN.classList.remove("active");
+                    gsap.to(togglePill, { x: "100%", duration: 0.35, ease: "power2.out" });
+                }
+            }
+
+            // ---------------------------
+            // Build the 30s master timeline
+            // ---------------------------
+            const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } });
+
+            // Progress bar runs full 30 seconds
+            gsap.set("#progress", { width: "0%" });
+            tl.to("#progress", { width: "100%", duration: 30, ease: "linear" }, 0);
+
+            // Initial states
+            gsap.set(scenes, { opacity: 0 });
+            gsap.set("#s1", { opacity: 1 });
+            gsap.set("#s1Heb1, #s1Heb2, #s1Line", { opacity: 0, y: 10 });
+            gsap.set("#s2 .value", { opacity: 0, y: 8 });
+            gsap.set("#mapLine", { opacity: 0, scaleX: .7 });
+            gsap.set("#lexPanel", { opacity: 0, x: 60, rotationY: -8 });
+            gsap.set(".xref-node", { opacity: 0, scale: 0.85, transformOrigin: "center" });
+            gsap.set(".xref-label", { opacity: 0 });
+            // NOTE: SVG lines are already dashed, will animate dashoffset
+            gsap.set("#dailyCard", { opacity: 0, y: 18, scale: 0.98 });
+            gsap.set("#charCard", { opacity: 0, rotationY: -10, y: 12 });
+            gsap.set("#s6 .book", { opacity: 0, y: 16, rotationX: -6 });
+            gsap.set("#s6 .pageTurn", { rotationY: 90 });
+            gsap.set("#searchTitle", { opacity: 0, y: 6 });
+            gsap.set("#searchBar", { opacity: 0, y: 10, scale: 0.98 });
+            gsap.set(".res", { opacity: 0, y: 10, rotationX: -12 });
+            gsap.set("#orbit", { opacity: 0 });
+            gsap.set(".chip", { opacity: 0, y: 10 });
+            gsap.set("#logo", { opacity: 0, y: 10, scale: 0.985 });
+            gsap.set("#tagline", { opacity: 0, y: 6 });
+
+            // Helper: scene fade
+            function sceneOn(id, at) {
+                tl.add(() => showScene(id), at);
+                tl.to("#" + id, { opacity: 1, duration: 0.5, ease: "power2.out" }, at);
+            }
+            function sceneOff(id, at) {
+                tl.to("#" + id, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, at);
+            }
+
+            // ---------------------------
+            // SCENE 1 (0–4)
+            // ---------------------------
+            tl.add(() => { setTheme("void", "#D4AF37"); }, 0.0);
+
+            // camera: slow push through darkness
+            tl.to(camTarget, { z: 7.8, duration: 4.0, ease: "sine.inOut" }, 0.0);
+            tl.to(camTarget, { ry: -0.05, rx: 0.02, duration: 4.0, ease: "sine.inOut" }, 0.0);
+
+            // show intro glyph sprites
+            tl.to(sprites[0].material, { opacity: 0.85, duration: 1.3, ease: "power2.out" }, 0.6);
+            tl.to(sprites[1].material, { opacity: 0.75, duration: 1.3, ease: "power2.out" }, 1.0);
+            tl.to(sprites[2].material, { opacity: 0.55, duration: 1.3, ease: "power2.out" }, 1.4);
+
+            // DOM Hebrew titles
+            tl.to("#s1Heb1", { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }, 0.9);
+            tl.to("#s1Heb2", { opacity: 1, y: 0, duration: 1.1, ease: "power2.out" }, 1.5);
+            tl.to("#s1Line", { opacity: 1, y: 0, duration: 1.0, ease: "power2.out" }, 2.4);
+
+            // transition: fade out scene 1
+            sceneOff("s1", 3.7);
+
+            // ---------------------------
+            // SCENE 2 (4–8.5): Translation
+            // ---------------------------
+            sceneOn("s2", 4.0);
+            tl.add(() => { setTheme("parchment", "#D4AF37"); }, 4.0);
+
+            // camera: micro zoom in to enter UI, then gentle drift
+            tl.to(camTarget, { z: 8.8, x: 0.2, duration: 2.6, ease: "sine.inOut" }, 4.0);
+            tl.to(camTarget, { ry: 0.03, rx: -0.01, duration: 2.6, ease: "sine.inOut" }, 4.0);
+
+            // Word-by-word highlight + synced Telugu/English updates
             tl.add(() => {
-                setTheme('theme-void', '#C9A227');
-                document.getElementById('scene1').classList.add('active');
-                cameraTargetZ = 8; // Zoom in
-            }, 0);
-            tl.to("#h1", { opacity: 1, scale: 1.2, duration: 2, ease: "power2.out" }, 0.5);
-            tl.to("#h2", { opacity: 1, scale: 1.2, duration: 2, ease: "power2.out" }, 1.5);
-            tl.to("#intro-text", { opacity: 1, letterSpacing: "20px", duration: 2 }, 2);
+                // reset
+                wordEls.forEach(w => w.classList.remove("active"));
+                telEl.textContent = "";
+                enEl.textContent = "";
+                gsap.set([telEl, enEl], { opacity: 0, y: 8 });
+            }, 4.05);
 
-            // 4s: SCENE 2 (TRANSLATION - PARCHMENT)
+            // mapping line gentle pulse
+            tl.to(mapLine, { opacity: 0.65, scaleX: 1.0, duration: 0.55, ease: "power2.out" }, 4.35);
+
+            // reveal panels (but keep content synced per word)
+            tl.to([telEl, enEl], { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 4.85);
+
+            // animate each word
+            let t = 5.0;
+            wordEls.forEach((el, i) => {
+                tl.add(() => {
+                    wordEls.forEach(w => w.classList.remove("active"));
+                    el.classList.add("active");
+
+                    // Update Telugu immediately
+                    telEl.textContent = mapping[i].te;
+                    // English a hair later (2 frames approx at 30fps ~ 0.066s; use 0.06)
+                    setTimeout(() => { enEl.textContent = mapping[i].en; }, 60);
+
+                    // micro parallax drift per word (no jitter)
+                    gsap.to(camTarget, { x: (i % 2 === 0 ? 0.25 : -0.25), duration: 0.35, ease: "sine.inOut" });
+                }, t);
+                t += 0.42;
+            });
+
+            // settle + exit
+            tl.to(mapLine, { opacity: 0.0, duration: 0.35, ease: "power2.inOut" }, 7.9);
+            sceneOff("s2", 8.35);
+
+            // ---------------------------
+            // SCENE 3 (8.5–13): Lexicon + Crossrefs
+            // ---------------------------
+            sceneOn("s3", 8.5);
+            tl.add(() => { setTheme("tech", "#D4AF37"); }, 8.5);
+
+            // camera pan right for depth
+            tl.to(camTarget, { x: 1.2, z: 9.2, duration: 2.8, ease: "sine.inOut" }, 8.5);
+            tl.to(camTarget, { ry: -0.06, rx: 0.01, duration: 2.8, ease: "sine.inOut" }, 8.5);
+
+            // lex panel slide in
+            tl.to("#lexPanel", { opacity: 1, x: 0, rotationY: 0, duration: 0.9, ease: "power3.out" }, 9.1);
+
+            // crossref nodes + lines + labels
+            tl.to(".xref-node", { opacity: 1, scale: 1, stagger: 0.08, duration: 0.35, ease: "power2.out" }, 9.6);
+            tl.to(".xref-line", {
+                strokeDashoffset: 0,
+                duration: 1.0,
+                stagger: 0.12,
+                ease: "power2.out"
+            }, 9.75);
+            tl.to(".xref-label", { opacity: 1, stagger: 0.08, duration: 0.35, ease: "power2.out" }, 10.35);
+
+            // exit
+            sceneOff("s3", 12.75);
+
+            // ---------------------------
+            // SCENE 4 (13–17): Daily Verse
+            // ---------------------------
+            sceneOn("s4", 13.0);
+            tl.add(() => { setTheme("parchment", "#D4AF37"); }, 13.0);
+
+            // calm zoom out
+            tl.to(camTarget, { x: 0, y: 0, z: 11.2, duration: 4.0, ease: "sine.inOut" }, 13.0);
+            tl.to(camTarget, { ry: 0, rx: 0, duration: 4.0, ease: "sine.inOut" }, 13.0);
+
+            tl.to("#dailyCard", { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" }, 13.2);
+
+            // subtle “line by line” feel (swap text slightly)
             tl.add(() => {
-                setTheme('theme-parchment', '#FFD700');
-                document.getElementById('scene1').classList.remove('active');
-                document.getElementById('scene2').classList.add('active');
-                cameraTargetZ = 12; // Pull back
-            }, 4);
-            tl.from(".verse-card", { y: 50, opacity: 0, rotationX: 30, duration: 1 }, 4.1);
-            // Word Highlights
-            const words = document.querySelectorAll('.word-pill');
-            tl.to(words[0], { className: "word-pill active", duration: 0.2 }, 5.0);
-            tl.to(words[1], { className: "word-pill active", duration: 0.2 }, 5.4);
-            tl.to("#trans-telugu", { opacity: 1, y: 0, duration: 0.5 }, 6.0);
-
-            // 8s: SCENE 3 (LEXICON - TECH)
+                const daily = $("#dailyText");
+                daily.textContent = "“The Lord is my shepherd; I shall not want.”";
+            }, 13.25);
             tl.add(() => {
-                setTheme('theme-tech', '#4FD1C5');
-                document.getElementById('scene2').classList.remove('active');
-                document.getElementById('scene3').classList.add('active');
-                cameraTargetX = 2; // Pan
-            }, 8);
-            tl.from(".lex-left", { x: -100, opacity: 0, duration: 1 }, 8.2);
-            tl.from(".lex-right", { x: 100, opacity: 0, rotationY: 45, duration: 1 }, 8.5);
+                const daily = $("#dailyText");
+                daily.textContent = "“The Lord is my shepherd; I shall not want. He leads me beside still waters.”";
+            }, 14.25);
 
-            // 12s: SCENE 4 (DAILY - PEACE)
+            // exit
+            sceneOff("s4", 16.75);
+
+            // ---------------------------
+            // SCENE 5 (17–21): Character
+            // ---------------------------
+            sceneOn("s5", 17.0);
+            tl.add(() => { setTheme("void", "#D4AF37"); }, 17.0);
+
+            tl.to(camTarget, { z: 9.4, duration: 4.0, ease: "sine.inOut" }, 17.0);
+            tl.to(camTarget, { ry: 0.05, duration: 2.0, ease: "sine.inOut" }, 17.0);
+
+            tl.to("#charCard", { opacity: 1, rotationY: 0, y: 0, duration: 0.9, ease: "power3.out" }, 17.3);
+
+            // exit
+            sceneOff("s5", 20.85);
+
+            // ---------------------------
+            // SCENE 6 (21–24.5): Kids stories
+            // ---------------------------
+            sceneOn("s6", 21.0);
+            tl.add(() => { setTheme("parchment", "#D4AF37"); }, 21.0);
+
+            tl.to(camTarget, { z: 10.3, x: -0.2, duration: 3.5, ease: "sine.inOut" }, 21.0);
+            tl.to("#s6 .book", { opacity: 1, y: 0, rotationX: 0, stagger: 0.12, duration: 0.7, ease: "power3.out" }, 21.3);
+
+            // page turn (middle book)
+            tl.to("#book2 .pageTurn", { rotationY: 0, duration: 0.55, ease: "power2.inOut" }, 22.25);
+            tl.to("#book2 .pageTurn", { rotationY: 90, duration: 0.55, ease: "power2.inOut" }, 22.9);
+
+            // exit
+            sceneOff("s6", 24.3);
+
+            // ---------------------------
+            // SCENE 7 (24.5–27.5): Search (strong zoom in/out)
+            // ---------------------------
+            sceneOn("s7", 24.5);
+            tl.add(() => { setTheme("tech", "#D4AF37"); }, 24.5);
+
+            // Dramatic push-in during typing
+            tl.to(camTarget, { z: 5.0, x: 0, y: 0, duration: 0.85, ease: "power3.inOut" }, 24.55);
+
+            tl.to("#searchTitle", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 24.65);
+            tl.to("#searchBar", { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" }, 24.70);
+
+            // Reset search UI
             tl.add(() => {
-                setTheme('theme-peace', '#FFFFFF');
-                document.getElementById('scene3').classList.remove('active');
-                document.getElementById('scene4').classList.add('active');
-                cameraTargetX = 0;
-                cameraTargetZ = 10;
-            }, 12);
-            tl.from("#scene4 .glass-panel", { scale: 0.8, opacity: 0, duration: 1.5, ease: "elastic.out(1, 0.7)" }, 12.1);
+                typedEl.textContent = "";
+                toggleTo("EN");
+                gsap.set([res1, res2, res3], { opacity: 0, y: 10, rotationX: -12 });
+            }, 24.72);
 
-            // 16s: SCENE 5 (CHARACTER - DRAMATIC)
-            tl.add(() => {
-                setTheme('theme-void', '#C9A227');
-                document.getElementById('scene4').classList.remove('active');
-                document.getElementById('scene5').classList.add('active');
-            }, 16);
-            tl.from("#scene5 .glass-panel", { rotationY: 90, opacity: 0, duration: 1.2 }, 16.2);
+            // Type: Greek + Telugu (premium, minimal)
+            tl.add(typeTo(typedEl, "χάρις  /  కృప", 1.05), 24.88);
 
-            // 20s: SCENE 6 (KIDS - COLORFUL)
-            tl.add(() => {
-                // Keep void bg but colorful elements
-                document.getElementById('scene5').classList.remove('active');
-                document.getElementById('scene6').classList.add('active');
-            }, 20);
-            tl.from("#scene6 .glass-panel", { y: 100, opacity: 0, stagger: 0.2, duration: 0.8 }, 20.2);
+            // Results moment: snap-zoom out to reveal list
+            tl.to(camTarget, { z: 9.8, duration: 0.45, ease: "power3.out" }, 26.05);
 
-            // 24s: SCENE 7 (SEARCH - THE BIG ZOOM)
-            tl.add(() => {
-                setTheme('theme-tech', '#4FD1C5');
-                document.getElementById('scene6').classList.remove('active');
-                document.getElementById('scene7').classList.add('active');
+            // Results cascade
+            tl.to(res1, { opacity: 1, y: 0, rotationX: 0, duration: 0.45, ease: "power3.out" }, 26.10);
+            tl.to(res2, { opacity: 1, y: 0, rotationX: 0, duration: 0.45, ease: "power3.out" }, 26.22);
 
-                // *** DRAMATIC CAMERA MOVE ***
-                // 1. Zoom Camera WAY IN close to the search bar
-                cameraTargetZ = 3;
-            }, 24);
+            // Language toggle morph (EN -> TE)
+            tl.add(() => toggleTo("TE"), 26.62);
+            tl.to("#toggleWrap", { scale: 1.02, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, 26.62);
 
-            // Typing Animation
-            tl.to("#search-bar-el", { scale: 1.1, duration: 0.5 }, 24.1);
-            tl.to("#typed-target", { text: { value: "Grace in Telugu" }, duration: 1.5, ease: "none" }, 24.5);
+            // Telugu result
+            tl.to(res3, { opacity: 1, y: 0, rotationX: 0, duration: 0.50, ease: "power3.out" }, 26.78);
 
-            // 2. SNAP BACK Camera when results appear
-            tl.add(() => {
-                cameraTargetZ = 12; // SNAP BACK
-            }, 26.0);
+            // exit
+            sceneOff("s7", 27.45);
 
-            // Results Fly In
-            tl.add(() => {
-                const container = document.getElementById('results-list');
-                container.innerHTML = `
-                    <div class="result-item">
-                        <div style="font-size:0.8rem; color:var(--accent);">EPHESIANS 2:8</div>
-                        <div style="color:white; font-size:1.1rem;">By <span class="highlight">grace</span> you have been saved...</div>
-                    </div>
-                    <div class="result-item">
-                        <div style="font-size:0.8rem; color:var(--accent);">TELUGU BIBLE</div>
-                        <div style="color:white; font-family:'Noto Sans Telugu'; font-size:1.2rem;">మీరు <span class="highlight">కృప</span> చేతనే రక్షింపబడియున్నారు...</div>
-                    </div>
-                `;
-            }, 26.1);
+            // ---------------------------
+            // SCENE 8 (27.5–30): Final brand
+            // ---------------------------
+            sceneOn("s8", 27.5);
+            tl.add(() => { setTheme("glory", "#D4AF37"); }, 27.5);
 
-            tl.to(".result-item", {
-                opacity: 1, rotateX: 0, y: 0,
-                stagger: 0.2, duration: 0.6, ease: "back.out(1.7)"
-            }, 26.2);
+            // pull back for a confident close
+            tl.to(camTarget, { z: 12.2, duration: 2.6, ease: "sine.inOut" }, 27.5);
+            tl.to(camTarget, { ry: 0, rx: 0, x: 0, duration: 2.6, ease: "sine.inOut" }, 27.5);
 
-            // 27s: SCENE 8 (FINALE - GLORY)
-            tl.add(() => {
-                setTheme('theme-glory', '#FFA500');
-                document.getElementById('scene7').classList.remove('active');
-                document.getElementById('scene8').classList.add('active');
-                cameraTargetZ = 15; // Slow pull back
-            }, 27.5);
+            tl.to("#orbit", { opacity: 1, duration: 0.6, ease: "power2.out" }, 27.75);
+            tl.to(".chip", { opacity: 1, y: 0, stagger: 0.06, duration: 0.45, ease: "power2.out" }, 27.85);
 
-            tl.to("#final-logo", { opacity: 1, scale: 1, duration: 1.5 }, 27.6);
-            tl.to("#final-sub", { opacity: 1, letterSpacing: "15px", duration: 1.5 }, 28.0);
+            tl.to("#logo", { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: "power3.out" }, 28.15);
+            tl.to("#tagline", { opacity: 1, y: 0, duration: 0.65, ease: "power2.out" }, 28.55);
 
-            // Progress Bar
-            gsap.to("#progress", { width: "100%", duration: 30, ease: "linear" });
+            // Slight fade of particles at end for calm resolve
+            tl.to(pMat, { opacity: 0.45, duration: 1.2, ease: "power2.out" }, 28.8);
 
-            // Fade out at 30
-            tl.to("#ui-stage", { opacity: 0, duration: 1 }, 29.5);
-            tl.to("#bg-audio", { volume: 0, duration: 1 }, 29.5);
-        }
+            // ---------------------------
+            // Audio start gate logic (no “stuck page”)
+            // ---------------------------
+            const gate = $("#gate");
+            const startBtn = $("#startBtn");
+            const muteBtn = $("#muteBtn");
+            const bgm = $("#bgm");
 
+            function startExperience({ muted }) {
+                // Always start visuals; audio is best-effort.
+                gate.style.display = "none";
+
+                // Start audio (gesture unlock)
+                try {
+                    bgm.currentTime = 0;
+                    bgm.volume = muted ? 0 : 0.55;
+                    const p = bgm.play();
+                    if (p && typeof p.catch === "function") p.catch(() => { });
+                } catch (e) { /* ignore */ }
+
+                // fade in audio slightly (if not muted)
+                if (!muted) {
+                    gsap.to(bgm, { volume: 0.62, duration: 1.8, ease: "power2.out" });
+                    // gentle resolve near end
+                    gsap.to(bgm, { volume: 0.15, duration: 1.2, ease: "power2.inOut", delay: 28.6 });
+                }
+
+                // Start from 0 every time
+                tl.play(0);
+            }
+
+            startBtn.addEventListener("click", () => startExperience({ muted: false }), { passive: true });
+            muteBtn.addEventListener("click", () => startExperience({ muted: true }), { passive: true });
+
+            // Optional: allow click anywhere on gate to start with sound
+            gate.addEventListener("click", (e) => {
+                if (e.target && (e.target.id === "gate")) startExperience({ muted: false });
+            }, { passive: true });
+
+        })();
     </script>
 </body>
 
