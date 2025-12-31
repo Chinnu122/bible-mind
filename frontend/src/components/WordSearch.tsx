@@ -34,24 +34,59 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick, isOpen, onClose, 
         setSearched(true);
 
         try {
-            // Use the bibleAPI to search verses (search up to 500 results)
-            const verses: BibleVerse[] = await bibleAPI.searchVerses(searchQuery, 500);
+            // Search both English and Telugu in parallel
+            const [englishVerses, teluguResults] = await Promise.all([
+                bibleAPI.searchVerses(searchQuery, 500),
+                bibleAPI.searchTeluguVerses(searchQuery, 500) // Supports Roman transliteration
+            ]);
 
-            // Convert API response to SearchResult format
-            const formattedResults: SearchResult[] = verses.map(verse => ({
+            // Convert English API response to SearchResult format
+            const englishResults: SearchResult[] = englishVerses.map(verse => ({
                 book: verse.bookName,
                 chapter: verse.chapter,
                 verse: verse.verse,
                 englishText: verse.kjvText || verse.webText,
-                teluguText: undefined, // Add Telugu when available in API
+                teluguText: undefined,
                 hebrewText: verse.hebrewText || undefined,
                 greekText: verse.greekText || undefined
             }));
 
-            setResults(formattedResults);
+            // Convert Telugu results (from Roman transliteration search)
+            const teluguOnlyResults: SearchResult[] = teluguResults.map(result => ({
+                book: result.englishName,
+                chapter: result.chapter,
+                verse: result.verse,
+                englishText: '', // Will be fetched or shown empty
+                teluguText: result.teluguText,
+                hebrewText: undefined,
+                greekText: undefined
+            }));
+
+            // Combine results, avoiding duplicates (prioritize results with Telugu text)
+            const seenKeys = new Set<string>();
+            const combinedResults: SearchResult[] = [];
+
+            // Add Telugu results first (they have Telugu text)
+            for (const result of teluguOnlyResults) {
+                const key = `${result.book}-${result.chapter}-${result.verse}`;
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key);
+                    combinedResults.push(result);
+                }
+            }
+
+            // Add English results that weren't in Telugu results
+            for (const result of englishResults) {
+                const key = `${result.book}-${result.chapter}-${result.verse}`;
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key);
+                    combinedResults.push(result);
+                }
+            }
+
+            setResults(combinedResults);
         } catch (error) {
             console.error('Search failed:', error);
-            // Fallback: search locally if API fails
             setResults([]);
         } finally {
             setLoading(false);
