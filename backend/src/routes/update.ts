@@ -15,8 +15,8 @@ import fs from 'fs';
 const router = Router();
 
 // Current app version (update this when releasing new versions)
-const CURRENT_VERSION = '2.10.0';
-const VERSION_CODE = 210;
+const CURRENT_VERSION = '2.11.0';
+const VERSION_CODE = 2110;
 
 // APK file location (can be stored on server or cloud storage)
 const APK_DIRECTORY = process.env.APK_DIRECTORY || path.join(__dirname, '../../public/updates');
@@ -25,11 +25,11 @@ const APK_FILENAME = 'bible-mind-latest.apk';
 // Release notes for current version
 const RELEASE_NOTES = `
 ## What's New in ${CURRENT_VERSION}
-- 🔍 Advanced multilingual search (Hebrew, Greek, Telugu, Hindi)
-- 👤 User authentication with Google OAuth
-- 📚 PostgreSQL database integration
-- ⚡ Performance improvements
-- 🐛 Bug fixes
+- ⚡ Hardware acceleration for smoother performance
+- 🚀 WebView optimizations for faster loading
+- 📱 Auto-update notifications
+- 🎨 Enhanced UI animations
+- 🐛 Bug fixes and stability improvements
 `;
 
 /**
