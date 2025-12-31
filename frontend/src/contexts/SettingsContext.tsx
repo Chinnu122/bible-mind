@@ -38,7 +38,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const [theme, setTheme] = useState<Theme>('nebula');
     const [language, setLanguage] = useState<Language>('english');
     const [soundEnabled, setSoundEnabled] = useState(true);
-    const [particles, setParticles] = useState(true);
+    const [particles, setParticles] = useState(false); // Disabled for mobile performance
     const [volume, setVolume] = useState(0.5);
     const [fontSize, setFontSize] = useState<FontSize>('normal');
     const [fontFamily, setFontFamily] = useState<FontFamily>('sans');

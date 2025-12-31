@@ -80,10 +80,10 @@ function AppLayout() {
 
   // Background Selection
   const renderBackground = () => {
-    // Holiday Mode Override
-    if (holidayMode !== 'none') {
-      return <HolidayBackground mode={holidayMode} />;
-    }
+    // Holiday mode disabled for performance
+    // if (holidayMode !== 'none') {
+    //   return <HolidayBackground mode={holidayMode} />;
+    // }
 
     if (customBackground) {
       return (
@@ -96,7 +96,7 @@ function AppLayout() {
       );
     }
 
-    // Use MetallicWavesWallpaper for metallic flowing waves effect
+    // Use MetallicWavesWallpaper for background
     return <MetallicWavesWallpaper />;
   };
 
@@ -164,7 +164,8 @@ function AppLayout() {
 
       <ClickSound />
       <AtmospherePlayer />
-      <HolidayManager onModeChange={setHolidayMode} />
+      {/* Holiday manager disabled for performance */}
+      {/* <HolidayManager onModeChange={setHolidayMode} /> */}
       <UpdateChecker />
       <WordSearch
         isOpen={searchOpen}
