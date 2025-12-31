@@ -1,15 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Happy New Year 2026</title>
+    <title>🎆 Happy New Year 2025 - Bible Mind</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@200;300;400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@200;300;400;500&family=Great+Vibes&display=swap"
         rel="stylesheet">
 
     <style>
@@ -21,44 +21,44 @@
             --white: #f7f7fb;
         }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         html,
         body {
             height: 100%;
             background: var(--black);
-            margin: 0;
-        }
-
-        body {
-            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
             overflow: hidden;
         }
 
+        /* Main container */
         .hero {
-            position: relative;
-            height: 100vh;
-            width: 100vw;
+            position: fixed;
+            inset: 0;
             background: radial-gradient(1200px 800px at 50% 55%, rgba(212, 175, 55, .08), transparent 60%),
                 linear-gradient(180deg, var(--black), var(--midnight) 55%, var(--black));
         }
 
-        canvas {
+        canvas#bg,
+        canvas#fx {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
-            display: block;
         }
 
-        /* Cinematic overlays */
+        /* Overlays */
         .grade {
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background:
-                radial-gradient(900px 700px at 50% 40%, rgba(255, 255, 255, .06), transparent 55%),
+            background: radial-gradient(900px 700px at 50% 40%, rgba(255, 255, 255, .06), transparent 55%),
                 radial-gradient(1200px 900px at 50% 65%, rgba(212, 175, 55, .10), transparent 60%),
                 linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .2) 35%, rgba(0, 0, 0, .75));
-            mix-blend-mode: normal;
         }
 
         .vignette {
@@ -69,598 +69,690 @@
             opacity: .9;
         }
 
-        .grain {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            opacity: .045;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            animation: grain 500ms steps(10) infinite;
-        }
-
-        @keyframes grain {
-            0% {
-                transform: translate(0, 0)
-            }
-
-            10% {
-                transform: translate(-3%, 2%)
-            }
-
-            20% {
-                transform: translate(2%, -3%)
-            }
-
-            30% {
-                transform: translate(4%, 1%)
-            }
-
-            40% {
-                transform: translate(-2%, 4%)
-            }
-
-            50% {
-                transform: translate(-4%, -2%)
-            }
-
-            60% {
-                transform: translate(2%, 3%)
-            }
-
-            70% {
-                transform: translate(3%, -1%)
-            }
-
-            80% {
-                transform: translate(-2%, -3%)
-            }
-
-            90% {
-                transform: translate(1%, 2%)
-            }
-
-            100% {
-                transform: translate(0, 0)
-            }
-        }
-
-        /* Text layout */
+        /* Content wrapper */
         .content {
             position: absolute;
             inset: 0;
-            display: grid;
-            place-items: center;
-            text-align: center;
-            padding: clamp(18px, 5vw, 60px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             z-index: 10;
+            text-align: center;
         }
 
-        .stack {
-            width: min(1100px, 92vw);
-            transform: translateZ(0);
-            will-change: transform, opacity;
+        /* Countdown Phase */
+        #countdown-phase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
 
-        .kicker {
-            font-weight: 300;
-            letter-spacing: .55em;
-            text-transform: uppercase;
-            font-size: clamp(10px, 1.8vw, 14px);
-            color: rgba(243, 230, 200, .85);
-            opacity: 0;
-            transform: translateY(12px);
-            transition: opacity 1.2s ease, transform 1.2s ease;
-        }
-
-        h1 {
-            margin: 14px 0 10px;
+        .countdown-title {
             font-family: "Cormorant Garamond", serif;
-            font-weight: 500;
-            line-height: .95;
-            font-size: clamp(40px, 7.5vw, 96px);
-            color: var(--white);
-            opacity: 0;
-            transform: translateY(14px) scale(.99);
-            transition: opacity 1.4s ease, transform 1.4s ease;
-            text-shadow: 0 18px 60px rgba(0, 0, 0, .55);
+            font-size: clamp(24px, 5vw, 48px);
+            color: var(--champagne);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
-        .gold {
+        .countdown-timer {
+            display: flex;
+            gap: clamp(10px, 3vw, 30px);
+            margin: 20px 0;
+        }
+
+        .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: clamp(60px, 15vw, 100px);
+        }
+
+        .time-value {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(40px, 10vw, 80px);
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gold), var(--champagne), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: clamp(10px, 2vw, 14px);
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-top: 8px;
+        }
+
+        .time-separator {
+            font-size: clamp(30px, 8vw, 60px);
+            color: var(--gold);
+            opacity: 0.5;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        .year-text {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(60px, 15vw, 150px);
+            font-weight: 600;
             background: linear-gradient(135deg, var(--gold) 0%, var(--champagne) 45%, var(--gold) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            filter: drop-shadow(0 0 22px rgba(212, 175, 55, .20));
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.4);
+            margin-top: 20px;
         }
 
-        .sub {
-            margin: 0 auto 18px;
-            font-weight: 300;
-            color: rgba(247, 247, 251, .78);
-            font-size: clamp(14px, 2.2vw, 18px);
-            line-height: 1.8;
-            max-width: 62ch;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 1.2s ease, transform 1.2s ease;
+        /* Celebration Phase */
+        #celebration-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            animation: fadeIn 1s ease-out;
         }
 
-        /* Glass verse card */
-        .verseCard {
-            margin: 22px auto 0;
-            padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 28px);
-            border-radius: 22px;
-            background: rgba(255, 255, 255, .04);
-            border: 1px solid rgba(212, 175, 55, .22);
-            backdrop-filter: blur(16px);
-            box-shadow:
-                0 22px 60px rgba(0, 0, 0, .35),
-                inset 0 1px 0 rgba(255, 255, 255, .08);
-            opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 1.2s ease, transform 1.2s ease;
-            max-width: 76ch;
-        }
-
-        .typed {
-            font-family: "Cormorant Garamond", serif;
-            font-weight: 400;
-            font-size: clamp(18px, 2.8vw, 26px);
-            line-height: 1.55;
-            color: rgba(247, 247, 251, .92);
-            letter-spacing: .01em;
-            min-height: 5.2em;
-            /* keeps layout stable while typing */
-        }
-
-        .caret {
-            display: inline-block;
-            width: 10px;
-            height: 1.05em;
-            margin-left: 2px;
-            transform: translateY(3px);
-            background: linear-gradient(180deg, rgba(212, 175, 55, .95), rgba(243, 230, 200, .75));
-            box-shadow: 0 0 18px rgba(212, 175, 55, .28);
-            animation: blink 850ms steps(1) infinite;
-            vertical-align: baseline;
-        }
-
-        @keyframes blink {
-            50% {
+        @keyframes fadeIn {
+            from {
                 opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
-        .ref {
-            margin-top: 10px;
-            font-size: 13px;
-            letter-spacing: .28em;
+        .greeting {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(40px, 10vw, 80px);
+            color: var(--white);
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .user-name {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(30px, 8vw, 60px);
+            background: linear-gradient(135deg, var(--gold), var(--champagne));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-top: -10px;
+        }
+
+        .wishes-code {
+            font-family: monospace;
+            font-size: clamp(14px, 3vw, 24px);
+            padding: 15px 30px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            }
+        }
+
+        /* Video container */
+        #video-container {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+            transition: all 0.3s;
+        }
+
+        .video-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Verse card */
+        .verse-card {
+            max-width: 600px;
+            padding: 25px 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin-top: 30px;
+        }
+
+        .verse-text {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(16px, 3vw, 22px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-ref {
+            font-size: 12px;
+            color: var(--gold);
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: rgba(243, 230, 200, .78);
-            font-weight: 300;
-            opacity: .0;
-            transition: opacity 1s ease;
+            margin-top: 15px;
         }
 
-        /* Visible states driven by JS timeline */
-        .show .kicker,
-        .show h1,
-        .show .sub {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+        /* Music control */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--gold);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
         }
 
-        .showVerse .verseCard {
-            opacity: 1;
-            transform: translateY(0);
+        .music-control:hover {
+            background: rgba(212, 175, 55, 0.3);
+            transform: scale(1.1);
         }
 
-        .showRef .ref {
-            opacity: .95;
-        }
-
-        /* Fade out end */
-        .fadeOut {
-            opacity: 0;
-            transition: opacity 1.3s ease;
-        }
-
-        /* Respect reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            .grain {
-                animation: none;
+        /* Responsive */
+        @media (max-width: 480px) {
+            .countdown-timer {
+                gap: 8px;
             }
 
-            .caret {
-                animation: none;
+            .time-block {
+                min-width: 50px;
             }
         }
     </style>
 </head>
 
 <body>
-    <section class="hero" id="hero">
+    <section class="hero">
         <canvas id="bg"></canvas>
         <canvas id="fx"></canvas>
+        <canvas id="confetti-canvas"></canvas>
 
         <div class="grade"></div>
         <div class="vignette"></div>
-        <div class="grain"></div>
 
         <div class="content">
-            <div class="stack" id="stack">
-                <div class="kicker" id="kicker">For friends • family • kids</div>
+            <!-- Countdown Phase -->
+            <div id="countdown-phase">
+                <div class="countdown-title">New Year Countdown</div>
 
-                <h1 id="title">
-                    Happy New Year<br>
-                    <span class="gold">2026</span>
-                </h1>
+                <div class="countdown-timer">
+                    <div class="time-block">
+                        <span class="time-value" id="days">00</span>
+                        <span class="time-label">Days</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-block">
+                        <span class="time-value" id="hours">00</span>
+                        <span class="time-label">Hours</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-block">
+                        <span class="time-value" id="minutes">00</span>
+                        <span class="time-label">Minutes</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-block">
+                        <span class="time-value" id="seconds">00</span>
+                        <span class="time-label">Seconds</span>
+                    </div>
+                </div>
 
-                <p class="sub" id="sub">
-                    May your home be filled with peace, laughter, and love—together, all year long.
-                </p>
+                <div class="year-text">2025</div>
+            </div>
 
-                <div class="verseCard" id="verseCard" aria-label="Bible verse">
-                    <div class="typed" id="typed"></div>
-                    <div class="ref" id="ref">Numbers 6:24–26</div>
+            <!-- Celebration Phase (Hidden initially) -->
+            <div id="celebration-phase">
+                <div class="greeting">Happy New Year!</div>
+                <div class="user-name" id="user-greeting"></div>
+
+                <div class="wishes-code" id="wishes-code">BM2025-XXXX</div>
+
+                <div class="verse-card">
+                    <div class="verse-text">
+                        "For I know the plans I have for you," declares the LORD,
+                        "plans to prosper you and not to harm you,
+                        plans to give you hope and a future."
+                    </div>
+                    <div class="verse-ref">Jeremiah 29:11</div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Video Container -->
+    <div id="video-container">
+        <button class="video-close" onclick="closeVideo()">✕</button>
+        <video id="surprise-video" controls autoplay></video>
+    </div>
+
+    <!-- Music Control -->
+    <button class="music-control" id="music-btn" onclick="toggleMusic()">🔇</button>
+
+    <!-- Audio (Free New Year Music) -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mp3">
+    </audio>
+
     <script>
-        /**
-         * Luxury New Year 2026 cinematic hero
-         * - Procedural visuals (unique per load seed)
-         * - Continuous slow zoom in/out + micro-shake (camera)
-         * - Typed Bible verse after greeting
-         *
-         * Verse text: Holy Bible, Numbers 6:24–26 (wording varies by translation).
-         */
+        // ====== Configuration ======
+        const NEW_YEAR_DATE = new Date('2025-01-01T00:00:00');
 
-        // ====== Timeline (seconds) ======
-        const DURATION_S = 26.0;            // total loop length (20–30s)
-        const SHOW_GREETING_AT = 0.6;       // show main greeting
-        const SHOW_VERSE_AT = 6.0;          // show verse card + start typing
-        const SHOW_REF_AT = 15.0;           // show reference after typing settles
-        const FIREWORKS_AT = 17.0;          // celebratory lift
-        const FADE_OUT_AT = 24.2;           // fade to black
-        const RESTART_AT = 26.0;            // restart loop
+        // Videos in wishes folder
+        const WISH_VIDEOS = [
+            'wishes/Create_an_premium_1080p_202512311430.mp4',
+            'wishes/Drone_View_New_Year_Greeting_Video.mp4',
+            'wishes/In_disney_land_1080p_202512311455.mp4',
+            'wishes/Video_Generation_With_Location_Change.mp4',
+            'wishes/Video_Generation_With_New_Location.mp4',
+            'wishes/grok-video-5d414340-6c62-4e87-abe5-90e4352fb7c5.mp4',
+            'wishes/grok-video-7bc722ae-063d-47fb-bb3e-f316c90d6137.mp4',
+            'wishes/grok-video-7fbf64f3-08e3-4438-b02b-4adbc5163533.mp4'
+        ];
 
-        // ====== Text (edit freely) ======
-        const VERSE_TEXT =
-            `The LORD bless you and keep you;
-the LORD make his face to shine upon you
-and be gracious to you;
-the LORD lift up his countenance upon you
-and give you peace.`;
+        // Celebratory messages
+        const WISHES = [
+            "May God's blessings be with you throughout 2025!",
+            "Wishing you faith, hope, and love in the New Year!",
+            "May the Lord guide your path in 2025!",
+            "Blessed New Year filled with His grace!",
+            "New Year, New Blessings, New Beginnings!"
+        ];
 
-        // ====== DOM ======
-        const hero = document.getElementById('hero');
-        const stack = document.getElementById('stack');
-        const verseCard = document.getElementById('verseCard');
-        const typedEl = document.getElementById('typed');
-        const refEl = document.getElementById('ref');
+        // ====== State ======
+        let celebrationStarted = false;
+        let musicPlaying = false;
+        let userVideoIndex = null; // Persistent per user session
 
-        // ====== Utilities ======
-        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+        // ====== DOM Elements ======
+        const countdownPhase = document.getElementById('countdown-phase');
+        const celebrationPhase = document.getElementById('celebration-phase');
+        const videoContainer = document.getElementById('video-container');
+        const surpriseVideo = document.getElementById('surprise-video');
+        const userGreeting = document.getElementById('user-greeting');
+        const wishesCode = document.getElementById('wishes-code');
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
 
-        // Seeded RNG (Mulberry32)
-        function mulberry32(seed) {
-            return function () {
-                let t = seed += 0x6D2B79F5;
-                t = Math.imul(t ^ (t >>> 15), t | 1);
-                t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        // ====== Get User Info ======
+        function getUserName() {
+            // Try to get from localStorage (if user logged in)
+            const stored = localStorage.getItem('bible-mind-user');
+            if (stored) {
+                try {
+                    const user = JSON.parse(stored);
+                    return user.name || user.email?.split('@')[0] || null;
+                } catch (e) { }
             }
+            // Fallback: try session storage
+            const sessionUser = sessionStorage.getItem('userName');
+            if (sessionUser) return sessionUser;
+
+            return null;
         }
-        const seed = (crypto?.getRandomValues ? crypto.getRandomValues(new Uint32Array(1))[0] : (Date.now() >>> 0));
-        const rand = mulberry32(seed);
 
-        // ====== Canvas setup ======
-        const bg = document.getElementById('bg');
-        const fx = document.getElementById('fx');
-        const bgCtx = bg.getContext('2d', { alpha: true });
-        const fxCtx = fx.getContext('2d', { alpha: true });
-
-        function resize() {
-            const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-            for (const c of [bg, fx]) {
-                c.width = Math.floor(window.innerWidth * dpr);
-                c.height = Math.floor(window.innerHeight * dpr);
-                c.style.width = window.innerWidth + "px";
-                c.style.height = window.innerHeight + "px";
+        // ====== Generate Unique Wishes Code ======
+        function generateWishesCode() {
+            // Generate a unique code for this user/session
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'BM2025-';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            bgCtx.setTransform(1, 0, 0, 1, 0, 0);
-            fxCtx.setTransform(1, 0, 0, 1, 0, 0);
-            bgCtx.scale(dpr, dpr);
-            fxCtx.scale(dpr, dpr);
+            return code;
         }
-        window.addEventListener('resize', resize, { passive: true });
-        resize();
 
-        // ====== Scene elements ======
-        const particles = [];
-        const PARTICLE_COUNT = 120;
+        // ====== Get Consistent Random Video for User ======
+        function getUserVideoIndex() {
+            // Check if we already picked one
+            let stored = sessionStorage.getItem('ny-video-index');
+            if (stored !== null) {
+                return parseInt(stored);
+            }
+            // Pick a random one and store it
+            const idx = Math.floor(Math.random() * WISH_VIDEOS.length);
+            sessionStorage.setItem('ny-video-index', idx);
+            return idx;
+        }
 
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particles.push({
-                x: rand() * window.innerWidth,
-                y: rand() * window.innerHeight,
-                r: 0.8 + rand() * 2.8,
-                vy: 0.06 + rand() * 0.28,
-                vx: (-0.08 + rand() * 0.16),
-                a: 0.10 + rand() * 0.45,
-                z: 0.25 + rand() * 0.85,      // depth (parallax)
-                warm: rand() > 0.32
+        // ====== Countdown Logic ======
+        function updateCountdown() {
+            const now = new Date();
+            const diff = NEW_YEAR_DATE - now;
+
+            if (diff <= 0) {
+                if (!celebrationStarted) {
+                    startCelebration();
+                }
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        // ====== Start Celebration ======
+        function startCelebration() {
+            celebrationStarted = true;
+
+            // Hide countdown, show celebration
+            countdownPhase.style.display = 'none';
+            celebrationPhase.style.display = 'flex';
+
+            // Set user greeting
+            const userName = getUserName();
+            if (userName) {
+                userGreeting.textContent = userName;
+                userGreeting.style.display = 'block';
+            } else {
+                userGreeting.textContent = 'Dear Friend';
+            }
+
+            // Set wishes code
+            wishesCode.textContent = generateWishesCode();
+
+            // Start confetti
+            startConfetti();
+
+            // Play celebration music
+            playMusic();
+
+            // After 3 seconds, show video surprise
+            setTimeout(showVideoSurprise, 3000);
+        }
+
+        // ====== Video Surprise ======
+        function showVideoSurprise() {
+            const videoIdx = getUserVideoIndex();
+            const videoSrc = WISH_VIDEOS[videoIdx];
+
+            surpriseVideo.src = videoSrc;
+            videoContainer.style.display = 'block';
+
+            // When video ends, close it
+            surpriseVideo.onended = closeVideo;
+        }
+
+        function closeVideo() {
+            videoContainer.style.display = 'none';
+            surpriseVideo.pause();
+            surpriseVideo.src = '';
+        }
+
+        // ====== Music Control ======
+        function playMusic() {
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(() => {
+                // Auto-play blocked, user needs to interact
+                musicBtn.textContent = '🔇';
             });
+            musicPlaying = true;
+            musicBtn.textContent = '🔊';
         }
 
-        // Firework sparks
-        const sparks = [];
-        function spawnFirework() {
-            const cx = window.innerWidth * (0.15 + rand() * 0.70);
-            const cy = window.innerHeight * (0.18 + rand() * 0.42);
-            const hueWarm = rand() > 0.25;
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicBtn.textContent = '🔇';
+            } else {
+                bgMusic.play();
+                musicBtn.textContent = '🔊';
+            }
+            musicPlaying = !musicPlaying;
+        }
 
-            const count = 42 + Math.floor(rand() * 28);
-            for (let i = 0; i < count; i++) {
-                const ang = (Math.PI * 2) * (i / count) + (rand() * 0.25);
-                const spd = 1.1 + rand() * 2.6;
-                sparks.push({
-                    x: cx, y: cy,
-                    vx: Math.cos(ang) * spd,
-                    vy: Math.sin(ang) * spd,
-                    life: 1.0,
-                    decay: 0.012 + rand() * 0.02,
-                    r: 1.0 + rand() * 1.8,
-                    warm: hueWarm,
+        // ====== Confetti Effect ======
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+        let confettiAnimating = false;
+
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        function createConfetti() {
+            const colors = ['#d4af37', '#f3e6c8', '#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3'];
+            for (let i = 0; i < 200; i++) {
+                confettiParticles.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 200,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngle: 0,
+                    tiltAngleIncrement: Math.random() * 0.1 + 0.05
                 });
             }
         }
 
-        // ====== Typed effect ======
-        let typing = null;
+        function drawConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
-        function setTyped(text) {
-            // reset
-            typedEl.textContent = "";
-            // caret element appended after spans
-            const caret = document.createElement('span');
-            caret.className = "caret";
-            typedEl.appendChild(caret);
+            for (let i = 0; i < confettiParticles.length; i++) {
+                const p = confettiParticles[i];
+                confettiCtx.beginPath();
+                confettiCtx.lineWidth = p.r / 2;
+                confettiCtx.strokeStyle = p.color;
+                confettiCtx.moveTo(p.x + p.tilt + p.r / 4, p.y);
+                confettiCtx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 4);
+                confettiCtx.stroke();
+            }
 
-            // We type into a text node placed before caret.
-            const node = document.createTextNode("");
-            typedEl.insertBefore(node, caret);
+            updateConfetti();
+        }
 
-            // Type progressively
-            const full = text.replace(/\r\n/g, "\n");
-            let i = 0;
+        function updateConfetti() {
+            for (let i = 0; i < confettiParticles.length; i++) {
+                const p = confettiParticles[i];
+                p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                p.x += Math.sin(p.d);
+                p.tiltAngle += p.tiltAngleIncrement;
+                p.tilt = Math.sin(p.tiltAngle) * 15;
 
-            const speedBase = 22; // ms per char (will vary)
-            const typeTick = () => {
-                if (!typing) return;
-
-                if (i >= full.length) {
-                    // finished
-                    return;
+                if (p.y > confettiCanvas.height) {
+                    confettiParticles[i] = {
+                        ...p,
+                        x: Math.random() * confettiCanvas.width,
+                        y: -20,
+                        tilt: Math.random() * 10 - 5
+                    };
                 }
-                const ch = full[i++];
-                node.textContent += ch;
-
-                // Slightly human timing: pauses on punctuation/newlines
-                let delay = speedBase + Math.floor(rand() * 18);
-                if (ch === "\n") delay += 180 + Math.floor(rand() * 120);
-                if (",;:".includes(ch)) delay += 90 + Math.floor(rand() * 80);
-                if (".!?".includes(ch)) delay += 160 + Math.floor(rand() * 140);
-
-                typing.timer = window.setTimeout(typeTick, delay);
-            };
-
-            typing = { timer: 0 };
-            typeTick();
+            }
         }
 
-        function stopTyping() {
-            if (!typing) return;
-            clearTimeout(typing.timer);
-            typing = null;
+        function animateConfetti() {
+            if (!confettiAnimating) return;
+            drawConfetti();
+            requestAnimationFrame(animateConfetti);
         }
 
-        // ====== Camera motion (continuous zoom + parallax + micro shake) ======
-        function camera(t) {
-            // t in seconds
-            const zoom = 1.0 + 0.045 * Math.sin(t * 0.55) + 0.018 * Math.sin(t * 1.25 + 1.4);
-            const driftX = 10 * Math.sin(t * 0.22 + 0.8);
-            const driftY = 7 * Math.cos(t * 0.18 + 0.2);
+        function startConfetti() {
+            resizeConfetti();
+            createConfetti();
+            confettiAnimating = true;
+            animateConfetti();
 
-            // tiny handheld shake (very subtle)
-            const shake = 0.55;
-            const sx = shake * (Math.sin(t * 9.7) * 0.6 + Math.sin(t * 13.1) * 0.4);
-            const sy = shake * (Math.cos(t * 8.9) * 0.6 + Math.cos(t * 12.3) * 0.4);
-
-            return { zoom, x: driftX + sx, y: driftY + sy };
+            // Stop after 30 seconds
+            setTimeout(() => {
+                confettiAnimating = false;
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }, 30000);
         }
 
-        // ====== Background draw ======
-        function drawBackground(timeS) {
+        // ====== Background Animation (Particles) ======
+        const bg = document.getElementById('bg');
+        const fx = document.getElementById('fx');
+        const bgCtx = bg.getContext('2d');
+        const fxCtx = fx.getContext('2d');
+
+        function resizeCanvas() {
+            const dpr = Math.min(2, window.devicePixelRatio || 1);
+            for (const c of [bg, fx]) {
+                c.width = window.innerWidth * dpr;
+                c.height = window.innerHeight * dpr;
+                c.style.width = window.innerWidth + 'px';
+                c.style.height = window.innerHeight + 'px';
+            }
+            bgCtx.scale(dpr, dpr);
+            fxCtx.scale(dpr, dpr);
+        }
+
+        const particles = [];
+        for (let i = 0; i < 80; i++) {
+            particles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                r: 1 + Math.random() * 3,
+                vy: 0.1 + Math.random() * 0.3,
+                vx: -0.1 + Math.random() * 0.2,
+                a: 0.2 + Math.random() * 0.5,
+                warm: Math.random() > 0.3
+            });
+        }
+
+        function drawBg(t) {
             const w = window.innerWidth, h = window.innerHeight;
             bgCtx.clearRect(0, 0, w, h);
 
-            // Soft moving light source
-            const lx = w * (0.50 + 0.12 * Math.sin(timeS * 0.18 + 0.6));
-            const ly = h * (0.42 + 0.10 * Math.cos(timeS * 0.16 + 1.1));
-
-            // Base gradient
-            const g = bgCtx.createRadialGradient(lx, ly, 0, w * 0.5, h * 0.55, Math.max(w, h) * 0.9);
-            g.addColorStop(0.00, "rgba(212,175,55,0.14)");
-            g.addColorStop(0.25, "rgba(18,22,34,0.55)");
-            g.addColorStop(0.60, "rgba(7,7,10,0.96)");
-            g.addColorStop(1.00, "rgba(0,0,0,1)");
+            // Gradient background
+            const g = bgCtx.createRadialGradient(w / 2, h * 0.4, 0, w / 2, h / 2, Math.max(w, h));
+            g.addColorStop(0, 'rgba(212,175,55,0.12)');
+            g.addColorStop(0.4, 'rgba(18,22,34,0.6)');
+            g.addColorStop(1, 'rgba(7,7,10,1)');
             bgCtx.fillStyle = g;
             bgCtx.fillRect(0, 0, w, h);
-
-            // Golden ribbon waves (procedural, additive)
-            bgCtx.save();
-            bgCtx.globalCompositeOperation = "screen";
-            bgCtx.globalAlpha = 0.35;
-            for (let i = 0; i < 3; i++) {
-                const y0 = h * (0.35 + i * 0.16) + 18 * Math.sin(timeS * 0.6 + i * 2.2);
-                bgCtx.beginPath();
-                bgCtx.moveTo(-40, y0);
-                const amp = 34 + i * 10;
-                for (let x = 0; x <= w + 60; x += 40) {
-                    const y = y0 + amp * Math.sin((x / w) * Math.PI * 2 + timeS * 0.75 + i * 1.4);
-                    bgCtx.quadraticCurveTo(x + 20, y, x + 40, y0);
-                }
-                const stroke = bgCtx.createLinearGradient(0, y0 - 60, 0, y0 + 60);
-                stroke.addColorStop(0, "rgba(212,175,55,0)");
-                stroke.addColorStop(0.5, "rgba(243,230,200,0.65)");
-                stroke.addColorStop(1, "rgba(212,175,55,0)");
-                bgCtx.strokeStyle = stroke;
-                bgCtx.lineWidth = 2.2 + i * 0.9;
-                bgCtx.shadowBlur = 26;
-                bgCtx.shadowColor = "rgba(212,175,55,0.25)";
-                bgCtx.stroke();
-            }
-            bgCtx.restore();
         }
 
-        function drawParticles(timeS, cam) {
+        function drawParticles(t) {
             const w = window.innerWidth, h = window.innerHeight;
-            fxCtx.save();
             fxCtx.clearRect(0, 0, w, h);
 
-            // Bokeh particles with depth/parallax
             for (const p of particles) {
-                p.y -= p.vy * (0.8 + p.z);
-                p.x += p.vx * (0.8 + p.z);
+                p.y -= p.vy;
+                p.x += p.vx;
+                if (p.y < -20) { p.y = h + 20; p.x = Math.random() * w; }
 
-                if (p.y < -30) { p.y = h + 30; p.x = rand() * w; }
-                if (p.x < -40) p.x = w + 40;
-                if (p.x > w + 40) p.x = -40;
-
-                const px = p.x + cam.x * (0.22 + 0.35 * p.z);
-                const py = p.y + cam.y * (0.22 + 0.35 * p.z);
-
-                const r = p.r * (0.9 + 0.9 * p.z);
                 fxCtx.beginPath();
-                fxCtx.arc(px, py, r, 0, Math.PI * 2);
-
-                const alpha = p.a * (0.55 + 0.45 * Math.sin(timeS * 0.6 + p.x * 0.01));
-                const col = p.warm ? `rgba(212,175,55,${clamp(alpha, 0, 0.7)})` : `rgba(247,247,251,${clamp(alpha * 0.8, 0, 0.55)})`;
-                fxCtx.fillStyle = col;
-
-                fxCtx.shadowBlur = 18 + 22 * p.z;
-                fxCtx.shadowColor = p.warm ? "rgba(212,175,55,0.35)" : "rgba(255,255,255,0.18)";
+                fxCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                const alpha = p.a * (0.6 + 0.4 * Math.sin(t * 0.001 + p.x * 0.01));
+                fxCtx.fillStyle = p.warm
+                    ? `rgba(212,175,55,${alpha})`
+                    : `rgba(255,255,255,${alpha * 0.7})`;
                 fxCtx.fill();
             }
-
-            fxCtx.restore();
         }
 
-        function drawFireworks(timeS) {
-            const w = window.innerWidth, h = window.innerHeight;
-
-            // Update sparks
-            fxCtx.save();
-            fxCtx.globalCompositeOperation = "screen";
-
-            for (let i = sparks.length - 1; i >= 0; i--) {
-                const s = sparks[i];
-                s.x += s.vx;
-                s.y += s.vy;
-                s.vy += 0.018; // gravity
-                s.life -= s.decay;
-
-                if (s.life <= 0) {
-                    sparks.splice(i, 1);
-                    continue;
-                }
-
-                const a = clamp(s.life, 0, 1) * 0.9;
-                fxCtx.beginPath();
-                fxCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                fxCtx.fillStyle = s.warm
-                    ? `rgba(212,175,55,${a})`
-                    : `rgba(243,230,200,${a})`;
-                fxCtx.shadowBlur = 22;
-                fxCtx.shadowColor = s.warm ? "rgba(212,175,55,0.35)" : "rgba(255,255,255,0.18)";
-                fxCtx.fill();
-            }
-
-            fxCtx.restore();
+        function animate(t) {
+            drawBg(t);
+            drawParticles(t);
+            requestAnimationFrame(animate);
         }
 
-        // ====== Loop / timeline ======
-        let start = performance.now();
-        let lastFireworkAt = -999;
+        // ====== Initialize ======
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            resizeConfetti();
+        });
 
-        function resetLoop() {
-            start = performance.now();
-            lastFireworkAt = -999;
+        resizeCanvas();
+        animate(0);
 
-            hero.classList.remove("fadeOut");
-            stack.classList.remove("show", "showVerse", "showRef");
+        // Start countdown
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
 
-            stopTyping();
-            typedEl.textContent = "";
-            refEl.style.opacity = "0";
-
-            // small visual variation each loop
-            // (not re-seeding; keeps identity but shifts timing)
+        // Check if already past midnight (for testing)
+        if (new Date() >= NEW_YEAR_DATE && !celebrationStarted) {
+            startCelebration();
         }
 
-        function tick(now) {
-            const t = (now - start) / 1000;
-
-            // camera motion applied to text (subtle “lens breathing” feel)
-            const cam = camera(t);
-            stack.style.transform = `translate(${cam.x * 0.10}px, ${cam.y * 0.10}px) scale(${1 + (cam.zoom - 1) * 0.45})`;
-
-            // draw layers
-            drawBackground(t);
-            drawParticles(t, cam);
-
-            // timeline states
-            if (t >= SHOW_GREETING_AT) {
-                stack.classList.add("show");
-            }
-
-            if (t >= SHOW_VERSE_AT) {
-                stack.classList.add("showVerse");
-                if (!typing && typedEl.textContent.trim().length === 0) {
-                    setTyped(VERSE_TEXT);
-                }
-            }
-
-            if (t >= SHOW_REF_AT) {
-                stack.classList.add("showRef");
-            }
-
-            if (t >= FIREWORKS_AT) {
-                // occasional fireworks bursts
-                if (t - lastFireworkAt > (1.2 + rand() * 1.2)) {
-                    spawnFirework();
-                    lastFireworkAt = t;
-                }
-                drawFireworks(t);
-            }
-
-            if (t >= FADE_OUT_AT) {
-                hero.classList.add("fadeOut");
-            }
-
-            if (t >= RESTART_AT) {
-                resetLoop();
-            }
-
-            requestAnimationFrame(tick);
-        }
-
-        resetLoop();
-        requestAnimationFrame(tick);
+        // Debug: For testing, uncomment to trigger celebration immediately
+        // startCelebration();
     </script>
 </body>
 
