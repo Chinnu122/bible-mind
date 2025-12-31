@@ -189,7 +189,18 @@ const WordSearch: React.FC<WordSearchProps> = ({ onVerseClick, isOpen, onClose, 
                                         </div>
                                     ) : results.length > 0 ? (
                                         <div className="divide-y divide-white/5">
-                                            {results.map((result, i) => (
+                                            {/* Results count header */}
+                                            <div className="p-4 bg-slate-800/50 border-b border-white/10 sticky top-0 z-10">
+                                                <p className="text-sm text-gold-400">
+                                                    Found <span className="font-semibold">{results.length}</span> verses matching "{searchQuery}"
+                                                </p>
+                                                {results.length >= 20 && (
+                                                    <p className="text-xs text-slate-500 mt-1">
+                                                        Showing top 20 results. Use Advanced Search for more.
+                                                    </p>
+                                                )}
+                                            </div>
+                                            {results.slice(0, 20).map((result, i) => (
                                                 <motion.div
                                                     key={i}
                                                     initial={{ opacity: 0, y: 10 }}
