@@ -10,7 +10,7 @@ interface VersionInfo {
     changelog: string[];
 }
 
-const APP_VERSION = '2.9.0';
+const APP_VERSION = '2.12.0';
 const VERSION_CHECK_KEY = 'bible-mind-last-version-check';
 const DISMISSED_VERSION_KEY = 'bible-mind-dismissed-version';
 
