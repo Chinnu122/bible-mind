@@ -24,19 +24,20 @@ const UpdateChecker: React.FC = () => {
 
     const checkForUpdates = async () => {
         try {
-            // Don't check too frequently (once per hour)
+            // Check every 5 minutes instead of hourly to show updates faster
             const lastCheck = localStorage.getItem(VERSION_CHECK_KEY);
             const now = Date.now();
-            if (lastCheck && (now - parseInt(lastCheck)) < 3600000) {
+            if (lastCheck && (now - parseInt(lastCheck)) < 300000) { // 5 minutes
                 return;
             }
 
             // Fetch version info from backend API
             const apiBase = import.meta.env.VITE_API_URL || 'https://bible-mind-api.onrender.com';
-            const response = await fetch(`${apiBase}/api/update/check?version=${APP_VERSION}&versionCode=290`);
+            const response = await fetch(`${apiBase}/api/update/check?version=${APP_VERSION}&versionCode=2120`);
             if (!response.ok) return;
 
             const result = await response.json();
+            console.log('Update check result:', result);
             if (!result.success) return;
 
             const data = result.data;
