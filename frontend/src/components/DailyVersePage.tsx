@@ -201,7 +201,7 @@ export default function DailyVersePage({ onBack, onViewCharacter, onViewQuiz, on
                             Test your knowledge
                         </p>
                         <p className="text-sm text-royal-200/60">
-                            3 Questions • 50 XP
+                            30 Questions • Weekly Challenge
                         </p>
                     </div>
                     <div className="w-full h-1 bg-royal-900/50 rounded-full mt-4 overflow-hidden">

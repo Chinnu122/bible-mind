@@ -3,6 +3,7 @@ import { Sparkles, Crown, Heart, Flame, BookOpen, Scroll, Users, Cross, Music, C
 import { motion, AnimatePresence } from 'framer-motion';
 import NotebookModal from './NotebookModal';
 import GenesisBook from './GenesisBook';
+import ExodusBook from './ExodusBook';
 
 const bibleBooks = [
     // Old Testament
@@ -78,12 +79,16 @@ const bibleBooks = [
 const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const [selectedBook, setSelectedBook] = useState<{ id: number; title: string } | null>(null);
     const [showGenesisBook, setShowGenesisBook] = useState(false);
+    const [showExodusBook, setShowExodusBook] = useState(false);
 
-    // Handle book click - special handling for Genesis
+    // Handle book click - special handling for Genesis and Exodus
     const handleBookClick = (book: { id: number; title: string }) => {
         if (book.id === 1) {
             // Genesis - open the story book
             setShowGenesisBook(true);
+        } else if (book.id === 2) {
+            // Exodus - open the story book
+            setShowExodusBook(true);
         } else {
             // Other books - open notebook
             setSelectedBook(book);
@@ -272,6 +277,9 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 )}
                 {showGenesisBook && (
                     <GenesisBook onClose={() => setShowGenesisBook(false)} />
+                )}
+                {showExodusBook && (
+                    <ExodusBook onBack={() => setShowExodusBook(false)} />
                 )}
             </AnimatePresence>
         </motion.div>

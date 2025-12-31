@@ -1,48 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, Award, RefreshCcw, ArrowRight } from 'lucide-react';
+import { CheckCircle, XCircle, Award, RefreshCcw, ArrowRight, BookOpen, Users, Hash, Quote } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { getWeeklyQuestions, QuizQuestion } from '../data/quizData';
 
-interface QuizQuestion {
-    id: number;
-    question: string;
-    options: string[];
-    correctAnswer: number;
-    explanation: string;
-}
+// Category icon mapping
+const categoryIcons: Record<string, React.ReactNode> = {
+    'old_testament': <BookOpen size={14} className="text-amber-400" />,
+    'new_testament': <BookOpen size={14} className="text-blue-400" />,
+    'characters': <Users size={14} className="text-purple-400" />,
+    'verses': <Quote size={14} className="text-green-400" />,
+    'numbers': <Hash size={14} className="text-cyan-400" />
+};
 
-const SAMPLE_QUESTIONS: QuizQuestion[] = [
-    {
-        id: 1,
-        question: "Who is known as the 'Father of Many Nations'?",
-        options: ["Moses", "Abraham", "David", "Solomon"],
-        correctAnswer: 1,
-        explanation: "In Genesis 17:5, God changes Abram's name to Abraham, meaning 'father of a multitude'."
-    },
-    {
-        id: 2,
-        question: "What is the shortest verse in the Bible?",
-        options: ["God is love", "Jesus wept", "Rejoice always", "Pray without ceasing"],
-        correctAnswer: 1,
-        explanation: "John 11:35 'Jesus wept' is the shortest verse in English translations."
-    },
-    {
-        id: 3,
-        question: "How many books are in the New Testament?",
-        options: ["27", "39", "66", "12"],
-        correctAnswer: 0,
-        explanation: "There are 27 books in the New Testament and 39 in the Old Testament."
-    }
-];
+const categoryNames: Record<string, string> = {
+    'old_testament': 'Old Testament',
+    'new_testament': 'New Testament',
+    'characters': 'Characters',
+    'verses': 'Key Verses',
+    'numbers': 'Numbers & Facts'
+};
 
 export default function DailyQuiz({ onBack }: { onBack: () => void }) {
+    const [questions, setQuestions] = useState<QuizQuestion[]>([]);
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [score, setScore] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
 
-    const question = SAMPLE_QUESTIONS[currentQuestionIdx];
+    // Load weekly questions on mount
+    useEffect(() => {
+        const weeklyQuestions = getWeeklyQuestions();
+        setQuestions(weeklyQuestions);
+    }, []);
+
+    const question = questions[currentQuestionIdx];
+
+    // Loading state
+    if (questions.length === 0) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <div className="text-gold-400 animate-pulse">Loading questions...</div>
+            </div>
+        );
+    }
 
     const handleOptionSelect = (idx: number) => {
         if (isAnswered) return;
@@ -61,7 +63,7 @@ export default function DailyQuiz({ onBack }: { onBack: () => void }) {
     };
 
     const nextQuestion = () => {
-        if (currentQuestionIdx < SAMPLE_QUESTIONS.length - 1) {
+        if (currentQuestionIdx < questions.length - 1) {
             setCurrentQuestionIdx(prev => prev + 1);
             setSelectedOption(null);
             setIsAnswered(false);
@@ -99,13 +101,13 @@ export default function DailyQuiz({ onBack }: { onBack: () => void }) {
                     </div>
 
                     <div className="flex justify-between items-center text-xs uppercase tracking-widest text-slate-500 mb-2">
-                        <span>Question {currentQuestionIdx + 1}/{SAMPLE_QUESTIONS.length}</span>
+                        <span>Question {currentQuestionIdx + 1}/{questions.length}</span>
                         <span>Score: {score}</span>
                     </div>
                     <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
                         <motion.div
                             initial={{ width: 0 }}
-                            animate={{ width: `${((currentQuestionIdx) / SAMPLE_QUESTIONS.length) * 100}%` }}
+                            animate={{ width: `${((currentQuestionIdx) / questions.length) * 100}%` }}
                             className="h-full bg-gold-500/50"
                         />
                     </div>
@@ -121,6 +123,14 @@ export default function DailyQuiz({ onBack }: { onBack: () => void }) {
                         exit={{ x: -20, opacity: 0 }}
                         className="bg-slate-800 border border-white/5 p-8 rounded-3xl shadow-xl relative overflow-hidden"
                     >
+                        {/* Category Badge */}
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs">
+                                {categoryIcons[question.category]}
+                                <span className="text-slate-400">{categoryNames[question.category]}</span>
+                            </span>
+                        </div>
+
                         <h2 className="text-2xl md:text-3xl font-editorial text-crema-50 mb-8 leading-relaxed">
                             {question.question}
                         </h2>
@@ -200,7 +210,7 @@ export default function DailyQuiz({ onBack }: { onBack: () => void }) {
                         </div>
 
                         <h2 className="text-4xl font-editorial text-crema-50 mb-2">Quiz Complete!</h2>
-                        <p className="text-slate-400 mb-8 text-lg">You scored <span className="text-gold-400 font-bold">{score}</span> out of {SAMPLE_QUESTIONS.length}</p>
+                        <p className="text-slate-400 mb-8 text-lg">You scored <span className="text-gold-400 font-bold">{score}</span> out of {questions.length}</p>
 
                         <div className="flex flex-col gap-3">
                             <button
