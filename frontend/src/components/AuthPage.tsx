@@ -37,22 +37,36 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
 
         try {
             const endpoint = mode === 'signin' ? '/v2/auth/login' : '/v2/auth/register';
+
+            // Map form fields to what backend expects
+            const payload = mode === 'signin'
+                ? { email: formData.email, password: formData.password }
+                : { email: formData.email, password: formData.password, displayName: formData.name };
+
             const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
 
             const data = await response.json();
 
             if (!response.ok) {
+                // Handle specific errors
+                if (response.status === 409) {
+                    throw new Error('This email is already registered. Please sign in instead.');
+                } else if (response.status === 401) {
+                    throw new Error('Invalid email or password. Please try again.');
+                } else if (response.status === 400) {
+                    throw new Error(data.error || 'Please check your information and try again.');
+                }
                 throw new Error(data.error || 'Authentication failed');
             }
 
             // Save user and tokens
             // V2 returns data.data = { user, tokens }
             localStorage.setItem('bible-mind-user', JSON.stringify(data.data));
-            setSuccess(data.message || 'Success!');
+            setSuccess(mode === 'signin' ? 'Welcome back!' : 'Account created successfully!');
 
             if (onAuthSuccess) {
                 onAuthSuccess(data.data.user);
