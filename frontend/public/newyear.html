@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>🎆 Happy New Year 2025 - Bible Mind</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@200;300;400;500&family=Great+Vibes&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --black: #07070a;
+            --midnight: #0b1626;
+            --gold: #d4af37;
+            --champagne: #f3e6c8;
+            --white: #f7f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--black);
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Main container */
+        .hero {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(1200px 800px at 50% 55%, rgba(212, 175, 55, .08), transparent 60%),
+                linear-gradient(180deg, var(--black), var(--midnight) 55%, var(--black));
+        }
+
+        canvas#bg,
+        canvas#fx {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Overlays */
+        .grade {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(900px 700px at 50% 40%, rgba(255, 255, 255, .06), transparent 55%),
+                radial-gradient(1200px 900px at 50% 65%, rgba(212, 175, 55, .10), transparent 60%),
+                linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .2) 35%, rgba(0, 0, 0, .75));
+        }
+
+        .vignette {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, .75) 100%);
+            opacity: .9;
+        }
+
+        /* Content wrapper */
+        .content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+            text-align: center;
+        }
+
+        /* Countdown Phase */
+        #countdown-phase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .countdown-title {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(24px, 5vw, 48px);
+            color: var(--champagne);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .countdown-timer {
+            display: flex;
+            gap: clamp(10px, 3vw, 30px);
+            margin: 20px 0;
+        }
+
+        .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: clamp(60px, 15vw, 100px);
+        }
+
+        .time-value {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(40px, 10vw, 80px);
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gold), var(--champagne), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: clamp(10px, 2vw, 14px);
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-top: 8px;
+        }
+
+        .time-separator {
+            font-size: clamp(30px, 8vw, 60px);
+            color: var(--gold);
+            opacity: 0.5;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        .year-text {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(60px, 15vw, 150px);
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--champagne) 45%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.4);
+            margin-top: 20px;
+        }
+
+        /* Celebration Phase */
+        #celebration-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .greeting {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(40px, 10vw, 80px);
+            color: var(--white);
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .user-name {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(30px, 8vw, 60px);
+            background: linear-gradient(135deg, var(--gold), var(--champagne));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-top: -10px;
+        }
+
+        .wishes-code {
+            font-family: monospace;
+            font-size: clamp(14px, 3vw, 24px);
+            padding: 15px 30px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            }
+        }
+
+        /* Video container */
+        #video-container {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+            transition: all 0.3s;
+        }
+
+        .video-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Verse card */
+        .verse-card {
+            max-width: 600px;
+            padding: 25px 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin-top: 30px;
+        }
+
+        .verse-text {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(16px, 3vw, 22px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .verse-ref {
+            font-size: 12px;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 15px;
+        }
+
+        /* Music control */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--gold);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .music-control:hover {
+            background: rgba(212, 175, 55, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .countdown-timer {
+                gap: 8px;
+            }
+
+            .time-block {
+                min-width: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <canvas id="bg"></canvas>
+        <canvas id="fx"></canvas>
+        <canvas id="confetti-canvas"></canvas>
+
+        <div class="grade"></div>
+        <div class="vignette"></div>
+
+        <div class="content">
+            <!-- Countdown Phase -->
+            <div id="countdown-phase">
+                <div class="countdown-title">New Year Countdown</div>
+
+                <div class="countdown-timer">
+                    <div class="time-block">
+                        <span class="time-value" id="days">00</span>
+                        <span class="time-label">Days</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-block">
+                        <span class="time-value" id="hours">00</span>
+                        <span class="time-label">Hours</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-block">
+                        <span class="time-value" id="minutes">00</span>
+                        <span class="time-label">Minutes</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-block">
+                        <span class="time-value" id="seconds">00</span>
+                        <span class="time-label">Seconds</span>
+                    </div>
+                </div>
+
+                <div class="year-text">2026</div>
+            </div>
+
+            <!-- Celebration Phase (Hidden initially) -->
+            <div id="celebration-phase">
+                <div class="greeting">Happy New Year!</div>
+                <div class="user-name" id="user-greeting"></div>
+
+                <div class="wishes-code" id="wishes-code">BM2026-XXXX</div>
+
+                <div class="verse-card">
+                    <div class="verse-text">
+                        "For I know the plans I have for you," declares the LORD,
+                        "plans to prosper you and not to harm you,
+                        plans to give you hope and a future."
+                    </div>
+                    <div class="verse-ref">Jeremiah 29:11</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Container -->
+    <div id="video-container">
+        <button class="video-close" onclick="closeVideo()">✕</button>
+        <video id="surprise-video" controls autoplay></video>
+    </div>
+
+    <!-- Music Control -->
+    <button class="music-control" id="music-btn" onclick="toggleMusic()">🔇</button>
+
+    <!-- Audio (Free New Year Music) -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        // ====== Configuration ======
+        const NEW_YEAR_DATE = new Date('2026-01-01T00:00:00');
+
+        // Videos in wishes folder
+        const WISH_VIDEOS = [
+            'wishes/Create_an_premium_1080p_202512311430.mp4',
+            'wishes/Drone_View_New_Year_Greeting_Video.mp4',
+            'wishes/In_disney_land_1080p_202512311455.mp4',
+            'wishes/Video_Generation_With_Location_Change.mp4',
+            'wishes/Video_Generation_With_New_Location.mp4',
+            'wishes/grok-video-5d414340-6c62-4e87-abe5-90e4352fb7c5.mp4',
+            'wishes/grok-video-7bc722ae-063d-47fb-bb3e-f316c90d6137.mp4',
+            'wishes/grok-video-7fbf64f3-08e3-4438-b02b-4adbc5163533.mp4'
+        ];
+
+        // Celebratory messages
+        const WISHES = [
+            "May God's blessings be with you throughout 2026!",
+            "Wishing you faith, hope, and love in the New Year!",
+            "May the Lord guide your path in 2026!",
+            "Blessed New Year filled with His grace!",
+            "New Year, New Blessings, New Beginnings!"
+        ];
+
+        // ====== State ======
+        let celebrationStarted = false;
+        let musicPlaying = false;
+        let userVideoIndex = null; // Persistent per user session
+
+        // ====== DOM Elements ======
+        const countdownPhase = document.getElementById('countdown-phase');
+        const celebrationPhase = document.getElementById('celebration-phase');
+        const videoContainer = document.getElementById('video-container');
+        const surpriseVideo = document.getElementById('surprise-video');
+        const userGreeting = document.getElementById('user-greeting');
+        const wishesCode = document.getElementById('wishes-code');
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+
+        // ====== Get User Info ======
+        function getUserName() {
+            // Try to get from localStorage (if user logged in)
+            const stored = localStorage.getItem('bible-mind-user');
+            if (stored) {
+                try {
+                    const user = JSON.parse(stored);
+                    return user.name || user.email?.split('@')[0] || null;
+                } catch (e) { }
+            }
+            // Fallback: try session storage
+            const sessionUser = sessionStorage.getItem('userName');
+            if (sessionUser) return sessionUser;
+
+            return null;
+        }
+
+        // ====== Generate Unique Wishes Code ======
+        function generateWishesCode() {
+            // Generate a unique code for this user/session
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'BM2025-';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        // ====== Get Consistent Random Video for User ======
+        function getUserVideoIndex() {
+            // Check if we already picked one
+            let stored = sessionStorage.getItem('ny-video-index');
+            if (stored !== null) {
+                return parseInt(stored);
+            }
+            // Pick a random one and store it
+            const idx = Math.floor(Math.random() * WISH_VIDEOS.length);
+            sessionStorage.setItem('ny-video-index', idx);
+            return idx;
+        }
+
+        // ====== Countdown Logic ======
+        function updateCountdown() {
+            const now = new Date();
+            const diff = NEW_YEAR_DATE - now;
+
+            if (diff <= 0) {
+                if (!celebrationStarted) {
+                    startCelebration();
+                }
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        // ====== Start Celebration ======
+        function startCelebration() {
+            celebrationStarted = true;
+
+            // Hide countdown, show celebration
+            countdownPhase.style.display = 'none';
+            celebrationPhase.style.display = 'flex';
+
+            // Set user greeting
+            const userName = getUserName();
+            if (userName) {
+                userGreeting.textContent = userName;
+                userGreeting.style.display = 'block';
+            } else {
+                userGreeting.textContent = 'Dear Friend';
+            }
+
+            // Set wishes code
+            wishesCode.textContent = generateWishesCode();
+
+            // Start confetti
+            startConfetti();
+
+            // Play celebration music
+            playMusic();
+
+            // After 3 seconds, show video surprise
+            setTimeout(showVideoSurprise, 3000);
+        }
+
+        // ====== Video Surprise ======
+        function showVideoSurprise() {
+            const videoIdx = getUserVideoIndex();
+            const videoSrc = WISH_VIDEOS[videoIdx];
+
+            surpriseVideo.src = videoSrc;
+            videoContainer.style.display = 'block';
+
+            // When video ends, close it
+            surpriseVideo.onended = closeVideo;
+        }
+
+        function closeVideo() {
+            videoContainer.style.display = 'none';
+            surpriseVideo.pause();
+            surpriseVideo.src = '';
+        }
+
+        // ====== Music Control ======
+        function playMusic() {
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(() => {
+                // Auto-play blocked, user needs to interact
+                musicBtn.textContent = '🔇';
+            });
+            musicPlaying = true;
+            musicBtn.textContent = '🔊';
+        }
+
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicBtn.textContent = '🔇';
+            } else {
+                bgMusic.play();
+                musicBtn.textContent = '🔊';
+            }
+            musicPlaying = !musicPlaying;
+        }
+
+        // ====== Confetti Effect ======
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+        let confettiAnimating = false;
+
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        function createConfetti() {
+            const colors = ['#d4af37', '#f3e6c8', '#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3'];
+            for (let i = 0; i < 200; i++) {
+                confettiParticles.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 200,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngle: 0,
+                    tiltAngleIncrement: Math.random() * 0.1 + 0.05
+                });
+            }
+        }
+
+        function drawConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+            for (let i = 0; i < confettiParticles.length; i++) {
+                const p = confettiParticles[i];
+                confettiCtx.beginPath();
+                confettiCtx.lineWidth = p.r / 2;
+                confettiCtx.strokeStyle = p.color;
+                confettiCtx.moveTo(p.x + p.tilt + p.r / 4, p.y);
+                confettiCtx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 4);
+                confettiCtx.stroke();
+            }
+
+            updateConfetti();
+        }
+
+        function updateConfetti() {
+            for (let i = 0; i < confettiParticles.length; i++) {
+                const p = confettiParticles[i];
+                p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                p.x += Math.sin(p.d);
+                p.tiltAngle += p.tiltAngleIncrement;
+                p.tilt = Math.sin(p.tiltAngle) * 15;
+
+                if (p.y > confettiCanvas.height) {
+                    confettiParticles[i] = {
+                        ...p,
+                        x: Math.random() * confettiCanvas.width,
+                        y: -20,
+                        tilt: Math.random() * 10 - 5
+                    };
+                }
+            }
+        }
+
+        function animateConfetti() {
+            if (!confettiAnimating) return;
+            drawConfetti();
+            requestAnimationFrame(animateConfetti);
+        }
+
+        function startConfetti() {
+            resizeConfetti();
+            createConfetti();
+            confettiAnimating = true;
+            animateConfetti();
+
+            // Stop after 30 seconds
+            setTimeout(() => {
+                confettiAnimating = false;
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }, 30000);
+        }
+
+        // ====== Background Animation (Particles) ======
+        const bg = document.getElementById('bg');
+        const fx = document.getElementById('fx');
+        const bgCtx = bg.getContext('2d');
+        const fxCtx = fx.getContext('2d');
+
+        function resizeCanvas() {
+            const dpr = Math.min(2, window.devicePixelRatio || 1);
+            for (const c of [bg, fx]) {
+                c.width = window.innerWidth * dpr;
+                c.height = window.innerHeight * dpr;
+                c.style.width = window.innerWidth + 'px';
+                c.style.height = window.innerHeight + 'px';
+            }
+            bgCtx.scale(dpr, dpr);
+            fxCtx.scale(dpr, dpr);
+        }
+
+        const particles = [];
+        for (let i = 0; i < 80; i++) {
+            particles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                r: 1 + Math.random() * 3,
+                vy: 0.1 + Math.random() * 0.3,
+                vx: -0.1 + Math.random() * 0.2,
+                a: 0.2 + Math.random() * 0.5,
+                warm: Math.random() > 0.3
+            });
+        }
+
+        function drawBg(t) {
+            const w = window.innerWidth, h = window.innerHeight;
+            bgCtx.clearRect(0, 0, w, h);
+
+            // Gradient background
+            const g = bgCtx.createRadialGradient(w / 2, h * 0.4, 0, w / 2, h / 2, Math.max(w, h));
+            g.addColorStop(0, 'rgba(212,175,55,0.12)');
+            g.addColorStop(0.4, 'rgba(18,22,34,0.6)');
+            g.addColorStop(1, 'rgba(7,7,10,1)');
+            bgCtx.fillStyle = g;
+            bgCtx.fillRect(0, 0, w, h);
+        }
+
+        function drawParticles(t) {
+            const w = window.innerWidth, h = window.innerHeight;
+            fxCtx.clearRect(0, 0, w, h);
+
+            for (const p of particles) {
+                p.y -= p.vy;
+                p.x += p.vx;
+                if (p.y < -20) { p.y = h + 20; p.x = Math.random() * w; }
+
+                fxCtx.beginPath();
+                fxCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                const alpha = p.a * (0.6 + 0.4 * Math.sin(t * 0.001 + p.x * 0.01));
+                fxCtx.fillStyle = p.warm
+                    ? `rgba(212,175,55,${alpha})`
+                    : `rgba(255,255,255,${alpha * 0.7})`;
+                fxCtx.fill();
+            }
+        }
+
+        function animate(t) {
+            drawBg(t);
+            drawParticles(t);
+            requestAnimationFrame(animate);
+        }
+
+        // ====== Initialize ======
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            resizeConfetti();
+        });
+
+        resizeCanvas();
+        animate(0);
+
+        // Start countdown
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Check if already past midnight (for testing)
+        if (new Date() >= NEW_YEAR_DATE && !celebrationStarted) {
+            startCelebration();
+        }
+
+        // Debug: For testing, uncomment to trigger celebration immediately
+        // startCelebration();
+    </script>
+</body>
+
+</html>
