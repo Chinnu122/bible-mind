@@ -9,6 +9,7 @@ import NumbersBook from './NumbersBook';
 import DeuteronomyBook from './DeuteronomyBook';
 import JoshuaBook from './JoshuaBook';
 import JudgesBook from './JudgesBook';
+import DivineLibrary from './DivineLibrary';
 
 const bibleBooks = [
     // Old Testament
@@ -90,6 +91,7 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const [showDeuteronomyBook, setShowDeuteronomyBook] = useState(false);
     const [showJoshuaBook, setShowJoshuaBook] = useState(false);
     const [showJudgesBook, setShowJudgesBook] = useState(false);
+    const [showDivineLibrary, setShowDivineLibrary] = useState(false);
 
     // Handle book click - special handling for story books
     const handleBookClick = (book: { id: number; title: string }) => {
@@ -228,9 +230,36 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <div className="w-20" /> {/* Spacer for balance */}
             </div>
 
-            <p className="text-center text-crema-300 font-serif italic max-w-2xl mx-auto mb-12">
+            <p className="text-center text-crema-300 font-serif italic max-w-2xl mx-auto mb-8">
                 "Select a book to open your personal notebook. Write your revelations and save them as a keepsake."
             </p>
+
+            {/* Divine Library Card - Biblical Names */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="max-w-3xl mx-auto mb-10"
+            >
+                <button
+                    onClick={() => setShowDivineLibrary(true)}
+                    className="w-full p-6 rounded-2xl bg-gradient-to-r from-amber-950/50 via-purple-950/50 to-amber-950/50 border border-gold-500/30 hover:border-gold-500/50 transition-all group"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-gold-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Users className="w-8 h-8 text-gold-400" />
+                        </div>
+                        <div className="flex-1 text-left">
+                            <h3 className="text-xl font-bold text-gold-200 mb-1">📖 Biblical Names & Meanings</h3>
+                            <p className="text-sm text-slate-400">
+                                Explore 50+ character names with Hebrew/Greek origins, Telugu meanings, and Scripture references
+                            </p>
+                        </div>
+                        <div className="text-gold-500/50 group-hover:text-gold-400 transition-colors">
+                            →
+                        </div>
+                    </div>
+                </button>
+            </motion.div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
                 {bibleBooks.map((book, index) => (
@@ -313,6 +342,9 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 )}
                 {showJudgesBook && (
                     <JudgesBook onBack={() => setShowJudgesBook(false)} />
+                )}
+                {showDivineLibrary && (
+                    <DivineLibrary onClose={() => setShowDivineLibrary(false)} />
                 )}
             </AnimatePresence>
         </motion.div>

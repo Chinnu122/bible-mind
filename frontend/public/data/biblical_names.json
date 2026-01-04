@@ -1,0 +1,655 @@
+[
+    {
+        "name": "Abraham",
+        "hebrew": "אַבְרָהָם",
+        "meaning": "Father of many nations",
+        "telugu": "అబ్రాహాము - అనేక జనములకు తండ్రి",
+        "origin": "Hebrew",
+        "strongsRef": "H85",
+        "references": [
+            "Genesis 17:5",
+            "Romans 4:16",
+            "Hebrews 11:8"
+        ],
+        "category": "Patriarch"
+    },
+    {
+        "name": "Adam",
+        "hebrew": "אָדָם",
+        "meaning": "Man, earth, red",
+        "telugu": "ఆదాము - మనిషి, భూమి",
+        "origin": "Hebrew",
+        "strongsRef": "H120",
+        "references": [
+            "Genesis 2:19",
+            "1 Corinthians 15:45"
+        ],
+        "category": "First Man"
+    },
+    {
+        "name": "Eve",
+        "hebrew": "חַוָּה",
+        "meaning": "Life, living",
+        "telugu": "హవ్వ - జీవము",
+        "origin": "Hebrew",
+        "strongsRef": "H2332",
+        "references": [
+            "Genesis 3:20",
+            "2 Corinthians 11:3"
+        ],
+        "category": "First Woman"
+    },
+    {
+        "name": "Moses",
+        "hebrew": "מֹשֶׁה",
+        "meaning": "Drawn out of water",
+        "telugu": "మోషే - నీటిలో నుండి తీయబడినవాడు",
+        "origin": "Hebrew",
+        "strongsRef": "H4872",
+        "references": [
+            "Exodus 2:10",
+            "Hebrews 11:24"
+        ],
+        "category": "Prophet"
+    },
+    {
+        "name": "David",
+        "hebrew": "דָּוִד",
+        "meaning": "Beloved",
+        "telugu": "దావీదు - ప్రియమైనవాడు",
+        "origin": "Hebrew",
+        "strongsRef": "H1732",
+        "references": [
+            "1 Samuel 16:13",
+            "Acts 13:22"
+        ],
+        "category": "King"
+    },
+    {
+        "name": "Solomon",
+        "hebrew": "שְׁלֹמֹה",
+        "meaning": "Peaceful",
+        "telugu": "సొలొమోను - శాంతిమంతుడు",
+        "origin": "Hebrew",
+        "strongsRef": "H8010",
+        "references": [
+            "2 Samuel 12:24",
+            "1 Kings 3:12"
+        ],
+        "category": "King"
+    },
+    {
+        "name": "Jesus",
+        "hebrew": "יֵשׁוּעַ",
+        "greek": "Ἰησοῦς",
+        "meaning": "The LORD saves, Savior",
+        "telugu": "యేసు - ప్రభువు రక్షిస్తాడు, రక్షకుడు",
+        "origin": "Hebrew/Greek",
+        "strongsRef": "G2424",
+        "references": [
+            "Matthew 1:21",
+            "Luke 2:21",
+            "Acts 4:12"
+        ],
+        "category": "Messiah"
+    },
+    {
+        "name": "Mary",
+        "hebrew": "מִרְיָם",
+        "greek": "Μαρία",
+        "meaning": "Bitter, beloved, sea of bitterness",
+        "telugu": "మరియ - చేదు, ప్రియమైన",
+        "origin": "Hebrew",
+        "strongsRef": "G3137",
+        "references": [
+            "Luke 1:27",
+            "John 19:25"
+        ],
+        "category": "Mother of Jesus"
+    },
+    {
+        "name": "Peter",
+        "greek": "Πέτρος",
+        "meaning": "Rock, stone",
+        "telugu": "పేతురు - రాయి, బండ",
+        "origin": "Greek",
+        "strongsRef": "G4074",
+        "references": [
+            "Matthew 16:18",
+            "John 1:42"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Paul",
+        "greek": "Παῦλος",
+        "meaning": "Small, humble",
+        "telugu": "పౌలు - చిన్నవాడు, వినయమైన",
+        "origin": "Latin/Greek",
+        "strongsRef": "G3972",
+        "references": [
+            "Acts 13:9",
+            "Romans 1:1"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "John",
+        "hebrew": "יוֹחָנָן",
+        "greek": "Ἰωάννης",
+        "meaning": "God is gracious",
+        "telugu": "యోహాను - దేవుడు కృపగలవాడు",
+        "origin": "Hebrew",
+        "strongsRef": "G2491",
+        "references": [
+            "Mark 1:4",
+            "John 21:20"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Isaac",
+        "hebrew": "יִצְחָק",
+        "meaning": "He laughs, laughter",
+        "telugu": "ఇస్సాకు - నవ్వు",
+        "origin": "Hebrew",
+        "strongsRef": "H3327",
+        "references": [
+            "Genesis 21:3",
+            "Romans 9:7"
+        ],
+        "category": "Patriarch"
+    },
+    {
+        "name": "Jacob",
+        "hebrew": "יַעֲקֹב",
+        "meaning": "Supplanter, heel-grabber",
+        "telugu": "యాకోబు - మడమపట్టుకొనేవాడు",
+        "origin": "Hebrew",
+        "strongsRef": "H3290",
+        "references": [
+            "Genesis 25:26",
+            "Romans 9:13"
+        ],
+        "category": "Patriarch"
+    },
+    {
+        "name": "Israel",
+        "hebrew": "יִשְׂרָאֵל",
+        "meaning": "Struggles with God, God prevails",
+        "telugu": "ఇస్రాయేలు - దేవునితో పోరాడినవాడు",
+        "origin": "Hebrew",
+        "strongsRef": "H3478",
+        "references": [
+            "Genesis 32:28",
+            "Romans 9:6"
+        ],
+        "category": "Nation"
+    },
+    {
+        "name": "Joseph",
+        "hebrew": "יוֹסֵף",
+        "meaning": "He will add, increase",
+        "telugu": "యోసేపు - ఆయన కలుపును",
+        "origin": "Hebrew",
+        "strongsRef": "H3130",
+        "references": [
+            "Genesis 30:24",
+            "Matthew 1:19"
+        ],
+        "category": "Patriarch"
+    },
+    {
+        "name": "Daniel",
+        "hebrew": "דָּנִיֵּאל",
+        "meaning": "God is my judge",
+        "telugu": "దానియేలు - దేవుడు నా న్యాయాధిపతి",
+        "origin": "Hebrew",
+        "strongsRef": "H1840",
+        "references": [
+            "Daniel 1:6",
+            "Ezekiel 14:14"
+        ],
+        "category": "Prophet"
+    },
+    {
+        "name": "Samuel",
+        "hebrew": "שְׁמוּאֵל",
+        "meaning": "Heard by God, name of God",
+        "telugu": "సమూయేలు - దేవునిచేత వినబడినవాడు",
+        "origin": "Hebrew",
+        "strongsRef": "H8050",
+        "references": [
+            "1 Samuel 1:20",
+            "Acts 13:20"
+        ],
+        "category": "Prophet"
+    },
+    {
+        "name": "Elijah",
+        "hebrew": "אֵלִיָּהוּ",
+        "meaning": "My God is Yahweh",
+        "telugu": "ఏలీయా - నా దేవుడు యెహోవా",
+        "origin": "Hebrew",
+        "strongsRef": "H452",
+        "references": [
+            "1 Kings 17:1",
+            "Matthew 17:3"
+        ],
+        "category": "Prophet"
+    },
+    {
+        "name": "Isaiah",
+        "hebrew": "יְשַׁעְיָהוּ",
+        "meaning": "Salvation of the LORD",
+        "telugu": "యెషయా - ప్రభువు రక్షణ",
+        "origin": "Hebrew",
+        "strongsRef": "H3470",
+        "references": [
+            "Isaiah 1:1",
+            "Matthew 3:3"
+        ],
+        "category": "Prophet"
+    },
+    {
+        "name": "Jeremiah",
+        "hebrew": "יִרְמְיָהוּ",
+        "meaning": "The LORD exalts, appointed by God",
+        "telugu": "యిర్మీయా - ప్రభువు హెచ్చించును",
+        "origin": "Hebrew",
+        "strongsRef": "H3414",
+        "references": [
+            "Jeremiah 1:1",
+            "Matthew 16:14"
+        ],
+        "category": "Prophet"
+    },
+    {
+        "name": "Ruth",
+        "hebrew": "רוּת",
+        "meaning": "Friend, companion",
+        "telugu": "రూతు - స్నేహితురాలు",
+        "origin": "Hebrew",
+        "strongsRef": "H7327",
+        "references": [
+            "Ruth 1:4",
+            "Matthew 1:5"
+        ],
+        "category": "Ancestor of David"
+    },
+    {
+        "name": "Esther",
+        "hebrew": "אֶסְתֵּר",
+        "meaning": "Star, hidden",
+        "telugu": "ఎస్తేరు - నక్షత్రము",
+        "origin": "Persian/Hebrew",
+        "strongsRef": "H635",
+        "references": [
+            "Esther 2:7"
+        ],
+        "category": "Queen"
+    },
+    {
+        "name": "Sarah",
+        "hebrew": "שָׂרָה",
+        "meaning": "Princess, noblewoman",
+        "telugu": "శారా - రాకుమారి",
+        "origin": "Hebrew",
+        "strongsRef": "H8283",
+        "references": [
+            "Genesis 17:15",
+            "1 Peter 3:6"
+        ],
+        "category": "Matriarch"
+    },
+    {
+        "name": "Rebecca",
+        "hebrew": "רִבְקָה",
+        "meaning": "Captivating, to bind",
+        "telugu": "రిబ్కా - కట్టివేయు",
+        "origin": "Hebrew",
+        "strongsRef": "H7259",
+        "references": [
+            "Genesis 24:15",
+            "Romans 9:10"
+        ],
+        "category": "Matriarch"
+    },
+    {
+        "name": "Rachel",
+        "hebrew": "רָחֵל",
+        "meaning": "Ewe, lamb",
+        "telugu": "రాహేలు - ఆడ గొర్రె",
+        "origin": "Hebrew",
+        "strongsRef": "H7354",
+        "references": [
+            "Genesis 29:6",
+            "Matthew 2:18"
+        ],
+        "category": "Matriarch"
+    },
+    {
+        "name": "Leah",
+        "hebrew": "לֵאָה",
+        "meaning": "Weary, tired",
+        "telugu": "లేయా - అలసిపోయిన",
+        "origin": "Hebrew",
+        "strongsRef": "H3812",
+        "references": [
+            "Genesis 29:16"
+        ],
+        "category": "Matriarch"
+    },
+    {
+        "name": "Noah",
+        "hebrew": "נֹחַ",
+        "meaning": "Rest, comfort",
+        "telugu": "నోవహు - విశ్రాంతి",
+        "origin": "Hebrew",
+        "strongsRef": "H5146",
+        "references": [
+            "Genesis 5:29",
+            "Hebrews 11:7"
+        ],
+        "category": "Patriarch"
+    },
+    {
+        "name": "Miriam",
+        "hebrew": "מִרְיָם",
+        "meaning": "Bitter, sea of bitterness",
+        "telugu": "మిర్యాము - చేదు",
+        "origin": "Hebrew",
+        "strongsRef": "H4813",
+        "references": [
+            "Exodus 15:20",
+            "Numbers 12:1"
+        ],
+        "category": "Prophetess"
+    },
+    {
+        "name": "Aaron",
+        "hebrew": "אַהֲרֹן",
+        "meaning": "Exalted, mountain of strength",
+        "telugu": "అహరోను - హెచ్చించబడిన",
+        "origin": "Hebrew",
+        "strongsRef": "H175",
+        "references": [
+            "Exodus 4:14",
+            "Hebrews 5:4"
+        ],
+        "category": "High Priest"
+    },
+    {
+        "name": "Joshua",
+        "hebrew": "יְהוֹשֻׁעַ",
+        "meaning": "The LORD is salvation",
+        "telugu": "యెహోషువ - ప్రభువు రక్షణ",
+        "origin": "Hebrew",
+        "strongsRef": "H3091",
+        "references": [
+            "Joshua 1:1",
+            "Hebrews 4:8"
+        ],
+        "category": "Leader"
+    },
+    {
+        "name": "Caleb",
+        "hebrew": "כָּלֵב",
+        "meaning": "Dog, faithful",
+        "telugu": "కాలేబు - నమ్మకమైన",
+        "origin": "Hebrew",
+        "strongsRef": "H3612",
+        "references": [
+            "Numbers 13:6",
+            "Joshua 14:6"
+        ],
+        "category": "Leader"
+    },
+    {
+        "name": "Gideon",
+        "hebrew": "גִּדְעוֹן",
+        "meaning": "Mighty warrior, tree cutter",
+        "telugu": "గిద్యోను - పరాక్రమశాలి",
+        "origin": "Hebrew",
+        "strongsRef": "H1439",
+        "references": [
+            "Judges 6:11",
+            "Hebrews 11:32"
+        ],
+        "category": "Judge"
+    },
+    {
+        "name": "Samson",
+        "hebrew": "שִׁמְשׁוֹן",
+        "meaning": "Sun, strength",
+        "telugu": "సమ్సోను - సూర్యుడు, బలము",
+        "origin": "Hebrew",
+        "strongsRef": "H8123",
+        "references": [
+            "Judges 13:24",
+            "Hebrews 11:32"
+        ],
+        "category": "Judge"
+    },
+    {
+        "name": "Deborah",
+        "hebrew": "דְּבוֹרָה",
+        "meaning": "Bee",
+        "telugu": "దెబొరా - తేనెటీగ",
+        "origin": "Hebrew",
+        "strongsRef": "H1683",
+        "references": [
+            "Judges 4:4"
+        ],
+        "category": "Judge/Prophetess"
+    },
+    {
+        "name": "Hannah",
+        "hebrew": "חַנָּה",
+        "meaning": "Grace, favor",
+        "telugu": "హన్నా - కృప",
+        "origin": "Hebrew",
+        "strongsRef": "H2584",
+        "references": [
+            "1 Samuel 1:2"
+        ],
+        "category": "Mother of Samuel"
+    },
+    {
+        "name": "Timothy",
+        "greek": "Τιμόθεος",
+        "meaning": "Honoring God",
+        "telugu": "తిమోతి - దేవుని గౌరవించువాడు",
+        "origin": "Greek",
+        "strongsRef": "G5095",
+        "references": [
+            "Acts 16:1",
+            "1 Timothy 1:2"
+        ],
+        "category": "Pastor"
+    },
+    {
+        "name": "Luke",
+        "greek": "Λουκᾶς",
+        "meaning": "Light-giving, from Lucania",
+        "telugu": "లూకా - వెలుగునిచ్చువాడు",
+        "origin": "Greek",
+        "strongsRef": "G3065",
+        "references": [
+            "Colossians 4:14",
+            "2 Timothy 4:11"
+        ],
+        "category": "Evangelist"
+    },
+    {
+        "name": "Mark",
+        "greek": "Μᾶρκος",
+        "meaning": "Warlike, hammer",
+        "telugu": "మార్కు - యుద్ధప్రియుడు",
+        "origin": "Latin",
+        "strongsRef": "G3138",
+        "references": [
+            "Acts 12:12",
+            "2 Timothy 4:11"
+        ],
+        "category": "Evangelist"
+    },
+    {
+        "name": "Matthew",
+        "hebrew": "מַתִּתְיָהוּ",
+        "greek": "Ματθαῖος",
+        "meaning": "Gift of God",
+        "telugu": "మత్తయి - దేవుని బహుమానము",
+        "origin": "Hebrew",
+        "strongsRef": "G3156",
+        "references": [
+            "Matthew 9:9",
+            "Mark 3:18"
+        ],
+        "category": "Apostle/Evangelist"
+    },
+    {
+        "name": "James",
+        "hebrew": "יַעֲקֹב",
+        "greek": "Ἰάκωβος",
+        "meaning": "Supplanter (from Jacob)",
+        "telugu": "యాకోబు - అనుసరించువాడు",
+        "origin": "Hebrew",
+        "strongsRef": "G2385",
+        "references": [
+            "Matthew 4:21",
+            "Acts 12:2"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Stephen",
+        "greek": "Στέφανος",
+        "meaning": "Crown, wreath",
+        "telugu": "స్తెఫను - కిరీటము",
+        "origin": "Greek",
+        "strongsRef": "G4736",
+        "references": [
+            "Acts 6:5",
+            "Acts 7:59"
+        ],
+        "category": "Deacon/Martyr"
+    },
+    {
+        "name": "Philip",
+        "greek": "Φίλιππος",
+        "meaning": "Lover of horses",
+        "telugu": "ఫిలిప్పు - గుర్రాల ప్రేమికుడు",
+        "origin": "Greek",
+        "strongsRef": "G5376",
+        "references": [
+            "John 1:43",
+            "Acts 8:5"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Andrew",
+        "greek": "Ἀνδρέας",
+        "meaning": "Manly, brave",
+        "telugu": "అంద్రెయ - ధైర్యశాలి",
+        "origin": "Greek",
+        "strongsRef": "G406",
+        "references": [
+            "Matthew 4:18",
+            "John 1:40"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Thomas",
+        "greek": "Θωμᾶς",
+        "meaning": "Twin",
+        "telugu": "తోమా - జమల",
+        "origin": "Aramaic",
+        "strongsRef": "G2381",
+        "references": [
+            "John 11:16",
+            "John 20:24"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Barnabas",
+        "greek": "Βαρναβᾶς",
+        "meaning": "Son of encouragement",
+        "telugu": "బర్నబా - ఆదరణ కుమారుడు",
+        "origin": "Aramaic",
+        "strongsRef": "G921",
+        "references": [
+            "Acts 4:36",
+            "Acts 13:2"
+        ],
+        "category": "Apostle"
+    },
+    {
+        "name": "Lazarus",
+        "greek": "Λάζαρος",
+        "meaning": "God has helped",
+        "telugu": "లాజరు - దేవుడు సహాయం చేశాడు",
+        "origin": "Hebrew",
+        "strongsRef": "G2976",
+        "references": [
+            "John 11:1",
+            "Luke 16:20"
+        ],
+        "category": "Friend of Jesus"
+    },
+    {
+        "name": "Elizabeth",
+        "hebrew": "אֱלִישֶׁבַע",
+        "greek": "Ἐλισάβετ",
+        "meaning": "God is my oath",
+        "telugu": "ఎలీసబెతు - దేవుడు నా ప్రమాణము",
+        "origin": "Hebrew",
+        "strongsRef": "G1665",
+        "references": [
+            "Luke 1:5"
+        ],
+        "category": "Mother of John"
+    },
+    {
+        "name": "Emmanuel",
+        "hebrew": "עִמָּנוּאֵל",
+        "meaning": "God with us",
+        "telugu": "ఇమ్మానుయేలు - దేవుడు మనతో",
+        "origin": "Hebrew",
+        "strongsRef": "H6005",
+        "references": [
+            "Isaiah 7:14",
+            "Matthew 1:23"
+        ],
+        "category": "Name of Christ"
+    },
+    {
+        "name": "Michael",
+        "hebrew": "מִיכָאֵל",
+        "meaning": "Who is like God?",
+        "telugu": "మీఖాయేలు - దేవునివంటివాడెవడు?",
+        "origin": "Hebrew",
+        "strongsRef": "H4317",
+        "references": [
+            "Daniel 10:13",
+            "Jude 1:9"
+        ],
+        "category": "Archangel"
+    },
+    {
+        "name": "Gabriel",
+        "hebrew": "גַּבְרִיאֵל",
+        "meaning": "God is my strength",
+        "telugu": "గాబ్రియేలు - దేవుడు నా బలము",
+        "origin": "Hebrew",
+        "strongsRef": "H1403",
+        "references": [
+            "Daniel 8:16",
+            "Luke 1:26"
+        ],
+        "category": "Angel"
+    }
+]
