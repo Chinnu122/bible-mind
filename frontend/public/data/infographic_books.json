@@ -1,0 +1,374 @@
+[
+    {
+        "id": "genesis",
+        "title": "Genesis",
+        "icon": "sparkles",
+        "color": "from-amber-700 to-orange-900",
+        "bgMusic": "/data/audio/genesis_ambient.mp3",
+        "content": {
+            "en": {
+                "title": "Genesis: The Beginning",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "In the beginning, God created the heavens and the earth.",
+                        "detail": "The earth was without form and void, and darkness was over the face of the deep.",
+                        "image": "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "And God said, 'Let there be light,' and there was light.",
+                        "detail": "God saw that the light was good. And God separated the light from the darkness.",
+                        "image": "https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2072&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "The Creation of Man",
+                        "detail": "Then God said, 'Let us make man in our image, after our likeness.' So God created man in his own image.",
+                        "image": "https://images.unsplash.com/photo-1531238914603-49d79a779164?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 4,
+                        "text": "The Garden of Eden",
+                        "detail": "And the Lord God planted a garden in Eden, in the east, and there he put the man whom he had formed.",
+                        "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=2232&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "te": {
+                "title": "ఆదికాండము: ప్రారంభం",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "ఆదియందు దేవుడు భూమ్యాకాశములను సృజించెను.",
+                        "detail": "భూమి నిరాకారముగాను శూన్యముగాను ఉండెను; చీకటి అగాధ జలముపైన కమ్ముకొనియుండెను.",
+                        "image": "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "దేవుడు - వెలుగు కమ్మని పలుకగా వెలుగు కలిగెను.",
+                        "detail": "వెలుగు మంచిదైనట్టు దేవుడు చూచెను; దేవుడు వెలుగును చీకటిని వేరుపరచెను.",
+                        "image": "https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2072&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "మానవ సృష్టి",
+                        "detail": "మరియు దేవుడు - మన స్వరూపమందు మన పోలికచొప్పున నరులను చేయుదము అని పలికెను.",
+                        "image": "https://images.unsplash.com/photo-1531238914603-49d79a779164?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 4,
+                        "text": "ఏదెను తోట",
+                        "detail": "దేవుడైన యెహోవా తూర్పున ఏదెనులో ఒక తోటవేసి తాను చేసిన నరుని అక్కడ ఉంచెను.",
+                        "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=2232&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "hi": {
+                "title": "उत्पत्ति: आरंभ",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "आदि में परमेश्वर ने आकाश और पृथ्वी की सृष्टि की।",
+                        "detail": "पृथ्वी बेडौल और सुनसान पड़ी थी, और गहरे जल के ऊपर अन्धियारा था।",
+                        "image": "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "तब परमेश्वर ने कहा, 'उजियाला हो', तो उजियाला हो गया।",
+                        "detail": "और परमेश्वर ने उजियाले को देखा कि अच्छा है; और परमेश्वर ने उजियाले को अन्धियारे से अलग किया।",
+                        "image": "https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2072&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "मनुष्य की सृष्टि",
+                        "detail": "फिर परमेश्वर ने कहा, 'हम मनुष्य को अपने स्वरूप के अनुसार अपनी समानता में बनाएं।'",
+                        "image": "https://images.unsplash.com/photo-1531238914603-49d79a779164?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 4,
+                        "text": "अदन की वाटिका",
+                        "detail": "और यहोवा परमेश्वर ने पूर्व की ओर अदन में एक वाटिका लगाई; और वहां आदम को जिसे उसने रचा था, रख दिया।",
+                        "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=2232&auto=format&fit=crop"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "exodus",
+        "title": "Exodus",
+        "icon": "waves",
+        "color": "from-blue-700 to-indigo-900",
+        "bgMusic": "/data/audio/exodus_ambient.mp3",
+        "content": {
+            "en": {
+                "title": "Exodus: Use of Freedom",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "Out of Slavery",
+                        "detail": "But the more they were oppressed, the more they multiplied and the more they spread abroad.",
+                        "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "The Burning Bush",
+                        "detail": "And the angel of the Lord appeared to him in a flame of fire out of the midst of a bush.",
+                        "image": "https://images.unsplash.com/photo-1470217957101-da7150b9b681?q=80&w=2574&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "Crossing the Red Sea",
+                        "detail": "Then Moses stretched out his hand over the sea, and the Lord drove the sea back by a strong east wind.",
+                        "image": "https://images.unsplash.com/photo-1468183654773-77e2f5207914?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "te": {
+                "title": "నిర్గమకాండము: విమోచన",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "బానిసత్వం నుండి",
+                        "detail": "అయితే ఐగుప్తీయులు వారిని శ్రమపెట్టినకొలది వారు విస్తరించి ప్రబలిరి.",
+                        "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "మండుచున్న పొద",
+                        "detail": "ఒక పొద నడిమిని అగ్నిజ్వాలలో యెహోవా దూత అతనికి కనబడెను.",
+                        "image": "https://images.unsplash.com/photo-1470217957101-da7150b9b681?q=80&w=2574&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "ఎర్ర సముద్రమును దాటుట",
+                        "detail": "మోషే సముద్రమువైపు తన చెయ్యి చాపగా, యెహోవా ఆ రాత్రి అంతయు బలమైన తూర్పుగాలి చేత సముద్రమును తొలగించెను.",
+                        "image": "https://images.unsplash.com/photo-1468183654773-77e2f5207914?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "hi": {
+                "title": "निर्गमन: मुक्ति",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "गुलामी से मुक्ति",
+                        "detail": "पर ज्यों ज्यों वे उनको दुःख देते गए, त्यों त्यों वे बढ़ते और फैलते चले गए।",
+                        "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "जलती हुई झाड़ी",
+                        "detail": "वहां परमेश्वर के दूत ने एक झाड़ी में से आग की लौ में उसको दर्शन दिया।",
+                        "image": "https://images.unsplash.com/photo-1470217957101-da7150b9b681?q=80&w=2574&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "लाल सागर पार करना",
+                        "detail": "तब मूसा ने अपना हाथ समुद्र के ऊपर बढ़ाया, और यहोवा ने रात भर प्रचण्ड पूरबी पवन चलाकर समुद्र को दो भाग कर दिया।",
+                        "image": "https://images.unsplash.com/photo-1468183654773-77e2f5207914?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "psalms",
+        "title": "Psalms",
+        "icon": "music",
+        "color": "from-purple-700 to-fuchsia-900",
+        "bgMusic": "/data/audio/psalms_ambient.mp3",
+        "content": {
+            "en": {
+                "title": "Psalms: Songs of Praise",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "The Lord is My Shepherd",
+                        "detail": "The Lord is my shepherd; I shall not want. He makes me lie down in green pastures.",
+                        "image": "https://images.unsplash.com/photo-1469395262795-021966580556?q=80&w=1956&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "In the Valley",
+                        "detail": "Even though I walk through the valley of the shadow of death, I will fear no evil, for you are with me.",
+                        "image": "https://images.unsplash.com/photo-1518098268026-4e1c91a4927a?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "Praise",
+                        "detail": "Let everything that has breath praise the Lord! Praise the Lord!",
+                        "image": "https://images.unsplash.com/photo-1459749411177-3345040f7181?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "te": {
+                "title": "కీర్తనలు: స్తుతి గీతాలు",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "యెహోవా నా కాపరి",
+                        "detail": "యెహోవా నా కాపరి, నాకు లేమి కలుగదు. పచ్చికగల చోట్లను ఆయన నన్ను పరుండజేయుచున్నాడు.",
+                        "image": "https://images.unsplash.com/photo-1469395262795-021966580556?q=80&w=1956&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "గాఢాంధకారపు లోయ",
+                        "detail": "గాఢాంధకారపు లోయలో నేను సంచరించినను ఏ ఆపదకు భయపడను, నీవు నాకు తోడైయుందువు.",
+                        "image": "https://images.unsplash.com/photo-1518098268026-4e1c91a4927a?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "స్తుతించుడి",
+                        "detail": "సకల ప్రాణులు యెహోవాను స్తుతించును గాక; యెహోవాను స్తుతించుడి.",
+                        "image": "https://images.unsplash.com/photo-1459749411177-3345040f7181?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "hi": {
+                "title": "भजन संहिता: स्तुति के गीत",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "यहोवा मेरा चरवाहा है",
+                        "detail": "यहोवा मेरा चरवाहा है, मुझे कुछ भी घटी न होगी। वह मुझे हरी-हरी चराइयों में बैठाता है।",
+                        "image": "https://images.unsplash.com/photo-1469395262795-021966580556?q=80&w=1956&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "मृत्यु की छाया",
+                        "detail": "चाहे मैं घोर अन्धकार से भरी हुई तराई में होकर चलूं, तौभी हानि से न डरूंगा, क्योंकि तू मेरे साथ रहता है।",
+                        "image": "https://images.unsplash.com/photo-1518098268026-4e1c91a4927a?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 3,
+                        "text": "स्तुति",
+                        "detail": "जितने प्राणी हैं सब के सब यहोवा की स्तुति करें! यहोवा की स्तुति करो!",
+                        "image": "https://images.unsplash.com/photo-1459749411177-3345040f7181?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "proverbs",
+        "title": "Proverbs",
+        "icon": "compass",
+        "color": "from-emerald-700 to-teal-900",
+        "bgMusic": "/data/audio/proverbs_ambient.mp3",
+        "content": {
+            "en": {
+                "title": "Proverbs: Divine Wisdom",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "The Beginning of Knowledge",
+                        "detail": "The fear of the Lord is the beginning of knowledge; fools despise wisdom and instruction.",
+                        "image": "https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=2090&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "Trust in the Lord",
+                        "detail": "Trust in the Lord with all your heart, and do not lean on your own understanding.",
+                        "image": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "te": {
+                "title": "సామెతలు: దైవిక జ్ఞానం",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "జ్ఞానమునకు మూలము",
+                        "detail": "యెహోవయందు భయభక్తులు కలిగియుండుట తెలివికి మూలము; మూర్ఖులు జ్ఞానమును ఉపదేశమును తిరస్కరించుదురు.",
+                        "image": "https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=2090&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "యెహోవాయందు నమ్మిక",
+                        "detail": "నీ స్వబుద్ధిని ఆధారము చేసికొనక నీ పూర్ణహృదయముతో యెహోవాయందు నమ్మికయుంచుము.",
+                        "image": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "hi": {
+                "title": "नीतिवचन: दिव्य ज्ञान",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "ज्ञान का आरम्भ",
+                        "detail": "यहोवा का भय मानना बुद्धि का आरम्भ है; परन्तु मूढ़ लोग बुद्धि और शिक्षा को तुच्छ जानते हैं।",
+                        "image": "https://images.unsplash.com/photo-1510936111840-65e151ad71bb?q=80&w=2090&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "यहोवा पर भरोसा",
+                        "detail": "तू अपनी समझ का सहारा न लेना, वरन् सम्पूर्ण मन से यहोवा पर भरोसा रखना।",
+                        "image": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "matthew",
+        "title": "Matthew",
+        "icon": "cross",
+        "color": "from-gold-700 to-amber-900",
+        "bgMusic": "/data/audio/matthew_ambient.mp3",
+        "content": {
+            "en": {
+                "title": "Matthew: The Messiah",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "The Sermon on the Mount",
+                        "detail": "Blessed are the poor in spirit, for theirs is the kingdom of heaven.",
+                        "image": "https://images.unsplash.com/photo-1464798429116-8e26f96b2e60?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "The Light of the World",
+                        "detail": "You are the light of the world. A city set on a hill cannot be hidden.",
+                        "image": "https://images.unsplash.com/photo-1491557345352-5929e343eb89?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "te": {
+                "title": "మత్తయి: మెస్సీయ",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "కొండమీది ప్రసంగము",
+                        "detail": "ఆత్మవిషయమై దీనులైనవారు ధన్యులు, పరలోకరాజ్యము వారిది.",
+                        "image": "https://images.unsplash.com/photo-1464798429116-8e26f96b2e60?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "లోకమునకు వెలుగు",
+                        "detail": "మీరు లోకమునకు వెలుగైయున్నారు; కొండమీదనుండు పట్టణము మరుగైయుండనేరదు.",
+                        "image": "https://images.unsplash.com/photo-1491557345352-5929e343eb89?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            },
+            "hi": {
+                "title": "मत्ती: मसीहा",
+                "slides": [
+                    {
+                        "id": 1,
+                        "text": "पहाड़ी उपदेश",
+                        "detail": "धन्य हैं वे, जो मन के दीन हैं, क्योंकि स्वर्ग का राज्य उन्हीं का है।",
+                        "image": "https://images.unsplash.com/photo-1464798429116-8e26f96b2e60?q=80&w=2070&auto=format&fit=crop"
+                    },
+                    {
+                        "id": 2,
+                        "text": "जगत की ज्योति",
+                        "detail": "तुम जगत की ज्योति हो; जो नगर पहाड़ पर बसा हुआ है, वह छिप नहीं सकता।",
+                        "image": "https://images.unsplash.com/photo-1491557345352-5929e343eb89?q=80&w=2070&auto=format&fit=crop"
+                    }
+                ]
+            }
+        }
+    }
+]
