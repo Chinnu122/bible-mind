@@ -694,10 +694,57 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
     const [loadingWords, setLoadingWords] = useState(false);
     // For original text tab - selected word popup
     const [selectedWord, setSelectedWord] = useState<string | null>(null);
+    // For viewing occurrences
+    const [viewingOccurrences, setViewingOccurrences] = useState<string | null>(null);
 
     const isOT = verse.bookId <= 39;
     const originalText = isOT ? verse.hebrewText : verse.greekText;
     const words = originalText ? originalText.split(/\s+/) : [];
+
+    // Helper: Clean up English meaning - remove pronunciation, KJV refs, roots
+    const cleanMeaning = (def: any): { telugu: string; english: string; grammar: string } => {
+        let english = def.english || def.gloss || '';
+        let telugu = def.telugu || '';
+        let grammar = def.partOfSpeech || def.pos || '';
+
+        // Remove pronunciation like "word (pronunciation)" at start
+        english = english.replace(/^[^;]+\([^)]+\)\s*[a-z.-]*[;:]?\s*/i, '');
+        // Remove "1. " "2. " numbering
+        english = english.replace(/^\d+\.\s*/g, '');
+        // Remove KJV references like "KJV: word, word;"
+        english = english.replace(/;?\s*KJV:[^;.]+[;.]?/gi, '');
+        // Remove Root references like "Root(s): H1234"
+        english = english.replace(/;?\s*Root\(s\):[^;.]+[;.]?/gi, '');
+        // Remove [from H1234...] references
+        english = english.replace(/\[from\s+H\d+[^\]]*\]/gi, '');
+        // Remove "(in the sense of...)" parentheticals
+        english = english.replace(/\(in\s+the\s+sense\s+of[^)]+\)/gi, '');
+        // Clean up extra semicolons and spaces
+        english = english.replace(/^[;:\s]+/, '').replace(/[;:\s]+$/, '').trim();
+        // Take first meaning only if multiple
+        if (english.includes(';')) {
+            english = english.split(';')[0].trim();
+        }
+
+        // Similarly clean Telugu - remove pronunciation
+        telugu = telugu.replace(/^[^(]+\([^)]+\)\s*[a-z/-]*\s*/i, '');
+        telugu = telugu.replace(/^\d+\.\s*/g, '').trim();
+        if (telugu.includes(';')) {
+            telugu = telugu.split(';')[0].trim();
+        }
+
+        // Clean grammar abbreviations
+        if (grammar) {
+            const grammarMap: Record<string, string> = {
+                'n': 'Noun', 'n-f': 'Noun (f)', 'n-m': 'Noun (m)', 'n-p': 'Proper Noun',
+                'v': 'Verb', 'adj': 'Adjective', 'adv': 'Adverb', 'prep': 'Preposition',
+                'conj': 'Conjunction', 'pron': 'Pronoun', 'art': 'Article', 'interj': 'Interjection'
+            };
+            grammar = grammarMap[grammar.toLowerCase()] || grammar;
+        }
+
+        return { telugu, english, grammar };
+    };
 
     // Fetch definitions for words (for Word-for-Word and Lexicon tabs)
     useEffect(() => {
@@ -839,7 +886,6 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                         </div>
                     )}
 
-                    {/* 2. Word-for-Word Tab */}
                     {activeTab === 'word-for-word' && (
                         <div className="space-y-4">
                             <div className="flex items-center justify-between mb-4">
@@ -850,32 +896,44 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                             <div className="grid gap-3">
                                 {words.map((word, idx) => {
                                     const def = wordDefinitions[word];
+                                    const cleaned = def ? cleanMeaning(def) : null;
                                     return (
                                         <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/5">
                                             <div className="flex items-start gap-4">
-                                                {/* Original Word */}
+                                                {/* Original Word + Grammar Badge */}
                                                 <div className="w-1/4" dir={isOT ? 'rtl' : 'ltr'}>
                                                     <span className="text-2xl font-serif text-gold-200">{word}</span>
+                                                    {cleaned?.grammar && (
+                                                        <div className="mt-1">
+                                                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">
+                                                                {cleaned.grammar}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 {/* Meanings */}
                                                 <div className="flex-1">
-                                                    {def ? (
+                                                    {cleaned ? (
                                                         <>
                                                             {/* Telugu Meaning - Primary */}
-                                                            <div className="text-xl text-emerald-300 font-medium mb-2">
-                                                                {def.telugu || 'అర్థం లేదు'}
+                                                            <div className="text-xl text-emerald-300 font-medium mb-1">
+                                                                {cleaned.telugu || 'అర్థం లేదు'}
                                                             </div>
                                                             {/* English Meaning */}
                                                             <div className="text-base text-slate-300">
-                                                                {def.english || def.gloss || '-'}
+                                                                {cleaned.english || '-'}
                                                             </div>
-                                                            {/* Occurrence info */}
+                                                            {/* Occurrence info - clickable */}
                                                             {def.occurrences > 0 && (
-                                                                <div className="mt-2 text-xs text-slate-500">
-                                                                    📊 {def.occurrences} times in Bible
-                                                                    {def.firstOccurrence && <span className="ml-2">| 1st: {def.firstOccurrence}</span>}
-                                                                </div>
+                                                                <button
+                                                                    onClick={() => setViewingOccurrences(def.strongsNumber)}
+                                                                    className="mt-2 text-xs text-slate-500 hover:text-gold-400 transition-colors flex items-center gap-1"
+                                                                >
+                                                                    <span>📊</span>
+                                                                    <span className="underline">{def.occurrences} times in Bible</span>
+                                                                    {def.firstOccurrence && <span className="ml-1">• 1st: {def.firstOccurrence}</span>}
+                                                                </button>
                                                             )}
                                                         </>
                                                     ) : (
@@ -901,15 +959,21 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                             {words.map((word, idx) => {
                                 const def = wordDefinitions[word];
                                 if (!def) return null;
+                                const cleaned = cleanMeaning(def);
                                 return (
                                     <div key={idx} className="p-5 rounded-xl bg-white/5 border border-white/10">
-                                        {/* Word Header */}
+                                        {/* Word Header with Grammar Badge */}
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex items-center gap-3">
                                                 <span className="text-3xl font-serif text-gold-200" dir={isOT ? 'rtl' : 'ltr'}>{word}</span>
                                                 <span className="text-xs px-2 py-1 rounded bg-white/10 text-slate-400 font-mono">
                                                     {def.strongsNumber}
                                                 </span>
+                                                {cleaned.grammar && (
+                                                    <span className="text-[10px] px-2 py-1 rounded bg-amber-500/20 text-amber-300">
+                                                        {cleaned.grammar}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
 
@@ -919,37 +983,40 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                                             <div className="bg-emerald-950/30 rounded-lg p-4">
                                                 <div className="text-[10px] uppercase text-emerald-500/70 mb-2 font-bold">తెలుగు అర్థం</div>
                                                 <div className="text-2xl text-emerald-200 font-medium">
-                                                    {def.telugu || 'అర్థం అందుబాటులో లేదు'}
+                                                    {cleaned.telugu || 'అర్థం అందుబాటులో లేదు'}
                                                 </div>
                                             </div>
                                             {/* English */}
                                             <div className="bg-gold-950/30 rounded-lg p-4">
-                                                <div className="text-[10px] uppercase text-gold-500/70 mb-2 font-bold">English</div>
+                                                <div className="text-[10px] uppercase text-gold-500/70 mb-2 font-bold">English Meaning</div>
                                                 <div className="text-xl text-crema-100">
-                                                    {def.english || def.gloss || 'Not available'}
+                                                    {cleaned.english || 'Not available'}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Occurrences */}
+                                        {/* Occurrences - Clickable */}
                                         {def.occurrences > 0 && (
                                             <div className="mt-4 pt-4 border-t border-white/10">
-                                                <div className="flex items-center gap-6 text-sm">
+                                                <button
+                                                    onClick={() => setViewingOccurrences(def.strongsNumber)}
+                                                    className="flex items-center gap-4 text-sm hover:opacity-80 transition-opacity group"
+                                                >
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-slate-500">📊</span>
-                                                        <span className="text-slate-400">
-                                                            Appears <span className="text-gold-300 font-bold">{def.occurrences}</span> times
+                                                        <span className="text-slate-400 group-hover:text-gold-300">
+                                                            Appears <span className="text-gold-300 font-bold underline">{def.occurrences}</span> times
                                                         </span>
                                                     </div>
                                                     {def.firstOccurrence && (
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-slate-500">📖</span>
                                                             <span className="text-slate-400">
-                                                                First: <span className="text-emerald-300">{def.firstOccurrence}</span>
+                                                                First: <span className="text-emerald-300 underline">{def.firstOccurrence}</span>
                                                             </span>
                                                         </div>
                                                     )}
-                                                </div>
+                                                </button>
                                             </div>
                                         )}
                                     </div>
