@@ -45,21 +45,47 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                 const [namesRes, placesRes, infoRes] = await Promise.all([
                     fetch('/data/biblical_names.json'),
                     fetch('/data/biblical_places.json'),
-                    fetch('/data/infographic_books.json').catch(() => ({ json: () => [] })) // Fallback if file missing
+                    fetch('/data/infographic_books.json').catch(() => ({
+                        ok: false,
+                        status: 404,
+                        statusText: "File Not Found (Fetch Error)",
+                        json: () => Promise.resolve([])
+                    } as Response)) // Fallback if file missing
                 ]);
 
                 // Handle potential 404s cleanly
-                if (namesRes.ok) setNames(await namesRes.json());
-                if (placesRes.ok) setPlaces(await placesRes.json());
+                if (namesRes.ok) {
+                    setNames(await namesRes.json());
+                }
+                if (placesRes.ok) {
+                    setPlaces(await placesRes.json());
+                }
 
-                // Allow infographic fetch to fail gracefully (e.g. if file is 404)
-                try {
-                    const infoData = await infoRes.json();
-                    if (Array.isArray(infoData)) setInfographics(infoData);
-                } catch (e) { console.warn("Infographics data not available"); }
+                // Detailed Infographic handling
+                if (!infoRes.ok) {
+                    console.error("Infographics fetch failed:", infoRes.status, infoRes.statusText);
+                    setInfographics([]); // Ensure empty
+                    // Optional: set a UI error state here if we had one
+                } else {
+                    try {
+                        const infoData = await infoRes.json();
+                        if (Array.isArray(infoData)) {
+                            console.log("Infographics loaded:", infoData.length);
+                            setInfographics(infoData);
+                        } else {
+                            console.error("Infographics data is not an array:", infoData);
+                        }
+                    } catch (e) {
+                        console.error("Infographics JSON parse error", e);
+                    }
+                }
 
-            } catch (e) { console.error('Load error', e); }
-            finally { setLoading(false); }
+            } catch (e) {
+                console.error('Load error', e);
+            }
+            finally {
+                setLoading(false);
+            }
         };
         loadData();
     }, []);
