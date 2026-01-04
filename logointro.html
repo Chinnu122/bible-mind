@@ -4,52 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bible Mind — Abstract Nebula Edition</title>
-
-    <!-- Premium Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Bible Mind - Logo Intro</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@200;300;400;500;600&family=Noto+Sans+Telugu:wght@300;400;500;600&family=Noto+Serif+Hebrew:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400;700&display=swap"
         rel="stylesheet">
-
-    <!-- Three.js + GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
     <style>
         :root {
-            /* PURE MONOCHROME PALETTE */
-            --black: #000000;
-            --void: #050505;
-            --charcoal: #0a0a0a;
-            --graphite: #151515;
-            --slate: #1a1a1a;
-            --smoke: #252525;
-            --ash: #333333;
-            --stone: #555555;
-            --silver: #888888;
-            --pearl: #aaaaaa;
-            --bone: #cccccc;
-            --ivory: #e5e5e5;
-            --snow: #f5f5f5;
-            --white: #ffffff;
-
-            /* Accent (minimal gold for luxury) */
-            --gold: #c4a35a;
-            --gold-dim: rgba(196, 163, 90, 0.6);
-
-            /* Glass */
-            --glass-bg: rgba(10, 10, 10, 0.75);
-            --glass-bg-light: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-glow: rgba(255, 255, 255, 0.02);
-
-            /* Motion */
-            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
-            --ease-in: cubic-bezier(0.4, 0, 1, 1);
-            --ease-dramatic: cubic-bezier(0.6, 0, 0.1, 1);
+            --navy: #1a3c5a;
+            --gold: #d4af37;
+            --gold-bright: #fff9ed;
+            --void: #000000;
+            --nebula-1: rgba(26, 60, 90, 0.5);
+            --nebula-2: rgba(76, 29, 149, 0.35);
+            --nebula-3: rgba(212, 175, 55, 0.2);
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-epic: cubic-bezier(0.7, 0, 0.1, 1);
         }
 
         * {
@@ -58,2202 +27,635 @@
             box-sizing: border-box;
         }
 
-        html,
         body {
-            width: 100%;
-            height: 100%;
+            background: black;
+            font-family: 'Lato', sans-serif;
             overflow: hidden;
-            background: var(--black);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--white);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            width: 100vw;
+            height: 100vh;
         }
 
-        /* ===== NEBULA BACKGROUND LAYER ===== */
-        #nebula-bg {
+        .intro-container {
             position: fixed;
             inset: 0;
-            z-index: 1;
+            perspective: 2000px;
+        }
+
+        /* Animated Background */
+        .nebula-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #000 0%, #0a1628 50%, #000 100%);
             overflow: hidden;
         }
 
-        #nebula-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+        .nebula-cloud {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            border-radius: 50%;
+            filter: blur(100px);
+            mix-blend-mode: screen;
+            will-change: transform;
         }
 
-        /* ===== CINEMATIC OVERLAYS ===== */
-        .overlay-layer {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 2;
+        .cloud-1 {
+            background: radial-gradient(circle, var(--nebula-1) 0%, transparent 70%);
+            top: -30%;
+            left: -30%;
+            animation: nebulaFloat 25s infinite alternate ease-in-out;
         }
 
-        .vignette-overlay {
-            background: radial-gradient(ellipse 80% 80% at 50% 50%,
-                    transparent 0%,
-                    rgba(0, 0, 0, 0.3) 50%,
-                    rgba(0, 0, 0, 0.8) 100%);
+        .cloud-2 {
+            background: radial-gradient(circle, var(--nebula-2) 0%, transparent 70%);
+            bottom: -30%;
+            right: -30%;
+            animation: nebulaFloat 30s infinite alternate-reverse ease-in-out;
         }
 
-        .grain-overlay {
-            opacity: 0.025;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            animation: grainShift 0.8s steps(8) infinite;
+        .cloud-3 {
+            background: radial-gradient(circle, var(--nebula-3) 0%, transparent 60%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            animation: nebulaPulse 20s infinite ease-in-out;
         }
 
-        @keyframes grainShift {
-
-            0%,
-            100% {
-                transform: translate(0, 0);
-            }
-
-            25% {
-                transform: translate(-1%, 1%);
-            }
-
-            50% {
-                transform: translate(1%, -1%);
-            }
-
-            75% {
-                transform: translate(-1%, -1%);
-            }
-        }
-
-        .light-overlay {
-            background:
-                radial-gradient(ellipse 100% 60% at 30% 20%, rgba(255, 255, 255, 0.015), transparent 50%),
-                radial-gradient(ellipse 80% 50% at 70% 80%, rgba(255, 255, 255, 0.01), transparent 50%);
-            animation: lightPulse 12s ease-in-out infinite alternate;
-        }
-
-        @keyframes lightPulse {
+        @keyframes nebulaFloat {
             0% {
-                opacity: 0.6;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* ===== BLUR WRAPPER (For Cinematic Transitions) ===== */
-        #blur-wrapper {
-            position: fixed;
-            inset: 0;
-            z-index: 3;
-            transition: filter 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth);
-        }
-
-        #blur-wrapper.blur-subtle {
-            filter: blur(2px);
-        }
-
-        #blur-wrapper.blur-medium {
-            filter: blur(8px) brightness(1.05);
-        }
-
-        #blur-wrapper.blur-heavy {
-            filter: blur(16px) brightness(1.1);
-            transform: scale(1.02);
-        }
-
-        #blur-wrapper.blur-warp {
-            filter: blur(25px) brightness(1.15) contrast(1.05);
-            transform: scale(1.04);
-        }
-
-        /* ===== UI STAGE ===== */
-        #ui-stage {
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 2500px;
-            perspective-origin: 50% 50%;
-            pointer-events: none;
-        }
-
-        /* ===== SCENE SYSTEM ===== */
-        .scene {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transform-style: preserve-3d;
-            padding: 60px;
-        }
-
-        .scene.active {
-            visibility: visible;
-        }
-
-        .scene-content {
-            width: 100%;
-            max-width: 1400px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-        }
-
-        /* ===== GLASS MORPHISM ===== */
-        .glass {
-            background: linear-gradient(145deg,
-                    rgba(255, 255, 255, 0.06) 0%,
-                    rgba(255, 255, 255, 0.02) 50%,
-                    rgba(0, 0, 0, 0.1) 100%);
-            backdrop-filter: blur(60px) saturate(120%);
-            -webkit-backdrop-filter: blur(60px) saturate(120%);
-            border: 1px solid var(--glass-border);
-            box-shadow:
-                0 80px 160px -40px rgba(0, 0, 0, 0.8),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .glass-subtle {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* ===== TYPOGRAPHY ===== */
-        .font-brand {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.12em;
-        }
-
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
-        }
-
-        .font-hebrew {
-            font-family: 'Noto Serif Hebrew', serif;
-        }
-
-        .font-telugu {
-            font-family: 'Noto Sans Telugu', sans-serif;
-        }
-
-        .text-xxs {
-            font-size: 9px;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .text-xs {
-            font-size: 11px;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .text-sm {
-            font-size: 13px;
-            letter-spacing: 0.15em;
-        }
-
-        .text-base {
-            font-size: 16px;
-        }
-
-        .text-lg {
-            font-size: 20px;
-        }
-
-        .text-xl {
-            font-size: 28px;
-        }
-
-        .text-2xl {
-            font-size: 40px;
-        }
-
-        .text-3xl {
-            font-size: 56px;
-        }
-
-        .text-4xl {
-            font-size: 72px;
-        }
-
-        .text-hero {
-            font-size: clamp(80px, 15vw, 200px);
-            line-height: 0.9;
-        }
-
-        .text-muted {
-            color: var(--silver);
-        }
-
-        .text-dim {
-            color: var(--stone);
-        }
-
-        .text-gold {
-            color: var(--gold);
-        }
-
-        .text-light {
-            color: var(--ivory);
-        }
-
-        .weight-light {
-            font-weight: 300;
-        }
-
-        .weight-normal {
-            font-weight: 400;
-        }
-
-        .weight-medium {
-            font-weight: 500;
-        }
-
-        /* ===== SCENE 1: GRAND INTRO ===== */
-        #scene1 .scene-content {
-            text-align: center;
-        }
-
-        .intro-hebrew {
-            opacity: 0;
-            transform: translateY(40px) scale(0.95);
-            text-shadow:
-                0 0 100px rgba(255, 255, 255, 0.3),
-                0 0 200px rgba(255, 255, 255, 0.1);
-            margin-bottom: 40px;
-        }
-
-        .intro-line {
-            width: 200px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--white), transparent);
-            margin: 0 auto 40px;
-            opacity: 0;
-            transform: scaleX(0);
-        }
-
-        .intro-tagline {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .intro-sub {
-            margin-top: 60px;
-            opacity: 0;
-        }
-
-        /* ===== SCENE 2: TRANSLATION ===== */
-        .trans-panel {
-            width: 100%;
-            max-width: 1100px;
-            padding: 80px;
-            text-align: center;
-        }
-
-        .trans-header {
-            margin-bottom: 50px;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .hebrew-verse {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 25px;
-            direction: rtl;
-            margin-bottom: 60px;
-        }
-
-        .heb-word {
-            font-size: clamp(36px, 6vw, 64px);
-            padding: 15px 25px;
-            position: relative;
-            opacity: 0.25;
-            transition: all 0.6s var(--ease-smooth);
-            cursor: default;
-        }
-
-        .heb-word::before {
-            content: '';
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--white);
-            transform: translateX(-50%);
-            transition: width 0.5s var(--ease-smooth);
-        }
-
-        .heb-word::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            width: 1px;
-            height: 0;
-            background: linear-gradient(180deg, var(--white), transparent);
-            transform: translateX(-50%);
-            transition: height 0.5s var(--ease-smooth) 0.2s;
-        }
-
-        .heb-word.highlight {
-            opacity: 1;
-            text-shadow: 0 0 60px rgba(255, 255, 255, 0.5);
-            transform: scale(1.1) translateY(-8px);
-        }
-
-        .heb-word.highlight::before {
-            width: 100%;
-        }
-
-        .heb-word.highlight::after {
-            height: 50px;
-        }
-
-        .meaning-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .meaning-card {
-            padding: 35px;
-            text-align: left;
-            opacity: 0;
-            transform: translateY(40px) rotateX(-8deg);
-            transform-origin: top center;
-        }
-
-        .meaning-label {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .meaning-label::before {
-            content: '';
-            width: 30px;
-            height: 1px;
-            background: var(--gold);
-        }
-
-        .meaning-value {
-            font-size: 22px;
-            line-height: 1.5;
-            color: var(--bone);
-        }
-
-        /* ===== SCENE 3: LEXICON ===== */
-        .lex-container {
-            display: grid;
-            grid-template-columns: 1fr 1.3fr;
-            gap: 50px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .lex-main {
-            padding: 60px;
-            text-align: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .lex-main::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 15%;
-            height: 70%;
-            width: 1px;
-            background: linear-gradient(180deg, transparent, var(--glass-border), transparent);
-        }
-
-        .lex-word {
-            font-size: 100px;
-            text-shadow: 0 0 80px rgba(255, 255, 255, 0.3);
-            margin-bottom: 15px;
-        }
-
-        .lex-translit {
-            font-size: 28px;
-            color: var(--pearl);
-            font-style: italic;
-        }
-
-        .lex-details {
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .lex-badges {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .lex-badge {
-            padding: 8px 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-        }
-
-        .lex-title {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        .lex-def {
-            font-size: 17px;
-            line-height: 1.9;
-            color: var(--pearl);
-            margin-bottom: 30px;
-        }
-
-        .lex-telugu-box {
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 2px solid var(--gold);
-        }
-
-        /* Cross References */
-        .xref-section {
-            margin-top: 35px;
-            padding-top: 35px;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .xref-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .xref-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        .xref-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--white);
-            border-radius: 50%;
-            box-shadow: 0 0 15px var(--white);
-        }
-
-        .xref-connector {
-            width: 40px;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
-        }
-
-        /* ===== SCENE 4: DAILY VERSE ===== */
-        .daily-wrapper {
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-        }
-
-        .daily-card {
-            padding: 80px 60px;
-            position: relative;
-        }
-
-        .daily-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-        }
-
-        .daily-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-        }
-
-        .daily-icon {
-            font-size: 60px;
-            opacity: 0.4;
-            margin-bottom: 30px;
-        }
-
-        .daily-verse-text {
-            font-size: clamp(26px, 4vw, 38px);
-            line-height: 1.6;
-            font-style: italic;
-            color: var(--ivory);
-            margin-bottom: 40px;
-        }
-
-        /* ===== SCENE 5: CHARACTER ===== */
-        .char-wrapper {
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .char-card {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            overflow: hidden;
-            min-height: 500px;
-        }
-
-        .char-portrait {
-            background: linear-gradient(180deg, var(--smoke) 0%, var(--charcoal) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .char-silhouette {
-            width: 200px;
-            height: 320px;
-            position: relative;
-        }
-
-        .char-silhouette::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.12), transparent 70%);
-            border-radius: 50%;
-        }
-
-        .char-silhouette::after {
-            content: '';
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 250px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
-            border-radius: 70px 70px 0 0;
-        }
-
-        .char-glow {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-        }
-
-        .char-info {
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .char-name {
-            font-size: 52px;
-            margin: 12px 0;
-            text-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
-        }
-
-        .char-role {
-            color: var(--silver);
-            font-style: italic;
-            margin-bottom: 25px;
-        }
-
-        .char-desc {
-            color: var(--pearl);
-            line-height: 1.9;
-            font-size: 16px;
-        }
-
-        /* ===== SCENE 6: KIDS ===== */
-        .kids-wrapper {
-            width: 100%;
-            max-width: 1100px;
-            text-align: center;
-        }
-
-        .kids-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
-        }
-
-        .kids-badge {
-            padding: 12px 25px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .kids-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .story-card {
-            aspect-ratio: 3/4;
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(60px) rotateX(-12deg);
-            transform-origin: bottom center;
-            box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.8);
-        }
-
-        .story-bg {
-            position: absolute;
-            inset: 0;
-        }
-
-        .story-card:nth-child(1) .story-bg {
-            background: linear-gradient(160deg, #2a2a2a 0%, #0a0a0a 100%);
-        }
-
-        .story-card:nth-child(2) .story-bg {
-            background: linear-gradient(160deg, #3a3a3a 0%, #1a1a1a 100%);
-        }
-
-        .story-card:nth-child(3) .story-bg {
-            background: linear-gradient(160deg, #4a4a4a 0%, #2a2a2a 100%);
-        }
-
-        .story-inner {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 30px;
-            background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.9) 100%);
-        }
-
-        .story-title {
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .story-sub {
-            font-size: 13px;
-            color: var(--silver);
-        }
-
-        .page-effect {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 40%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08));
-            transform-origin: right center;
-            transform: scaleX(0);
-        }
-
-        /* ===== SCENE 7: SEARCH ===== */
-        .search-wrapper {
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .search-header {
-            text-align: center;
-            margin-bottom: 40px;
-            opacity: 0;
-            transform: translateY(15px);
-        }
-
-        .search-box {
-            height: 100px;
-            display: flex;
-            align-items: center;
-            padding: 0 40px;
-            gap: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow:
-                0 0 100px rgba(255, 255, 255, 0.05),
-                inset 0 0 60px rgba(255, 255, 255, 0.02);
-            opacity: 0;
-            transform: scale(0.96) translateY(20px);
-        }
-
-        .search-icon {
-            width: 32px;
-            height: 32px;
-            opacity: 0.6;
-        }
-
-        .search-input {
-            flex: 1;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-text {
-            font-size: 26px;
-            font-weight: 300;
-            letter-spacing: 0.03em;
-        }
-
-        .search-cursor {
-            width: 2px;
-            height: 36px;
-            background: var(--white);
-            margin-left: 4px;
-            animation: cursorBlink 1.2s infinite;
-        }
-
-        @keyframes cursorBlink {
-
-            0%,
-            100% {
-                opacity: 1;
+                transform: translate(-15%, -15%) rotate(0deg) scale(1);
             }
 
             50% {
+                transform: translate(10%, 10%) rotate(15deg) scale(1.15);
+            }
+
+            100% {
+                transform: translate(15%, 15%) rotate(-10deg) scale(1);
+            }
+        }
+
+        @keyframes nebulaPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, white, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, white, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(1px 1px at 230px 80px, white, transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 370px 200px, white, transparent),
+                radial-gradient(2px 2px at 420px 60px, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 500px 180px, white, transparent),
+                radial-gradient(2px 2px at 550px 100px, rgba(255, 255, 255, 0.9), transparent);
+            background-size: 600px 300px;
+            animation: starsShift 100s linear infinite;
+        }
+
+        @keyframes starsShift {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 600px 300px;
+            }
+        }
+
+        /* Main Stage */
+        .intro-stage {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            will-change: transform;
+            animation: stageZoom 1.5s 4s var(--transition-epic) forwards;
+        }
+
+        @keyframes stageZoom {
+            0% {
+                transform: scale(1) translateZ(0);
+                filter: blur(0);
+            }
+
+            30% {
+                transform: scale(0.95) translateZ(-50px);
+            }
+
+            100% {
+                transform: scale(80) translateZ(2000px);
+                opacity: 0;
+                filter: blur(40px) brightness(3);
+            }
+        }
+
+        /* Logo Container */
+        .logo-container {
+            position: relative;
+            width: 360px;
+            height: 360px;
+            transform-style: preserve-3d;
+            animation: logoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Outer Glow Ring */
+        .glow-ring {
+            position: absolute;
+            inset: -30px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background: linear-gradient(90deg, var(--gold), var(--navy), var(--gold)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            animation: ringReveal 1.5s 0.5s var(--transition-smooth) forwards, ringRotate 8s linear infinite;
+        }
+
+        @keyframes ringReveal {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes ringRotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Secondary Glow Ring */
+        .glow-ring-2 {
+            position: absolute;
+            inset: -50px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            opacity: 0;
+            animation: ringReveal 1.5s 0.8s var(--transition-smooth) forwards, ringRotate 15s linear reverse infinite;
+        }
+
+        /* Badge */
+        .badge {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f0f0f0 30%, #d0d0d0 100%);
+            border-radius: 50%;
+            border: 16px solid var(--navy);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow:
+                0 60px 120px rgba(0, 0, 0, 0.9),
+                0 0 80px rgba(212, 175, 55, 0.3),
+                inset 0 0 60px rgba(0, 0, 0, 0.1),
+                inset 0 -20px 60px rgba(26, 60, 90, 0.1);
+            opacity: 0;
+            transform: scale(0.1) rotateX(-90deg);
+            animation: badgeRise 1.2s var(--transition-smooth) forwards;
+        }
+
+        @keyframes badgeRise {
+            to {
+                opacity: 1;
+                transform: scale(1) rotateX(0deg);
+            }
+        }
+
+        /* Shine Effect on Badge */
+        .badge::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.8) 50%, transparent 60%);
+            border-radius: 50%;
+            background-size: 400% 400%;
+            animation: badgeShine 6s infinite linear;
+        }
+
+        @keyframes badgeShine {
+            0% {
+                background-position: -200% -200%;
+            }
+
+            100% {
+                background-position: 200% 200%;
+            }
+        }
+
+        /* Logo SVG */
+        .logo-svg {
+            width: 200px;
+            height: 200px;
+            z-index: 5;
+        }
+
+        .svg-path {
+            fill: none;
+            stroke: var(--navy);
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawPath 1.5s 0.8s var(--transition-smooth) forwards;
+        }
+
+        @keyframes drawPath {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .cross-rect {
+            fill: var(--gold);
+            opacity: 0;
+            transform-origin: center;
+            animation: crossAppear 0.8s 2s var(--transition-epic) forwards;
+        }
+
+        @keyframes crossAppear {
+            0% {
+                opacity: 0;
+                transform: scale(5);
+                filter: blur(20px);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* Book at bottom */
+        .book-svg {
+            position: absolute;
+            bottom: 50px;
+            width: 160px;
+            opacity: 0;
+            transform: translateY(30px) rotateX(-90deg);
+            animation: bookReveal 0.8s 1.2s var(--transition-smooth) forwards;
+        }
+
+        @keyframes bookReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        /* Light Burst */
+        .light-burst {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 150px 60px rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            animation: lightBurst 0.8s 2s var(--transition-epic);
+        }
+
+        @keyframes lightBurst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(100);
                 opacity: 0;
             }
         }
 
-        .lang-toggle {
-            display: flex;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
-        }
-
-        .lang-btn {
-            padding: 14px 22px;
-            font-size: 12px;
-            letter-spacing: 0.15em;
-            transition: all 0.4s var(--ease-smooth);
-            cursor: pointer;
-            color: var(--silver);
-        }
-
-        .lang-btn.active {
-            background: var(--white);
-            color: var(--black);
-        }
-
-        .results-list {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .result-row {
-            padding: 35px;
-            border-left: 3px solid transparent;
-            opacity: 0;
-            transform: translateY(25px) rotateX(-10deg);
-            transform-origin: top center;
-            transition: border-color 0.4s;
-        }
-
-        .result-row.visible {
-            border-left-color: var(--white);
-        }
-
-        .result-meta {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            margin-bottom: 15px;
-        }
-
-        .result-ref {
-            color: var(--gold);
-            letter-spacing: 0.12em;
-        }
-
-        .result-tag {
-            padding: 5px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            font-size: 9px;
-            letter-spacing: 0.2em;
-        }
-
-        .result-text {
-            font-size: 19px;
-            line-height: 1.7;
-            color: var(--bone);
-        }
-
-        .result-highlight {
-            background: linear-gradient(180deg, transparent 55%, rgba(255, 255, 255, 0.15) 55%);
-            padding: 0 5px;
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
+        /* Title */
+        .title-container {
             margin-top: 40px;
-            opacity: 0;
-        }
-
-        .stat-box {
             text-align: center;
         }
 
-        .stat-num {
-            font-size: 42px;
-            font-weight: 200;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            letter-spacing: 0.2em;
-            color: var(--silver);
-            margin-top: 8px;
-        }
-
-        /* ===== SCENE 8: FINALE ===== */
-        .finale-wrapper {
-            text-align: center;
-        }
-
-        .features-cloud {
+        .title-text {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 16px;
-            max-width: 800px;
-            margin: 0 auto 60px;
-            opacity: 0;
+            gap: 12px;
         }
 
-        .feature-tag {
-            padding: 14px 28px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 60px;
-            font-size: 11px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--pearl);
-            opacity: 0;
-            transform: translateY(25px);
-        }
-
-        .finale-logo {
-            font-size: clamp(56px, 12vw, 120px);
-            letter-spacing: 0.25em;
+        .char {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(48px, 8vw, 72px);
+            font-weight: 900;
+            color: #fff;
             text-shadow:
-                0 0 100px rgba(255, 255, 255, 0.4),
-                0 0 200px rgba(255, 255, 255, 0.2);
+                0 0 40px rgba(212, 175, 55, 0.5),
+                0 0 80px rgba(212, 175, 55, 0.3);
             opacity: 0;
-            transform: scale(0.92);
+            transform: translateY(40px);
+            filter: blur(15px);
+            display: inline-block;
         }
 
-        .finale-tagline {
-            margin-top: 30px;
-            letter-spacing: 0.4em;
+        .char.animate {
+            animation: charEnter 0.6s var(--transition-smooth) forwards;
+        }
+
+        @keyframes charEnter {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 14px;
+            letter-spacing: 16px;
             color: var(--gold);
+            text-transform: uppercase;
+            margin-top: 20px;
             opacity: 0;
             transform: translateY(20px);
+            animation: subtitleEnter 1s 3.5s var(--transition-smooth) forwards;
         }
 
-        .finale-cta {
-            margin-top: 50px;
-            opacity: 0;
-            transform: translateY(20px);
+        @keyframes subtitleEnter {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .cta-btn {
-            padding: 18px 50px;
-            background: transparent;
-            border: 1px solid var(--white);
-            color: var(--white);
-            font-family: 'Cinzel', serif;
-            font-size: 13px;
-            letter-spacing: 0.2em;
-            cursor: pointer;
-            transition: all 0.4s var(--ease-smooth);
-        }
-
-        .cta-btn:hover {
-            background: var(--white);
-            color: var(--black);
-        }
-
-        .finale-glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 60%);
-            opacity: 0;
-            z-index: -1;
-        }
-
-        /* ===== PROGRESS & INFO ===== */
-        .progress-bar {
+        /* Skip Button */
+        .skip-btn {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            height: 2px;
-            width: 0%;
-            background: linear-gradient(90deg, var(--white), var(--gold));
+            bottom: 30px;
+            right: 30px;
             z-index: 100;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .time-code {
-            position: fixed;
-            bottom: 25px;
-            right: 35px;
-            font-family: 'Inter', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            padding: 12px 24px;
+            border-radius: 50px;
             font-size: 11px;
-            letter-spacing: 0.15em;
-            color: var(--stone);
-            z-index: 100;
-        }
-
-        .scene-name {
-            position: fixed;
-            bottom: 25px;
-            left: 35px;
-            font-size: 10px;
-            letter-spacing: 0.3em;
-            color: var(--gold-dim);
-            z-index: 100;
-        }
-
-        /* ===== START GATE ===== */
-        #gate {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: var(--black);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .gate-content {
-            text-align: center;
-        }
-
-        .gate-logo {
-            font-size: 56px;
-            letter-spacing: 0.35em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 80px rgba(255, 255, 255, 0.2);
-        }
-
-        .gate-sub {
-            color: var(--silver);
-            letter-spacing: 0.15em;
-            margin-bottom: 60px;
-        }
-
-        .gate-btn {
-            padding: 22px 70px;
-            background: transparent;
-            border: 1px solid var(--white);
-            color: var(--white);
-            font-family: 'Cinzel', serif;
-            font-size: 15px;
-            letter-spacing: 0.2em;
+            letter-spacing: 3px;
+            text-transform: uppercase;
             cursor: pointer;
-            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .skip-btn:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* Particle Effects */
+        .particles {
+            position: absolute;
+            inset: 0;
             overflow: hidden;
-            transition: all 0.5s var(--ease-smooth);
+            pointer-events: none;
         }
 
-        .gate-btn::before {
-            content: '';
+        .particle {
             position: absolute;
-            inset: 0;
-            background: var(--white);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.5s var(--ease-smooth);
-            z-index: -1;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold);
+            opacity: 0;
         }
 
-        .gate-btn:hover {
-            color: var(--black);
-        }
-
-        .gate-btn:hover::before {
-            transform: scaleX(1);
-        }
-
-        .gate-hint {
-            margin-top: 40px;
-            font-size: 11px;
-            color: var(--ash);
-            letter-spacing: 0.08em;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .lex-container {
-                grid-template-columns: 1fr;
+        @keyframes particleRise {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
             }
 
-            .lex-main::after {
-                display: none;
+            10% {
+                opacity: 1;
             }
 
-            .char-card {
-                grid-template-columns: 1fr;
+            90% {
+                opacity: 1;
             }
 
-            .char-portrait {
-                min-height: 300px;
-            }
-
-            .meaning-grid {
-                grid-template-columns: 1fr;
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
             }
         }
 
-        @media (max-width: 768px) {
-            .kids-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .scene {
-                padding: 30px;
-            }
-
-            .trans-panel,
-            .daily-card {
-                padding: 40px;
-            }
-        }
-
+        /* Responsive */
         @media (max-width: 600px) {
-            .kids-grid {
-                grid-template-columns: 1fr;
+            .logo-container {
+                width: 280px;
+                height: 280px;
             }
 
-            .hebrew-verse {
-                gap: 12px;
+            .logo-svg {
+                width: 160px;
+                height: 160px;
+            }
+
+            .book-svg {
+                width: 120px;
+                bottom: 40px;
+            }
+
+            .badge {
+                border-width: 12px;
+            }
+
+            .glow-ring {
+                inset: -20px;
+            }
+
+            .glow-ring-2 {
+                inset: -35px;
+            }
+
+            .title-text {
+                gap: 6px;
+            }
+
+            .subtitle {
+                letter-spacing: 8px;
+                font-size: 11px;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- AUDIO -->
-    <audio id="bgm" preload="auto">
-        <source src="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3" type="audio/mpeg">
-        <source src="https://assets.mixkit.co/music/preview/mixkit-cinematic-mystery-trailer-2794.mp3"
-            type="audio/mpeg">
-    </audio>
-
-    <!-- START GATE -->
-    <div id="gate">
-        <div class="gate-content">
-            <div class="gate-logo font-brand">BIBLE MIND</div>
-            <div class="gate-sub">ABSTRACT NEBULA EDITION</div>
-            <button class="gate-btn" id="startBtn">ENTER EXPERIENCE</button>
-            <div class="gate-hint">30 seconds • Best with sound</div>
-        </div>
-    </div>
-
-    <!-- NEBULA BACKGROUND -->
-    <div id="nebula-bg">
-        <canvas id="nebula-canvas"></canvas>
-    </div>
-
-    <!-- OVERLAYS -->
-    <div class="overlay-layer vignette-overlay"></div>
-    <div class="overlay-layer grain-overlay"></div>
-    <div class="overlay-layer light-overlay"></div>
-
-    <!-- BLUR WRAPPER -->
-    <div id="blur-wrapper">
-
-        <!-- PROGRESS -->
-        <div class="progress-bar" id="progressBar"></div>
-        <div class="time-code" id="timeCode">00:00</div>
-        <div class="scene-name" id="sceneName">SCENE 1</div>
-
-        <!-- UI STAGE -->
-        <div id="ui-stage">
-
-            <!-- SCENE 1: INTRO -->
-            <section class="scene" id="scene1">
-                <div class="scene-content">
-                    <div class="intro-hebrew font-hebrew text-hero" id="introHeb">בְּרֵאשִׁית</div>
-                    <div class="intro-line" id="introLine"></div>
-                    <div class="intro-tagline font-brand text-sm text-gold" id="introTag">THE WORD MADE CLEAR</div>
-                    <div class="intro-sub text-xs text-muted" id="introSub">A PREMIUM BIBLE STUDY PLATFORM</div>
-                </div>
-            </section>
-
-            <!-- SCENE 2: TRANSLATION -->
-            <section class="scene" id="scene2">
-                <div class="scene-content">
-                    <div class="glass trans-panel">
-                        <div class="trans-header" id="transHeader">
-                            <div class="text-xs text-muted" style="margin-bottom:8px;">GENESIS 1:1</div>
-                            <div class="text-sm text-gold">WORD-FOR-WORD TRANSLATION</div>
-                        </div>
-
-                        <div class="hebrew-verse" id="hebrewVerse">
-                            <span class="heb-word font-hebrew" data-te="ఆదిలో"
-                                data-en="In the beginning">בְּרֵאשִׁית</span>
-                            <span class="heb-word font-hebrew" data-te="సృజించెను" data-en="created">בָּרָא</span>
-                            <span class="heb-word font-hebrew" data-te="దేవుడు" data-en="God">אֱלֹהִים</span>
-                            <span class="heb-word font-hebrew" data-te="ఆకాశమును"
-                                data-en="the heavens">הַשָּׁמַיִם</span>
-                            <span class="heb-word font-hebrew" data-te="భూమిని" data-en="the earth">הָאָרֶץ</span>
-                        </div>
-
-                        <div class="meaning-grid">
-                            <div class="meaning-card glass-subtle" id="meaningTe">
-                                <div class="meaning-label">
-                                    <span class="text-xs text-gold">TELUGU</span>
-                                </div>
-                                <div class="meaning-value font-telugu" id="teluguVal"></div>
-                            </div>
-                            <div class="meaning-card glass-subtle" id="meaningEn">
-                                <div class="meaning-label">
-                                    <span class="text-xs text-gold">ENGLISH</span>
-                                </div>
-                                <div class="meaning-value" id="englishVal"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SCENE 3: LEXICON -->
-            <section class="scene" id="scene3">
-                <div class="scene-content">
-                    <div class="lex-container">
-                        <div class="glass lex-main" id="lexMain">
-                            <div class="text-xs text-muted" style="margin-bottom:20px;">SELECTED WORD</div>
-                            <div class="lex-word font-hebrew">אֱלֹהִים</div>
-                            <div class="lex-translit font-serif">Elohim</div>
-                        </div>
-
-                        <div class="glass lex-details" id="lexDetails">
-                            <div class="lex-badges">
-                                <span class="lex-badge text-xxs">STRONG'S H430</span>
-                                <span class="lex-badge text-xxs">NOUN</span>
-                                <span class="lex-badge text-xxs">MASCULINE</span>
-                            </div>
-
-                            <h2 class="lex-title font-brand">God — The Supreme One</h2>
-
-                            <p class="lex-def">
-                                A plural of majesty, signifying the one true God with supreme power
-                                and divine authority. Appears over 2,600 times in the Hebrew Bible.
-                            </p>
-
-                            <div class="lex-telugu-box">
-                                <div class="text-xs text-gold" style="margin-bottom:10px;">TELUGU MEANING</div>
-                                <div class="font-telugu text-lg">దేవుడు — సర్వశక్తిమంతుడు, ప్రభువు</div>
-                            </div>
-
-                            <div class="xref-section">
-                                <div class="text-xs text-muted">CROSS REFERENCES</div>
-                                <div class="xref-grid" id="xrefGrid">
-                                    <div class="xref-item">
-                                        <div class="xref-dot"></div>
-                                        <span class="text-xs text-gold">Genesis 1:1</span>
-                                        <div class="xref-connector"></div>
-                                    </div>
-                                    <div class="xref-item">
-                                        <div class="xref-dot"></div>
-                                        <span class="text-xs text-gold">Psalm 19:1</span>
-                                        <div class="xref-connector"></div>
-                                    </div>
-                                    <div class="xref-item">
-                                        <div class="xref-dot"></div>
-                                        <span class="text-xs text-gold">Isaiah 40:28</span>
-                                        <div class="xref-connector"></div>
-                                    </div>
-                                    <div class="xref-item">
-                                        <div class="xref-dot"></div>
-                                        <span class="text-xs text-gold">Job 38:4</span>
-                                        <div class="xref-connector"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SCENE 4: DAILY VERSE -->
-            <section class="scene" id="scene4">
-                <div class="scene-content">
-                    <div class="daily-wrapper">
-                        <div class="glass daily-card" id="dailyCard">
-                            <div class="daily-icon">❝</div>
-                            <div class="text-xs text-gold" style="margin-bottom:25px;">DAILY VERSE</div>
-                            <div class="daily-verse-text font-serif" id="dailyText">
-                                "The Lord is my shepherd; I shall not want.<br>
-                                He makes me lie down in green pastures.<br>
-                                He leads me beside still waters."
-                            </div>
-                            <div class="text-xs text-muted">— PSALM 23:1-2</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SCENE 5: CHARACTER -->
-            <section class="scene" id="scene5">
-                <div class="scene-content">
-                    <div class="char-wrapper">
-                        <div class="glass char-card" id="charCard">
-                            <div class="char-portrait">
-                                <div class="char-silhouette"></div>
-                                <div class="char-glow"></div>
-                            </div>
-                            <div class="char-info">
-                                <div class="text-xs text-gold">CHARACTER OF THE DAY</div>
-                                <h2 class="char-name font-brand">DAVID</h2>
-                                <div class="char-role font-serif text-lg">Shepherd • Warrior • Psalmist • King</div>
-                                <p class="char-desc">
-                                    A man after God's own heart. From the hills of Bethlehem
-                                    to the throne of Israel, David's life embodies courage,
-                                    repentance, and unwavering worship through every trial
-                                    and triumph.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SCENE 6: KIDS -->
-            <section class="scene" id="scene6">
-                <div class="scene-content">
-                    <div class="kids-wrapper">
-                        <div class="kids-header">
-                            <h2 class="font-brand text-sm text-gold">BIBLE STORIES FOR KIDS</h2>
-                            <div class="kids-badge">
-                                <span class="text-xxs">KIDS MODE</span>
-                                <span class="text-xxs text-muted">SAFE • VISUAL • EDUCATIONAL</span>
-                            </div>
-                        </div>
-
-                        <div class="kids-grid">
-                            <div class="glass story-card" id="story1">
-                                <div class="story-bg"></div>
-                                <div class="story-inner">
-                                    <div class="story-title font-brand">Noah's Ark</div>
-                                    <div class="story-sub">God's Promise</div>
-                                </div>
-                                <div class="page-effect"></div>
-                            </div>
-                            <div class="glass story-card" id="story2">
-                                <div class="story-bg"></div>
-                                <div class="story-inner">
-                                    <div class="story-title font-brand">David & Goliath</div>
-                                    <div class="story-sub">Faith Over Fear</div>
-                                </div>
-                                <div class="page-effect"></div>
-                            </div>
-                            <div class="glass story-card" id="story3">
-                                <div class="story-bg"></div>
-                                <div class="story-inner">
-                                    <div class="story-title font-brand">Daniel's Lions</div>
-                                    <div class="story-sub">Trust in God</div>
-                                </div>
-                                <div class="page-effect"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SCENE 7: SEARCH -->
-            <section class="scene" id="scene7">
-                <div class="scene-content">
-                    <div class="search-wrapper">
-                        <div class="search-header" id="searchHeader">
-                            <span class="text-xs text-gold">INTELLIGENT SEARCH • INSTANT RESULTS • MULTI-LANGUAGE</span>
-                        </div>
-
-                        <div class="glass search-box" id="searchBox">
-                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5">
-                                <circle cx="11" cy="11" r="8" />
-                                <path d="M21 21l-4.35-4.35" />
-                            </svg>
-
-                            <div class="search-input">
-                                <span class="search-text" id="searchTyped"></span>
-                                <div class="search-cursor"></div>
-                            </div>
-
-                            <div class="lang-toggle">
-                                <span class="lang-btn active" id="langEn">EN</span>
-                                <span class="lang-btn" id="langTe">TE</span>
-                            </div>
-                        </div>
-
-                        <div class="results-list" id="resultsList">
-                            <div class="glass result-row" id="result1">
-                                <div class="result-meta">
-                                    <span class="result-ref text-xs">EPHESIANS 2:8</span>
-                                    <span class="result-tag">NEW TESTAMENT</span>
-                                </div>
-                                <div class="result-text">
-                                    For by <span class="result-highlight">grace</span> you have been saved through
-                                    faith.
-                                    And this is not your own doing; it is the gift of God.
-                                </div>
-                            </div>
-
-                            <div class="glass result-row" id="result2">
-                                <div class="result-meta">
-                                    <span class="result-ref text-xs">ROMANS 5:8</span>
-                                    <span class="result-tag">NEW TESTAMENT</span>
-                                </div>
-                                <div class="result-text">
-                                    But God shows his love for us in that while we were still sinners,
-                                    Christ died for us — this is <span class="result-highlight">grace</span>.
-                                </div>
-                            </div>
-
-                            <div class="glass result-row" id="result3">
-                                <div class="result-meta">
-                                    <span class="result-ref text-xs">ఎఫెసీయులకు 2:8</span>
-                                    <span class="result-tag">తెలుగు</span>
-                                </div>
-                                <div class="result-text font-telugu">
-                                    మీరు విశ్వాసము ద్వారా <span class="result-highlight">కృప</span> చేతనే
-                                    రక్షింపబడియున్నారు;
-                                    ఇది మీవలన కలిగినది కాదు, దేవుని వరము.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stats-row" id="statsRow">
-                            <div class="stat-box">
-                                <div class="stat-num" id="statCount">0</div>
-                                <div class="stat-label">RESULTS</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="stat-num">0.02s</div>
-                                <div class="stat-label">SEARCH TIME</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="stat-num">2</div>
-                                <div class="stat-label">LANGUAGES</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SCENE 8: FINALE -->
-            <section class="scene" id="scene8">
-                <div class="scene-content">
-                    <div class="finale-wrapper">
-                        <div class="finale-glow" id="finaleGlow"></div>
-
-                        <div class="features-cloud" id="featuresCloud">
-                            <div class="feature-tag">Interlinear</div>
-                            <div class="feature-tag">Hebrew • Telugu • English</div>
-                            <div class="feature-tag">Deep Lexicon</div>
-                            <div class="feature-tag">Cross-References</div>
-                            <div class="feature-tag">Daily Verse</div>
-                            <div class="feature-tag">Characters</div>
-                            <div class="feature-tag">Kids Mode</div>
-                            <div class="feature-tag">Fast Search</div>
-                        </div>
-
-                        <div class="finale-logo font-brand" id="finaleLogo">BIBLE MIND</div>
-                        <div class="finale-tagline text-xs" id="finaleTagline">CLARITY • DEPTH • TRUST</div>
-
-                        <div class="finale-cta" id="finaleCta">
-                            <button class="cta-btn">START YOUR JOURNEY</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+    <div class="intro-container">
+        <!-- Nebula Background -->
+        <div class="nebula-bg">
+            <div class="stars"></div>
+            <div class="nebula-cloud cloud-1"></div>
+            <div class="nebula-cloud cloud-2"></div>
+            <div class="nebula-cloud cloud-3"></div>
         </div>
 
+        <!-- Particles -->
+        <div class="particles" id="particles"></div>
+
+        <!-- Light Burst -->
+        <div class="light-burst"></div>
+
+        <!-- Main Stage -->
+        <div class="intro-stage">
+            <!-- Logo -->
+            <div class="logo-container">
+                <div class="glow-ring"></div>
+                <div class="glow-ring-2"></div>
+
+                <div class="badge">
+                    <!-- Logo SVG -->
+                    <svg class="logo-svg" viewBox="0 0 100 100">
+                        <!-- Book curves -->
+                        <path class="svg-path" d="M35,28 Q18,28 18,50 Q18,72 35,72" />
+                        <path class="svg-path" d="M65,28 Q82,28 82,50 Q82,72 65,72" />
+                        <path class="svg-path" style="animation-delay: 2s" d="M30,42 Q24,42 24,56" />
+                        <path class="svg-path" style="animation-delay: 2.2s" d="M70,42 Q76,42 76,56" />
+
+                        <!-- Cross -->
+                        <g>
+                            <rect class="cross-rect" x="45" y="20" width="10" height="48" rx="2" />
+                            <rect class="cross-rect" style="animation-delay: 2.1s" x="34" y="33" width="32" height="10"
+                                rx="2" />
+                        </g>
+                    </svg>
+
+                    <!-- Book at bottom -->
+                    <svg class="book-svg" viewBox="0 0 100 40">
+                        <path fill="#d4af37" d="M50,35 L8,28 L8,10 L50,18 Z" />
+                        <path fill="#b8972f" d="M50,35 L92,28 L92,10 L50,18 Z" />
+                        <path fill="#f5e6a8" d="M50,35 L50,18 L50,18 L50,35 Z" stroke="#d4af37" stroke-width="0.5" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div class="title-container">
+                <div class="title-text" id="titleText"></div>
+                <p class="subtitle">Wisdom & Understanding</p>
+            </div>
+        </div>
+
+        <!-- Skip Button -->
+        <button class="skip-btn" onclick="skipIntro()">Skip Intro</button>
     </div>
 
     <script>
-        // ================================================================
-        // ABSTRACT NEBULA WAVES BACKGROUND (Pure Shader, No Particles)
-        // ================================================================
+        // Animate title characters
+        document.addEventListener('DOMContentLoaded', () => {
+            const title = "BIBLE MIND";
+            const container = document.getElementById('titleText');
 
-        const canvas = document.getElementById('nebula-canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            title.split('').forEach((char, i) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.innerHTML = char === ' ' ? '&nbsp;' : char;
+                container.appendChild(span);
 
-        // Resize canvas
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        // Vertex Shader
-        const vertexShaderSource = `
-            attribute vec2 a_position;
-            void main() {
-                gl_Position = vec4(a_position, 0.0, 1.0);
-            }
-        `;
-
-        // Fragment Shader - Abstract Black & White Nebula Waves
-        const fragmentShaderSource = `
-            precision highp float;
-            
-            uniform vec2 u_resolution;
-            uniform float u_time;
-            uniform float u_zoom;
-            uniform vec2 u_offset;
-            
-            // Noise functions
-            float hash(vec2 p) {
-                return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-            }
-            
-            float noise(vec2 p) {
-                vec2 i = floor(p);
-                vec2 f = fract(p);
-                f = f * f * (3.0 - 2.0 * f);
-                
-                float a = hash(i);
-                float b = hash(i + vec2(1.0, 0.0));
-                float c = hash(i + vec2(0.0, 1.0));
-                float d = hash(i + vec2(1.0, 1.0));
-                
-                return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-            }
-            
-            float fbm(vec2 p) {
-                float value = 0.0;
-                float amplitude = 0.5;
-                float frequency = 1.0;
-                
-                for (int i = 0; i < 6; i++) {
-                    value += amplitude * noise(p * frequency);
-                    frequency *= 2.0;
-                    amplitude *= 0.5;
-                }
-                
-                return value;
-            }
-            
-            // Domain warping for organic flow
-            float warpedFbm(vec2 p, float time) {
-                vec2 q = vec2(
-                    fbm(p + vec2(0.0, 0.0)),
-                    fbm(p + vec2(5.2, 1.3))
-                );
-                
-                vec2 r = vec2(
-                    fbm(p + 4.0 * q + vec2(1.7, 9.2) + 0.15 * time),
-                    fbm(p + 4.0 * q + vec2(8.3, 2.8) + 0.126 * time)
-                );
-                
-                return fbm(p + 4.0 * r);
-            }
-            
-            void main() {
-                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-                vec2 p = (uv - 0.5) * 2.0;
-                p.x *= u_resolution.x / u_resolution.y;
-                
-                // Apply zoom and offset
-                p = p / u_zoom + u_offset;
-                
-                // Slow time for smooth motion
-                float time = u_time * 0.08;
-                
-                // Multiple layers of warped noise
-                float n1 = warpedFbm(p * 1.5, time);
-                float n2 = warpedFbm(p * 2.0 + vec2(100.0), time * 0.8);
-                float n3 = warpedFbm(p * 0.8 + vec2(50.0), time * 1.2);
-                
-                // Wave patterns
-                float wave1 = sin(p.x * 3.0 + time + n1 * 5.0) * 0.5 + 0.5;
-                float wave2 = sin(p.y * 2.0 - time * 0.5 + n2 * 4.0) * 0.5 + 0.5;
-                float wave3 = sin((p.x + p.y) * 1.5 + time * 0.7 + n3 * 3.0) * 0.5 + 0.5;
-                
-                // Combine layers
-                float combined = n1 * 0.4 + n2 * 0.3 + n3 * 0.3;
-                combined += wave1 * 0.1 + wave2 * 0.1 + wave3 * 0.1;
-                
-                // Create depth with multiple octaves
-                float depth = fbm(p * 3.0 + time * 0.1) * 0.3;
-                combined = combined * (1.0 - depth) + depth * 0.5;
-                
-                // Black and white contrast
-                float brightness = combined;
-                
-                // Add subtle highlights
-                float highlight = pow(max(0.0, n1 - 0.6), 2.0) * 2.0;
-                brightness += highlight * 0.2;
-                
-                // Vignette
-                float vignette = 1.0 - length((uv - 0.5) * 1.5);
-                vignette = smoothstep(0.0, 0.7, vignette);
-                
-                // Final color (pure grayscale)
-                brightness = brightness * vignette;
-                brightness = clamp(brightness * 0.6, 0.0, 1.0);
-                
-                // Slight contrast adjustment
-                brightness = pow(brightness, 1.1);
-                
-                gl_FragColor = vec4(vec3(brightness), 1.0);
-            }
-        `;
-
-        // Compile shader
-        function createShader(gl, type, source) {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error('Shader compile error:', gl.getShaderInfoLog(shader));
-                gl.deleteShader(shader);
-                return null;
-            }
-            return shader;
-        }
-
-        // Create program
-        function createProgram(gl, vertexShader, fragmentShader) {
-            const program = gl.createProgram();
-            gl.attachShader(program, vertexShader);
-            gl.attachShader(program, fragmentShader);
-            gl.linkProgram(program);
-            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                console.error('Program link error:', gl.getProgramInfoLog(program));
-                return null;
-            }
-            return program;
-        }
-
-        // Initialize WebGL
-        let program, positionBuffer, positionLocation;
-        let resolutionLocation, timeLocation, zoomLocation, offsetLocation;
-        let currentZoom = 1.0;
-        let targetZoom = 1.0;
-        let currentOffset = { x: 0, y: 0 };
-        let targetOffset = { x: 0, y: 0 };
-        let startTime = Date.now();
-
-        if (gl) {
-            const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-            const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-
-            if (vertexShader && fragmentShader) {
-                program = createProgram(gl, vertexShader, fragmentShader);
-
-                if (program) {
-                    positionLocation = gl.getAttribLocation(program, 'a_position');
-                    resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
-                    timeLocation = gl.getUniformLocation(program, 'u_time');
-                    zoomLocation = gl.getUniformLocation(program, 'u_zoom');
-                    offsetLocation = gl.getUniformLocation(program, 'u_offset');
-
-                    positionBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-                        -1, -1,
-                        1, -1,
-                        -1, 1,
-                        -1, 1,
-                        1, -1,
-                        1, 1
-                    ]), gl.STATIC_DRAW);
-                }
-            }
-        }
-
-        // Render loop
-        function renderNebula() {
-            if (!gl || !program) {
-                requestAnimationFrame(renderNebula);
-                return;
-            }
-
-            // Smooth zoom interpolation
-            currentZoom += (targetZoom - currentZoom) * 0.02;
-            currentOffset.x += (targetOffset.x - currentOffset.x) * 0.02;
-            currentOffset.y += (targetOffset.y - currentOffset.y) * 0.02;
-
-            const time = (Date.now() - startTime) / 1000;
-
-            gl.viewport(0, 0, canvas.width, canvas.height);
-            gl.clearColor(0, 0, 0, 1);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-
-            gl.useProgram(program);
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            gl.enableVertexAttribArray(positionLocation);
-            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-            gl.uniform1f(timeLocation, time);
-            gl.uniform1f(zoomLocation, currentZoom);
-            gl.uniform2f(offsetLocation, currentOffset.x, currentOffset.y);
-
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-            requestAnimationFrame(renderNebula);
-        }
-        renderNebula();
-
-        // Zoom control function
-        function setNebulaZoom(zoom, offsetX = 0, offsetY = 0, duration = 2) {
-            gsap.to({ z: targetZoom, x: targetOffset.x, y: targetOffset.y }, {
-                z: zoom,
-                x: offsetX,
-                y: offsetY,
-                duration: duration,
-                ease: 'power2.inOut',
-                onUpdate: function () {
-                    targetZoom = this.targets()[0].z;
-                    targetOffset.x = this.targets()[0].x;
-                    targetOffset.y = this.targets()[0].y;
-                }
-            });
-        }
-
-        // ================================================================
-        // BLUR EFFECT
-        // ================================================================
-
-        const blurWrapper = document.getElementById('blur-wrapper');
-
-        function applyBlur(level, duration = 0.8) {
-            const classes = ['blur-subtle', 'blur-medium', 'blur-heavy', 'blur-warp'];
-            classes.forEach(c => blurWrapper.classList.remove(c));
-
-            if (level && level !== 'none') {
-                blurWrapper.classList.add(`blur-${level}`);
-
+                // Stagger animation
                 setTimeout(() => {
-                    blurWrapper.classList.remove(`blur-${level}`);
-                }, duration * 1000);
+                    span.classList.add('animate');
+                }, 2500 + (i * 80));
+            });
+
+            // Create particles
+            createParticles();
+
+            // Auto-skip after animation
+            setTimeout(() => {
+                console.log('Intro complete - would navigate to main app');
+            }, 5500);
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particle.style.animationDelay = (Math.random() * 3) + 's';
+                particle.style.animation = `particleRise ${particle.style.animationDuration} ${particle.style.animationDelay} infinite linear`;
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
             }
         }
 
-        // ================================================================
-        // SCENE MANAGEMENT
-        // ================================================================
+        // Mouse parallax
+        document.addEventListener('mousemove', (e) => {
+            const stage = document.querySelector('.intro-stage');
+            if (!stage) return;
 
-        const sceneName = document.getElementById('sceneName');
+            const rotY = (window.innerWidth / 2 - e.pageX) / 80;
+            const rotX = (window.innerHeight / 2 - e.pageY) / 80;
+            stage.style.transform = `rotateY(${-rotY}deg) rotateX(${rotX}deg)`;
+        });
 
-        function showScene(id) {
-            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-            const scene = document.getElementById(id);
-            if (scene) scene.classList.add('active');
+        function skipIntro() {
+            const container = document.querySelector('.intro-container');
+            container.style.transition = 'opacity 0.5s ease';
+            container.style.opacity = '0';
+            setTimeout(() => {
+                console.log('Skip - would navigate to main app');
+            }, 500);
         }
-
-        function setSceneName(name) {
-            sceneName.textContent = name;
-        }
-
-        // ================================================================
-        // TYPEWRITER
-        // ================================================================
-
-        function typeText(element, text, speed = 70) {
-            return new Promise(resolve => {
-                element.textContent = '';
-                let i = 0;
-                const interval = setInterval(() => {
-                    if (i < text.length) {
-                        element.textContent += text[i];
-                        i++;
-                    } else {
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, speed);
-            });
-        }
-
-        // ================================================================
-        // COUNTER ANIMATION
-        // ================================================================
-
-        function animateNumber(element, target, duration = 1000) {
-            const start = 0;
-            const startTime = performance.now();
-
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const value = Math.floor(start + (target - start) * progress);
-                element.textContent = value;
-
-                if (progress < 1) requestAnimationFrame(update);
-            }
-
-            requestAnimationFrame(update);
-        }
-
-        // ================================================================
-        // MASTER TIMELINE
-        // ================================================================
-
-        function startExperience() {
-            const gate = document.getElementById('gate');
-            const audio = document.getElementById('bgm');
-            const progressBar = document.getElementById('progressBar');
-            const timeCode = document.getElementById('timeCode');
-
-            // Hide gate
-            gsap.to(gate, {
-                opacity: 0,
-                duration: 1.5,
-                ease: 'power2.inOut',
-                onComplete: () => gate.style.display = 'none'
-            });
-
-            // Start audio
-            audio.volume = 0;
-            audio.play().catch(e => console.log('Audio blocked'));
-            gsap.to(audio, { volume: 0.4, duration: 3 });
-
-            // Progress bar
-            gsap.to(progressBar, { width: '100%', duration: 30, ease: 'linear' });
-
-            // Time code updater
-            const startMs = Date.now();
-            const timeInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - startMs) / 1000);
-                const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
-                const secs = (elapsed % 60).toString().padStart(2, '0');
-                timeCode.textContent = `${mins}:${secs}`;
-                if (elapsed >= 30) clearInterval(timeInterval);
-            }, 100);
-
-            // ========================
-            // TIMELINE
-            // ========================
-
-            const tl = gsap.timeline();
-
-            // -------- SCENE 1: INTRO (0-4s) --------
-            tl.add(() => {
-                showScene('scene1');
-                setSceneName('SCENE 1 — THE WORD');
-                setNebulaZoom(1.0, 0, 0, 4);
-            }, 0);
-
-            tl.to('#introHeb', {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 2.5,
-                ease: 'power3.out'
-            }, 0.5);
-
-            tl.to('#introLine', {
-                opacity: 1,
-                scaleX: 1,
-                duration: 1.2,
-                ease: 'power2.out'
-            }, 1.5);
-
-            tl.to('#introTag', {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: 'power2.out'
-            }, 2.2);
-
-            tl.to('#introSub', {
-                opacity: 1,
-                duration: 0.8,
-                ease: 'power2.out'
-            }, 2.8);
-
-            // Transition
-            tl.add(() => {
-                applyBlur('medium', 0.8);
-                setNebulaZoom(1.2, 0.1, 0.05, 1);
-            }, 3.6);
-
-            tl.to('#scene1', { opacity: 0, duration: 0.6 }, 3.7);
-
-            // -------- SCENE 2: TRANSLATION (4-9s) --------
-            tl.add(() => {
-                showScene('scene2');
-                setSceneName('SCENE 2 — TRANSLATION');
-                setNebulaZoom(1.3, -0.1, 0, 5);
-            }, 4);
-
-            tl.to('#scene2', { opacity: 1, duration: 1 }, 4);
-
-            tl.to('#transHeader', {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out'
-            }, 4.3);
-
-            // Meaning cards
-            tl.to('.meaning-card', {
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: 'power3.out'
-            }, 4.8);
-
-            // Word highlighting
-            const words = document.querySelectorAll('.heb-word');
-            const teluguVal = document.getElementById('teluguVal');
-            const englishVal = document.getElementById('englishVal');
-
-            let wordTime = 5.5;
-            words.forEach((word, i) => {
-                tl.add(() => {
-                    words.forEach(w => w.classList.remove('highlight'));
-                    word.classList.add('highlight');
-                    teluguVal.textContent = word.dataset.te;
-                    englishVal.textContent = word.dataset.en;
-                }, wordTime);
-                wordTime += 0.7;
-            });
-
-            tl.add(() => applyBlur('subtle', 0.6), 8.6);
-            tl.to('#scene2', { opacity: 0, duration: 0.5 }, 8.7);
-
-            // -------- SCENE 3: LEXICON (9-13s) --------
-            tl.add(() => {
-                showScene('scene3');
-                setSceneName('SCENE 3 — LEXICON');
-                setNebulaZoom(1.5, 0.2, -0.1, 4);
-            }, 9);
-
-            tl.to('#scene3', { opacity: 1, duration: 0.8 }, 9);
-
-            tl.from('#lexMain', {
-                x: -60,
-                opacity: 0,
-                duration: 1.2,
-                ease: 'power3.out'
-            }, 9.3);
-
-            tl.from('#lexDetails', {
-                x: 60,
-                opacity: 0,
-                duration: 1.2,
-                ease: 'power3.out'
-            }, 9.5);
-
-            tl.to('.xref-item', {
-                opacity: 1,
-                x: 0,
-                stagger: 0.15,
-                duration: 0.6,
-                ease: 'power2.out'
-            }, 10.5);
-
-            tl.add(() => applyBlur('subtle', 0.6), 12.6);
-            tl.to('#scene3', { opacity: 0, duration: 0.5 }, 12.7);
-
-            // -------- SCENE 4: DAILY VERSE (13-17s) --------
-            tl.add(() => {
-                showScene('scene4');
-                setSceneName('SCENE 4 — DAILY VERSE');
-                setNebulaZoom(1.2, 0, 0.1, 4);
-            }, 13);
-
-            tl.to('#scene4', { opacity: 1, duration: 1 }, 13);
-
-            tl.from('#dailyCard', {
-                y: 50,
-                scale: 0.96,
-                opacity: 0,
-                duration: 1.5,
-                ease: 'power3.out'
-            }, 13.3);
-
-            tl.add(() => applyBlur('subtle', 0.6), 16.6);
-            tl.to('#scene4', { opacity: 0, duration: 0.5 }, 16.7);
-
-            // -------- SCENE 5: CHARACTER (17-21s) --------
-            tl.add(() => {
-                showScene('scene5');
-                setSceneName('SCENE 5 — CHARACTER');
-                setNebulaZoom(1.4, -0.15, 0.05, 4);
-            }, 17);
-
-            tl.to('#scene5', { opacity: 1, duration: 0.8 }, 17);
-
-            tl.from('#charCard', {
-                rotateY: -15,
-                x: -80,
-                opacity: 0,
-                duration: 1.5,
-                ease: 'power3.out'
-            }, 17.3);
-
-            tl.add(() => applyBlur('subtle', 0.6), 20.6);
-            tl.to('#scene5', { opacity: 0, duration: 0.5 }, 20.7);
-
-            // -------- SCENE 6: KIDS (21-24.5s) --------
-            tl.add(() => {
-                showScene('scene6');
-                setSceneName('SCENE 6 — KIDS STORIES');
-                setNebulaZoom(1.3, 0.1, -0.1, 3.5);
-            }, 21);
-
-            tl.to('#scene6', { opacity: 1, duration: 0.8 }, 21);
-
-            tl.to('.story-card', {
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                stagger: 0.2,
-                duration: 1,
-                ease: 'back.out(1.2)'
-            }, 21.3);
-
-            // Page turn effect
-            tl.to('#story2 .page-effect', {
-                scaleX: 1,
-                duration: 0.5,
-                ease: 'power2.out'
-            }, 22.5);
-
-            tl.to('#story2 .page-effect', {
-                scaleX: 0,
-                duration: 0.4,
-                ease: 'power2.in'
-            }, 23.2);
-
-            tl.add(() => applyBlur('medium', 0.8), 24.1);
-            tl.to('#scene6', { opacity: 0, duration: 0.5 }, 24.2);
-
-            // -------- SCENE 7: SEARCH (24.5-28s) --------
-            tl.add(() => {
-                showScene('scene7');
-                setSceneName('SCENE 7 — SEARCH');
-
-                // Slow zoom in
-                setNebulaZoom(1.8, 0, 0, 2);
-                applyBlur('heavy', 1);
-            }, 24.5);
-
-            tl.to('#scene7', { opacity: 1, duration: 0.6 }, 24.5);
-
-            tl.to('#searchHeader', {
-                opacity: 1,
-                y: 0,
-                duration: 0.6,
-                ease: 'power2.out'
-            }, 24.8);
-
-            tl.to('#searchBox', {
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power3.out'
-            }, 25);
-
-            // Typing
-            tl.add(() => {
-                typeText(document.getElementById('searchTyped'), 'Grace / కృప', 80);
-            }, 25.3);
-
-            // Zoom out for results
-            tl.add(() => {
-                setNebulaZoom(1.2, 0, 0, 1);
-                applyBlur('subtle', 0.5);
-            }, 26.2);
-
-            // Results
-            tl.to('#result1', {
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                duration: 0.6,
-                ease: 'power3.out',
-                onComplete: () => document.getElementById('result1').classList.add('visible')
-            }, 26.3);
-
-            tl.to('#result2', {
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                duration: 0.6,
-                ease: 'power3.out',
-                onComplete: () => document.getElementById('result2').classList.add('visible')
-            }, 26.5);
-
-            // Language toggle
-            tl.add(() => {
-                document.getElementById('langEn').classList.remove('active');
-                document.getElementById('langTe').classList.add('active');
-            }, 26.7);
-
-            tl.to('#result3', {
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                duration: 0.6,
-                ease: 'power3.out',
-                onComplete: () => document.getElementById('result3').classList.add('visible')
-            }, 26.8);
-
-            tl.to('#statsRow', { opacity: 1, duration: 0.6 }, 27);
-            tl.add(() => animateNumber(document.getElementById('statCount'), 156, 800), 27.1);
-
-            tl.add(() => applyBlur('subtle', 0.6), 27.6);
-            tl.to('#scene7', { opacity: 0, duration: 0.5 }, 27.7);
-
-            // -------- SCENE 8: FINALE (28-30s) --------
-            tl.add(() => {
-                showScene('scene8');
-                setSceneName('BIBLE MIND');
-                setNebulaZoom(1.0, 0, 0, 2.5);
-            }, 28);
-
-            tl.to('#scene8', { opacity: 1, duration: 1 }, 28);
-
-            tl.to('#featuresCloud', { opacity: 1, duration: 0.8 }, 28.2);
-
-            tl.to('.feature-tag', {
-                opacity: 1,
-                y: 0,
-                stagger: 0.05,
-                duration: 0.4,
-                ease: 'power2.out'
-            }, 28.3);
-
-            tl.to('#finaleLogo', {
-                opacity: 1,
-                scale: 1,
-                duration: 1.5,
-                ease: 'power3.out'
-            }, 28.5);
-
-            tl.to('#finaleTagline', {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: 'power2.out'
-            }, 29);
-
-            tl.to('#finaleGlow', {
-                opacity: 0.5,
-                duration: 1.5,
-                ease: 'power2.out'
-            }, 28.8);
-
-            tl.to('#finaleCta', {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out'
-            }, 29.3);
-
-            // Fade audio
-            tl.to(audio, { volume: 0, duration: 2 }, 28.5);
-        }
-
-        // ================================================================
-        // INITIALIZATION
-        // ================================================================
-
-        // Initial states
-        gsap.set('.scene', { opacity: 0 });
-        gsap.set('#scene1', { opacity: 1 });
-        document.getElementById('scene1').classList.add('active');
-
-        gsap.set('#introHeb', { opacity: 0, y: 40, scale: 0.95 });
-        gsap.set('#introLine', { opacity: 0, scaleX: 0 });
-        gsap.set('#introTag', { opacity: 0, y: 20 });
-        gsap.set('#introSub', { opacity: 0 });
-        gsap.set('#transHeader', { opacity: 0, y: 20 });
-        gsap.set('.meaning-card', { opacity: 0, y: 40, rotateX: -8 });
-        gsap.set('.xref-item', { opacity: 0, x: -20 });
-        gsap.set('.story-card', { opacity: 0, y: 60, rotateX: -12 });
-        gsap.set('.page-effect', { scaleX: 0 });
-        gsap.set('#searchHeader', { opacity: 0, y: 15 });
-        gsap.set('#searchBox', { opacity: 0, scale: 0.96, y: 20 });
-        gsap.set('.result-row', { opacity: 0, y: 25, rotateX: -10 });
-        gsap.set('#statsRow', { opacity: 0 });
-        gsap.set('#featuresCloud', { opacity: 0 });
-        gsap.set('.feature-tag', { opacity: 0, y: 25 });
-        gsap.set('#finaleLogo', { opacity: 0, scale: 0.92 });
-        gsap.set('#finaleTagline', { opacity: 0, y: 20 });
-        gsap.set('#finaleGlow', { opacity: 0 });
-        gsap.set('#finaleCta', { opacity: 0, y: 20 });
-
-        // Start button
-        document.getElementById('startBtn').addEventListener('click', startExperience);
-
     </script>
 </body>
 

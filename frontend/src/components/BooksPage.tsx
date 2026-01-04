@@ -4,6 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import NotebookModal from './NotebookModal';
 import GenesisBook from './GenesisBook';
 import ExodusBook from './ExodusBook';
+import LeviticusBook from './LeviticusBook';
+import NumbersBook from './NumbersBook';
+import DeuteronomyBook from './DeuteronomyBook';
+import JoshuaBook from './JoshuaBook';
+import JudgesBook from './JudgesBook';
 
 const bibleBooks = [
     // Old Testament
@@ -80,15 +85,28 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const [selectedBook, setSelectedBook] = useState<{ id: number; title: string } | null>(null);
     const [showGenesisBook, setShowGenesisBook] = useState(false);
     const [showExodusBook, setShowExodusBook] = useState(false);
+    const [showLeviticusBook, setShowLeviticusBook] = useState(false);
+    const [showNumbersBook, setShowNumbersBook] = useState(false);
+    const [showDeuteronomyBook, setShowDeuteronomyBook] = useState(false);
+    const [showJoshuaBook, setShowJoshuaBook] = useState(false);
+    const [showJudgesBook, setShowJudgesBook] = useState(false);
 
-    // Handle book click - special handling for Genesis and Exodus
+    // Handle book click - special handling for story books
     const handleBookClick = (book: { id: number; title: string }) => {
         if (book.id === 1) {
-            // Genesis - open the story book
             setShowGenesisBook(true);
         } else if (book.id === 2) {
-            // Exodus - open the story book
             setShowExodusBook(true);
+        } else if (book.id === 3) {
+            setShowLeviticusBook(true);
+        } else if (book.id === 4) {
+            setShowNumbersBook(true);
+        } else if (book.id === 5) {
+            setShowDeuteronomyBook(true);
+        } else if (book.id === 6) {
+            setShowJoshuaBook(true);
+        } else if (book.id === 7) {
+            setShowJudgesBook(true);
         } else {
             // Other books - open notebook
             setSelectedBook(book);
@@ -280,6 +298,21 @@ const BooksPage: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 )}
                 {showExodusBook && (
                     <ExodusBook onBack={() => setShowExodusBook(false)} />
+                )}
+                {showLeviticusBook && (
+                    <LeviticusBook onClose={() => setShowLeviticusBook(false)} />
+                )}
+                {showNumbersBook && (
+                    <NumbersBook onBack={() => setShowNumbersBook(false)} />
+                )}
+                {showDeuteronomyBook && (
+                    <DeuteronomyBook onBack={() => setShowDeuteronomyBook(false)} />
+                )}
+                {showJoshuaBook && (
+                    <JoshuaBook onBack={() => setShowJoshuaBook(false)} />
+                )}
+                {showJudgesBook && (
+                    <JudgesBook onBack={() => setShowJudgesBook(false)} />
                 )}
             </AnimatePresence>
         </motion.div>
