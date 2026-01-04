@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bible Mind - Cinematic Infographic</title>
+    <title>Bible Mind - Cinematic Presentation</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap"
         rel="stylesheet">
     <style>
         * {
@@ -15,145 +15,126 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #6366f1;
-            --secondary: #8b5cf6;
-            --accent: #f59e0b;
-            --dark: #0a0a0a;
-            --light: #fafafa;
-        }
-
         body {
             background: #000;
-            overflow: hidden;
-            font-family: 'Inter', sans-serif;
             color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            cursor: none;
         }
 
-        /* ========== LOADING SCREEN ========== */
-        .loading-screen {
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
             position: fixed;
-            width: 100%;
-            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            width: 5px;
+            height: 5px;
+            background: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+        }
+
+        /* Cinematic Letterbox */
+        .letterbox-top,
+        .letterbox-bottom {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 60px;
             background: #000;
+            z-index: 1000;
+        }
+
+        .letterbox-top {
+            top: 0;
+        }
+
+        .letterbox-bottom {
+            bottom: 0;
+        }
+
+        /* Video Player Controls */
+        .video-controls {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1001;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #fff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            z-index: 10000;
-            transition: all 1s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
+        .play-btn:hover {
+            background: #fff;
+            color: #000;
         }
 
-        .loading-logo {
-            width: 120px;
-            height: 120px;
-            position: relative;
-            margin-bottom: 2rem;
+        .play-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
         }
 
-        .loading-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 3px solid transparent;
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: loadSpin 1s linear infinite;
-        }
-
-        .loading-ring:nth-child(2) {
-            width: 80%;
-            height: 80%;
-            top: 10%;
-            left: 10%;
-            border-top-color: rgba(255, 255, 255, 0.5);
-            animation-duration: 0.8s;
-            animation-direction: reverse;
-        }
-
-        .loading-ring:nth-child(3) {
-            width: 60%;
-            height: 60%;
-            top: 20%;
-            left: 20%;
-            border-top-color: rgba(255, 255, 255, 0.3);
-            animation-duration: 0.6s;
-        }
-
-        @keyframes loadSpin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading-text {
-            font-size: 0.9rem;
-            letter-spacing: 4px;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-        }
-
-        .loading-progress {
-            width: 200px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-top: 1rem;
+        .progress-container {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 2px;
-            overflow: hidden;
+            cursor: pointer;
         }
 
-        .loading-progress-bar {
+        .progress-bar {
             height: 100%;
             background: #fff;
+            border-radius: 2px;
             width: 0%;
-            animation: loadProgress 2s ease forwards;
+            transition: width 0.1s linear;
         }
 
-        @keyframes loadProgress {
-            to {
-                width: 100%;
-            }
+        .time-display {
+            font-size: 12px;
+            font-family: 'Inter', monospace;
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        /* ========== VIDEO CONTAINER ========== */
-        .video-container {
+        /* Main Stage */
+        .stage {
             width: 100vw;
             height: 100vh;
             position: relative;
             overflow: hidden;
         }
 
-        /* ========== CINEMATIC BARS ========== */
-        .cinematic-bars {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        .bar-top,
-        .bar-bottom {
-            position: absolute;
-            width: 100%;
-            height: 50px;
-            background: #000;
-        }
-
-        .bar-top {
-            top: 0;
-        }
-
-        .bar-bottom {
-            bottom: 0;
-        }
-
-        /* ========== SCENE BASE ========== */
+        /* Scenes */
         .scene {
             position: absolute;
             width: 100%;
@@ -163,91 +144,43 @@
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(1.05);
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
         .scene.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1);
         }
 
-        .scene.exit-left {
-            transform: translateX(-100%) scale(0.9);
-            opacity: 0;
-        }
-
-        .scene.exit-right {
-            transform: translateX(100%) scale(0.9);
-            opacity: 0;
-        }
-
-        .scene.exit-zoom {
-            transform: scale(1.5);
-            opacity: 0;
-        }
-
-        .scene.exit-fade {
-            transform: scale(0.95);
-            opacity: 0;
-        }
-
-        /* ========== BACKGROUNDS ========== */
-        .bg-dark {
-            background: linear-gradient(135deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%);
-        }
-
-        .bg-gradient-1 {
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
-        }
-
-        .bg-gradient-2 {
-            background: linear-gradient(135deg, #1a0a0a 0%, #2a1515 50%, #1a0a0a 100%);
-        }
-
-        .bg-white {
-            background: linear-gradient(135deg, #fff 0%, #f5f5f5 50%, #fff 100%);
-        }
-
-        .bg-cream {
-            background: linear-gradient(135deg, #fefdf8 0%, #f5f0e6 50%, #fefdf8 100%);
-        }
-
-        .bg-gradient-purple {
-            background: linear-gradient(135deg, #1a1025 0%, #2d1b4e 50%, #1a1025 100%);
-        }
-
-        .bg-gradient-blue {
-            background: linear-gradient(135deg, #0a1628 0%, #132743 50%, #0a1628 100%);
-        }
-
-        /* ========== ANIMATED BACKGROUNDS ========== */
-        .animated-bg {
+        /* Scene Backgrounds */
+        .scene-bg {
             position: absolute;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%);
+            transition: transform 8s ease-out, filter 1s ease;
         }
 
-        .bg-gradient-animated {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.1), transparent, rgba(139, 92, 246, 0.1), transparent);
-            animation: rotateBg 20s linear infinite;
+        .scene.active .scene-bg {
+            transform: scale(1.1);
         }
 
-        @keyframes rotateBg {
-            to {
-                transform: rotate(360deg);
-            }
+        /* Grain Overlay */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.05;
         }
 
-        /* ========== PARTICLES SYSTEM ========== */
-        .particles-container {
+        /* Particles */
+        .particles {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -256,1149 +189,287 @@
 
         .particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.6);
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
-            pointer-events: none;
+            animation: float 20s infinite;
         }
 
-        .particle-glow {
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        .particle-line {
-            width: 2px;
-            height: 50px;
-            border-radius: 2px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.3), transparent);
-        }
-
-        /* ========== FLOATING ORBS ========== */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: orbFloat 15s ease-in-out infinite;
-        }
-
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
-            top: -100px;
-            left: -100px;
-        }
-
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
-            bottom: -150px;
-            right: -150px;
-            animation-delay: -5s;
-        }
-
-        .orb-3 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -10s;
-        }
-
-        @keyframes orbFloat {
+        @keyframes float {
 
             0%,
             100% {
-                transform: translate(0, 0) scale(1);
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
             }
 
-            25% {
-                transform: translate(50px, -30px) scale(1.1);
+            10% {
+                opacity: 1;
             }
 
-            50% {
-                transform: translate(-30px, 50px) scale(0.9);
+            90% {
+                opacity: 1;
             }
 
-            75% {
-                transform: translate(-50px, -20px) scale(1.05);
-            }
-        }
-
-        /* ========== GRID EFFECTS ========== */
-        .grid-perspective {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            left: -50%;
-            bottom: -50%;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            transform: perspective(500px) rotateX(60deg);
-            animation: gridScroll 15s linear infinite;
-        }
-
-        @keyframes gridScroll {
-            to {
-                background-position: 0 60px;
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
             }
         }
 
-        .grid-hex {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3C/svg%3E");
-            opacity: 0.5;
-        }
-
-        /* ========== TYPOGRAPHY ========== */
-        .mega-title {
+        /* Typography */
+        .title-main {
             font-family: 'Playfair Display', serif;
-            font-size: 8rem;
-            font-weight: 900;
-            line-height: 0.9;
-            letter-spacing: -4px;
-        }
-
-        .large-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
+            font-size: clamp(48px, 12vw, 150px);
             font-weight: 700;
-            line-height: 1.1;
-        }
-
-        .medium-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .small-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-        }
-
-        .subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            opacity: 0.7;
-            line-height: 1.6;
-        }
-
-        .overline {
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0.5;
-        }
-
-        .text-gradient {
-            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .text-gradient-color {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #f59e0b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .dark-text {
-            color: #0a0a0a;
-        }
-
-        .dark-text.subtitle {
-            color: rgba(0, 0, 0, 0.6);
-        }
-
-        /* ========== ANIMATION CLASSES ========== */
-        .animate-fade-up {
-            opacity: 0;
-            transform: translateY(60px);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .animate-fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .animate-fade-left {
-            opacity: 0;
-            transform: translateX(-60px);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .animate-fade-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .animate-fade-right {
-            opacity: 0;
-            transform: translateX(60px);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .animate-fade-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .animate-scale {
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .animate-scale.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .animate-rotate {
-            opacity: 0;
-            transform: rotate(-10deg) scale(0.9);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .animate-rotate.visible {
-            opacity: 1;
-            transform: rotate(0) scale(1);
-        }
-
-        /* ========== DELAY CLASSES ========== */
-        .delay-1 {
-            transition-delay: 0.1s !important;
-        }
-
-        .delay-2 {
-            transition-delay: 0.2s !important;
-        }
-
-        .delay-3 {
-            transition-delay: 0.3s !important;
-        }
-
-        .delay-4 {
-            transition-delay: 0.4s !important;
-        }
-
-        .delay-5 {
-            transition-delay: 0.5s !important;
-        }
-
-        .delay-6 {
-            transition-delay: 0.6s !important;
-        }
-
-        .delay-7 {
-            transition-delay: 0.7s !important;
-        }
-
-        .delay-8 {
-            transition-delay: 0.8s !important;
-        }
-
-        .delay-9 {
-            transition-delay: 0.9s !important;
-        }
-
-        .delay-10 {
-            transition-delay: 1s !important;
-        }
-
-        /* ========== SCENE CONTENT LAYOUTS ========== */
-        .scene-content {
-            position: relative;
-            z-index: 10;
-            max-width: 1400px;
-            width: 100%;
-            padding: 0 4rem;
-        }
-
-        .center-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            letter-spacing: -0.02em;
+            line-height: 1;
             text-align: center;
         }
 
-        .split-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
+        .title-sub {
+            font-size: clamp(14px, 2vw, 24px);
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-top: 20px;
+            opacity: 0.7;
         }
 
-        .three-column {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+        /* Intro Scene */
+        .intro-content {
+            text-align: center;
+            z-index: 10;
         }
 
-        .four-column {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-        }
-
-        /* ========== LOGO ANIMATION ========== */
-        .logo-animated {
-            width: 200px;
-            height: 200px;
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .logo-animated svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .logo-circle-outer {
-            stroke-dasharray: 600;
-            stroke-dashoffset: 600;
-            animation: drawLogo 2s ease forwards;
-        }
-
-        .logo-circle-inner {
-            stroke-dasharray: 400;
-            stroke-dashoffset: 400;
-            animation: drawLogo 2s ease forwards 0.3s;
-        }
-
-        .logo-cross {
-            stroke-dasharray: 200;
-            stroke-dashoffset: 200;
-            animation: drawLogo 1.5s ease forwards 0.6s;
-        }
-
-        .logo-text {
-            opacity: 0;
-            animation: fadeInLogo 1s ease forwards 1.2s;
-        }
-
-        @keyframes drawLogo {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        @keyframes fadeInLogo {
-            to {
-                opacity: 1;
-            }
-        }
-
-        .logo-glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
-            filter: blur(30px);
-            animation: logoGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes logoGlow {
-
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
-        }
-
-        /* ========== TYPING EFFECT ========== */
-        .typing-container {
-            display: inline-block;
-            position: relative;
-        }
-
-        .typing-text {
+        .intro-content .title-main {
             overflow: hidden;
-            white-space: nowrap;
-            border-right: 3px solid rgba(255, 255, 255, 0.8);
-            animation: typing 3s steps(40) forwards, blink 0.8s step-end infinite;
         }
 
-        @keyframes typing {
+        .intro-content .title-main span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: slideUp 1s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .intro-content .title-sub span {
+            display: inline-block;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.8s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 0.7;
+            }
+        }
+
+        /* Animated Lines */
+        .line-horizontal {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: expandLine 2s ease forwards;
+        }
+
+        @keyframes expandLine {
             from {
                 width: 0;
             }
 
             to {
-                width: 100%;
+                width: 200px;
             }
         }
 
-        @keyframes blink {
-            50% {
-                border-color: transparent;
-            }
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            padding: 0 40px;
+            z-index: 10;
         }
 
-        /* ========== STAT CARDS ========== */
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 2.5rem;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        }
-
-        .stat-card.dark {
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-card.dark::before {
-            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-        }
-
-        .stat-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .stat-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.6;
-        }
-
-        .stat-change {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            margin-top: 0.5rem;
-            padding: 0.3rem 0.8rem;
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        /* ========== CHART COMPONENTS ========== */
-        .chart-container {
-            position: relative;
-            padding: 2rem;
-        }
-
-        /* Circular Progress */
-        .circular-progress {
-            width: 180px;
-            height: 180px;
-            position: relative;
-        }
-
-        .circular-progress svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .circular-progress .bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 8;
-        }
-
-        .circular-progress .progress {
-            fill: none;
-            stroke: url(#progressGradient);
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke-dasharray: 440;
-            stroke-dashoffset: 440;
-            transition: stroke-dashoffset 2s ease;
-        }
-
-        .circular-progress .value {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-
-        /* Bar Chart */
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            height: 200px;
-            padding: 1rem 0;
-            gap: 1rem;
-        }
-
-        .bar-chart-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-
-        .bar {
-            width: 100%;
-            max-width: 60px;
-            background: linear-gradient(to top, #6366f1, #8b5cf6);
-            border-radius: 8px 8px 0 0;
-            height: 0;
-            transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .bar::after {
-            content: attr(data-value);
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.9rem;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.5s ease 1s;
-        }
-
-        .bar.animated::after {
-            opacity: 1;
-        }
-
-        .bar-label {
-            margin-top: 0.8rem;
-            font-size: 0.8rem;
-            opacity: 0.6;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Line Chart */
-        .line-chart {
-            width: 100%;
-            height: 250px;
-            position: relative;
-        }
-
-        .line-chart svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .line-chart .grid-line {
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 1;
-        }
-
-        .line-chart .data-line {
-            fill: none;
-            stroke: url(#lineGradient);
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            transition: stroke-dashoffset 2s ease;
-        }
-
-        .line-chart .data-area {
-            fill: url(#areaGradient);
-            opacity: 0;
-            transition: opacity 1s ease 1s;
-        }
-
-        .line-chart .data-point {
-            fill: #fff;
-            stroke: #6366f1;
-            stroke-width: 3;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        /* Pie Chart */
-        .pie-chart {
-            width: 200px;
-            height: 200px;
-            position: relative;
-        }
-
-        .pie-chart svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .pie-segment {
-            fill: none;
-            stroke-width: 40;
-            stroke-dasharray: 0 1000;
-            transition: stroke-dasharray 1.5s ease;
-        }
-
-        .pie-legend {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-left: 2rem;
-        }
-
-        .pie-legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.9rem;
-        }
-
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-        }
-
-        /* ========== FEATURE CARDS ========== */
         .feature-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.5s ease;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            text-align: center;
+            transform: translateY(50px);
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: all 0.6s ease;
         }
 
-        .feature-card:hover::before {
+        .feature-card.animate {
+            transform: translateY(0);
             opacity: 1;
         }
 
-        .feature-icon-wrapper {
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-            border-radius: 16px;
+            margin: 0 auto 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
+            font-size: 24px;
         }
 
         .feature-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 15px;
         }
 
         .feature-desc {
-            font-size: 0.95rem;
-            opacity: 0.6;
+            font-size: 14px;
+            opacity: 0.7;
             line-height: 1.6;
         }
 
-        .feature-card.dark {
-            background: rgba(0, 0, 0, 0.02);
-            border-color: rgba(0, 0, 0, 0.06);
-        }
-
-        /* ========== TIMELINE ========== */
-        .timeline {
-            position: relative;
-            padding-left: 3rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.5), transparent);
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 2.5rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -3rem;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            background: #6366f1;
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-        }
-
-        .timeline-date {
-            font-size: 0.8rem;
-            color: #6366f1;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-desc {
-            font-size: 0.95rem;
-            opacity: 0.6;
-            line-height: 1.6;
-        }
-
-        /* ========== PHONE MOCKUP ========== */
-        .phone-mockup {
-            width: 320px;
-            height: 650px;
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-            border-radius: 50px;
-            padding: 12px;
-            box-shadow:
-                0 50px 100px rgba(0, 0, 0, 0.5),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-                0 0 0 1px rgba(0, 0, 0, 0.5);
-            position: relative;
-        }
-
-        .phone-mockup::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: -3px;
-            width: 3px;
-            height: 30px;
-            background: #333;
-            border-radius: 0 3px 3px 0;
-            transform: translateY(-50%);
-        }
-
-        .phone-screen {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 40px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .phone-notch {
-            width: 120px;
-            height: 35px;
-            background: #000;
-            border-radius: 0 0 20px 20px;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+        /* Stats Scene */
+        .stats-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            gap: 100px;
+            z-index: 10;
         }
 
-        .phone-camera {
-            width: 12px;
-            height: 12px;
-            background: #1a1a2e;
-            border-radius: 50%;
-            border: 2px solid #333;
+        .stat-item {
+            text-align: center;
         }
 
-        .phone-content {
-            padding: 50px 20px 20px;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .app-verse-card {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .app-verse-text {
-            font-size: 0.95rem;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.9);
-            font-style: italic;
-        }
-
-        .app-verse-ref {
-            font-size: 0.8rem;
-            color: #6366f1;
-            margin-top: 10px;
-            font-weight: 500;
-        }
-
-        .app-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 0 20px;
-        }
-
-        .app-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.7rem;
-        }
-
-        .app-nav-item.active {
-            color: #6366f1;
-        }
-
-        .app-nav-icon {
-            font-size: 1.3rem;
-        }
-
-        /* ========== COMPARISON TABLE ========== */
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-            padding: 1.2rem 1.5rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .comparison-table th {
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .comparison-table td {
-            font-size: 1rem;
-        }
-
-        .comparison-table .highlight {
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .comparison-table .check {
-            color: #22c55e;
-            font-size: 1.3rem;
-        }
-
-        .comparison-table .cross {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 1.3rem;
-        }
-
-        /* ========== TESTIMONIAL ========== */
-        .testimonial-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 3rem;
-            position: relative;
-        }
-
-        .testimonial-quote {
-            font-size: 6rem;
-            position: absolute;
-            top: 1rem;
-            left: 2rem;
-            opacity: 0.1;
+        .stat-number {
             font-family: 'Playfair Display', serif;
+            font-size: clamp(60px, 10vw, 120px);
+            font-weight: 700;
             line-height: 1;
         }
 
-        .testimonial-text {
-            font-size: 1.4rem;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .testimonial-avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .testimonial-info h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .testimonial-info p {
-            font-size: 0.9rem;
+        .stat-label {
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
             opacity: 0.6;
+            margin-top: 10px;
         }
 
-        .testimonial-stars {
-            color: #f59e0b;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            margin-left: auto;
-        }
-
-        /* ========== PRICING CARDS ========== */
-        .pricing-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 2.5rem;
-            text-align: center;
+        /* Phone Mockup */
+        .phone-mockup {
             position: relative;
-            transition: all 0.5s ease;
+            width: 300px;
+            height: 600px;
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border-radius: 40px;
+            border: 3px solid #333;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            z-index: 10;
         }
 
-        .pricing-card.featured {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border-color: rgba(99, 102, 241, 0.3);
-            transform: scale(1.05);
-        }
-
-        .pricing-card.featured::before {
-            content: 'MOST POPULAR';
+        .phone-screen {
             position: absolute;
-            top: -12px;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: linear-gradient(180deg, #1a1a2e, #0f0f1a);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
+            width: 120px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
         }
 
-        .pricing-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .app-content {
+            padding: 50px 20px 20px;
+            height: 100%;
         }
 
-        .pricing-price {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin: 1rem 0;
+        .app-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
 
-        .pricing-price span {
-            font-size: 1rem;
-            opacity: 0.6;
-            font-weight: 400;
+        .verse-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
         }
 
-        .pricing-features {
-            list-style: none;
-            text-align: left;
-            margin: 2rem 0;
+        .verse-text {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
         }
 
-        .pricing-features li {
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.95rem;
+        .verse-ref {
+            font-size: 12px;
+            opacity: 0.5;
+            margin-top: 10px;
         }
 
-        .pricing-features li::before {
-            content: '✓';
-            color: #22c55e;
-            font-weight: bold;
-        }
-
-        .pricing-btn {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .pricing-btn.primary {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff;
-        }
-
-        .pricing-btn.secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        /* ========== FLOW DIAGRAM ========== */
-        .flow-diagram {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .flow-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        /* Quote Scene */
+        .quote-container {
+            max-width: 900px;
             text-align: center;
-            max-width: 150px;
+            z-index: 10;
+            padding: 0 40px;
         }
 
-        .flow-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-
-        .flow-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .flow-desc {
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
-
-        .flow-arrow {
-            font-size: 1.5rem;
-            color: rgba(99, 102, 241, 0.5);
-        }
-
-        /* ========== WORLD MAP ========== */
-        .world-map {
-            width: 100%;
-            max-width: 800px;
-            position: relative;
-        }
-
-        .world-map svg {
-            width: 100%;
-            height: auto;
+        .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 120px;
+            line-height: 0.5;
             opacity: 0.3;
         }
 
-        .map-dot {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #6366f1;
-            border-radius: 50%;
-            animation: mapPulse 2s ease-in-out infinite;
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(24px, 4vw, 48px);
+            font-style: italic;
+            line-height: 1.4;
+            margin: 30px 0;
         }
 
-        .map-dot::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #6366f1;
-            border-radius: 50%;
-            animation: mapRipple 2s ease-out infinite;
+        .quote-author {
+            font-size: 16px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.5;
         }
 
-        @keyframes mapPulse {
+        /* Zoom Effect */
+        .zoom-container {
+            animation: zoomPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes zoomPulse {
 
             0%,
             100% {
@@ -1406,38 +477,216 @@
             }
 
             50% {
-                transform: scale(1.2);
+                transform: scale(1.05);
             }
         }
 
-        @keyframes mapRipple {
+        /* Transition Effects */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 500;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .transition-overlay.active {
+            animation: wipeTransition 1s ease-in-out;
+        }
+
+        @keyframes wipeTransition {
             0% {
-                transform: scale(1);
-                opacity: 1;
+                transform: scaleX(0);
+                transform-origin: left;
+            }
+
+            50% {
+                transform: scaleX(1);
+                transform-origin: left;
+            }
+
+            50.1% {
+                transform: scaleX(1);
+                transform-origin: right;
             }
 
             100% {
-                transform: scale(3);
-                opacity: 0;
+                transform: scaleX(0);
+                transform-origin: right;
             }
         }
 
-        /* ========== CTA BUTTON ========== */
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2s infinite linear alternate-reverse;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            transform: translateX(-3px);
+            color: #ff0000;
+        }
+
+        .glitch::after {
+            animation: glitch-2 3s infinite linear alternate-reverse;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+            transform: translateX(3px);
+            color: #00ffff;
+        }
+
+        @keyframes glitch-1 {
+            0% {
+                transform: translateX(-3px);
+            }
+
+            20% {
+                transform: translateX(3px);
+            }
+
+            40% {
+                transform: translateX(-3px);
+            }
+
+            60% {
+                transform: translateX(3px);
+            }
+
+            80% {
+                transform: translateX(-3px);
+            }
+
+            100% {
+                transform: translateX(3px);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0% {
+                transform: translateX(3px);
+            }
+
+            25% {
+                transform: translateX(-3px);
+            }
+
+            50% {
+                transform: translateX(3px);
+            }
+
+            75% {
+                transform: translateX(-3px);
+            }
+
+            100% {
+                transform: translateX(3px);
+            }
+        }
+
+        /* Scene Specific Backgrounds */
+        .scene-1 .scene-bg {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #000 100%);
+        }
+
+        .scene-2 .scene-bg {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        .scene-3 .scene-bg {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></svg>');
+            background-size: 200px;
+            background-color: #0a0a0a;
+        }
+
+        /* Animated Background Shapes */
+        .bg-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: rotate 20s linear infinite;
+        }
+
+        .bg-shape-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+        }
+
+        .bg-shape-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -50px;
+            animation-direction: reverse;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text Reveal Animation */
+        .reveal-text {
+            overflow: hidden;
+        }
+
+        .reveal-text span {
+            display: inline-block;
+            transform: translateY(100%);
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .reveal-text.animate span {
+            transform: translateY(0);
+        }
+
+        /* CTA Scene */
+        .cta-container {
+            text-align: center;
+            z-index: 10;
+        }
+
         .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.2rem 3rem;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 60px;
+            display: inline-block;
+            padding: 20px 60px;
+            border: 2px solid #fff;
+            font-size: 14px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
             text-decoration: none;
+            color: #fff;
+            margin-top: 40px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
-            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
         }
 
         .cta-button::before {
@@ -1447,1353 +696,766 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .cta-button:hover::before {
-            left: 100%;
+            background: #fff;
+            transition: left 0.3s ease;
+            z-index: -1;
         }
 
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 30px 80px rgba(99, 102, 241, 0.5);
+            color: #000;
         }
 
-        .cta-button.light {
-            background: #fff;
-            color: #0a0a0a;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ========== FLOATING ELEMENTS ========== */
-        .floating-cards {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .floating-card {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 1rem;
-            backdrop-filter: blur(10px);
-            animation: floatCard 6s ease-in-out infinite;
-        }
-
-        @keyframes floatCard {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(2deg);
-            }
-        }
-
-        /* ========== ICON GRID ========== */
-        .icon-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1.5rem;
-        }
-
-        .icon-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 0.8rem;
-        }
-
-        .icon-circle {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .icon-item:hover .icon-circle {
-            background: rgba(99, 102, 241, 0.2);
-            transform: scale(1.1);
-        }
-
-        .icon-label {
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-
-        /* ========== NUMBER COUNTER ========== */
-        .number-counter {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.7));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* ========== PROGRESS RING ========== */
-        .progress-ring-container {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
-
-        .progress-ring {
-            width: 150px;
-            height: 150px;
-            position: relative;
-        }
-
-        .progress-ring svg {
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 10;
-        }
-
-        .progress-ring-fill {
-            fill: none;
-            stroke: url(#ringGradient);
-            stroke-width: 10;
-            stroke-linecap: round;
-            stroke-dasharray: 408;
-            stroke-dashoffset: 408;
-            transition: stroke-dashoffset 2s ease;
-        }
-
-        .progress-ring-value {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
-        .progress-ring-number {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .progress-ring-label {
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
-
-        /* ========== DEVICE MOCKUPS ========== */
-        .devices-container {
-            position: relative;
-            width: 700px;
-            height: 500px;
-        }
-
-        .device-laptop {
-            position: absolute;
-            width: 500px;
-            height: 320px;
-            background: #1a1a1a;
-            border-radius: 12px;
+        .cta-button:hover::before {
             left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
         }
 
-        .device-laptop::before {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150%;
-            height: 20px;
-            background: #111;
-            border-radius: 0 0 20px 20px;
-        }
-
-        .laptop-screen {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #1a1a2e, #16213e);
-            padding: 1rem;
-        }
-
-        .device-tablet {
-            position: absolute;
-            width: 180px;
-            height: 250px;
-            background: #1a1a1a;
-            border-radius: 16px;
-            right: 80px;
-            top: 10%;
-            transform: rotate(5deg);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-            padding: 8px;
-        }
-
-        .tablet-screen {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #1a1a2e, #16213e);
-            border-radius: 12px;
-        }
-
-        .device-phone-small {
-            position: absolute;
-            width: 120px;
-            height: 240px;
-            background: #1a1a1a;
-            border-radius: 20px;
-            right: 0;
-            bottom: 10%;
-            transform: rotate(-5deg);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-            padding: 6px;
-        }
-
-        .phone-small-screen {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #1a1a2e, #16213e);
-            border-radius: 16px;
-        }
-
-        /* ========== CONTROLS ========== */
-        .controls {
-            position: fixed;
-            bottom: 80px;
-            right: 30px;
-            display: flex;
-            gap: 12px;
-            z-index: 2000;
-        }
-
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1.1rem;
-            cursor: pointer;
+        /* Sound Wave Visualization */
+        .sound-wave {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .control-btn.active {
-            background: rgba(99, 102, 241, 0.5);
-            border-color: rgba(99, 102, 241, 0.8);
-        }
-
-        /* ========== PROGRESS BAR ========== */
-        .video-progress {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            z-index: 2000;
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .progress-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .progress-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .progress-dot.active {
-            background: #fff;
-            transform: scale(1.3);
-        }
-
-        .progress-dot.visited {
-            background: rgba(99, 102, 241, 0.8);
-        }
-
-        .scene-counter {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* ========== SOUND VISUALIZER ========== */
-        .sound-visualizer {
-            position: fixed;
-            bottom: 80px;
-            left: 30px;
-            display: flex;
-            align-items: flex-end;
             gap: 3px;
-            z-index: 2000;
+            height: 30px;
         }
 
         .sound-bar {
-            width: 4px;
-            background: linear-gradient(to top, #6366f1, #8b5cf6);
+            width: 3px;
+            background: #fff;
             border-radius: 2px;
-            transition: height 0.1s ease;
+            animation: soundWave 1s ease-in-out infinite;
         }
 
-        /* ========== SCENE TIME INDICATOR ========== */
-        .time-indicator {
+        @keyframes soundWave {
+
+            0%,
+            100% {
+                height: 5px;
+            }
+
+            50% {
+                height: 25px;
+            }
+        }
+
+        /* Floating Elements */
+        .float-element {
+            position: absolute;
+            animation: floatUpDown 3s ease-in-out infinite;
+        }
+
+        @keyframes floatUpDown {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Scene Counter */
+        .scene-counter {
             position: fixed;
             top: 80px;
-            right: 30px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.4);
-            z-index: 2000;
+            right: 40px;
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            z-index: 1001;
+            opacity: 0.5;
         }
 
-        /* ========== TRANSITIONS ========== */
-        .transition-overlay {
+        /* Skip Button */
+        .skip-btn {
             position: fixed;
+            top: 80px;
+            left: 40px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            color: #fff;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .skip-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* Volume Control */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-slider {
+            width: 60px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            z-index: 5000;
-            pointer-events: none;
-        }
-
-        .wipe-left {
-            background: #fff;
-            transform: translateX(-100%);
-        }
-
-        .wipe-left.active {
-            animation: wipeLeft 1s ease-in-out forwards;
-        }
-
-        @keyframes wipeLeft {
-            0% {
-                transform: translateX(-100%);
-            }
-
-            50% {
-                transform: translateX(0%);
-            }
-
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        .wipe-right {
             background: #000;
-            transform: translateX(100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        .wipe-right.active {
-            animation: wipeRight 1s ease-in-out forwards;
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
 
-        @keyframes wipeRight {
-            0% {
-                transform: translateX(100%);
-            }
-
-            50% {
-                transform: translateX(0%);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
+        .loading-content {
+            text-align: center;
         }
 
-        .circle-reveal {
-            background: radial-gradient(circle at center, transparent 0%, #000 0%);
+        .loading-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            margin-bottom: 30px;
         }
 
-        .circle-reveal.active {
-            animation: circleIn 1s ease forwards;
+        .loading-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto;
+            overflow: hidden;
         }
 
-        @keyframes circleIn {
-            0% {
-                background: radial-gradient(circle at center, transparent 0%, #000 0%);
-            }
-
-            100% {
-                background: radial-gradient(circle at center, transparent 150%, #000 150%);
-            }
+        .loading-progress {
+            height: 100%;
+            background: #fff;
+            animation: loadProgress 2s ease-in-out forwards;
         }
 
-        .glitch-effect {
-            display: none;
-        }
-
-        .glitch-effect.active {
-            display: block;
-            animation: glitchAnim 0.3s linear;
-        }
-
-        @keyframes glitchAnim {
-            0% {
-                transform: translate(0);
-                filter: hue-rotate(0deg);
+        @keyframes loadProgress {
+            from {
+                width: 0;
             }
 
-            20% {
-                transform: translate(-5px, 5px);
-                filter: hue-rotate(90deg);
-            }
-
-            40% {
-                transform: translate(5px, -5px);
-                filter: hue-rotate(180deg);
-            }
-
-            60% {
-                transform: translate(-5px, -5px);
-                filter: hue-rotate(270deg);
-            }
-
-            80% {
-                transform: translate(5px, 5px);
-                filter: hue-rotate(360deg);
-            }
-
-            100% {
-                transform: translate(0);
-                filter: hue-rotate(0deg);
+            to {
+                width: 100%;
             }
         }
 
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 1200px) {
-            .mega-title {
-                font-size: 5rem;
-            }
-
-            .large-title {
-                font-size: 3.5rem;
-            }
-
-            .split-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .three-column {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .four-column {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* Scene 5 - Process */
+        .process-container {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            z-index: 10;
         }
 
+        .process-step {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .process-step.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .process-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 72px;
+            opacity: 0.2;
+            line-height: 1;
+        }
+
+        .process-title {
+            font-size: 18px;
+            margin-top: 10px;
+            letter-spacing: 0.1em;
+        }
+
+        .process-line {
+            width: 100px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .mega-title {
-                font-size: 3rem;
-            }
-
-            .large-title {
-                font-size: 2.5rem;
-            }
-
-            .medium-title {
-                font-size: 2rem;
-            }
-
-            .scene-content {
-                padding: 0 1.5rem;
-            }
-
-            .three-column,
-            .four-column {
+            .features-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
 
-            .icon-grid {
-                grid-template-columns: repeat(3, 1fr);
+            .stats-container {
+                flex-direction: column;
+                gap: 40px;
             }
 
-            .phone-mockup {
-                width: 260px;
-                height: 520px;
+            .process-container {
+                flex-direction: column;
+                gap: 30px;
             }
 
-            .controls {
-                bottom: 100px;
-                right: 15px;
+            .process-line {
+                width: 1px;
+                height: 50px;
             }
 
-            .video-progress {
-                bottom: 100px;
-                padding: 8px 15px;
+            .video-controls {
+                padding: 10px 20px;
+            }
+
+            .progress-container {
+                width: 150px;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- SVG Definitions -->
-    <svg style="position: absolute; width: 0; height: 0;">
-        <defs>
-            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#6366f1" />
-                <stop offset="100%" style="stop-color:#8b5cf6" />
-            </linearGradient>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#6366f1" />
-                <stop offset="50%" style="stop-color:#8b5cf6" />
-                <stop offset="100%" style="stop-color:#f59e0b" />
-            </linearGradient>
-            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:rgba(99,102,241,0.3)" />
-                <stop offset="100%" style="stop-color:rgba(99,102,241,0)" />
-            </linearGradient>
-            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#6366f1" />
-                <stop offset="100%" style="stop-color:#f59e0b" />
-            </linearGradient>
-        </defs>
-    </svg>
-
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">
-            <div class="loading-ring"></div>
-            <div class="loading-ring"></div>
-            <div class="loading-ring"></div>
-        </div>
-        <div class="loading-text">Preparing Experience</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar"></div>
-        </div>
-    </div>
-
-    <!-- Cinematic Bars -->
-    <div class="cinematic-bars">
-        <div class="bar-top"></div>
-        <div class="bar-bottom"></div>
-    </div>
-
-    <!-- Transition Overlays -->
-    <div class="transition-overlay wipe-left" id="wipeLeft"></div>
-    <div class="transition-overlay wipe-right" id="wipeRight"></div>
-
-    <!-- Video Container -->
-    <div class="video-container" id="videoContainer">
-
-        <!-- ==================== SCENE 1: INTRO LOGO ==================== -->
-        <div class="scene bg-dark active" id="scene1" data-duration="6000">
-            <div class="animated-bg">
-                <div class="bg-gradient-animated"></div>
-                <div class="orb orb-1"></div>
-                <div class="orb orb-2"></div>
+        <div class="loading-content">
+            <div class="loading-logo">Bible Mind</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
             </div>
-            <div class="particles-container" id="particles1"></div>
+        </div>
+    </div>
 
-            <div class="scene-content center-content">
-                <div class="logo-animated animate-scale" data-animate>
-                    <div class="logo-glow"></div>
-                    <svg viewBox="0 0 200 200">
-                        <circle class="logo-circle-outer" cx="100" cy="100" r="90" fill="none" stroke="white"
-                            stroke-width="1" />
-                        <circle class="logo-circle-inner" cx="100" cy="100" r="70" fill="none"
-                            stroke="rgba(255,255,255,0.5)" stroke-width="1" />
-                        <path class="logo-cross" d="M100 40 L100 160 M60 70 L100 40 L140 70" fill="none" stroke="white"
-                            stroke-width="2" stroke-linecap="round" />
-                        <text class="logo-text" x="100" y="115" text-anchor="middle" fill="white"
-                            font-family="Playfair Display" font-size="28" font-weight="700">BM</text>
-                    </svg>
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!-- Letterbox -->
+    <div class="letterbox-top"></div>
+    <div class="letterbox-bottom"></div>
+
+    <!-- Grain Overlay -->
+    <canvas class="grain" id="grain"></canvas>
+
+    <!-- Transition Overlay -->
+    <div class="transition-overlay" id="transitionOverlay"></div>
+
+    <!-- Scene Counter -->
+    <div class="scene-counter">
+        <span id="currentScene">01</span> / <span id="totalScenes">07</span>
+    </div>
+
+    <!-- Skip Button -->
+    <button class="skip-btn" id="skipBtn">SKIP INTRO</button>
+
+    <!-- Main Stage -->
+    <div class="stage" id="stage">
+        <!-- Scene 1: Intro -->
+        <div class="scene scene-1 active" id="scene1">
+            <div class="scene-bg"></div>
+            <div class="bg-shapes">
+                <div class="bg-shape bg-shape-1"></div>
+                <div class="bg-shape bg-shape-2"></div>
+            </div>
+            <div class="particles" id="particles1"></div>
+            <div class="intro-content zoom-container">
+                <div class="title-main">
+                    <span>Bible Mind</span>
                 </div>
-                <h1 class="mega-title text-gradient animate-fade-up delay-2" data-animate>Bible Mind</h1>
-                <p class="subtitle animate-fade-up delay-4" data-animate>Transform Your Spiritual Journey</p>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 2: PROBLEM - STATISTICS ==================== -->
-        <div class="scene bg-gradient-1" id="scene2" data-duration="7000">
-            <div class="animated-bg">
-                <div class="grid-perspective"></div>
-            </div>
-            <div class="particles-container" id="particles2"></div>
-
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>The Challenge</p>
-                <h2 class="large-title text-gradient animate-fade-up delay-1" data-animate>Modern Faith<br>Faces
-                    Obstacles</h2>
-
-                <div class="four-column" style="margin-top: 4rem;">
-                    <div class="stat-card animate-scale delay-2" data-animate>
-                        <span class="stat-icon">📱</span>
-                        <div class="stat-number" data-count="73">0%</div>
-                        <div class="stat-label">Distracted Daily</div>
-                    </div>
-                    <div class="stat-card animate-scale delay-3" data-animate>
-                        <span class="stat-icon">⏰</span>
-                        <div class="stat-number" data-count="12">0</div>
-                        <div class="stat-label">Minutes Average Study</div>
-                    </div>
-                    <div class="stat-card animate-scale delay-4" data-animate>
-                        <span class="stat-icon">📖</span>
-                        <div class="stat-number" data-count="45">0%</div>
-                        <div class="stat-label">Feel Disconnected</div>
-                    </div>
-                    <div class="stat-card animate-scale delay-5" data-animate>
-                        <span class="stat-icon">🎯</span>
-                        <div class="stat-number" data-count="68">0%</div>
-                        <div class="stat-label">Want Better Tools</div>
-                    </div>
+                <div class="title-sub">
+                    <span>Transform Your Spiritual Journey</span>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== SCENE 3: THE SOLUTION ==================== -->
-        <div class="scene bg-white" id="scene3" data-duration="6000">
-            <div class="scene-content center-content">
-                <p class="overline dark-text animate-fade-up" data-animate>The Solution</p>
-                <h2 class="large-title dark-text animate-fade-up delay-1" data-animate>
-                    Meet <span class="text-gradient-color">Bible Mind</span>
-                </h2>
-                <p class="subtitle dark-text animate-fade-up delay-2" data-animate
-                    style="max-width: 700px; margin-top: 1.5rem;">
-                    An AI-powered companion that helps you understand, memorize, and apply Biblical wisdom to transform
-                    your daily life.
+        <!-- Scene 2: Problem Statement -->
+        <div class="scene scene-2" id="scene2">
+            <div class="scene-bg"></div>
+            <div class="particles" id="particles2"></div>
+            <div class="quote-container">
+                <div class="quote-mark">"</div>
+                <p class="quote-text reveal-text">
+                    <span>In a world of endless distractions,<br>finding spiritual clarity has never been harder.</span>
                 </p>
+                <p class="quote-author">— The Modern Challenge</p>
+            </div>
+        </div>
 
-                <div class="flow-diagram animate-fade-up delay-4" data-animate style="margin-top: 4rem;">
-                    <div class="flow-step">
-                        <div class="flow-icon">📖</div>
-                        <div class="flow-title dark-text">Read</div>
-                        <div class="flow-desc dark-text">Smart verse discovery</div>
-                    </div>
-                    <div class="flow-arrow dark-text">→</div>
-                    <div class="flow-step">
-                        <div class="flow-icon">🧠</div>
-                        <div class="flow-title dark-text">Understand</div>
-                        <div class="flow-desc dark-text">AI-powered insights</div>
-                    </div>
-                    <div class="flow-arrow dark-text">→</div>
-                    <div class="flow-step">
-                        <div class="flow-icon">💾</div>
-                        <div class="flow-title dark-text">Remember</div>
-                        <div class="flow-desc dark-text">Spaced repetition</div>
-                    </div>
-                    <div class="flow-arrow dark-text">→</div>
-                    <div class="flow-step">
-                        <div class="flow-icon">✨</div>
-                        <div class="flow-title dark-text">Transform</div>
-                        <div class="flow-desc dark-text">Daily application</div>
-                    </div>
+        <!-- Scene 3: Solution -->
+        <div class="scene scene-3" id="scene3">
+            <div class="scene-bg"></div>
+            <div class="bg-shapes">
+                <div class="bg-shape bg-shape-1"></div>
+            </div>
+            <div class="intro-content">
+                <div class="title-sub" style="opacity: 0.5; animation: none;">INTRODUCING</div>
+                <div class="title-main glitch" data-text="THE SOLUTION" style="font-size: clamp(36px, 8vw, 100px);">
+                    THE SOLUTION
                 </div>
             </div>
         </div>
 
-        <!-- ==================== SCENE 4: PHONE MOCKUP ==================== -->
-        <div class="scene bg-gradient-purple" id="scene4" data-duration="8000">
-            <div class="animated-bg">
-                <div class="orb orb-1"></div>
-                <div class="orb orb-3"></div>
+        <!-- Scene 4: Features -->
+        <div class="scene scene-4" id="scene4">
+            <div class="scene-bg"></div>
+            <div class="features-grid">
+                <div class="feature-card" id="feature1">
+                    <div class="feature-icon">📖</div>
+                    <h3 class="feature-title">Daily Verses</h3>
+                    <p class="feature-desc">Personalized scripture recommendations powered by AI to match your spiritual
+                        needs.</p>
+                </div>
+                <div class="feature-card" id="feature2">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">Mind Mapping</h3>
+                    <p class="feature-desc">Connect biblical concepts visually and deepen your understanding of God's
+                        word.</p>
+                </div>
+                <div class="feature-card" id="feature3">
+                    <div class="feature-icon">🙏</div>
+                    <h3 class="feature-title">Prayer Journal</h3>
+                    <p class="feature-desc">Track your prayers, record answered prayers, and build your faith journey.
+                    </p>
+                </div>
             </div>
+        </div>
 
-            <div class="scene-content">
-                <div class="split-content">
-                    <div>
-                        <p class="overline animate-fade-left" data-animate>Beautiful Design</p>
-                        <h2 class="large-title animate-fade-left delay-1" data-animate>Designed for<br><span
-                                class="text-gradient-color">Deep Focus</span></h2>
-                        <p class="subtitle animate-fade-left delay-2" data-animate style="margin-top: 1.5rem;">
-                            A distraction-free environment crafted for meaningful Scripture engagement.
-                        </p>
+        <!-- Scene 5: Process -->
+        <div class="scene scene-5" id="scene5">
+            <div class="scene-bg"></div>
+            <div class="process-container">
+                <div class="process-step" id="step1">
+                    <div class="process-number">01</div>
+                    <div class="process-title">DISCOVER</div>
+                </div>
+                <div class="process-line"></div>
+                <div class="process-step" id="step2">
+                    <div class="process-number">02</div>
+                    <div class="process-title">CONNECT</div>
+                </div>
+                <div class="process-line"></div>
+                <div class="process-step" id="step3">
+                    <div class="process-number">03</div>
+                    <div class="process-title">TRANSFORM</div>
+                </div>
+            </div>
+        </div>
 
-                        <div style="margin-top: 2.5rem;">
-                            <div class="timeline animate-fade-left delay-3" data-animate>
-                                <div class="timeline-item">
-                                    <div class="timeline-date">Morning</div>
-                                    <div class="timeline-title">Daily Verse</div>
-                                    <div class="timeline-desc">Start your day with curated Scripture</div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-date">Anytime</div>
-                                    <div class="timeline-title">Deep Study</div>
-                                    <div class="timeline-desc">AI-powered context and cross-references</div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-date">Evening</div>
-                                    <div class="timeline-title">Reflection</div>
-                                    <div class="timeline-desc">Journal and apply what you've learned</div>
-                                </div>
-                            </div>
+        <!-- Scene 6: App Demo -->
+        <div class="scene scene-6" id="scene6">
+            <div class="scene-bg"></div>
+            <div class="phone-mockup float-element">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div class="app-content">
+                        <h2 class="app-header">Today's Verse</h2>
+                        <div class="verse-card">
+                            <p class="verse-text">"For I know the plans I have for you, declares the Lord, plans to
+                                prosper you and not to harm you, plans to give you hope and a future."</p>
+                            <p class="verse-ref">Jeremiah 29:11</p>
                         </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: center;">
-                        <div class="phone-mockup animate-fade-right delay-2" data-animate>
-                            <div class="phone-screen">
-                                <div class="phone-notch">
-                                    <div class="phone-camera"></div>
-                                </div>
-                                <div class="phone-content">
-                                    <div style="text-align: center; margin-bottom: 1.5rem;">
-                                        <div style="font-size: 1.2rem; font-weight: 600;">Today's Verse</div>
-                                        <div style="font-size: 0.8rem; opacity: 0.5;">March 15, 2024</div>
-                                    </div>
-                                    <div class="app-verse-card">
-                                        <p class="app-verse-text">"For I know the plans I have for you, declares the
-                                            Lord, plans to prosper you and not to harm you, plans to give you hope and a
-                                            future."</p>
-                                        <p class="app-verse-ref">Jeremiah 29:11</p>
-                                    </div>
-                                    <div class="app-verse-card">
-                                        <p class="app-verse-text">"Trust in the Lord with all your heart and lean not on
-                                            your own understanding."</p>
-                                        <p class="app-verse-ref">Proverbs 3:5</p>
-                                    </div>
-                                </div>
-                                <div class="app-nav">
-                                    <div class="app-nav-item active">
-                                        <span class="app-nav-icon">📖</span>
-                                        <span>Read</span>
-                                    </div>
-                                    <div class="app-nav-item">
-                                        <span class="app-nav-icon">🔍</span>
-                                        <span>Search</span>
-                                    </div>
-                                    <div class="app-nav-item">
-                                        <span class="app-nav-icon">🧠</span>
-                                        <span>Learn</span>
-                                    </div>
-                                    <div class="app-nav-item">
-                                        <span class="app-nav-icon">👤</span>
-                                        <span>Profile</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="verse-card">
+                            <p class="verse-text">"Trust in the Lord with all your heart and lean not on your own
+                                understanding."</p>
+                            <p class="verse-ref">Proverbs 3:5</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== SCENE 5: FEATURES GRID ==================== -->
-        <div class="scene bg-dark" id="scene5" data-duration="8000">
-            <div class="animated-bg">
-                <div class="grid-hex"></div>
-            </div>
-
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>Powerful Features</p>
-                <h2 class="large-title text-gradient animate-fade-up delay-1" data-animate>Everything You Need</h2>
-
-                <div class="three-column" style="margin-top: 3rem;">
-                    <div class="feature-card animate-scale delay-2" data-animate>
-                        <div class="feature-icon-wrapper">📖</div>
-                        <h3 class="feature-title">Smart Study Mode</h3>
-                        <p class="feature-desc">AI-powered verse analysis with historical context, original languages,
-                            and cross-references.</p>
-                    </div>
-                    <div class="feature-card animate-scale delay-3" data-animate>
-                        <div class="feature-icon-wrapper">🧠</div>
-                        <h3 class="feature-title">Memory System</h3>
-                        <p class="feature-desc">Scientifically-proven spaced repetition to help you memorize and retain
-                            Scripture forever.</p>
-                    </div>
-                    <div class="feature-card animate-scale delay-4" data-animate>
-                        <div class="feature-icon-wrapper">💭</div>
-                        <h3 class="feature-title">AI Assistant</h3>
-                        <p class="feature-desc">Ask questions about any verse and receive thoughtful,
-                            theologically-sound explanations.</p>
-                    </div>
-                    <div class="feature-card animate-scale delay-5" data-animate>
-                        <div class="feature-icon-wrapper">📝</div>
-                        <h3 class="feature-title">Journal & Notes</h3>
-                        <p class="feature-desc">Capture insights, prayers, and reflections linked directly to the verses
-                            that inspired them.</p>
-                    </div>
-                    <div class="feature-card animate-scale delay-6" data-animate>
-                        <div class="feature-icon-wrapper">🎯</div>
-                        <h3 class="feature-title">Reading Plans</h3>
-                        <p class="feature-desc">Curated study plans for every goal, from beginners to deep theological
-                            study.</p>
-                    </div>
-                    <div class="feature-card animate-scale delay-7" data-animate>
-                        <div class="feature-icon-wrapper">📊</div>
-                        <h3 class="feature-title">Progress Tracking</h3>
-                        <p class="feature-desc">Visualize your spiritual growth with detailed analytics and streak
-                            tracking.</p>
-                    </div>
+        <!-- Scene 7: CTA -->
+        <div class="scene scene-7" id="scene7">
+            <div class="scene-bg"></div>
+            <div class="particles" id="particles3"></div>
+            <div class="cta-container">
+                <div class="title-main" style="font-size: clamp(36px, 8vw, 80px);">
+                    Begin Your Journey
                 </div>
+                <div class="title-sub">Transform Your Faith Today</div>
+                <a href="https://bible-mind.vercel.app/" class="cta-button" target="_blank">
+                    Explore Bible Mind
+                </a>
             </div>
         </div>
-
-        <!-- ==================== SCENE 6: ANALYTICS DASHBOARD ==================== -->
-        <div class="scene bg-gradient-blue" id="scene6" data-duration="9000">
-            <div class="animated-bg">
-                <div class="orb orb-2"></div>
-            </div>
-
-            <div class="scene-content">
-                <div class="split-content">
-                    <div>
-                        <p class="overline animate-fade-left" data-animate>Track Progress</p>
-                        <h2 class="large-title animate-fade-left delay-1" data-animate>Visualize Your<br><span
-                                class="text-gradient-color">Spiritual Growth</span></h2>
-
-                        <div class="progress-ring-container animate-fade-left delay-3" data-animate
-                            style="margin-top: 2rem;">
-                            <div class="progress-ring">
-                                <svg viewBox="0 0 150 150">
-                                    <circle class="progress-ring-bg" cx="75" cy="75" r="65" />
-                                    <circle class="progress-ring-fill" cx="75" cy="75" r="65" data-progress="78" />
-                                </svg>
-                                <div class="progress-ring-value">
-                                    <div class="progress-ring-number">78%</div>
-                                    <div class="progress-ring-label">Weekly Goal</div>
-                                </div>
-                            </div>
-                            <div class="progress-ring">
-                                <svg viewBox="0 0 150 150">
-                                    <circle class="progress-ring-bg" cx="75" cy="75" r="65" />
-                                    <circle class="progress-ring-fill" cx="75" cy="75" r="65" data-progress="92" />
-                                </svg>
-                                <div class="progress-ring-value">
-                                    <div class="progress-ring-number">92%</div>
-                                    <div class="progress-ring-label">Retention</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="chart-container animate-fade-right delay-2" data-animate>
-                        <div
-                            style="background: rgba(255,255,255,0.03); border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,0.08);">
-                            <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">Study Time This
-                                Week</div>
-                            <div class="bar-chart" id="barChart1">
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="60" data-value="45m"></div>
-                                    <span class="bar-label">Mon</span>
-                                </div>
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="80" data-value="62m"></div>
-                                    <span class="bar-label">Tue</span>
-                                </div>
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="45" data-value="35m"></div>
-                                    <span class="bar-label">Wed</span>
-                                </div>
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="90" data-value="71m"></div>
-                                    <span class="bar-label">Thu</span>
-                                </div>
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="70" data-value="55m"></div>
-                                    <span class="bar-label">Fri</span>
-                                </div>
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="100" data-value="82m"></div>
-                                    <span class="bar-label">Sat</span>
-                                </div>
-                                <div class="bar-chart-item">
-                                    <div class="bar" data-height="95" data-value="78m"></div>
-                                    <span class="bar-label">Sun</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 7: GLOBAL IMPACT ==================== -->
-        <div class="scene bg-dark" id="scene7" data-duration="7000">
-            <div class="animated-bg">
-                <div class="bg-gradient-animated"></div>
-            </div>
-            <div class="particles-container" id="particles7"></div>
-
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>Global Impact</p>
-                <h2 class="large-title text-gradient animate-fade-up delay-1" data-animate>Transforming
-                    Lives<br>Worldwide</h2>
-
-                <div class="four-column" style="margin-top: 4rem;">
-                    <div class="stat-card animate-scale delay-2" data-animate>
-                        <div class="stat-number" data-count="150000" data-suffix="+">0</div>
-                        <div class="stat-label">Active Users</div>
-                        <div class="stat-change">↑ 34% this month</div>
-                    </div>
-                    <div class="stat-card animate-scale delay-3" data-animate>
-                        <div class="stat-number" data-count="5200000" data-suffix="+">0</div>
-                        <div class="stat-label">Verses Studied</div>
-                        <div class="stat-change">↑ 67% this month</div>
-                    </div>
-                    <div class="stat-card animate-scale delay-4" data-animate>
-                        <div class="stat-number" data-count="180" data-suffix="">0</div>
-                        <div class="stat-label">Countries</div>
-                        <div class="stat-change">↑ 12 new</div>
-                    </div>
-                    <div class="stat-card animate-scale delay-5" data-animate>
-                        <div class="stat-number" data-count="49" data-suffix="">4.9</div>
-                        <div class="stat-label">App Store Rating</div>
-                        <div class="stat-change">★★★★★</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 8: TESTIMONIALS ==================== -->
-        <div class="scene bg-cream" id="scene8" data-duration="8000">
-            <div class="scene-content center-content">
-                <p class="overline dark-text animate-fade-up" data-animate>Testimonials</p>
-                <h2 class="large-title dark-text animate-fade-up delay-1" data-animate>Loved by <span
-                        class="text-gradient-color">Thousands</span></h2>
-
-                <div class="three-column" style="margin-top: 3rem;">
-                    <div class="testimonial-card animate-scale delay-2" data-animate
-                        style="background: #fff; border-color: rgba(0,0,0,0.08);">
-                        <div class="testimonial-quote dark-text">"</div>
-                        <p class="testimonial-text dark-text" style="font-size: 1.1rem;">Bible Mind has completely
-                            transformed my morning routine. I've memorized more verses in 3 months than in my entire
-                            life.</p>
-                        <div class="testimonial-author">
-                            <div class="testimonial-avatar">SM</div>
-                            <div class="testimonial-info">
-                                <h4 class="dark-text">Sarah Mitchell</h4>
-                                <p>Youth Pastor, Texas</p>
-                            </div>
-                            <div class="testimonial-stars">★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card animate-scale delay-3" data-animate
-                        style="background: #fff; border-color: rgba(0,0,0,0.08);">
-                        <div class="testimonial-quote dark-text">"</div>
-                        <p class="testimonial-text dark-text" style="font-size: 1.1rem;">The AI explanations are
-                            incredible. It's like having a seminary professor in my pocket. Highly recommend!</p>
-                        <div class="testimonial-author">
-                            <div class="testimonial-avatar">JC</div>
-                            <div class="testimonial-info">
-                                <h4 class="dark-text">James Chen</h4>
-                                <p>Small Group Leader</p>
-                            </div>
-                            <div class="testimonial-stars">★★★★★</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card animate-scale delay-4" data-animate
-                        style="background: #fff; border-color: rgba(0,0,0,0.08);">
-                        <div class="testimonial-quote dark-text">"</div>
-                        <p class="testimonial-text dark-text" style="font-size: 1.1rem;">Finally, a Bible app that
-                            actually helps me grow. The memory system is genius and the design is beautiful.</p>
-                        <div class="testimonial-author">
-                            <div class="testimonial-avatar">ER</div>
-                            <div class="testimonial-info">
-                                <h4 class="dark-text">Emily Rodriguez</h4>
-                                <p>College Student</p>
-                            </div>
-                            <div class="testimonial-stars">★★★★★</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 9: COMPARISON ==================== -->
-        <div class="scene bg-gradient-1" id="scene9" data-duration="7000">
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>Why Bible Mind?</p>
-                <h2 class="large-title text-gradient animate-fade-up delay-1" data-animate>The Clear Choice</h2>
-
-                <div class="animate-fade-up delay-2" data-animate
-                    style="margin-top: 3rem; max-width: 900px; width: 100%;">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th>Bible Mind</th>
-                                <th>Other Apps</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="highlight">
-                                <td>AI-Powered Study</td>
-                                <td class="check">✓</td>
-                                <td class="cross">✗</td>
-                            </tr>
-                            <tr>
-                                <td>Spaced Repetition Memory</td>
-                                <td class="check">✓</td>
-                                <td class="cross">✗</td>
-                            </tr>
-                            <tr class="highlight">
-                                <td>Personalized Insights</td>
-                                <td class="check">✓</td>
-                                <td class="cross">✗</td>
-                            </tr>
-                            <tr>
-                                <td>Progress Analytics</td>
-                                <td class="check">✓</td>
-                                <td class="check" style="opacity: 0.5;">Limited</td>
-                            </tr>
-                            <tr class="highlight">
-                                <td>Offline Access</td>
-                                <td class="check">✓</td>
-                                <td class="check">✓</td>
-                            </tr>
-                            <tr>
-                                <td>Cross-Reference System</td>
-                                <td class="check">✓</td>
-                                <td class="check" style="opacity: 0.5;">Basic</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 10: MULTI-DEVICE ==================== -->
-        <div class="scene bg-dark" id="scene10" data-duration="7000">
-            <div class="animated-bg">
-                <div class="orb orb-1"></div>
-                <div class="orb orb-2"></div>
-            </div>
-
-            <div class="scene-content">
-                <div class="split-content">
-                    <div>
-                        <p class="overline animate-fade-left" data-animate>Everywhere</p>
-                        <h2 class="large-title animate-fade-left delay-1" data-animate>Study on<br><span
-                                class="text-gradient-color">Any Device</span></h2>
-                        <p class="subtitle animate-fade-left delay-2" data-animate style="margin-top: 1.5rem;">
-                            Seamlessly sync your progress across all your devices. Start on your phone, continue on your
-                            tablet, review on your laptop.
-                        </p>
-
-                        <div class="icon-grid animate-fade-left delay-3" data-animate
-                            style="margin-top: 2rem; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-                            <div class="icon-item">
-                                <div class="icon-circle">📱</div>
-                                <span class="icon-label">iOS</span>
-                            </div>
-                            <div class="icon-item">
-                                <div class="icon-circle">🤖</div>
-                                <span class="icon-label">Android</span>
-                            </div>
-                            <div class="icon-item">
-                                <div class="icon-circle">💻</div>
-                                <span class="icon-label">Web</span>
-                            </div>
-                            <div class="icon-item">
-                                <div class="icon-circle">⌚</div>
-                                <span class="icon-label">Watch</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: center;">
-                        <div class="devices-container animate-fade-right delay-2" data-animate>
-                            <div class="device-laptop">
-                                <div class="laptop-screen">
-                                    <div style="padding: 1rem;">
-                                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                                            <div
-                                                style="width: 10px; height: 10px; background: #ff5f56; border-radius: 50%;">
-                                            </div>
-                                            <div
-                                                style="width: 10px; height: 10px; background: #ffbd2e; border-radius: 50%;">
-                                            </div>
-                                            <div
-                                                style="width: 10px; height: 10px; background: #27ca40; border-radius: 50%;">
-                                            </div>
-                                        </div>
-                                        <div style="font-size: 0.8rem; text-align: center; margin-top: 2rem;">Bible Mind
-                                            Web</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="device-tablet">
-                                <div class="tablet-screen"></div>
-                            </div>
-                            <div class="device-phone-small">
-                                <div class="phone-small-screen"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 11: PRICING ==================== -->
-        <div class="scene bg-white" id="scene11" data-duration="8000">
-            <div class="scene-content center-content">
-                <p class="overline dark-text animate-fade-up" data-animate>Simple Pricing</p>
-                <h2 class="large-title dark-text animate-fade-up delay-1" data-animate>Choose Your <span
-                        class="text-gradient-color">Path</span></h2>
-
-                <div class="three-column" style="margin-top: 3rem; align-items: stretch;">
-                    <div class="pricing-card animate-scale delay-2" data-animate
-                        style="background: #fff; color: #0a0a0a;">
-                        <div class="pricing-name">Free</div>
-                        <div class="pricing-price dark-text">$0<span>/forever</span></div>
-                        <ul class="pricing-features" style="color: #0a0a0a;">
-                            <li>Daily verse & devotional</li>
-                            <li>Basic reading plans</li>
-                            <li>Bookmark verses</li>
-                            <li>Limited AI questions</li>
-                        </ul>
-                        <button class="pricing-btn secondary" style="background: #0a0a0a; color: #fff;">Get
-                            Started</button>
-                    </div>
-                    <div class="pricing-card featured animate-scale delay-3" data-animate
-                        style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff;">
-                        <div class="pricing-name">Pro</div>
-                        <div class="pricing-price">$9.99<span>/month</span></div>
-                        <ul class="pricing-features">
-                            <li>Unlimited AI assistant</li>
-                            <li>Advanced memory system</li>
-                            <li>All reading plans</li>
-                            <li>Progress analytics</li>
-                            <li>Priority support</li>
-                        </ul>
-                        <button class="pricing-btn primary" style="background: #fff; color: #6366f1;">Start Free
-                            Trial</button>
-                    </div>
-                    <div class="pricing-card animate-scale delay-4" data-animate
-                        style="background: #fff; color: #0a0a0a;">
-                        <div class="pricing-name">Team</div>
-                        <div class="pricing-price dark-text">$29.99<span>/month</span></div>
-                        <ul class="pricing-features" style="color: #0a0a0a;">
-                            <li>Everything in Pro</li>
-                            <li>Up to 10 members</li>
-                            <li>Group study tools</li>
-                            <li>Admin dashboard</li>
-                            <li>Shared notes</li>
-                        </ul>
-                        <button class="pricing-btn secondary" style="background: #0a0a0a; color: #fff;">Contact
-                            Sales</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 12: HOW IT WORKS ==================== -->
-        <div class="scene bg-gradient-purple" id="scene12" data-duration="8000">
-            <div class="animated-bg">
-                <div class="grid-hex"></div>
-            </div>
-
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>Getting Started</p>
-                <h2 class="large-title text-gradient animate-fade-up delay-1" data-animate>Three Simple Steps</h2>
-
-                <div class="three-column" style="margin-top: 4rem;">
-                    <div class="animate-scale delay-2" data-animate style="text-align: center;">
-                        <div
-                            style="width: 100px; height: 100px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">
-                            1</div>
-                        <h3 class="small-title">Download</h3>
-                        <p class="subtitle" style="font-size: 1rem; margin-top: 0.8rem;">Get the app from your favorite
-                            store in seconds.</p>
-                    </div>
-                    <div class="animate-scale delay-3" data-animate style="text-align: center;">
-                        <div
-                            style="width: 100px; height: 100px; background: linear-gradient(135deg, #8b5cf6, #a855f7); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">
-                            2</div>
-                        <h3 class="small-title">Personalize</h3>
-                        <p class="subtitle" style="font-size: 1rem; margin-top: 0.8rem;">Tell us your goals and we'll
-                            customize your experience.</p>
-                    </div>
-                    <div class="animate-scale delay-4" data-animate style="text-align: center;">
-                        <div
-                            style="width: 100px; height: 100px; background: linear-gradient(135deg, #a855f7, #f59e0b); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">
-                            3</div>
-                        <h3 class="small-title">Transform</h3>
-                        <p class="subtitle" style="font-size: 1rem; margin-top: 0.8rem;">Start your journey to deeper
-                            Biblical understanding.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 13: QUOTE ==================== -->
-        <div class="scene bg-dark" id="scene13" data-duration="6000">
-            <div class="animated-bg">
-                <div class="orb orb-3" style="filter: blur(100px); opacity: 0.3;"></div>
-            </div>
-
-            <div class="scene-content center-content">
-                <div class="animate-scale" data-animate style="max-width: 900px;">
-                    <div
-                        style="font-size: 8rem; opacity: 0.1; font-family: 'Playfair Display', serif; line-height: 0.5;">
-                        "</div>
-                    <blockquote class="large-title animate-fade-up delay-1" data-animate
-                        style="font-style: italic; font-weight: 400; margin-top: -2rem;">
-                        Your word is a lamp to my feet and a light to my path.
-                    </blockquote>
-                    <p class="overline animate-fade-up delay-3" data-animate
-                        style="margin-top: 2rem; opacity: 1; color: #6366f1;">— Psalm 119:105</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 14: SECURITY ==================== -->
-        <div class="scene bg-gradient-blue" id="scene14" data-duration="6000">
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>Trust & Security</p>
-                <h2 class="large-title text-gradient animate-fade-up delay-1" data-animate>Your Data is <span
-                        class="text-gradient-color">Sacred</span></h2>
-
-                <div class="icon-grid animate-fade-up delay-2" data-animate style="margin-top: 3rem; max-width: 800px;">
-                    <div class="icon-item">
-                        <div class="icon-circle">🔒</div>
-                        <span class="icon-label">End-to-End Encryption</span>
-                    </div>
-                    <div class="icon-item">
-                        <div class="icon-circle">🛡️</div>
-                        <span class="icon-label">GDPR Compliant</span>
-                    </div>
-                    <div class="icon-item">
-                        <div class="icon-circle">☁️</div>
-                        <span class="icon-label">Secure Cloud</span>
-                    </div>
-                    <div class="icon-item">
-                        <div class="icon-circle">🚫</div>
-                        <span class="icon-label">No Data Selling</span>
-                    </div>
-                    <div class="icon-item">
-                        <div class="icon-circle">✅</div>
-                        <span class="icon-label">SOC 2 Certified</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== SCENE 15: FINAL CTA ==================== -->
-        <div class="scene bg-dark" id="scene15" data-duration="10000">
-            <div class="animated-bg">
-                <div class="bg-gradient-animated"></div>
-                <div class="orb orb-1"></div>
-                <div class="orb orb-2"></div>
-                <div class="orb orb-3"></div>
-            </div>
-            <div class="particles-container" id="particles15"></div>
-
-            <div class="scene-content center-content">
-                <p class="overline animate-fade-up" data-animate>Begin Today</p>
-                <h1 class="mega-title text-gradient animate-fade-up delay-1" data-animate>Transform Your<br>Spiritual
-                    Life</h1>
-                <p class="subtitle animate-fade-up delay-2" data-animate style="max-width: 600px; margin-top: 1.5rem;">
-                    Join over 150,000 believers who have deepened their faith with Bible Mind.
-                </p>
-
-                <div class="animate-fade-up delay-4" data-animate
-                    style="display: flex; gap: 1.5rem; margin-top: 3rem; flex-wrap: wrap; justify-content: center;">
-                    <a href="#" class="cta-button">
-                        <span>Start Free Trial</span>
-                        <span>→</span>
-                    </a>
-                    <a href="#" class="cta-button" style="background: rgba(255,255,255,0.1); box-shadow: none;">
-                        <span>Watch Demo</span>
-                        <span>▶</span>
-                    </a>
-                </div>
-
-                <div class="animate-fade-up delay-6" data-animate
-                    style="display: flex; gap: 2rem; margin-top: 3rem; opacity: 0.5;">
-                    <span>📱 iOS</span>
-                    <span>🤖 Android</span>
-                    <span>💻 Web</span>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Video Progress -->
-    <div class="video-progress" id="videoProgress">
-        <div class="scene-counter"><span id="currentSceneNum">01</span> / <span id="totalSceneNum">15</span></div>
-        <div class="progress-dots" id="progressDots"></div>
+    <!-- Video Controls -->
+    <div class="video-controls">
+        <div class="play-btn" id="playBtn">
+            <svg viewBox="0 0 24 24" id="playIcon">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+        </div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="time-display">
+            <span id="currentTime">0:00</span> / <span id="totalTime">0:35</span>
+        </div>
+        <div class="volume-control">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+            </svg>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+        </div>
+        <div class="sound-wave" id="soundWave">
+            <div class="sound-bar" style="animation-delay: 0s;"></div>
+            <div class="sound-bar" style="animation-delay: 0.1s;"></div>
+            <div class="sound-bar" style="animation-delay: 0.2s;"></div>
+            <div class="sound-bar" style="animation-delay: 0.3s;"></div>
+            <div class="sound-bar" style="animation-delay: 0.4s;"></div>
+        </div>
     </div>
-
-    <!-- Controls -->
-    <div class="controls">
-        <button class="control-btn" id="prevBtn" title="Previous (←)">◀</button>
-        <button class="control-btn active" id="playPauseBtn" title="Play/Pause (Space)">⏸</button>
-        <button class="control-btn" id="nextBtn" title="Next (→)">▶</button>
-        <button class="control-btn" id="muteBtn" title="Mute (M)">🔊</button>
-        <button class="control-btn" id="fullscreenBtn" title="Fullscreen (F)">⛶</button>
-    </div>
-
-    <!-- Sound Visualizer -->
-    <div class="sound-visualizer" id="soundVisualizer"></div>
-
-    <!-- Time Indicator -->
-    <div class="time-indicator" id="timeIndicator">00:00 / 02:00</div>
 
     <script>
-        // ========== CONFIGURATION ==========
-        const CONFIG = {
-            totalScenes: 15,
-            defaultDuration: 6000,
-            transitionDuration: 1000,
-            particleCount: 40
-        };
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide loading screen after animation
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                initVideo();
+            }, 2500);
+        });
 
-        // ========== STATE ==========
-        let state = {
-            currentScene: 1,
-            isPlaying: true,
-            isMuted: false,
-            autoPlayTimer: null,
-            elapsedTime: 0,
-            totalTime: 0,
-            visitedScenes: new Set([1])
-        };
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursorDot');
 
-        // ========== AUDIO SYSTEM ==========
-        let audioContext = null;
-        let masterGain = null;
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+            cursorDot.style.left = e.clientX - 2.5 + 'px';
+            cursorDot.style.top = e.clientY - 2.5 + 'px';
+        });
 
-        function initAudio() {
-            if (audioContext) return;
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            masterGain = audioContext.createGain();
-            masterGain.connect(audioContext.destination);
-            masterGain.gain.value = 0.15;
+        // Grain Effect
+        const grainCanvas = document.getElementById('grain');
+        const grainCtx = grainCanvas.getContext('2d');
+
+        function resizeGrain() {
+            grainCanvas.width = window.innerWidth;
+            grainCanvas.height = window.innerHeight;
         }
 
-        function playSound(type) {
-            if 
+        function generateGrain() {
+            const imageData = grainCtx.createImageData(grainCanvas.width, grainCanvas.height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const value = Math.random() * 255;
+                data[i] = value;
+                data[i + 1] = value;
+                data[i + 2] = value;
+                data[i + 3] = 255;
+            }
+
+            grainCtx.putImageData(imageData, 0, 0);
+            requestAnimationFrame(generateGrain);
+        }
+
+        resizeGrain();
+        generateGrain();
+        window.addEventListener('resize', resizeGrain);
+
+        // Create Particles
+        function createParticles(containerId, count = 50) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles('particles1');
+        createParticles('particles2');
+        createParticles('particles3');
+
+        // Video Controller
+        let currentScene = 0;
+        const totalScenes = 7;
+        const sceneDuration = 5000; // 5 seconds per scene
+        let isPlaying = true;
+        let videoInterval;
+        let startTime;
+        let elapsedTime = 0;
+
+        const scenes = document.querySelectorAll('.scene');
+        const progressBar = document.getElementById('progressBar');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const currentTimeEl = document.getElementById('currentTime');
+        const currentSceneEl = document.getElementById('currentScene');
+        const transitionOverlay = document.getElementById('transitionOverlay');
+        const soundWave = document.getElementById('soundWave');
+
+        function initVideo() {
+            startTime = Date.now();
+            playVideo();
+            initAudio();
+        }
+
+        function playVideo() {
+            isPlaying = true;
+            playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+            soundWave.style.opacity = '1';
+
+            videoInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                updateProgress();
+
+                if (elapsedTime >= (currentScene + 1) * sceneDuration && currentScene < totalScenes - 1) {
+                    nextScene();
+                }
+
+                if (elapsedTime >= totalScenes * sceneDuration) {
+                    clearInterval(videoInterval);
+                    isPlaying = false;
+                    playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                    soundWave.style.opacity = '0.3';
+                }
+            }, 100);
+        }
+
+        function pauseVideo() {
+            isPlaying = false;
+            clearInterval(videoInterval);
+            playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            soundWave.style.opacity = '0.3';
+            if (audioContext) {
+                audioContext.suspend();
+            }
+        }
+
+        function updateProgress() {
+            const totalDuration = totalScenes * sceneDuration;
+            const progress = (elapsedTime / totalDuration) * 100;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+
+            const seconds = Math.floor(elapsedTime / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            currentTimeEl.textContent = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function nextScene() {
+            if (currentScene >= totalScenes - 1) return;
+
+            // Trigger transition
+            transitionOverlay.classList.add('active');
+
+            setTimeout(() => {
+                scenes[currentScene].classList.remove('active');
+                currentScene++;
+                scenes[currentScene].classList.add('active');
+                currentSceneEl.textContent = (currentScene + 1).toString().padStart(2, '0');
+
+                // Animate elements in new scene
+                animateSceneElements();
+
+                setTimeout(() => {
+                    transitionOverlay.classList.remove('active');
+                }, 500);
+            }, 500);
+        }
+
+        function goToScene(sceneIndex) {
+            if (sceneIndex === currentScene || sceneIndex < 0 || sceneIndex >= totalScenes) return;
+
+            transitionOverlay.classList.add('active');
+
+            setTimeout(() => {
+                scenes[currentScene].classList.remove('active');
+                currentScene = sceneIndex;
+                scenes[currentScene].classList.add('active');
+                currentSceneEl.textContent = (currentScene + 1).toString().padStart(2, '0');
+                elapsedTime = currentScene * sceneDuration;
+                startTime = Date.now() - elapsedTime;
+
+                animateSceneElements();
+
+                setTimeout(() => {
+                    transitionOverlay.classList.remove('active');
+                }, 500);
+            }, 500);
+        }
+
+        function animateSceneElements() {
+            // Features animation
+            if (currentScene === 3) {
+                setTimeout(() => document.getElementById('feature1').classList.add('animate'), 200);
+                setTimeout(() => document.getElementById('feature2').classList.add('animate'), 400);
+                setTimeout(() => document.getElementById('feature3').classList.add('animate'), 600);
+            }
+
+            // Process animation
+            if (currentScene === 4) {
+                setTimeout(() => document.getElementById('step1').classList.add('animate'), 200);
+                setTimeout(() => document.getElementById('step2').classList.add('animate'), 500);
+                setTimeout(() => document.getElementById('step3').classList.add('animate'), 800);
+            }
+
+            // Quote animation
+            if (currentScene === 1) {
+                setTimeout(() => {
+                    document.querySelector('.scene-2 .reveal-text').classList.add('animate');
+                }, 300);
+            }
+        }
+
+        // Play/Pause Button
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseVideo();
+            } else {
+                if (elapsedTime >= totalScenes * sceneDuration) {
+                    // Restart
+                    elapsedTime = 0;
+                    currentScene = 0;
+                    scenes.forEach(s => s.classList.remove('active'));
+                    scenes[0].classList.add('active');
+                    currentSceneEl.textContent = '01';
+                    startTime = Date.now();
+                }
+                playVideo();
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+        });
+
+        // Progress Bar Click
+        document.getElementById('progressContainer').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = x / rect.width;
+            const targetScene = Math.floor(percentage * totalScenes);
+            goToScene(targetScene);
+        });
+
+        // Skip Button
+        document.getElementById('skipBtn').addEventListener('click', () => {
+            goToScene(totalScenes - 1);
+        });
+
+        // Audio Context for Background Music
+        let audioContext;
+        let oscillator;
+        let gainNode;
+
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                // Create ambient sound
+                oscillator = audioContext.createOscillator();
+                gainNode = audioContext.createGain();
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(60, audioContext.currentTime);
+
+                gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.start();
+
+                // Add some variation
+                setInterval(() => {
+                    if (isPlaying) {
+                        oscillator.frequency.setValueAtTime(
+                            55 + Math.random() * 10,
+                            audioContext.currentTime
+                        );
+                    }
+                }, 2000);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Volume Control
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            if (gainNode) {
+                gainNode.gain.setValueAtTime(e.target.value / 2500, audioContext.currentTime);
+            }
+        });
+
+        // Keyboard Controls
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                playBtn.click();
+            } else if (e.code === 'ArrowRight') {
+                if (currentScene < totalScenes - 1) {
+                    goToScene(currentScene + 1);
+                }
+            } else if (e.code === 'ArrowLeft') {
+                if (currentScene > 0) {
+                    goToScene(currentScene - 1);
+                }
+            }
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentScene < totalScenes - 1) {
+                    goToScene(currentScene + 1);
+                } else if (diff < 0 && currentScene > 0) {
+                    goToScene(currentScene - 1);
+                }
+            }
+        });
+
+        // Animate on hover for interactive elements
+        document.querySelectorAll('.feature-card, .cta-button, .play-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+
+</html>
