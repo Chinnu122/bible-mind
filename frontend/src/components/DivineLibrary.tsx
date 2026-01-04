@@ -215,7 +215,7 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                         {/* Content */}
                         <div className="flex-1 overflow-hidden flex bg-[#0c0c0c]">
                             {activeTab === 'infographics' ? (
-                                // Infographics Grid View
+                                // Infographics Section with Featured Hero
                                 <div className="p-6 w-full overflow-y-auto">
                                     {filteredInfographics.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center h-full text-slate-500">
@@ -223,41 +223,74 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                                 <PlayCircle className="w-8 h-8 opacity-20" />
                                             </div>
                                             <p>No infographic books available.</p>
+                                            <p className="text-xs mt-2 opacity-50">Check console for errors (F12)</p>
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            {filteredInfographics.map(book => (
+                                        <>
+                                            {/* Featured Hero Banner */}
+                                            <div className="mb-8">
                                                 <button
-                                                    key={book.id}
-                                                    onClick={() => setSelectedInfographic(book)}
-                                                    className="relative group overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-gold-500/50 transition-all text-left"
+                                                    onClick={() => setSelectedInfographic(filteredInfographics[0])}
+                                                    className="w-full relative h-48 md:h-64 rounded-2xl overflow-hidden group"
                                                 >
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-black/0 to-black/80 z-10" />
-                                                    {/* Stylized background using book color */}
-                                                    <div className={`absolute inset-0 bg-gradient-to-br ${book.color} opacity-20 group-hover:opacity-30 transition-opacity`} />
-
-                                                    <div className="relative z-20 p-6 flex flex-col h-full min-h-[200px] justify-between">
-                                                        <div className="flex justify-between items-start">
-                                                            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
-                                                                {getBookIcon(book.icon)}
-                                                            </div>
-                                                            <div className="px-2 py-1 rounded text-[10px] font-bold uppercase bg-white/10 text-white/70">
-                                                                Animated
-                                                            </div>
+                                                    <img
+                                                        src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80"
+                                                        alt="Featured Infographic"
+                                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+                                                    <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <span className="px-2 py-1 rounded bg-gold-500/30 text-gold-200 text-[10px] font-bold uppercase">Featured</span>
+                                                            <span className="px-2 py-1 rounded bg-white/10 text-white/70 text-[10px] font-bold uppercase">Animated</span>
                                                         </div>
-
-                                                        <div>
-                                                            <h3 className="text-2xl font-bold text-white mb-1">{book.title}</h3>
-                                                            <p className="text-sm text-slate-400">Interactive visual journey through the scriptures</p>
-
-                                                            <div className="mt-4 flex items-center gap-2 text-gold-400 text-sm font-medium group-hover:gap-3 transition-all">
-                                                                Start Watching <ChevronRight className="w-4 h-4" />
-                                                            </div>
+                                                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">{filteredInfographics[0].title}</h3>
+                                                        <p className="text-sm text-slate-300 mb-3">Experience the story through stunning visuals and animations</p>
+                                                        <div className="flex items-center gap-2 text-gold-400 font-medium group-hover:gap-3 transition-all">
+                                                            <PlayCircle className="w-5 h-5" /> Watch Now <ChevronRight className="w-4 h-4" />
                                                         </div>
                                                     </div>
                                                 </button>
-                                            ))}
-                                        </div>
+                                            </div>
+
+                                            {/* Section Title */}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h3 className="text-lg font-bold text-white">All Infographic Books</h3>
+                                                <span className="text-xs text-slate-500">{filteredInfographics.length} available</span>
+                                            </div>
+
+                                            {/* Grid of Books */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                {filteredInfographics.map(book => (
+                                                    <button
+                                                        key={book.id}
+                                                        onClick={() => setSelectedInfographic(book)}
+                                                        className="relative group overflow-hidden rounded-xl bg-white/5 border border-white/10 hover:border-gold-500/50 transition-all text-left"
+                                                    >
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-black/0 to-black/80 z-10" />
+                                                        <div className={`absolute inset-0 bg-gradient-to-br ${book.color} opacity-20 group-hover:opacity-30 transition-opacity`} />
+
+                                                        <div className="relative z-20 p-5 flex flex-col h-full min-h-[160px] justify-between">
+                                                            <div className="flex justify-between items-start">
+                                                                <div className="p-2.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                                                                    {getBookIcon(book.icon)}
+                                                                </div>
+                                                                <div className="px-2 py-1 rounded text-[9px] font-bold uppercase bg-white/10 text-white/70">
+                                                                    EN • TE • HI
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <h3 className="text-xl font-bold text-white mb-1">{book.title}</h3>
+                                                                <div className="flex items-center gap-1 text-gold-400 text-sm font-medium group-hover:gap-2 transition-all">
+                                                                    <PlayCircle className="w-4 h-4" /> Play <ChevronRight className="w-3 h-3" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </>
                                     )}
                                 </div>
                             ) : (

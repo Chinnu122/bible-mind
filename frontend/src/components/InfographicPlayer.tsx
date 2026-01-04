@@ -100,10 +100,18 @@ export default function InfographicPlayer({ book, onClose }: InfographicPlayerPr
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 1 }}
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url(${currentSlide.image})` }}
+                        className="absolute inset-0"
                     >
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+                        {/* Use img tag with onError fallback */}
+                        <img
+                            src={currentSlide.image}
+                            alt={currentSlide.text}
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80';
+                            }}
+                            className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/40" />
                     </motion.div>
                 </AnimatePresence>
             </div>
