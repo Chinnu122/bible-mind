@@ -843,7 +843,7 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                     {activeTab === 'word-for-word' && (
                         <div className="space-y-4">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-bold text-gold-200">Word-for-Word Split</h3>
+                                <h3 className="text-lg font-bold text-gold-200">Word-for-Word Breakdown</h3>
                                 {loadingWords && <Loader2 className="w-5 h-5 animate-spin text-gold-500" />}
                             </div>
 
@@ -851,29 +851,37 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                                 {words.map((word, idx) => {
                                     const def = wordDefinitions[word];
                                     return (
-                                        <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                                            {/* Original Word */}
-                                            <div className="w-1/3 text-right" dir={isOT ? 'rtl' : 'ltr'}>
-                                                <span className="text-2xl font-serif text-gold-200">{word}</span>
-                                            </div>
+                                        <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/5">
+                                            <div className="flex items-start gap-4">
+                                                {/* Original Word */}
+                                                <div className="w-1/4" dir={isOT ? 'rtl' : 'ltr'}>
+                                                    <span className="text-2xl font-serif text-gold-200">{word}</span>
+                                                </div>
 
-                                            {/* Equality Sign */}
-                                            <div className="text-slate-500">=</div>
-
-                                            {/* Telugu / English Meaning */}
-                                            <div className="flex-1">
-                                                {def ? (
-                                                    <div>
-                                                        <div className="text-lg text-emerald-300 font-medium mb-1">
-                                                            {def.telugu || 'Searching...'}
-                                                        </div>
-                                                        <div className="text-sm text-slate-400">
-                                                            {def.english || def.gloss}
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-slate-500 italic text-sm">Loading meaning...</span>
-                                                )}
+                                                {/* Meanings */}
+                                                <div className="flex-1">
+                                                    {def ? (
+                                                        <>
+                                                            {/* Telugu Meaning - Primary */}
+                                                            <div className="text-xl text-emerald-300 font-medium mb-2">
+                                                                {def.telugu || 'అర్థం లేదు'}
+                                                            </div>
+                                                            {/* English Meaning */}
+                                                            <div className="text-base text-slate-300">
+                                                                {def.english || def.gloss || '-'}
+                                                            </div>
+                                                            {/* Occurrence info */}
+                                                            {def.occurrences > 0 && (
+                                                                <div className="mt-2 text-xs text-slate-500">
+                                                                    📊 {def.occurrences} times in Bible
+                                                                    {def.firstOccurrence && <span className="ml-2">| 1st: {def.firstOccurrence}</span>}
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <span className="text-slate-500 italic text-sm">Loading...</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     );
@@ -885,27 +893,65 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                     {/* 3. Lexicon Tab */}
                     {activeTab === 'lexicon' && (
                         <div className="space-y-4">
+                            {loadingWords && (
+                                <div className="flex justify-center py-8">
+                                    <Loader2 className="w-6 h-6 animate-spin text-gold-500" />
+                                </div>
+                            )}
                             {words.map((word, idx) => {
                                 const def = wordDefinitions[word];
-                                if (!def) return null; // Only show loaded definitions
+                                if (!def) return null;
                                 return (
-                                    <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 mb-2">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <span className="text-2xl font-serif text-gold-200">{word}</span>
-                                            <span className="text-xs px-2 py-1 rounded bg-white/10 text-slate-300 font-mono">
-                                                {def.strongsNumber}
-                                            </span>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4 mt-2">
-                                            <div>
-                                                <div className="text-[10px] uppercase text-slate-500 mb-1">English</div>
-                                                <div className="text-crema-100">{def.english}</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-[10px] uppercase text-emerald-500/70 mb-1">Telugu</div>
-                                                <div className="text-emerald-300 text-lg">{def.telugu}</div>
+                                    <div key={idx} className="p-5 rounded-xl bg-white/5 border border-white/10">
+                                        {/* Word Header */}
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-3xl font-serif text-gold-200" dir={isOT ? 'rtl' : 'ltr'}>{word}</span>
+                                                <span className="text-xs px-2 py-1 rounded bg-white/10 text-slate-400 font-mono">
+                                                    {def.strongsNumber}
+                                                </span>
                                             </div>
                                         </div>
+
+                                        {/* Meanings Grid */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* Telugu */}
+                                            <div className="bg-emerald-950/30 rounded-lg p-4">
+                                                <div className="text-[10px] uppercase text-emerald-500/70 mb-2 font-bold">తెలుగు అర్థం</div>
+                                                <div className="text-2xl text-emerald-200 font-medium">
+                                                    {def.telugu || 'అర్థం అందుబాటులో లేదు'}
+                                                </div>
+                                            </div>
+                                            {/* English */}
+                                            <div className="bg-gold-950/30 rounded-lg p-4">
+                                                <div className="text-[10px] uppercase text-gold-500/70 mb-2 font-bold">English</div>
+                                                <div className="text-xl text-crema-100">
+                                                    {def.english || def.gloss || 'Not available'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Occurrences */}
+                                        {def.occurrences > 0 && (
+                                            <div className="mt-4 pt-4 border-t border-white/10">
+                                                <div className="flex items-center gap-6 text-sm">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-slate-500">📊</span>
+                                                        <span className="text-slate-400">
+                                                            Appears <span className="text-gold-300 font-bold">{def.occurrences}</span> times
+                                                        </span>
+                                                    </div>
+                                                    {def.firstOccurrence && (
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-slate-500">📖</span>
+                                                            <span className="text-slate-400">
+                                                                First: <span className="text-emerald-300">{def.firstOccurrence}</span>
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
