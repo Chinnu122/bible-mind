@@ -104,6 +104,7 @@ export interface ApiResponse<T> {
 // Cache for the local dictionary
 let cachedDictionary: Record<string, DictionaryEntry> | null = null;
 let wordIndex: Map<string, string[]> | null = null; // Map word -> [strongs numbers]
+let strippedWordIndex: Map<string, string[]> | null = null; // Map stripped word -> [strongs numbers]
 
 // Load local dictionary from JSON
 async function loadLocalDictionary(): Promise<Record<string, DictionaryEntry>> {
@@ -119,17 +120,28 @@ async function loadLocalDictionary(): Promise<Record<string, DictionaryEntry>> {
 
     // Build word index for fast lookups
     wordIndex = new Map();
+    strippedWordIndex = new Map();
     for (const [strongsNum, entry] of Object.entries(cachedDictionary || {})) {
-      const word = entry.word?.toLowerCase().trim();
+      const word = entry.word?.toLowerCase().trim() || '';
       if (word) {
+        // Regular word index
         if (!wordIndex.has(word)) {
           wordIndex.set(word, []);
         }
         wordIndex.get(word)!.push(strongsNum);
+
+        // Stripped vowel index (for Hebrew)
+        const stripped = stripHebrewVowels(word);
+        if (stripped && stripped !== word) {
+          if (!strippedWordIndex.has(stripped)) {
+            strippedWordIndex.set(stripped, []);
+          }
+          strippedWordIndex.get(stripped)!.push(strongsNum);
+        }
       }
     }
 
-    console.log(`📖 Loaded ${Object.keys(cachedDictionary || {}).length} Strong's entries`);
+    console.log(`📖 Loaded ${Object.keys(cachedDictionary || {}).length} Strong's entries, ${wordIndex.size} word index, ${strippedWordIndex.size} stripped index`);
     return cachedDictionary || {};
   } catch (error) {
     console.error('Error loading dictionary:', error);
@@ -225,69 +237,99 @@ class BibleAPI {
   // Search by original word (Hebrew/Greek) - Uses local dictionary
   async searchStrongs(query: string): Promise<StrongsDefinition[]> {
     const dict = await loadLocalDictionary();
-    const results: StrongsDefinition[] = [];
+    const results: { def: StrongsDefinition; score: number }[] = [];
 
-    // Clean the query - remove punctuation. 
-    // Vowels are removed separately for comparison.
+    // Clean the query - remove punctuation
     const cleanQueryRaw = query.replace(/[^\u0590-\u05FF\u0370-\u03FF\u0041-\u007A]/g, '').toLowerCase();
     const cleanQueryStripped = stripHebrewVowels(cleanQueryRaw);
 
+    // Skip if too short (likely punctuation only)
+    if (cleanQueryStripped.length < 1) return [];
+
     // First try exact match (using wordIndex which maps cleanWord -> [strongsNums])
-    // Search index using exact (with vowels) or stripped? 
-    // Let's try raw first.
     if (wordIndex?.has(cleanQueryRaw)) {
       const strongsNums = wordIndex.get(cleanQueryRaw)!;
       for (const sn of strongsNums) {
         const entry = dict[sn];
-        if (entry) results.push(entryToDefinition(entry));
+        if (entry) results.push({ def: entryToDefinition(entry), score: 100 });
       }
     }
 
-    // Also try looking up stripped version in index if we built it that way
-    // (We didn't build stripped index yet, so skip)
+    // If exact match found with high confidence, return immediately
+    if (results.length > 0 && results[0].score === 100) {
+      return results.map(r => r.def);
+    }
 
-    // Then search by partial match
-    if (results.length === 0) {
-      // Limit to 20 results for performance
-      let count = 0;
-      for (const [_, entry] of Object.entries(dict)) {
-        if (count >= 20) break;
-
-        const entryWord = entry.word?.toLowerCase().trim() || '';
-        const entryWordStripped = stripHebrewVowels(entryWord);
-
-        // Check 1: Exact match with stripped vowels (High confidence)
-        if (entryWordStripped === cleanQueryStripped) {
-          results.push(entryToDefinition(entry));
-          count++;
-          continue;
-        }
-
-        // Check 2: Substring match (Medium confidence)
-        // E.g. Query "Bereshit" (stripped BRSHT) includes Entry "Reshit" (stripped RSHT)
-        if (cleanQueryStripped.includes(entryWordStripped) && entryWordStripped.length > 2) {
-          // Length check to avoid matching single letters
-          results.push(entryToDefinition(entry));
-          count++;
-          continue;
-        }
-
-        // Check 3: Entry includes Query (rare for clicked word, but good for search bar)
-        if (entryWordStripped.includes(cleanQueryStripped)) {
-          results.push(entryToDefinition(entry));
-          count++;
-          continue;
+    // Try stripped vowel index (for Hebrew)
+    if (strippedWordIndex?.has(cleanQueryStripped)) {
+      const strongsNums = strippedWordIndex.get(cleanQueryStripped)!;
+      for (const sn of strongsNums) {
+        const entry = dict[sn];
+        if (entry && !results.some(r => r.def.strongsNumber === sn)) {
+          results.push({ def: entryToDefinition(entry), score: 98 });
         }
       }
     }
 
-    // Then search by Strong's number
+    // If stripped match found, return immediately
+    if (results.length > 0) {
+      return results.map(r => r.def);
+    }
+
+    // Search by matching stripped vowels
+    for (const [_, entry] of Object.entries(dict)) {
+      if (results.length >= 5) break; // Limit results per query
+
+      const entryWord = entry.word?.toLowerCase().trim() || '';
+      const entryWordStripped = stripHebrewVowels(entryWord);
+
+      // Skip if entry word is empty
+      if (!entryWordStripped) continue;
+
+      // Calculate length ratio for confidence scoring
+      const lenQuery = cleanQueryStripped.length;
+      const lenEntry = entryWordStripped.length;
+      const lenRatio = Math.min(lenQuery, lenEntry) / Math.max(lenQuery, lenEntry);
+
+      // Check 1: Exact match with stripped vowels (Score: 95)
+      if (entryWordStripped === cleanQueryStripped) {
+        // Avoid duplicates
+        if (!results.some(r => r.def.strongsNumber === entry.strongs)) {
+          results.push({ def: entryToDefinition(entry), score: 95 });
+        }
+        continue;
+      }
+
+      // Check 2: Query starts with entry word (prefix match)
+      // Only allow if entry is at least 70% of query length
+      if (lenRatio >= 0.7 && cleanQueryStripped.startsWith(entryWordStripped) && entryWordStripped.length >= 2) {
+        if (!results.some(r => r.def.strongsNumber === entry.strongs)) {
+          results.push({ def: entryToDefinition(entry), score: 80 * lenRatio });
+        }
+        continue;
+      }
+
+      // Check 3: Entry starts with query (query is root of entry)
+      // Only allow if query is at least 70% of entry length
+      if (lenRatio >= 0.7 && entryWordStripped.startsWith(cleanQueryStripped) && cleanQueryStripped.length >= 2) {
+        if (!results.some(r => r.def.strongsNumber === entry.strongs)) {
+          results.push({ def: entryToDefinition(entry), score: 75 * lenRatio });
+        }
+        continue;
+      }
+
+      // NOTE: Removed substring matching - too many false positives
+    }
+
+    // Search by Strong's number directly
     if (results.length === 0 && (query.startsWith('H') || query.startsWith('G') || query.startsWith('A'))) {
       const entry = dict[query.toUpperCase()];
-      if (entry) results.push(entryToDefinition(entry));
+      if (entry) results.push({ def: entryToDefinition(entry), score: 100 });
     }
 
-    return results;
+    // Sort by score (highest first) and return
+    results.sort((a, b) => b.score - a.score);
+    return results.map(r => r.def);
   }
 
   async getAllStrongs(): Promise<StrongsDefinition[]> {
