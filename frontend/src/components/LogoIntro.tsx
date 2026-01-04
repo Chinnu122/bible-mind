@@ -1,362 +1,292 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LogoIntroProps {
     onComplete: () => void;
+    skipDelay?: number; // Time before skip button appears (ms)
 }
 
-/**
- * Bible Mind Logo Intro Animation - Nebula Genesis
- * Converted from the user's HTML/CSS/JS design
- */
-export default function LogoIntro({ onComplete }: LogoIntroProps) {
-    const [isVisible, setIsVisible] = useState(true);
-    const stageRef = useRef<HTMLDivElement>(null);
-    const titleRef = useRef<HTMLDivElement>(null);
+export default function LogoIntro({ onComplete, skipDelay = 2000 }: LogoIntroProps) {
+    const [phase, setPhase] = useState<'initial' | 'zoom' | 'glow' | 'title' | 'complete'>('initial');
+    const [showSkip, setShowSkip] = useState(false);
 
-    // Create title characters on mount
     useEffect(() => {
-        if (!titleRef.current) return;
+        // Show skip button after delay
+        const skipTimer = setTimeout(() => setShowSkip(true), skipDelay);
 
-        const text = "BIBLE MIND";
-        titleRef.current.innerHTML = '';
+        // Animation sequence
+        const phaseTimers = [
+            setTimeout(() => setPhase('zoom'), 500),
+            setTimeout(() => setPhase('glow'), 2000),
+            setTimeout(() => setPhase('title'), 3500),
+            setTimeout(() => setPhase('complete'), 5500),
+            setTimeout(() => onComplete(), 6500),
+        ];
 
-        text.split('').forEach((char, i) => {
-            const span = document.createElement('span');
-            span.className = 'char';
-            span.style.animationDelay = `${2.0 + (i * 0.05)}s`; // Faster: start at 2s, 0.05s per char
-            span.innerHTML = char === ' ' ? '&nbsp;' : char;
-            titleRef.current?.appendChild(span);
-        });
-    }, []);
-
-    // Mouse parallax effect
-    useEffect(() => {
-        let request: number | null = null;
-
-        const handleMouseMove = (e: MouseEvent) => {
-            if (request) cancelAnimationFrame(request);
-
-            request = requestAnimationFrame(() => {
-                if (!stageRef.current) return;
-                const rotY = (window.innerWidth / 2 - e.pageX) / 60;
-                const rotX = (window.innerHeight / 2 - e.pageY) / 60;
-                stageRef.current.style.transform = `rotateY(${-rotY}deg) rotateX(${rotX}deg)`;
-            });
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            if (request) cancelAnimationFrame(request);
+            clearTimeout(skipTimer);
+            phaseTimers.forEach(clearTimeout);
         };
-    }, []);
+    }, [onComplete, skipDelay]);
 
-    // Auto-complete after animation - FASTER: 5 seconds total
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsVisible(false);
-            setTimeout(onComplete, 300);
-        }, 5000); // 5 seconds total animation (was 10)
-
-        return () => clearTimeout(timer);
-    }, [onComplete]);
+    const handleSkip = () => {
+        onComplete();
+    };
 
     return (
         <AnimatePresence>
-            {isVisible && (
-                <motion.div
-                    initial={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="fixed inset-0 z-[1000] overflow-hidden"
-                    style={{
-                        perspective: '2000px',
-                        fontFamily: "'Lato', sans-serif"
-                    }}
-                >
-                    {/* CSS Styles */}
-                    <style>{`
-                        :root {
-                            --navy: #1a3c5a;
-                            --gold: #bfa37c;
-                            --gold-bright: #fff9ed;
-                            --void: #000000;
-                            --nebula-1: rgba(26, 60, 90, 0.4);
-                            --nebula-2: rgba(76, 29, 149, 0.25);
-                            --nebula-3: rgba(191, 163, 124, 0.15);
-                            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-                            --transition-epic: cubic-bezier(0.7, 0, 0.1, 1);
-                        }
-
-                        .nebula-cloud {
-                            position: absolute;
-                            width: 140%;
-                            height: 140%;
-                            border-radius: 50%;
-                            filter: blur(80px);
-                            mix-blend-mode: screen;
-                            will-change: transform, opacity;
-                        }
-
-                        .cloud-1 {
-                            background: radial-gradient(circle, var(--nebula-1) 0%, transparent 70%);
-                            top: -20%;
-                            left: -20%;
-                            animation: nebulaMove 30s infinite alternate linear;
-                        }
-
-                        .cloud-2 {
-                            background: radial-gradient(circle, var(--nebula-2) 0%, transparent 70%);
-                            bottom: -20%;
-                            right: -20%;
-                            animation: nebulaMove 25s infinite alternate-reverse linear;
-                        }
-
-                        .cloud-3 {
-                            background: radial-gradient(circle, var(--nebula-3) 0%, transparent 60%);
-                            top: 30%;
-                            left: 30%;
-                            width: 100%;
-                            height: 100%;
-                            animation: nebulaMove 40s infinite alternate ease-in-out;
-                            opacity: 0.5;
-                        }
-
-                        @keyframes nebulaMove {
-                            0% { transform: translate(-10%, -10%) rotate(0deg) scale(1); }
-                            50% { transform: translate(5%, 5%) rotate(10deg) scale(1.1); }
-                            100% { transform: translate(10%, 10%) rotate(-10deg) scale(1); }
-                        }
-
-                        .intro-stage {
-                            position: relative;
-                            z-index: 10;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            transform-style: preserve-3d;
-                            will-change: transform, opacity;
-                            animation: finalWarp 1.5s 3.5s var(--transition-epic) forwards;
-                        }
-
-                        @keyframes finalWarp {
-                            0% { transform: scale(1) translateZ(0); filter: blur(0); }
-                            30% { transform: scale(0.9) translateZ(-100px); }
-                            100% { transform: scale(100) translateZ(3000px); opacity: 0; filter: blur(30px) brightness(5); }
-                        }
-
-                        .badge-main {
-                            width: 100%;
-                            height: 100%;
-                            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #e5e5e5 100%);
-                            border-radius: 50%;
-                            border: 14px solid var(--navy);
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            box-shadow: 0 60px 100px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.1);
-                            opacity: 0;
-                            transform: scale(0.2) rotateX(-60deg);
-                            animation: badgeRise 1.0s var(--transition-smooth) forwards;
-                            will-change: transform, opacity;
-                        }
-
-                        @keyframes badgeRise {
-                            to { opacity: 1; transform: scale(1) rotateX(0deg); }
-                        }
-
-                        .badge-main::after {
-                            content: '';
-                            position: absolute;
-                            inset: 0;
-                            background: linear-gradient(135deg, transparent 45%, rgba(255, 255, 255, 0.7) 50%, transparent 55%);
-                            border-radius: 50%;
-                            background-size: 400% 400%;
-                            animation: surfaceSweep 8s infinite linear;
-                        }
-
-                        @keyframes surfaceSweep {
-                            0% { background-position: -200% -200%; }
-                            100% { background-position: 200% 200%; }
-                        }
-
-                        .svg-part {
-                            fill: none;
-                            stroke: var(--navy);
-                            stroke-width: 3.5;
-                            stroke-dasharray: 1000;
-                            stroke-dashoffset: 1000;
-                            animation: drawSvg 1.2s 0.6s var(--transition-smooth) forwards;
-                        }
-
-                        .svg-cross {
-                            fill: var(--gold);
-                            opacity: 0;
-                            transform-origin: center;
-                            animation: crossLand 0.8s 1.5s var(--transition-epic) forwards;
-                        }
-
-                        @keyframes drawSvg {
-                            to { stroke-dashoffset: 0; }
-                        }
-
-                        @keyframes crossLand {
-                            0% { opacity: 0; transform: scale(4); filter: blur(20px); }
-                            70% { opacity: 1; transform: scale(0.9); }
-                            100% { opacity: 1; transform: scale(1); filter: blur(0); }
-                        }
-
-                        .book-reveal {
-                            position: absolute;
-                            bottom: 55px;
-                            width: 170px;
-                            opacity: 0;
-                            transform: translateY(30px) rotateX(-90deg);
-                            animation: bookOpen 0.8s 1.0s var(--transition-smooth) forwards;
-                        }
-
-                        @keyframes bookOpen {
-                            to { opacity: 1; transform: translateY(0) rotateX(0deg); }
-                        }
-
-                        .char {
-                            font-family: 'Cinzel', serif;
-                            font-size: 64px;
-                            font-weight: 900;
-                            color: #fff;
-                            opacity: 0;
-                            transform: translateY(30px);
-                            filter: blur(10px);
-                            animation: charEnter 0.8s var(--transition-smooth) forwards;
-                            will-change: transform, opacity, filter;
-                            display: inline-block;
-                        }
-
-                        @keyframes charEnter {
-                            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-                        }
-
-                        .light-hit {
-                            position: absolute;
-                            width: 10px;
-                            height: 10px;
-                            background: white;
-                            border-radius: 50%;
-                            box-shadow: 0 0 100px 40px white;
-                            opacity: 0;
-                            pointer-events: none;
-                            z-index: 20;
-                            animation: hitTrigger 0.6s 1.5s var(--transition-epic);
-                        }
-
-                        @keyframes hitTrigger {
-                            0% { transform: scale(0); opacity: 1; }
-                            100% { transform: scale(50); opacity: 0; }
-                        }
-                    `}</style>
-
-                    {/* Nebula Background */}
-                    <div
-                        className="absolute inset-0 z-[1] overflow-hidden bg-black"
-                        style={{
-                            background: 'black'
-                        }}
-                    >
-                        {/* Noise overlay */}
-                        <div
-                            className="absolute"
+            <motion.div
+                className="fixed inset-0 z-[100] bg-[#0a0a0a] flex items-center justify-center overflow-hidden"
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                {/* Nebula Background */}
+                <div className="absolute inset-0 overflow-hidden">
+                    {/* Stars */}
+                    {[...Array(100)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute w-1 h-1 bg-white rounded-full"
                             style={{
-                                inset: '-100%',
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                                opacity: 0.08,
-                                pointerEvents: 'none',
-                                mixBlendMode: 'overlay'
+                                left: `${Math.random() * 100}%`,
+                                top: `${Math.random() * 100}%`,
+                            }}
+                            animate={{
+                                opacity: [0.2, 1, 0.2],
+                                scale: [0.8, 1.2, 0.8],
+                            }}
+                            transition={{
+                                duration: 2 + Math.random() * 2,
+                                repeat: Infinity,
+                                delay: Math.random() * 2,
                             }}
                         />
-                        <div className="nebula-cloud cloud-1" />
-                        <div className="nebula-cloud cloud-2" />
-                        <div className="nebula-cloud cloud-3" />
-                    </div>
+                    ))}
 
-                    {/* Light Hit Effect */}
-                    <div className="light-hit" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                    {/* Nebula Gradients */}
+                    <motion.div
+                        className="absolute inset-0"
+                        animate={{
+                            background: [
+                                'radial-gradient(ellipse at 30% 30%, rgba(139, 69, 19, 0.3) 0%, transparent 50%)',
+                                'radial-gradient(ellipse at 70% 70%, rgba(75, 0, 130, 0.3) 0%, transparent 50%)',
+                                'radial-gradient(ellipse at 30% 30%, rgba(139, 69, 19, 0.3) 0%, transparent 50%)',
+                            ]
+                        }}
+                        transition={{ duration: 8, repeat: Infinity }}
+                    />
+                    <motion.div
+                        className="absolute inset-0"
+                        animate={{
+                            background: [
+                                'radial-gradient(ellipse at 70% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 40%)',
+                                'radial-gradient(ellipse at 30% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%)',
+                                'radial-gradient(ellipse at 70% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 40%)',
+                            ]
+                        }}
+                        transition={{ duration: 10, repeat: Infinity }}
+                    />
+                </div>
 
-                    {/* Main Stage */}
-                    <div
-                        ref={stageRef}
-                        className="intro-stage fixed inset-0 flex items-center justify-center"
-                    >
-                        {/* Artifact Wrap */}
-                        <div
-                            className="relative"
+                {/* Animated Rings */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                    {[1, 2, 3].map((ring) => (
+                        <motion.div
+                            key={ring}
+                            className="absolute border-2 border-gold-500/20 rounded-full"
                             style={{
-                                width: '320px',
-                                height: '320px',
-                                transformStyle: 'preserve-3d'
+                                width: `${ring * 200}px`,
+                                height: `${ring * 200}px`,
                             }}
-                        >
-                            {/* Badge Main */}
-                            <div className="badge-main">
-                                {/* Logo SVG */}
-                                <svg className="w-[200px] h-[200px] z-[5]" viewBox="0 0 100 100">
-                                    <path className="svg-part" d="M35,30 Q20,30 20,50 Q20,70 35,70" />
-                                    <path className="svg-part" d="M65,30 Q80,30 80,50 Q80,70 65,70" />
-                                    <path className="svg-part" style={{ animationDelay: '1.8s' }} d="M32,45 Q26,45 26,55" />
-                                    <path className="svg-part" style={{ animationDelay: '2.0s' }} d="M68,45 Q74,45 74,55" />
+                            animate={{
+                                scale: [1, 1.1, 1],
+                                opacity: [0.2, 0.5, 0.2],
+                                rotate: ring % 2 === 0 ? [0, 360] : [360, 0],
+                            }}
+                            transition={{
+                                duration: 10 + ring * 2,
+                                repeat: Infinity,
+                                ease: 'linear',
+                            }}
+                        />
+                    ))}
+                </div>
 
-                                    <g className="svg-cross">
-                                        <rect x="46" y="22" width="8" height="44" rx="1.5" />
-                                        <rect x="36" y="34" width="28" height="8" rx="1.5" />
-                                    </g>
-                                </svg>
+                {/* Main Logo Container */}
+                <div className="relative z-10 flex flex-col items-center">
 
-                                {/* Book Reveal */}
-                                <svg className="book-reveal" viewBox="0 0 100 40">
-                                    <path fill="#bfa37c" d="M50,35 L10,30 L10,12 L50,18 Z" />
-                                    <path fill="#bfa37c" d="M50,35 L90,30 L90,12 L50,18 Z" opacity="0.8" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        {/* Text Wrap - Directly BELOW the logo badge */}
-                        <div className="mt-8 text-center">
-                            <div ref={titleRef} className="flex gap-[10px] justify-center" />
-                            <p
-                                className="text-[14px] tracking-[16px] text-[#bfa37c] uppercase mt-[15px] opacity-0"
-                                style={{ animation: 'fadeIn 1s 2.8s ease forwards' }}
-                            >
-                                Wisdom & Understanding
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Skip Button */}
-                    <button
-                        onClick={() => {
-                            setIsVisible(false);
-                            setTimeout(onComplete, 300);
-                        }}
-                        className="absolute bottom-8 right-8 z-[100] px-5 py-2.5 rounded-full text-[10px] tracking-[3px] uppercase cursor-pointer transition-all duration-300"
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: 'rgba(255, 255, 255, 0.3)',
-                            backdropFilter: 'blur(5px)'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.color = '#bfa37c';
-                            e.currentTarget.style.borderColor = '#bfa37c';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.3)';
-                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    {/* Cross/Bible Icon with Zoom Effect */}
+                    <motion.div
+                        className="relative"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={
+                            phase === 'initial' ? { scale: 0, opacity: 0 } :
+                                phase === 'zoom' ? { scale: [0, 1.5, 1], opacity: 1 } :
+                                    phase === 'glow' ? { scale: 1, opacity: 1 } :
+                                        { scale: 1, opacity: 1 }
+                        }
+                        transition={{
+                            duration: phase === 'zoom' ? 1.5 : 0.5,
+                            ease: 'easeOut'
                         }}
                     >
-                        Skip Intro
-                    </button>
-                </motion.div>
-            )}
+                        {/* Glow Effect */}
+                        <motion.div
+                            className="absolute inset-0 blur-3xl"
+                            animate={
+                                phase === 'glow' || phase === 'title' || phase === 'complete'
+                                    ? { opacity: [0, 0.8, 0.4], scale: [1, 1.5, 1.2] }
+                                    : { opacity: 0, scale: 1 }
+                            }
+                            transition={{ duration: 1.5 }}
+                        >
+                            <div className="w-40 h-40 bg-gold-500 rounded-full" />
+                        </motion.div>
+
+                        {/* Cross Symbol */}
+                        <motion.div
+                            className="relative w-40 h-40 flex items-center justify-center"
+                            animate={
+                                phase === 'glow' || phase === 'title' || phase === 'complete'
+                                    ? { filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.8))' }
+                                    : { filter: 'drop-shadow(0 0 0px rgba(255, 215, 0, 0))' }
+                            }
+                        >
+                            <svg viewBox="0 0 100 100" className="w-32 h-32">
+                                {/* Vertical beam */}
+                                <motion.rect
+                                    x="42"
+                                    y="10"
+                                    width="16"
+                                    height="80"
+                                    rx="2"
+                                    fill="url(#crossGradient)"
+                                    initial={{ pathLength: 0 }}
+                                    animate={{ pathLength: 1 }}
+                                    transition={{ duration: 1, delay: 0.5 }}
+                                />
+                                {/* Horizontal beam */}
+                                <motion.rect
+                                    x="20"
+                                    y="30"
+                                    width="60"
+                                    height="16"
+                                    rx="2"
+                                    fill="url(#crossGradient)"
+                                    initial={{ pathLength: 0 }}
+                                    animate={{ pathLength: 1 }}
+                                    transition={{ duration: 1, delay: 0.8 }}
+                                />
+                                {/* Gradient definition */}
+                                <defs>
+                                    <linearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stopColor="#FFD700" />
+                                        <stop offset="50%" stopColor="#FFA500" />
+                                        <stop offset="100%" stopColor="#FFD700" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Title Text */}
+                    <motion.div
+                        className="mt-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={
+                            phase === 'title' || phase === 'complete'
+                                ? { opacity: 1, y: 0 }
+                                : { opacity: 0, y: 30 }
+                        }
+                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                    >
+                        <motion.h1
+                            className="text-5xl md:text-7xl font-main bg-gradient-to-r from-gold-300 via-gold-500 to-gold-300 bg-clip-text text-transparent"
+                            animate={{
+                                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                            }}
+                            transition={{ duration: 3, repeat: Infinity }}
+                            style={{ backgroundSize: '200% 200%' }}
+                        >
+                            Bible Mind
+                        </motion.h1>
+                        <motion.p
+                            className="text-lg text-slate-400 mt-2 font-serif italic"
+                            initial={{ opacity: 0 }}
+                            animate={phase === 'complete' ? { opacity: 1 } : { opacity: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            "Thy word is a lamp unto my feet"
+                        </motion.p>
+                    </motion.div>
+
+                    {/* Loading indicator */}
+                    <motion.div
+                        className="mt-8"
+                        initial={{ opacity: 0 }}
+                        animate={phase === 'complete' ? { opacity: 1 } : { opacity: 0 }}
+                        transition={{ delay: 0.5 }}
+                    >
+                        <div className="flex items-center gap-2">
+                            {[0, 1, 2].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    className="w-2 h-2 bg-gold-500 rounded-full"
+                                    animate={{
+                                        scale: [1, 1.5, 1],
+                                        opacity: [0.5, 1, 0.5],
+                                    }}
+                                    transition={{
+                                        duration: 0.8,
+                                        repeat: Infinity,
+                                        delay: i * 0.2,
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Skip Button */}
+                <AnimatePresence>
+                    {showSkip && (
+                        <motion.button
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute bottom-8 right-8 px-4 py-2 text-sm text-slate-500 hover:text-white transition-colors border border-slate-700 hover:border-gold-500/50 rounded-full"
+                            onClick={handleSkip}
+                        >
+                            Skip →
+                        </motion.button>
+                    )}
+                </AnimatePresence>
+
+                {/* Particle effects */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    {phase !== 'initial' && [...Array(20)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute w-1 h-1 bg-gold-400 rounded-full"
+                            style={{
+                                left: '50%',
+                                top: '50%',
+                            }}
+                            animate={{
+                                x: [0, (Math.random() - 0.5) * 400],
+                                y: [0, (Math.random() - 0.5) * 400],
+                                opacity: [1, 0],
+                                scale: [1, 0],
+                            }}
+                            transition={{
+                                duration: 2,
+                                delay: 1.5 + i * 0.1,
+                                ease: 'easeOut',
+                            }}
+                        />
+                    ))}
+                </div>
+            </motion.div>
         </AnimatePresence>
     );
 }

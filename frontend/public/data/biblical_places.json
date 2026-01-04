@@ -1,0 +1,461 @@
+[
+    {
+        "name": "Jerusalem",
+        "hebrew": "יְרוּשָׁלַ\u200dיִם",
+        "meaning": "Foundation of peace, city of peace",
+        "telugu": "యెరూషలేము - శాంతి పట్టణము",
+        "origin": "Hebrew",
+        "strongsRef": "H3389",
+        "references": [
+            "Psalm 122:6",
+            "Matthew 23:37",
+            "Revelation 21:2"
+        ],
+        "category": "Holy City"
+    },
+    {
+        "name": "Bethlehem",
+        "hebrew": "בֵּית לֶחֶם",
+        "meaning": "House of bread",
+        "telugu": "బేత్లెహేము - రొట్టెల ఇల్లు",
+        "origin": "Hebrew",
+        "strongsRef": "H1035",
+        "references": [
+            "Micah 5:2",
+            "Matthew 2:1",
+            "Luke 2:4"
+        ],
+        "category": "Birthplace of Jesus"
+    },
+    {
+        "name": "Nazareth",
+        "hebrew": "נָצְרַת",
+        "greek": "Ναζαρέτ",
+        "meaning": "Branch, watchtower",
+        "telugu": "నజరేతు - కొమ్మ, కావలి బురుజు",
+        "origin": "Hebrew",
+        "strongsRef": "G3478",
+        "references": [
+            "Matthew 2:23",
+            "Luke 4:16"
+        ],
+        "category": "Hometown of Jesus"
+    },
+    {
+        "name": "Galilee",
+        "hebrew": "גָּלִיל",
+        "meaning": "Circle, region",
+        "telugu": "గలిలయ - వలయము, ప్రాంతము",
+        "origin": "Hebrew",
+        "strongsRef": "H1551",
+        "references": [
+            "Matthew 4:15",
+            "Mark 1:14"
+        ],
+        "category": "Region"
+    },
+    {
+        "name": "Jordan",
+        "hebrew": "יַרְדֵּן",
+        "meaning": "Descender, flowing down",
+        "telugu": "యొర్దాను - దిగువకు ప్రవహించునది",
+        "origin": "Hebrew",
+        "strongsRef": "H3383",
+        "references": [
+            "Joshua 3:17",
+            "Matthew 3:13"
+        ],
+        "category": "River"
+    },
+    {
+        "name": "Egypt",
+        "hebrew": "מִצְרַיִם",
+        "meaning": "Land of distress, narrow place",
+        "telugu": "ఐగుప్తు - ఇరుకైన స్థలము, బాధల దేశము",
+        "origin": "Hebrew",
+        "strongsRef": "H4714",
+        "references": [
+            "Genesis 12:10",
+            "Exodus 12:40",
+            "Matthew 2:13"
+        ],
+        "category": "Nation"
+    },
+    {
+        "name": "Babylon",
+        "hebrew": "בָּבֶל",
+        "meaning": "Confusion, gate of god",
+        "telugu": "బబులోను - గందరగోళము",
+        "origin": "Hebrew",
+        "strongsRef": "H894",
+        "references": [
+            "Genesis 11:9",
+            "Daniel 1:1",
+            "Revelation 18:2"
+        ],
+        "category": "Ancient City"
+    },
+    {
+        "name": "Sinai",
+        "hebrew": "סִינַי",
+        "meaning": "Bush, thorny",
+        "telugu": "సీనాయి - ముళ్ళపొద",
+        "origin": "Hebrew",
+        "strongsRef": "H5514",
+        "references": [
+            "Exodus 19:11",
+            "Galatians 4:24"
+        ],
+        "category": "Mountain"
+    },
+    {
+        "name": "Zion",
+        "hebrew": "צִיּוֹן",
+        "meaning": "Fortress, monument",
+        "telugu": "సీయోను - కోట, స్మారకము",
+        "origin": "Hebrew",
+        "strongsRef": "H6726",
+        "references": [
+            "Psalm 48:2",
+            "Isaiah 2:3",
+            "Hebrews 12:22"
+        ],
+        "category": "Holy Mountain"
+    },
+    {
+        "name": "Bethany",
+        "hebrew": "בֵּית עַנְיָה",
+        "meaning": "House of affliction, house of dates",
+        "telugu": "బేతనియ - బాధల ఇల్లు",
+        "origin": "Hebrew",
+        "strongsRef": "G963",
+        "references": [
+            "John 11:1",
+            "Matthew 21:17"
+        ],
+        "category": "Village"
+    },
+    {
+        "name": "Capernaum",
+        "greek": "Καφαρναούμ",
+        "meaning": "Village of comfort",
+        "telugu": "కపెర్నయూము - ఓదార్పు గ్రామము",
+        "origin": "Hebrew",
+        "strongsRef": "G2584",
+        "references": [
+            "Matthew 4:13",
+            "Mark 2:1"
+        ],
+        "category": "Town"
+    },
+    {
+        "name": "Hebron",
+        "hebrew": "חֶבְרוֹן",
+        "meaning": "Alliance, fellowship",
+        "telugu": "హెబ్రోను - సహవాసము",
+        "origin": "Hebrew",
+        "strongsRef": "H2275",
+        "references": [
+            "Genesis 13:18",
+            "2 Samuel 2:1"
+        ],
+        "category": "Ancient City"
+    },
+    {
+        "name": "Jericho",
+        "hebrew": "יְרִיחוֹ",
+        "meaning": "Fragrant, moon city",
+        "telugu": "యెరికో - సువాసన నగరము",
+        "origin": "Hebrew",
+        "strongsRef": "H3405",
+        "references": [
+            "Joshua 6:1",
+            "Luke 19:1"
+        ],
+        "category": "Ancient City"
+    },
+    {
+        "name": "Samaria",
+        "hebrew": "שֹׁמְרוֹן",
+        "meaning": "Watch mountain, guard",
+        "telugu": "సమరయ - కావలి పర్వతము",
+        "origin": "Hebrew",
+        "strongsRef": "H8111",
+        "references": [
+            "1 Kings 16:24",
+            "John 4:4"
+        ],
+        "category": "Region"
+    },
+    {
+        "name": "Damascus",
+        "hebrew": "דַּמֶּשֶׂק",
+        "meaning": "Silent weaver",
+        "telugu": "దమస్కు - మౌన నేతగాడు",
+        "origin": "Hebrew",
+        "strongsRef": "H1834",
+        "references": [
+            "Genesis 15:2",
+            "Acts 9:2"
+        ],
+        "category": "City"
+    },
+    {
+        "name": "Gethsemane",
+        "hebrew": "גַּת שֶׁמֶן",
+        "meaning": "Oil press",
+        "telugu": "గెత్సెమనే - ఒలీవ నూనె ఆటగాడు",
+        "origin": "Hebrew",
+        "strongsRef": "G1068",
+        "references": [
+            "Matthew 26:36",
+            "Mark 14:32"
+        ],
+        "category": "Garden"
+    },
+    {
+        "name": "Golgotha",
+        "hebrew": "גֻּלְגֹּלֶת",
+        "meaning": "Place of the skull",
+        "telugu": "గొల్గొతా - కపాల స్థలము",
+        "origin": "Aramaic",
+        "strongsRef": "G1115",
+        "references": [
+            "Matthew 27:33",
+            "John 19:17"
+        ],
+        "category": "Crucifixion Site"
+    },
+    {
+        "name": "Mount Olivet",
+        "hebrew": "הַר הַזֵּיתִים",
+        "meaning": "Mount of Olives",
+        "telugu": "ఒలీవల కొండ - ఒలీవ వృక్షాల పర్వతము",
+        "origin": "Hebrew",
+        "strongsRef": "H2132",
+        "references": [
+            "Zechariah 14:4",
+            "Acts 1:12"
+        ],
+        "category": "Mountain"
+    },
+    {
+        "name": "Antioch",
+        "greek": "Ἀντιόχεια",
+        "meaning": "Driven against",
+        "telugu": "అంతియోకయ - వ్యతిరేకించబడిన",
+        "origin": "Greek",
+        "strongsRef": "G490",
+        "references": [
+            "Acts 11:26",
+            "Galatians 2:11"
+        ],
+        "category": "City"
+    },
+    {
+        "name": "Ephesus",
+        "greek": "Ἔφεσος",
+        "meaning": "Desirable",
+        "telugu": "ఎఫెసు - ఆకాంక్షణీయమైన",
+        "origin": "Greek",
+        "strongsRef": "G2181",
+        "references": [
+            "Acts 19:1",
+            "Revelation 2:1"
+        ],
+        "category": "City"
+    },
+    {
+        "name": "Corinth",
+        "greek": "Κόρινθος",
+        "meaning": "Ornament",
+        "telugu": "కొరింథు - అలంకారము",
+        "origin": "Greek",
+        "strongsRef": "G2882",
+        "references": [
+            "Acts 18:1",
+            "1 Corinthians 1:2"
+        ],
+        "category": "City"
+    },
+    {
+        "name": "Rome",
+        "greek": "Ῥώμη",
+        "meaning": "Strength",
+        "telugu": "రోమా - బలము",
+        "origin": "Latin",
+        "strongsRef": "G4516",
+        "references": [
+            "Acts 28:16",
+            "Romans 1:7"
+        ],
+        "category": "City"
+    },
+    {
+        "name": "Patmos",
+        "greek": "Πάτμος",
+        "meaning": "My killing",
+        "telugu": "పత్మాసు - నా మరణము",
+        "origin": "Greek",
+        "strongsRef": "G3963",
+        "references": [
+            "Revelation 1:9"
+        ],
+        "category": "Island"
+    },
+    {
+        "name": "Sea of Galilee",
+        "hebrew": "יָם כִּנֶּרֶת",
+        "meaning": "Harp-shaped lake",
+        "telugu": "గలిలయ సముద్రము - వీణ ఆకారపు సరస్సు",
+        "origin": "Hebrew",
+        "strongsRef": "H3672",
+        "references": [
+            "Matthew 4:18",
+            "John 6:1"
+        ],
+        "category": "Lake"
+    },
+    {
+        "name": "Dead Sea",
+        "hebrew": "יָם הַמֶּלַח",
+        "meaning": "Salt Sea",
+        "telugu": "మృత సముద్రము - ఉప్పు సముద్రము",
+        "origin": "Hebrew",
+        "strongsRef": "H3220",
+        "references": [
+            "Genesis 14:3",
+            "Ezekiel 47:8"
+        ],
+        "category": "Lake"
+    },
+    {
+        "name": "Eden",
+        "hebrew": "עֵדֶן",
+        "meaning": "Delight, pleasure",
+        "telugu": "ఏదెను - ఆనందము, సంతోషము",
+        "origin": "Hebrew",
+        "strongsRef": "H5731",
+        "references": [
+            "Genesis 2:8",
+            "Ezekiel 28:13"
+        ],
+        "category": "Paradise"
+    },
+    {
+        "name": "Canaan",
+        "hebrew": "כְּנַעַן",
+        "meaning": "Lowland, trader",
+        "telugu": "కనాను - లోతైన భూమి",
+        "origin": "Hebrew",
+        "strongsRef": "H3667",
+        "references": [
+            "Genesis 12:5",
+            "Exodus 3:8"
+        ],
+        "category": "Promised Land"
+    },
+    {
+        "name": "Bethel",
+        "hebrew": "בֵּית־אֵל",
+        "meaning": "House of God",
+        "telugu": "బేతేలు - దేవుని మందిరము",
+        "origin": "Hebrew",
+        "strongsRef": "H1008",
+        "references": [
+            "Genesis 28:19",
+            "1 Kings 12:29"
+        ],
+        "category": "Holy Site"
+    },
+    {
+        "name": "Shiloh",
+        "hebrew": "שִׁילוֹ",
+        "meaning": "Place of rest, tranquil",
+        "telugu": "షిలోహు - విశ్రాంతి స్థలము",
+        "origin": "Hebrew",
+        "strongsRef": "H7886",
+        "references": [
+            "Joshua 18:1",
+            "1 Samuel 1:3"
+        ],
+        "category": "Tabernacle Site"
+    },
+    {
+        "name": "Nineveh",
+        "hebrew": "נִינְוֵה",
+        "meaning": "Offspring, abode",
+        "telugu": "నీనెవె - సంతానము, నివాసము",
+        "origin": "Assyrian",
+        "strongsRef": "H5210",
+        "references": [
+            "Jonah 1:2",
+            "Nahum 1:1"
+        ],
+        "category": "City"
+    },
+    {
+        "name": "Sodom",
+        "hebrew": "סְדֹם",
+        "meaning": "Burning, scorched",
+        "telugu": "సొదొమ - దహించబడిన",
+        "origin": "Hebrew",
+        "strongsRef": "H5467",
+        "references": [
+            "Genesis 19:24",
+            "Jude 1:7"
+        ],
+        "category": "Destroyed City"
+    },
+    {
+        "name": "Gomorrah",
+        "hebrew": "עֲמֹרָה",
+        "meaning": "Submersion",
+        "telugu": "గొమొర్రా - మునుగు",
+        "origin": "Hebrew",
+        "strongsRef": "H6017",
+        "references": [
+            "Genesis 19:24",
+            "2 Peter 2:6"
+        ],
+        "category": "Destroyed City"
+    },
+    {
+        "name": "Mount Carmel",
+        "hebrew": "הַר כַּרְמֶל",
+        "meaning": "Garden land, fruitful field",
+        "telugu": "కర్మెలు పర్వతము - ఫలవంతమైన భూమి",
+        "origin": "Hebrew",
+        "strongsRef": "H3760",
+        "references": [
+            "1 Kings 18:19",
+            "Isaiah 35:2"
+        ],
+        "category": "Mountain"
+    },
+    {
+        "name": "Ararat",
+        "hebrew": "אֲרָרָט",
+        "meaning": "Curse reversed, sacred land",
+        "telugu": "అరారాతు - శాపము తొలగింపబడిన స్థలము",
+        "origin": "Armenian",
+        "strongsRef": "H780",
+        "references": [
+            "Genesis 8:4"
+        ],
+        "category": "Mountain"
+    },
+    {
+        "name": "Tyre",
+        "hebrew": "צוֹר",
+        "meaning": "Rock",
+        "telugu": "తూరు - రాయి",
+        "origin": "Hebrew",
+        "strongsRef": "H6865",
+        "references": [
+            "Ezekiel 28:2",
+            "Matthew 15:21"
+        ],
+        "category": "City"
+    }
+]

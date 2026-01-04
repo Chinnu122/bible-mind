@@ -27,6 +27,7 @@ import BooksPage from './components/BooksPage';
 import Dashboard from './components/Dashboard';
 import PricingPage from './components/PricingPage';
 import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
+import LogoIntro from './components/LogoIntro';
 import NebulaBackground from './components/NebulaBackground';
 import MetallicWavesWallpaper from './components/MetallicWavesWallpaper';
 import LivingPrismIntro from './components/LivingPrismIntro';
@@ -52,7 +53,7 @@ interface UserData {
 
 function AppLayout() {
   const { theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode, language } = useSettings();
-  // Logo intro removed - app loads directly
+  const [showIntro, setShowIntro] = useState(true); // Logo intro on app load
   const [view, setView] = useState<ViewState>('landing');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -159,6 +160,11 @@ function AppLayout() {
   /* Main App Layout */
   return (
     <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
+
+      {/* Logo Intro Animation */}
+      <AnimatePresence>
+        {showIntro && <LogoIntro onComplete={() => setShowIntro(false)} />}
+      </AnimatePresence>
 
       {renderBackground()}
 
