@@ -242,7 +242,7 @@
 
 .app-content {
     display: flex;
-    flex-col;
+    flex-direction: column;
     gap: 1rem;
 }
 
