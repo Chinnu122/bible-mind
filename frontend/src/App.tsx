@@ -43,7 +43,7 @@ import LanguageSelector from './components/LanguageSelector';
 import { BibleProvider } from './contexts/BibleContext';
 import AdvancedSearchPage from './components/AdvancedSearchPage';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search' | 'about' | 'privacy' | 'terms' | 'sources' | 'contact';
 
 interface UserData {
   id: string;
@@ -51,368 +51,121 @@ interface UserData {
   name: string;
 }
 
+// ... imports
+import TopNavbar from './components/TopNavbar';
+import Footer from './components/Footer';
+import AboutPage from './components/AboutPage';
+import { PrivacyPolicy, TermsOfUse, BibleSources, ContactPage } from './components/TrustPages';
+
+// ... existing imports ...
+
 function AppLayout() {
   const { theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode, language } = useSettings();
-  const [showIntro, setShowIntro] = useState(true); // Logo intro on app load
+  const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewState>('landing');
-  const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
-  const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
-  const [showGlossary, setShowGlossary] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Restore user from localStorage on app load
+  // Restore user
   useEffect(() => {
     const savedUser = localStorage.getItem('bible-mind-user');
-    if (savedUser) {
-      try {
-        setLoggedInUser(JSON.parse(savedUser));
-      } catch (e) {
-        console.error('Failed to parse saved user', e);
-      }
-    }
+    if (savedUser) try { setLoggedInUser(JSON.parse(savedUser)); } catch (e) { console.error(e); }
   }, []);
 
-  const navigateTo = (target: ViewState) => {
-    setView(target);
-    setMobileMenuOpen(false);
+  const navigateTo = (target: string) => {
+    setView(target as ViewState);
+    window.scrollTo(0, 0); // Scroll to top on navigation
   };
 
-  // Background Selection
-  const renderBackground = () => {
-    // Holiday mode disabled for performance
-    // if (holidayMode !== 'none') {
-    //   return <HolidayBackground mode={holidayMode} />;
-    // }
-
-    if (customBackground) {
-      return (
-        <div
-          className="fixed inset-0 z-0 bg-cover bg-center transition-all duration-1000"
-          style={{ backgroundImage: `url('${customBackground}')` }}
-        >
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-        </div>
-      );
-    }
-
-    // Use MetallicWavesWallpaper for background
-    return <MetallicWavesWallpaper />;
+  const handleLogout = () => {
+    localStorage.removeItem('bible-mind-user');
+    setLoggedInUser(null);
   };
 
-  // Navigation Translations
-  const navTranslations = {
-    english: {
-      landing: 'Home',
-      reader: 'Read',
-      notes: 'Notes',
-      videos: 'Visuals',
-      books: 'Books',
-      daily: 'Daily',
-      quiz: 'Quiz',
-      reviews: 'Community',
-      pricing: 'Pricing',
-      download: 'Download'
-    },
-    telugu: {
-      landing: 'ప్రారంభం', // Home
-      reader: 'చదవండి', // Read
-      notes: 'నోట్స్', // Notes
-      videos: 'దృశ్యాలు', // Visuals
-      books: 'పుస్తకాలు', // Books
-      daily: 'దినచర్య', // Daily
-      quiz: 'ప్రశ్నలు', // Quiz
-      reviews: 'సమాజం', // Community
-      pricing: 'ధరలు', // Pricing
-      download: 'డౌన్‌లోడ్' // Download
-    },
-    hindi: {
-      landing: 'होम',
-      reader: 'पढ़ें',
-      notes: 'नोट्स',
-      videos: 'दृश्य',
-      books: 'किताबें',
-      daily: 'दैनिक',
-      quiz: 'प्रश्नोत्तरी',
-      reviews: 'समुदाय',
-      pricing: 'मूल्य',
-      download: 'डाउनलोड'
+  /* Render Content based on View */
+  const renderContent = () => {
+    switch (view) {
+      case 'landing': return <Hero onStart={() => navigateTo('reader')} onSearch={() => setSearchOpen(true)} onStudy={() => navigateTo('study')} />;
+      case 'reader': return <SimpleBibleReader />;
+      case 'study': return <Dashboard onNavigate={navigateTo as any} onBack={() => navigateTo('landing')} />; // 'study' maps to dashboard for now
+      case 'about': return <AboutPage />;
+      case 'privacy': return <PrivacyPolicy />;
+      case 'terms': return <TermsOfUse />;
+      case 'sources': return <BibleSources />;
+      case 'contact': return <ContactPage />;
+
+      // Existing Component Mappings
+      case 'dashboard': return <Dashboard onNavigate={navigateTo as any} onBack={() => navigateTo('landing')} />;
+      case 'search': return <AdvancedSearchPage onNavigate={() => navigateTo('reader')} onBack={() => navigateTo('landing')} />;
+      case 'daily': return <DailyVersePage onBack={() => navigateTo('landing')} onViewCharacter={() => navigateTo('character')} onViewQuiz={() => navigateTo('quiz')} onViewCommunity={() => navigateTo('reviews')} />;
+      case 'telugu': return <TeluguPage onBack={() => navigateTo('reader')} />;
+      case 'auth': return <AuthPage onBack={() => navigateTo('landing')} onAuthSuccess={(user) => { setLoggedInUser(user); navigateTo('landing'); }} />;
+      case 'notes': return <NotesPage onBack={() => navigateTo('landing')} onNavigateToAuth={() => navigateTo('auth')} />;
+      case 'character': return <CharacterOfDay onBack={() => navigateTo('daily')} />;
+      case 'reviews': return <ReviewBoard onBack={() => navigateTo('landing')} />;
+      case 'quiz': return <DailyQuiz onBack={() => navigateTo('landing')} />;
+      case 'gallery': return <VerseGallery onBack={() => navigateTo('landing')} />;
+      case 'videos': return <VisualsGallery onBack={() => navigateTo('dashboard')} />;
+      case 'books': return <BooksPage onBack={() => navigateTo('dashboard')} />;
+      case 'pricing': return <PricingPage onBack={() => navigateTo('dashboard')} />;
+      case 'download': return <DownloadPage onBack={() => navigateTo('landing')} />;
+
+      default: return <Hero onStart={() => navigateTo('reader')} onSearch={() => setSearchOpen(true)} onStudy={() => navigateTo('study')} />;
     }
   };
 
-  const t = navTranslations[language as keyof typeof navTranslations] || navTranslations.english;
-
-  // Navigation Items Configuration
-  const navItems = [
-    { id: 'landing', icon: Home, label: t.landing },
-    { id: 'reader', icon: BookOpen, label: t.reader },
-    { id: 'notes', icon: StickyNote, label: t.notes },
-    { id: 'videos', icon: ImageIcon, label: t.videos },
-    { id: 'books', icon: Library, label: t.books },
-    { id: 'daily', icon: Calendar, label: t.daily },
-    { id: 'quiz', icon: CheckCircle, label: t.quiz },
-    { id: 'reviews', icon: MessageSquare, label: t.reviews },
-    { id: 'pricing', icon: Crown, label: t.pricing },
-    { id: 'download', icon: Download, label: t.download },
-  ];
-
-  /* Main App Layout */
   return (
-    <div className="min-h-screen relative overflow-hidden text-crema-50 font-sans selection:bg-gold-500/30">
+    <div className="min-h-screen relative overflow-hidden bg-ivory-100 text-charcoal-900 font-sans selection:bg-gold-500/30">
 
-      {/* Logo Intro Animation */}
-      <AnimatePresence>
-        {showIntro && <LogoIntro onComplete={() => setShowIntro(false)} />}
-      </AnimatePresence>
-
-      {renderBackground()}
+      {/* Background - Clean Ivory Base */}
+      <div className="fixed inset-0 z-0 bg-ivory-100 pointer-events-none" />
 
       <ClickSound />
-      <AtmospherePlayer />
-      {/* Holiday manager disabled for performance */}
-      {/* <HolidayManager onModeChange={setHolidayMode} /> */}
       <UpdateChecker />
       <WordSearch
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
         onOpen={() => setSearchOpen(true)}
-        onAdvancedSearch={() => {
-          setSearchOpen(false);
-          navigateTo('search');
-        }}
-      />
-      <HebrewGreekGlossary
-        isOpen={showGlossary}
-        onClose={() => setShowGlossary(false)}
+        onAdvancedSearch={() => { setSearchOpen(false); navigateTo('search'); }}
       />
 
-      {/* Scroll Progress Indicator */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gold-500 z-[100] origin-left"
-        style={{ scaleX: useScroll().scrollYProgress }}
-      />
-
-      {/* App Logo */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed top-6 left-6 z-50 cursor-pointer"
-        onClick={() => navigateTo('landing')}
-      >
-        <Logo size="sm" />
-      </motion.div>
-
-      {/* Language Selector (Top Right) */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed top-6 right-6 z-50"
-      >
-        <LanguageSelector />
-      </motion.div>
+      {/* Top Navigation */}
+      {!zenMode && (
+        <TopNavbar
+          currentView={view}
+          onNavigate={navigateTo}
+          user={loggedInUser}
+          onLogout={handleLogout}
+          onSignIn={() => navigateTo('auth')}
+        />
+      )}
 
       {/* Settings Modal */}
       <AnimatePresence>
         {isSettingsOpen && <SettingsModal />}
       </AnimatePresence>
 
-      {/* Mobile Drawer */}
-      <MobileDrawer
-        isOpen={mobileDrawerOpen}
-        onClose={() => setMobileDrawerOpen(false)}
-        navItems={navItems}
-        currentView={view}
-        onNavigate={(id) => navigateTo(id as ViewState)}
-        loggedInUser={loggedInUser}
-        onLogout={() => { localStorage.removeItem('bible-mind-user'); setLoggedInUser(null); }}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      />
-
-      <LayoutGroup>
-        {/* Main Content Container - Glass Effect */}
-        <motion.main
-          layout
-          className={`relative min-h-screen transition-all duration-700 ease-out 
-                  ${isSettingsOpen ? 'scale-[0.92] opacity-50 blur-sm rounded-[2rem] overflow-hidden' : 'scale-100'} 
-                  pt-20 pb-32 px-4 md:px-8 max-w-[1600px] mx-auto`}
-        >
-          <AnimatePresence mode="wait">
-            {view === 'landing' && (
-              <Hero
-                key="landing"
-                onStart={() => setView('reader')}
-                onSearch={() => setSearchOpen(true)}
-                onStudy={() => setView('study')}
-              />
-            )}
-            {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
-            {view === 'reader' && <SimpleBibleReader key="reader" />}
-            {view === 'search' && <AdvancedSearchPage key="search" onNavigate={() => setView('reader')} onBack={() => setView('landing')} />}
-            {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
-            {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
-            {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
-            {view === 'notes' && <NotesPage key="notes" onBack={() => setView('landing')} onNavigateToAuth={() => setView('auth')} />}
-            {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('landing')} />}
-            {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
-            {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('landing')} />}
-            {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('landing')} />}
-            {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('landing')} />}
-            {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}
-            {view === 'books' && <BooksPage key="books" onBack={() => setView('dashboard')} />}
-            {view === 'pricing' && <PricingPage key="pricing" onBack={() => setView('dashboard')} />}
-            {view === 'download' && <DownloadPage key="download" onBack={() => setView('landing')} />}
-          </AnimatePresence>
-        </motion.main>
-
-        {/* Floating Dock Navigation (Desktop) - Hidden in Zen Mode */}
-        {!zenMode && (
-          <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-2 p-2 
-                  bg-[#050505]/80 backdrop-blur-xl border border-gold-500/10 rounded-full shadow-2xl shadow-black/40">
-            {navItems.map((item) => {
-              const isActive = view === item.id;
-              return (
-                <MagneticButton
-                  key={item.id}
-                  onClick={() => navigateTo(item.id as ViewState)}
-                  className={`relative group p-3 rounded-full transition-all duration-300 ${isActive ? 'bg-gold-500/20 text-gold-400' : 'text-slate-400 hover:text-crema-50 hover:bg-white/5'}`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-gold-500/10 rounded-full border border-gold-500/20"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                  <item.icon size={20} className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-gold-400' : 'text-slate-400 group-hover:text-crema-100'}`} />
-
-                  {/* Tooltip */}
-                  <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#1a1a1a] text-xs text-gold-100
-                        rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-gold-500/10 whitespace-nowrap">
-                    {item.label}
-                  </span>
-                </MagneticButton>
-              );
-            })}
-
-            <div className="w-px h-8 bg-white/10 mx-2" />
-
-            {loggedInUser ? (
-              <MagneticButton
-                onClick={() => {
-                  localStorage.removeItem('bible-mind-user');
-                  setLoggedInUser(null);
-                }}
-                className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-white/5 text-gold-400 hover:text-red-400 transition-colors relative group"
-              >
-                <User size={20} />
-                <span className="text-sm font-medium max-w-[100px] truncate hidden md:block">{loggedInUser.name}</span>
-                <LogOut size={16} className="opacity-50 group-hover:opacity-100" />
-              </MagneticButton>
-            ) : (
-              <MagneticButton
-                onClick={() => navigateTo('auth')}
-                className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
-              >
-                <User size={24} />
-                <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#1a1a1a] text-xs text-gold-100
-                        rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-gold-500/10 whitespace-nowrap">
-                  Sign In
-                </span>
-              </MagneticButton>
-            )}
-
-            <MagneticButton
-              onClick={() => setIsSettingsOpen(true)}
-              className="p-3 rounded-full hover:bg-white/5 text-slate-400 hover:text-gold-400 transition-colors relative group"
-            >
-              <Settings size={24} />
-              <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#1a1a1a] text-xs text-gold-100
-                    rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-gold-500/10 whitespace-nowrap">
-                Settings
-              </span>
-            </MagneticButton>
-          </nav>
-        )}
-
-        {/* Exit Zen Mode Button */}
-        {zenMode && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            onClick={() => setZenMode(false)}
-            className="fixed bottom-8 right-8 z-[100] px-4 py-2 bg-black/50 hover:bg-black/80 backdrop-blur-md rounded-full border border-white/10 text-white/50 hover:text-white transition-all flex items-center gap-2"
+      {/* Main Content */}
+      <main className={`relative transition-all duration-500 min-h-screen ${!zenMode ? 'pt-20' : ''}`}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={view}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <LogOut size={16} />
-            <span className="text-xs uppercase tracking-widest font-sans">Exit Zen</span>
-          </motion.button>
-        )}
+            {renderContent()}
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
-        {/* Mobile Bottom Bar - Hidden in Zen Mode */}
-        {!zenMode && (
-          <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-[#0a0a0a] border-t border-gold-500/10 pb-6">
-            <div className="flex justify-around items-center p-3">
-              {/* Hamburger Menu Button */}
-              <button
-                onClick={() => setMobileDrawerOpen(true)}
-                className="flex flex-col items-center gap-1 text-slate-500 hover:text-gold-400"
-              >
-                <div className="space-y-1">
-                  <div className="w-5 h-0.5 bg-current rounded"></div>
-                  <div className="w-5 h-0.5 bg-current rounded"></div>
-                  <div className="w-5 h-0.5 bg-current rounded"></div>
-                </div>
-                <span className="text-[9px] uppercase tracking-wider">Menu</span>
-              </button>
+      {/* Footer - Only show on main content pages, hide in reader/zen modes if preferred, but usually good to have */}
+      {!zenMode && view !== 'reader' && (
+        <Footer onNavigate={navigateTo} />
+      )}
 
-              {/* Main Nav Items (4 items) */}
-              {navItems.slice(0, 4).map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => navigateTo(item.id as ViewState)}
-                  className={`flex flex-col items-center gap-1 ${view === item.id ? 'text-gold-400' : 'text-slate-500'}`}
-                >
-                  <item.icon size={20} />
-                  <span className="text-[9px] uppercase tracking-wider">{item.label}</span>
-                </button>
-              ))}
-
-              {/* Profile Button */}
-              {loggedInUser ? (
-                <button
-                  onClick={() => {
-                    localStorage.removeItem('bible-mind-user');
-                    setLoggedInUser(null);
-                  }}
-                  className="flex flex-col items-center gap-1 text-gold-400"
-                >
-                  <LogOut size={20} />
-                  <span className="text-[9px] uppercase tracking-wider">Logout</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => navigateTo('auth')}
-                  className={`flex flex-col items-center gap-1 ${view === 'auth' ? 'text-gold-400' : 'text-slate-500'}`}
-                >
-                  <User size={20} />
-                  <span className="text-[9px] uppercase tracking-wider">Sign In</span>
-                </button>
-              )}
-
-              {/* Settings Button */}
-              <button
-                onClick={() => setIsSettingsOpen(true)}
-                className="flex flex-col items-center gap-1 text-slate-500"
-              >
-                <Settings size={20} />
-                <span className="text-[9px] uppercase tracking-wider">Settings</span>
-              </button>
-            </div>
-          </nav>
-        )}
-
-      </LayoutGroup>
     </div>
   );
 }

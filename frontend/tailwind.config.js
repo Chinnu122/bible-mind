@@ -21,33 +21,60 @@ export default {
           900: '#5A371E',
           950: '#38220F',
         },
-        // Deep Luxury Black/Dark Palette
+        // Frontend Overhaul New Colors
+        ivory: {
+          50: '#FFFFF5',
+          100: '#FFFFF0', // Base Background
+          200: '#FAF9E6',
+          300: '#EBE9D0',
+          400: '#DBD8B6',
+          500: '#CCC9A0',
+        },
+        navy: {
+          50: '#F0F4F8',
+          100: '#D9E2EC',
+          200: '#BCCCDC',
+          300: '#9FB3C8',
+          400: '#829AB1',
+          500: '#627D98',
+          600: '#486581',
+          700: '#334E68',
+          800: '#243B53', // Secondary Calm Navy
+          900: '#102A43',
+        },
+        charcoal: {
+          50: '#F5F7FA',
+          100: '#E4E7EB',
+          200: '#CBD2D9',
+          300: '#9AA5B1',
+          400: '#7B8794',
+          500: '#616E7C',
+          600: '#52606D',
+          700: '#3E4C59',
+          800: '#323F4B',
+          900: '#1F2933', // Deep Charcoal Text
+          950: '#0F151A',
+        },
+        // Legacy Support
         luxury: {
-          900: '#050505', // Ultra Dark
-          800: '#0A0A0C', // Rich Black
-          700: '#121214', // Soft Black
-          card: '#0f0f11aa', // Glass Card
+          900: '#1F2933', // Mapped to Charcoal for light mode compatibility
+          800: '#323F4B',
+          700: '#3E4C59',
+          card: 'rgba(255, 255, 240, 0.8)', // Glass Card Light
         },
-        // Crema / Off-White for text
         crema: {
-          50: '#F9F9F7',
-          100: '#F5F5F0',
-          200: '#EBEBE0',
-          300: '#DEDECF',
-          400: '#C7C7B0',
-          500: '#AFA990',
-        },
-        // Accents
-        royal: {
-          400: '#7C3AED', // Vivid Purple
-          500: '#6D28D9', // Deep Purple
-          900: '#4C1D95', // Royal Purple
+          50: '#1F2933', // Inverted for light mode (Text color usually)
+          100: '#323F4B',
+          200: '#3E4C59',
+          300: '#52606D',
+          400: '#616E7C',
+          500: '#7B8794',
         },
       },
       fontFamily: {
-        serif: ['"Crimson Pro"', 'serif'],
+        serif: ['"Merriweather"', 'serif'],
         sans: ['"Inter"', 'sans-serif'],
-        display: ['"Fraunces"', 'serif'], // For headers
+        display: ['"Playfair Display"', 'serif'], // For headers
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out forwards',

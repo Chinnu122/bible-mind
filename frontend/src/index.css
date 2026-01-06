@@ -1,16 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-main: "Fraunces", serif;
+  --font-main: "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
-  --font-editorial: "Crimson Pro", serif;
+  --font-editorial: "Merriweather", serif;
 
-  background-color: #050505; /* Luxury Ultra Dark */
-  color: #F9F9F7; /* Crema 50 */
+  background-color: #FFFFF0;
+  /* Ivory 100 */
+  color: #1F2933;
+  /* Charcoal 900 */
 }
 
 @layer base {
@@ -19,7 +21,12 @@
     scroll-behavior: smooth;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-main);
   }
 
@@ -32,13 +39,14 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #050505;
-  /* Live wallpaper handles the visual background now */
+  background-color: #FFFFF0;
+  /* Live wallpaper handled by components, but base is Ivory */
 }
 
 /* Premium Selection */
 ::selection {
-  background: rgba(196, 142, 47, 0.3); /* Gold 500 */
+  background: rgba(196, 142, 47, 0.3);
+  /* Gold 500 */
   color: #fff;
 }
 
@@ -53,7 +61,8 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(196, 142, 47, 0.2); /* Gold tint */
+  background: rgba(196, 142, 47, 0.2);
+  /* Gold tint */
   border-radius: 10px;
   transition: background 0.2s ease;
 }
@@ -62,19 +71,21 @@ body {
   background: rgba(196, 142, 47, 0.4);
 }
 
-/* Glass Utilities - Refined for Luxury */
+/* Glass Utilities - Refined for Clean Luxury */
 .glass-panel {
-  background: rgba(10, 10, 12, 0.6); /* Luxury 800 with opacity */
+  background: rgba(255, 255, 240, 0.7);
+  /* Ivory with opacity */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(196, 142, 47, 0.1); /* Subtle Gold Border */
+  border: 1px solid rgba(196, 142, 47, 0.15);
+  /* Subtle Gold Border */
 }
 
 .glass-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 240, 0.6) 100%);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px -1px rgba(196, 142, 47, 0.1);
 }
 
 /* Smooth Focus Rings */
@@ -85,13 +96,14 @@ body {
 
 /* Mobile Optimizations */
 @media (max-width: 768px) {
+
   .glass-panel,
   .glass-card,
   [class*="backdrop-blur"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
-  
+
   .glass-panel {
     background: rgba(5, 5, 5, 0.95) !important;
     border: 1px solid rgba(196, 142, 47, 0.15);
