@@ -16746,11 +16746,13 @@
     "word": "גִּיל גּוּל",
     "pronunciation": "",
     "english": "giyl (gheel) (or (by permutation) guwl {gool}) v.; 1. (properly) to spin round (under the influence of any violent emotion), i.e. usually rejoice, or (as cringing) fear; [a primitive root]; KJV: be glad, joy, be joyful, rejoice. ",
-    "telugu": "",
+    "telugu": "ఆనందించు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 46
+    "occurrences": 46,
+    "telugu_meaning": "గుండ్రంగా తిరుగు, ఆనందించు, భయపడు",
+    "telugu_definition": "గుండ్రంగా తిరుగు, ఆనందించు, భయపడు"
   },
   "H1524": {
     "strongs": "H1524",
@@ -18748,11 +18750,13 @@
     "word": "דָּבְרַת",
     "pronunciation": "",
     "english": "Dabrath (daw-ber-ath') n/l.; 1. Daberath, a place in Israel; [from H1697 (perhaps in the sense of H1699)]; KJV: Dabareh, Daberath. ; Root(s): H1697, H1699 ",
-    "telugu": "",
+    "telugu": "దాబెరతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 3
+    "occurrences": 3,
+    "telugu_meaning": "ఇశ్రాయేలులో ఒక స్థలము",
+    "telugu_definition": "ఇశ్రాయేలులో ఒక స్థలము"
   },
   "H1706": {
     "strongs": "H1706",
@@ -19353,11 +19357,13 @@
     "word": "דָּחָה דָּחַח",
     "pronunciation": "",
     "english": "dachah (daw-khaw') (or dachach {Jer. 23) v.; 1. to push down; [a primitive root]; KJV: chase, drive away (on), overthrow, outcast, X sore, thrust, totter.",
-    "telugu": "",
+    "telugu": "నెట్టివేయు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 11
+    "occurrences": 11,
+    "telugu_meaning": "క్రిందకు నెట్టివేయు, తరిమివేయు",
+    "telugu_definition": "క్రిందకు నెట్టివేయు, తరిమివేయు"
   },
   "H1761": {
     "strongs": "H1761",
@@ -22356,11 +22362,13 @@
     "word": "הֲרוֹרִי",
     "pronunciation": "",
     "english": "Harowriy (har-o-ree') n/l.; 1. a Harorite or mountaineer; [another form for H2043]; KJV: Harorite. ; Root(s): H2043 ",
-    "telugu": "",
+    "telugu": "హరోరీ",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "హరోరీయుడు, పర్వత నివాసి",
+    "telugu_definition": "హరోరీయుడు, పర్వత నివాసి"
   },
   "H2034": {
     "strongs": "H2034",
@@ -25744,11 +25752,13 @@
     "word": "חֲוִילָה",
     "pronunciation": "",
     "english": "Chaviylah (khav-ee-law') n/l.; 1. circular; 2. Chavilah, the name of two or three eastern regions; 3. also perhaps of two men; [probably from H2342]; KJV: Havilah. ; Root(s): H2342 ",
-    "telugu": "",
+    "telugu": "హవీలా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 7
+    "occurrences": 7,
+    "telugu_meaning": "గుండ్రనిది, హవీలా ప్రదేశము",
+    "telugu_definition": "గుండ్రనిది, హవీలా ప్రదేశము"
   },
   "H2342": {
     "strongs": "H2342",
@@ -27086,11 +27096,13 @@
     "word": "חֶלבּוֹן",
     "pronunciation": "",
     "english": "Chelbown (khel-bone') n/l.; 1. fruitful; 2. Chelbon, a place in Syria; [from H2459]; KJV: Helbah. ; Root(s): H2459 ",
-    "telugu": "",
+    "telugu": "హెల్బోను",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "సారవంతమైనది, సిరియాలోని ఒక స్థలము",
+    "telugu_definition": "సారవంతమైనది, సిరియాలోని ఒక స్థలము"
   },
   "H2464": {
     "strongs": "H2464",
@@ -28582,11 +28594,13 @@
     "word": "חֲנוֹכִי",
     "pronunciation": "",
     "english": "Chanokiy (khan-o-kee') n-m.; 1. a Chanokite (collectively) or descendants of Chanok; [patronymically from H2585]; KJV: Hanochites. ; Root(s): H2585 ",
-    "telugu": "",
+    "telugu": "హనోకీయుడు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "హనోకు వంశస్థుడు",
+    "telugu_definition": "హనోకు వంశస్థుడు"
   },
   "H2600": {
     "strongs": "H2600",
@@ -28736,11 +28750,13 @@
     "word": "חֲנוּפָה",
     "pronunciation": "",
     "english": "chanuphah (khan-oo-faw') n-f.; 1. impiety; [feminine from H2610]; KJV: profaneness. ; Root(s): H2610 ",
-    "telugu": "",
+    "telugu": "అపవిత్రత",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "భక్తిహీనత, అపవిత్రత",
+    "telugu_definition": "భక్తిహీనత, అపవిత్రత"
   },
   "H2614": {
     "strongs": "H2614",
@@ -28802,11 +28818,13 @@
     "word": "חֲסַדיָה",
     "pronunciation": "",
     "english": "Chacadyah (khas-ad-yaw') n/p.; 1. Jah has favored; [from H2617 and H3050]; KJV: Hasadiah. ; Root(s): H2617, H3050 ",
-    "telugu": "",
+    "telugu": "హసద్యా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "యెహోవా దయ చూపాడు",
+    "telugu_definition": "యెహోవా దయ చూపాడు"
   },
   "H2620": {
     "strongs": "H2620",
@@ -29132,11 +29150,13 @@
     "word": "חִפָּזוֹן",
     "pronunciation": "",
     "english": "chippazown (khip-paw-zone') n-m.; 1. hasty flight; [from H2468]; KJV: haste. ; Root(s): H2468 ",
-    "telugu": "",
+    "telugu": "త్వర",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 3
+    "occurrences": 3,
+    "telugu_meaning": "తొందరపాటు, త్వరగా పారిపోవుట",
+    "telugu_definition": "తొందరపాటు, త్వరగా పారిపోవుట"
   },
   "H2650": {
     "strongs": "H2650",
@@ -29220,11 +29240,13 @@
     "word": "חֶפצִּי בָּהּ",
     "pronunciation": "",
     "english": "Chephtsiy bahh (khef-tsee'baw) n/p.; 1. my delight (is) in her; 2. Cheptsi-bah, a fanciful name for Israel; [from H2656 with suffixes]; KJV: Hephzi-bah. ; Root(s): H2656 ",
-    "telugu": "",
+    "telugu": "హెఫ్సీబా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "నా ఆనందం ఆమెలో ఉంది, ఇశ్రాయేలుకు ఒక పేరు",
+    "telugu_definition": "నా ఆనందం ఆమెలో ఉంది, ఇశ్రాయేలుకు ఒక పేరు"
   },
   "H2658": {
     "strongs": "H2658",
@@ -29484,11 +29506,13 @@
     "word": "חָצִיר",
     "pronunciation": "",
     "english": "chatsiyr (khaw-tseer') n-m.; 1. a court or abode; [a collateral form of H2691]; KJV: court. ; Root(s): H2691 ",
-    "telugu": "",
+    "telugu": "ఆవరణము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "నివాస స్థలము, ఆవరణము",
+    "telugu_definition": "నివాస స్థలము, ఆవరణము"
   },
   "H2682": {
     "strongs": "H2682",
@@ -29550,11 +29574,13 @@
     "word": "חָצָץ",
     "pronunciation": "",
     "english": "chatsats (khaw-tsawts') n-m.; 1. (properly) something cutting; 2. (hence) gravel (as grit); 3. (like H2671) an arrow; [from H2687]; KJV: arrow, gravel (stone). ; Root(s): H2687 ; See also: H2671 ",
-    "telugu": "",
+    "telugu": "బాణము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 3
+    "occurrences": 3,
+    "telugu_meaning": "కత్తిరించునది, బాణము, కంకర",
+    "telugu_definition": "కత్తిరించునది, బాణము, కంకర"
   },
   "H2688": {
     "strongs": "H2688",
@@ -29792,11 +29818,13 @@
     "word": "חֲקוּפָא",
     "pronunciation": "",
     "english": "Chaquwpha' (khah-oo-faw') n/p.; 1. crooked; 2. Chakupha, one of the Nethinim; [from an unused root probably meaning to bend]; KJV: Hakupha. ",
-    "telugu": "",
+    "telugu": "హకూపా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "వంకరైన, నెతీనీయులలో ఒకరు",
+    "telugu_definition": "వంకరైన, నెతీనీయులలో ఒకరు"
   },
   "H2710": {
     "strongs": "H2710",
@@ -30089,11 +30117,13 @@
     "word": "חַרהֲיָה",
     "pronunciation": "",
     "english": "Charhayah (khar-hah-yaw') n/p.; 1. fearing Jah; 2. Charhajah, an Israelite; [from H2734 and H3050]; KJV: Harhaiah. ; Root(s): H2734, H3050 ",
-    "telugu": "",
+    "telugu": "హర్హయా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "యెహోవాకు భయపడువాడు",
+    "telugu_definition": "యెహోవాకు భయపడువాడు"
   },
   "H2737": {
     "strongs": "H2737",
@@ -30177,11 +30207,13 @@
     "word": "חַרחוּר",
     "pronunciation": "",
     "english": "Charchuwr (khar-khoor') n/p.; 1. inflammation; 2. Charchur, one of the Nethinim; [a fuller form of H2746]; KJV: Harhur. ; Root(s): H2746 ",
-    "telugu": "",
+    "telugu": "హర్హూరు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "మంట, నెతీనీయులలో ఒకరు",
+    "telugu_definition": "మంట, నెతీనీయులలో ఒకరు"
   },
   "H2745": {
     "strongs": "H2745",
@@ -30342,11 +30374,13 @@
     "word": "חֲרִישִׁי",
     "pronunciation": "",
     "english": "chariyshiy (khar-ee-shee') adj.; 1. quiet, i.e. sultry (as feminine noun, the sirocco or hot east wind); [from H2790 in the sense of silence]; KJV: vehement. ; Root(s): H2790 ",
-    "telugu": "",
+    "telugu": "నిశ్శబ్ద",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "adjective",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "నిశ్శబ్దమైన, ఉక్కపోత గల (తూర్పు గాలి)",
+    "telugu_definition": "నిశ్శబ్దమైన, ఉక్కపోత గల (తూర్పు గాలి)"
   },
   "H2760": {
     "strongs": "H2760",
@@ -30397,11 +30431,13 @@
     "word": "חֵרֶם חֶרֶם",
     "pronunciation": "",
     "english": "cherem (khay'-rem) (or (Zecheriah 14) n-m.; 1. physical (as shutting in) a net (either literally or figuratively); 2. usually a doomed object; 3. abstr. extermination; [from H2763]; KJV: (ac-)curse(-d, -d thing), dedicated thing, things which should have been utterly destroyed, (appointed to) utter destruction, devoted (thing), net. ; Root(s): H2763 ",
-    "telugu": "",
+    "telugu": "శాపగ్రస్తం",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 38
+    "occurrences": 38,
+    "telugu_meaning": "నాశనానికి అంకితమైనది, వల",
+    "telugu_definition": "నాశనానికి అంకితమైనది, వల"
   },
   "H2765": {
     "strongs": "H2765",
@@ -31398,11 +31434,13 @@
     "word": "חֶתלוֹן",
     "pronunciation": "",
     "english": "Chethlon (kheth-lone') n/l.; 1. enswathed; 2. Chethlon, a place in Israel; [from H2853]; KJV: Hethlon. ; Root(s): H2853 ",
-    "telugu": "",
+    "telugu": "హెత్లోను",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "చుట్టబడిన, ఇశ్రాయేలులో ఒక స్థలము",
+    "telugu_definition": "చుట్టబడిన, ఇశ్రాయేలులో ఒక స్థలము"
   },
   "H2856": {
     "strongs": "H2856",
@@ -33125,11 +33163,13 @@
     "word": "יִגדַּליָהוּ",
     "pronunciation": "",
     "english": "Yigdalyahuw (yig-dal-yaw'-hoo) n/p.; 1. magnified of Jah; 2. Jigdaljah, an Israelite; [from H1431 and H3050]; KJV: Igdaliah. ; Root(s): H1431, H3050 ",
-    "telugu": "",
+    "telugu": "ఇగ్దల్యా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "యెహోవా ఘనపరచబడ్డాడు",
+    "telugu_definition": "యెహోవా ఘనపరచబడ్డాడు"
   },
   "H3013": {
     "strongs": "H3013",
@@ -33796,11 +33836,13 @@
     "word": "יְהוֹוָה שָׁלוֹם",
     "pronunciation": "",
     "english": "Yhavah shalowm (yeh-ho-vaw' shaw-lome') n/l.; 1. Jehovah (is) peace; 2. Jehovah-Shalom, a symbolical name of an altar in Israel; [from H3068 and H7965]; KJV: Jehovah-shalom. ; Root(s): H3068, H7965 ",
-    "telugu": "",
+    "telugu": "యెహోవా షాలోమ్",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "యెహోవా సమాధానకర్త",
+    "telugu_definition": "యెహోవా సమాధానకర్త"
   },
   "H3074": {
     "strongs": "H3074",
@@ -34181,11 +34223,13 @@
     "word": "יוֹזָכָר",
     "pronunciation": "",
     "english": "Yowzakar (yo-zaw-kawr') n/p.; 1. Jehovah-remembered; 2. Jozacar, an Israelite; [from H3068 and H2142]; KJV: Jozachar. ; Root(s): H3068, H2142 ",
-    "telugu": "",
+    "telugu": "యోజాకార్",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "యెహోవా జ్ఞాపకం చేసుకున్నాడు",
+    "telugu_definition": "యెహోవా జ్ఞాపకం చేసుకున్నాడు"
   },
   "H3109": {
     "strongs": "H3109",
@@ -34390,11 +34434,13 @@
     "word": "יוֹנֶקֶת",
     "pronunciation": "",
     "english": "yowneqeth (yo-neh'-keth) n-f.; 1. a sprout; [feminine of H3126]; KJV: (tender) branch, young twig. ; Root(s): H3126 ",
-    "telugu": "",
+    "telugu": "చిగురు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 6
+    "occurrences": 6,
+    "telugu_meaning": "లేత కొమ్మ, చిగురు",
+    "telugu_definition": "లేత కొమ్మ, చిగురు"
   },
   "H3128": {
     "strongs": "H3128",
@@ -34434,11 +34480,13 @@
     "word": "יוֹסִפיָה",
     "pronunciation": "",
     "english": "Yowciphyah (yo-sif-yaw') n/p.; 1. Jah (is) adding; 2. Josiphjah, an Israelite; [from active participle of H3254 and H3050]; KJV: Josiphiah. ; Root(s): H3254, H3050 ",
-    "telugu": "",
+    "telugu": "యోసిఫ్యా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "యెహోవా వృద్ధి చేస్తాడు",
+    "telugu_definition": "యెహోవా వృద్ధి చేస్తాడు"
   },
   "H3132": {
     "strongs": "H3132",
@@ -35820,55 +35868,65 @@
     "word": "יָע",
     "pronunciation": "",
     "english": "ya` (yaw) n-m.; 1. a shovel; [from H3261]; KJV: shovel. ; Root(s): H3261 ",
-    "telugu": "",
+    "telugu": "పార",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 9
+    "occurrences": 9,
+    "telugu_meaning": "పార (మట్టి త్రవ్వే పరికరం)",
+    "telugu_definition": "పార (మట్టి త్రవ్వే పరికరం)"
   },
   "H3258": {
     "strongs": "H3258",
     "word": "יַעבֵּץ",
     "pronunciation": "",
     "english": "Ya`bets (yah-bates') n/l.; 1. sorrowful; 2. Jabets, the name of an Israelite; 3. also of a place in Israel; [from an unused root probably meaning to grieve]; KJV: Jabez. ",
-    "telugu": "",
+    "telugu": "యబ్బేజు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 4
+    "occurrences": 4,
+    "telugu_meaning": "దుఃఖకరమైన, ఒక ఇశ్రాయేలీయుని పేరు",
+    "telugu_definition": "దుఃఖకరమైన, ఒక ఇశ్రాయేలీయుని పేరు"
   },
   "H3259": {
     "strongs": "H3259",
     "word": "יָעַד",
     "pronunciation": "",
     "english": "ya`ad (yaw-ad') v.; 1. to fix upon (by agreement or appointment); 2. (by implication) to meet (at a stated time); 3. (of court) to summon; 4. to direct (in a certain quarter or position); 5. (of marriage) to engage, betroth; [a primitive root]; KJV: agree, (make an) appoint(-ment,a time), assemble (selves), betroth, gather (selves, together), meet (together), set (a time). ",
-    "telugu": "",
+    "telugu": "నిర్ణయించు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 29
+    "occurrences": 29,
+    "telugu_meaning": "కలుసుకొనుటకు నిర్ణయించు, ఒప్పందం కుదుర్చుకొను",
+    "telugu_definition": "కలుసుకొనుటకు నిర్ణయించు, ఒప్పందం కుదుర్చుకొను"
   },
   "H3260": {
     "strongs": "H3260",
     "word": "יֶעדִּי",
     "pronunciation": "",
     "english": "Y`diy (yed-ee') n/p.; 1. appointed; 2. Jedi, an Israelite; [from H3259]; KJV: Iddo (from the margin) See H3035. ; Root(s): H3259 ; See also: H3035 ",
-    "telugu": "",
+    "telugu": "యెద్దీ",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "నియమించబడిన, ఒక ఇశ్రాయేలీయుడు",
+    "telugu_definition": "నియమించబడిన, ఒక ఇశ్రాయేలీయుడు"
   },
   "H3261": {
     "strongs": "H3261",
     "word": "יָעָה",
     "pronunciation": "",
     "english": "ya`ah (yaw-aw') v.; 1. apparently to brush aside; [a primitive root]; KJV: sweep away. ",
-    "telugu": "",
+    "telugu": "ఊడ్చివేయు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "పక్కకు నెట్టివేయు, ఊడ్చివేయు",
+    "telugu_definition": "పక్కకు నెట్టివేయు, ఊడ్చివేయు"
   },
   "H3262": {
     "strongs": "H3262",
@@ -37173,11 +37231,13 @@
     "word": "יְרוּבֶּשֶׁת",
     "pronunciation": "",
     "english": "Yrubbesheth (yer-oob-beh'-sheth) n/p.; 1. shame (i.e. the idol) will contend; 2. Jerubbesheth, a symbolic name for Gideon; [from H7378 and H1322]; KJV: Jerubbesheth. ; Root(s): H7378, H1322 ",
-    "telugu": "",
+    "telugu": "యెరుబ్బెషెతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "సిగ్గు (విగ్రహం) పోరాడుతుంది, గిద్యోను పేరు",
+    "telugu_definition": "సిగ్గు (విగ్రహం) పోరాడుతుంది, గిద్యోను పేరు"
   },
   "H3381": {
     "strongs": "H3381",
@@ -37228,22 +37288,26 @@
     "word": "יְרוּאֵל",
     "pronunciation": "",
     "english": "Yruw'el (yer-oo-ale') n/l.; 1. founded of God; 2. Jeruel, a place in Israel; [from H3384 and H410]; KJV: Jeruel. ; Root(s): H3384, H410 ",
-    "telugu": "",
+    "telugu": "యెరుయేలు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "దేవునిచే స్థాపించబడినది",
+    "telugu_definition": "దేవునిచే స్థాపించబడినది"
   },
   "H3386": {
     "strongs": "H3386",
     "word": "יָרוַֹח",
     "pronunciation": "",
     "english": "Yarowach (yaw-ro'-akh) n/p.; 1. (born at the) new moon; 2. Jaroach, an Israelite; [perhaps denominative from H3394]; KJV: Jaroah. ; Root(s): H3394 ",
-    "telugu": "",
+    "telugu": "యరోహ",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "అమావాస్య నాడు పుట్టిన",
+    "telugu_definition": "అమావాస్య నాడు పుట్టిన"
   },
   "H3387": {
     "strongs": "H3387",
@@ -38933,11 +38997,13 @@
     "word": "כְּדָרלָעוֹמֶר",
     "pronunciation": "",
     "english": "Kdorla`omer (ked-or-law-o'-mer) n/p.; 1. Kedorlaomer, an early Persian king; [of foreign origin]; KJV: Chedorlaomer. ",
-    "telugu": "",
+    "telugu": "కెదొర్లాకోమెరు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 5
+    "occurrences": 5,
+    "telugu_meaning": "ఒక ప్రాచీన పర్షియన్ రాజు",
+    "telugu_definition": "ఒక ప్రాచీన పర్షియన్ రాజు"
   },
   "H3541": {
     "strongs": "H3541",
@@ -40627,11 +40693,13 @@
     "word": "כְּסוּלּוֹת",
     "pronunciation": "",
     "english": "Kcullowth (kes-ool-loth') n/l.; 1. fattened; 2. Kesulloth, a place in Israel; [feminine plural of passive participle of H3688]; KJV: Chesulloth. ; Root(s): H3688 ",
-    "telugu": "",
+    "telugu": "కెసుల్లోతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "కొవ్విన, ఇశ్రాయేలులో ఒక స్థలము",
+    "telugu_definition": "కొవ్విన, ఇశ్రాయేలులో ఒక స్థలము"
   },
   "H3695": {
     "strongs": "H3695",
@@ -41364,11 +41432,13 @@
     "word": "כַּרמְלִי",
     "pronunciation": "",
     "english": "Karmliy (kar-mel-ee') adj.; 1. a Karmelite or inhabitant of Karmel (the town); [patron from H3760]; KJV: Carmelite. ; Root(s): H3760 ",
-    "telugu": "",
+    "telugu": "కర్మెలీయుడు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "adjective",
-    "occurrences": 5
+    "occurrences": 5,
+    "telugu_meaning": "కర్మెలు నివాసి",
+    "telugu_definition": "కర్మెలు నివాసి"
   },
   "H3762": {
     "strongs": "H3762",
@@ -41716,11 +41786,13 @@
     "word": "כְּתוֹבֶת",
     "pronunciation": "",
     "english": "kthobeth (keth-o'-beth) n-f.; 1. a letter or other mark branded on the skin; [from H3789]; KJV: X any (mark). ; Root(s): H3789 ",
-    "telugu": "",
+    "telugu": "పచ్చబొట్టు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "చర్మంపై వేసిన గుర్తు",
+    "telugu_definition": "చర్మంపై వేసిన గుర్తు"
   },
   "H3794": {
     "strongs": "H3794",
@@ -41771,11 +41843,13 @@
     "word": "כִּתלִישׁ",
     "pronunciation": "",
     "english": "Kithliysh (kith-leesh') n/l.; 1. wall of a man; 2. Kithlish, a place in Israel; [from H3796 and H376]; KJV: Kithlish. ; Root(s): H3796, H376 ",
-    "telugu": "",
+    "telugu": "కిత్లీష్",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 6
+    "occurrences": 6,
+    "telugu_meaning": "ఒక మనిషి గోడ, ఇశ్రాయేలులో ఒక స్థలము",
+    "telugu_definition": "ఒక మనిషి గోడ, ఇశ్రాయేలులో ఒక స్థలము"
   },
   "H3799": {
     "strongs": "H3799",
@@ -44400,11 +44474,13 @@
     "word": "מַגזֵרָה",
     "pronunciation": "",
     "english": "magzerah (mag-zay-raw') n-f.; 1. a cutting implement, i.e. a blade; [from H1504]; KJV: axe. ; Root(s): H1504 ",
-    "telugu": "",
+    "telugu": "గొడ్డలి",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "కత్తిరించే పరికరం, గొడ్డలి",
+    "telugu_definition": "కత్తిరించే పరికరం, గొడ్డలి"
   },
   "H4038": {
     "strongs": "H4038",
@@ -44499,11 +44575,13 @@
     "word": "מַגֵּפָה",
     "pronunciation": "",
     "english": "maggephah (mag-gay-faw') n-f.; 1. a pestilence; 2. by analogy, defeat; [from H5062]; KJV: (X be) plague(-d), slaughter, stroke. ; Root(s): H5062 ",
-    "telugu": "",
+    "telugu": "తెగులు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 26
+    "occurrences": 26,
+    "telugu_meaning": "వ్యాధి, ఓటమి, నాశనం",
+    "telugu_definition": "వ్యాధి, ఓటమి, నాశనం"
   },
   "H4047": {
     "strongs": "H4047",
@@ -45126,11 +45204,13 @@
     "word": "מְהוּמָה",
     "pronunciation": "",
     "english": "mhuwmah (meh-hoo-maw') n-f.; 1. confusion or uproar; [from H1949]; KJV: destruction, discomfiture, trouble, tumult, vexation, vexed. ; Root(s): H1949 ",
-    "telugu": "",
+    "telugu": "కలవరము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 12
+    "occurrences": 12,
+    "telugu_meaning": "గందరగోళం, అల్లరి, నాశనం",
+    "telugu_definition": "గందరగోళం, అల్లరి, నాశనం"
   },
   "H4104": {
     "strongs": "H4104",
@@ -46754,11 +46834,13 @@
     "word": "מַחלוּי",
     "pronunciation": "",
     "english": "machluy (makh-loo'-ee) n-m.; 1. a disease; [from H2470]; KJV: disease. ; Root(s): H2470 ",
-    "telugu": "",
+    "telugu": "వ్యాధి",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "జబ్బు, రోగము",
+    "telugu_definition": "జబ్బు, రోగము"
   },
   "H4252": {
     "strongs": "H4252",
@@ -46831,11 +46913,13 @@
     "word": "מַחֲלַת",
     "pronunciation": "",
     "english": "Machalath (makh-al-ath') n/p.; 1. sickness; 2. Machalath, the name of an Ishmaelitess and of an Israelitess; [the same as H4257]; KJV: Mahalath. ; Root(s): H4257 ",
-    "telugu": "",
+    "telugu": "మహలతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "వ్యాధి, ఒక ఇశ్రాయేలీయురాలు",
+    "telugu_definition": "వ్యాధి, ఒక ఇశ్రాయేలీయురాలు"
   },
   "H4259": {
     "strongs": "H4259",
@@ -48525,11 +48609,13 @@
     "word": "מְלוּנָה",
     "pronunciation": "",
     "english": "mluwnah (mel-oo-naw') n-f.; 1. a hut, a hammock; [feminine from H3885]; KJV: cottage, lodge. ; Root(s): H3885 ",
-    "telugu": "",
+    "telugu": "పాక",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "గుడిసె, విశ్రాంతి స్థలం",
+    "telugu_definition": "గుడిసె, విశ్రాంతి స్థలం"
   },
   "H4413": {
     "strongs": "H4413",
@@ -48668,11 +48754,13 @@
     "word": "מְלִילָה",
     "pronunciation": "",
     "english": "mliylah (mel-ee-law') n-f.; 1. a head of grain (as cut off); [from H4449 (in the sense of cropping)]; KJV: ear. ; Root(s): H4449 ; Compare: H4135 ",
-    "telugu": "",
+    "telugu": "వెన్ను",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "ధాన్యపు కంకి",
+    "telugu_definition": "ధాన్యపు కంకి"
   },
   "H4426": {
     "strongs": "H4426",
@@ -49515,11 +49603,13 @@
     "word": "מִנְּזָר",
     "pronunciation": "",
     "english": "minnzar (min-ez-awr') n-m.; 1. a prince; [from H5144]; KJV: crowned. ; Root(s): H5144 ",
-    "telugu": "",
+    "telugu": "కిరీటము ధరించిన",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "యువరాజు, కిరీటము ధరించిన",
+    "telugu_definition": "యువరాజు, కిరీటము ధరించిన"
   },
   "H4503": {
     "strongs": "H4503",
@@ -51935,22 +52025,26 @@
     "word": "מַקהֵלוֹת",
     "pronunciation": "",
     "english": "Maqheloth (mak-hay-loth') n/p.; 1. assemblies; 2. Makheloth, a place in the Desert; [plural of H4721 (feminine)]; KJV: Makheloth. ; Root(s): H4721 ",
-    "telugu": "",
+    "telugu": "మక్హేలోతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "సమాజములు, అరణ్యంలో ఒక స్థలము",
+    "telugu_definition": "సమాజములు, అరణ్యంలో ఒక స్థలము"
   },
   "H4723": {
     "strongs": "H4723",
     "word": "מִקוֶה מִקוֵה מִקוֵא",
     "pronunciation": "",
     "english": "miqveh (mik-veh') (or miqveh (1 Kings 10) n-m.; 1. something waited for, i.e. confidence (objective or subjective); 2. also a collection, i.e. (of water) a pond, or (of men and horses) a caravan or drove; [from H6960]; KJV: abiding, gathering together, hope, linen yarn, plenty (of water), pool. ; Root(s): H6960 ",
-    "telugu": "",
+    "telugu": "సమూహము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 12
+    "occurrences": 12,
+    "telugu_meaning": "నమ్మకం, నీటి మడుగు, గుంపు",
+    "telugu_definition": "నమ్మకం, నీటి మడుగు, గుంపు"
   },
   "H4724": {
     "strongs": "H4724",
@@ -52683,132 +52777,156 @@
     "word": "מְרוַֹח",
     "pronunciation": "",
     "english": "mrowach (mer-o-akh') n-m.; 1. bruised, i.e. emasculated; [from H4799]; KJV: broken. ; Root(s): H4799 ",
-    "telugu": "",
+    "telugu": "నలగగొట్టబడిన",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "గాయపడిన, నలగగొట్టబడిన",
+    "telugu_definition": "గాయపడిన, నలగగొట్టబడిన"
   },
   "H4791": {
     "strongs": "H4791",
     "word": "מָרוֹם",
     "pronunciation": "",
     "english": "marowm (maw-rome') n-m.; 1. altitude; 2. (concretely) an elevated place; 3. (abstractly) elevation; 4. (figuratively) elation; 5. (adverbially) aloft; [from H7311]; KJV: (far) above, dignity, haughty, height, (most, on) high (one, place), loftily, upward. ; Root(s): H7311 ",
-    "telugu": "",
+    "telugu": "ఎత్తు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 54
+    "occurrences": 54,
+    "telugu_meaning": "ఎత్తైన స్థలము, ఘనత",
+    "telugu_definition": "ఎత్తైన స్థలము, ఘనత"
   },
   "H4792": {
     "strongs": "H4792",
     "word": "מֵרוֹם",
     "pronunciation": "",
     "english": "Merowm (may-rome') n/l.; 1. height; 2. Merom, a lake in Israel; [formed like H4791]; KJV: Merom. ; Root(s): H4791 ",
-    "telugu": "",
+    "telugu": "మెరోము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "ఎత్తు, ఇశ్రాయేలులో ఒక సరస్సు",
+    "telugu_definition": "ఎత్తు, ఇశ్రాయేలులో ఒక సరస్సు"
   },
   "H4793": {
     "strongs": "H4793",
     "word": "מֵרוֹץ",
     "pronunciation": "",
     "english": "merowts (may-rotes') n-m.; 1. a run (the trial of speed); [from H7323]; KJV: race. ; Root(s): H7323 ",
-    "telugu": "",
+    "telugu": "పరుగు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "పరుగెత్తుట",
+    "telugu_definition": "పరుగెత్తుట"
   },
   "H4794": {
     "strongs": "H4794",
     "word": "מְרוּצָה מְרוּצָה",
     "pronunciation": "",
     "english": "mruwtsah (mer-oo-tsaw') (or mrutsah {mer-oo-tsaw'}) n-f.; 1. a race (the act), whether the manner or the progress; [feminine of H4793]; KJV: course, running. ; Root(s): H4793 ; Compare: H4835 ",
-    "telugu": "",
+    "telugu": "పరుగు పందెం",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 5
+    "occurrences": 5,
+    "telugu_meaning": "పరుగు, మార్గము",
+    "telugu_definition": "పరుగు, మార్గము"
   },
   "H4795": {
     "strongs": "H4795",
     "word": "מָרוּק",
     "pronunciation": "",
     "english": "maruwq (maw-rook') n-m.; 1. (properly) rubbed; 2. but used abstractly, a rubbing (with perfumery); [from H4838]; KJV: purification. ; Root(s): H4838 ",
-    "telugu": "",
+    "telugu": "శుద్దీకరణ",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "రుద్దుట, శుద్దీకరణ",
+    "telugu_definition": "రుద్దుట, శుద్దీకరణ"
   },
   "H4796": {
     "strongs": "H4796",
     "word": "מָרוֹת",
     "pronunciation": "",
     "english": "Marowth (maw-rohth') n/p.; 1. bitter springs; 2. Maroth, a place in Israel; [plural of H4751 feminine]; KJV: Maroth. ; Root(s): H4751 ",
-    "telugu": "",
+    "telugu": "మారోతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "చేదు ఊటలు, ఇశ్రాయేలులో ఒక స్థలము",
+    "telugu_definition": "చేదు ఊటలు, ఇశ్రాయేలులో ఒక స్థలము"
   },
   "H4797": {
     "strongs": "H4797",
     "word": "מִרזַח",
     "pronunciation": "",
     "english": "mirzach (meer-zakh') n-m.; 1. a cry, i.e. (of job), a revel; [from an unused root meaning to scream]; KJV: banquet. ",
-    "telugu": "",
+    "telugu": "విందు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "అరుపు, విందు",
+    "telugu_definition": "అరుపు, విందు"
   },
   "H4798": {
     "strongs": "H4798",
     "word": "מַרזֵַח",
     "pronunciation": "",
     "english": "marzeach (mar-zay'-akh) n-m.; 1. a cry, i.e. (of grief) a lamentation; [formed like H4797]; KJV: mourning. ; Root(s): H4797 ",
-    "telugu": "",
+    "telugu": "విలాపము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "ఏడ్పు, దుఃఖము",
+    "telugu_definition": "ఏడ్పు, దుఃఖము"
   },
   "H4799": {
     "strongs": "H4799",
     "word": "מָרַח",
     "pronunciation": "",
     "english": "marach (maw-rakh') v.; 1. (properly) to soften by rubbing or pressure; 2. hence (medicinally) to apply as an emollient; [a primitive root]; KJV: lay for a plaister. ",
-    "telugu": "",
+    "telugu": "మెత్తని మందు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "మందు పూయుట, మెత్తని పట్టు",
+    "telugu_definition": "మందు పూయుట, మెత్తని పట్టు"
   },
   "H4800": {
     "strongs": "H4800",
     "word": "מֶרחָב",
     "pronunciation": "",
     "english": "merchab (mer-khawb') n-m.; 1. enlargement, either literally (an open space, usually in a good sense), or figuratively (liberty); [from H7337]; KJV: breadth, large place (room). ; Root(s): H7337 ",
-    "telugu": "",
+    "telugu": "విశాల స్థలము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 6
+    "occurrences": 6,
+    "telugu_meaning": "విస్తీర్ణము, స్వేచ్ఛ",
+    "telugu_definition": "విస్తీర్ణము, స్వేచ్ఛ"
   },
   "H4801": {
     "strongs": "H4801",
     "word": "מֶרחָק",
     "pronunciation": "",
     "english": "merchaq (mer-khawk') n-m.; 1. remoteness; 2. (concretely) a distant place; 3. (adverbially, often) from afar; KJV: (a-, dwell in, very) far (country, off). See also H1023. ; Root(s): H7368 ; See also: H1023 ",
-    "telugu": "",
+    "telugu": "దూరము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 17
+    "occurrences": 17,
+    "telugu_meaning": "దూర ప్రదేశము",
+    "telugu_definition": "దూర ప్రదేశము"
   },
   "H4802": {
     "strongs": "H4802",
@@ -52881,11 +52999,13 @@
     "word": "מְרִיבָּה",
     "pronunciation": "",
     "english": "mriybah (mer-ee-baw') n-f.; 1. quarrel; [from H7378]; KJV: provocation, strife. ; Root(s): H7378 ",
-    "telugu": "",
+    "telugu": "వివాదము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 7
+    "occurrences": 7,
+    "telugu_meaning": "జగడము, కలహము",
+    "telugu_definition": "జగడము, కలహము"
   },
   "H4809": {
     "strongs": "H4809",
@@ -53035,11 +53155,13 @@
     "word": "מְרֵמוֹת",
     "pronunciation": "",
     "english": "Mremowth (mer-ay-mohth') n/p.; 1. heights; 2. Meremoth, the name of two Israelites; [plural from H7311]; KJV: Meremoth. ; Root(s): H7311 ",
-    "telugu": "",
+    "telugu": "మెరేమోతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 6
+    "occurrences": 6,
+    "telugu_meaning": "ఎత్తులు, ఇద్దరు ఇశ్రాయేలీయుల పేరు",
+    "telugu_definition": "ఎత్తులు, ఇద్దరు ఇశ్రాయేలీయుల పేరు"
   },
   "H4823": {
     "strongs": "H4823",
@@ -54685,11 +54807,13 @@
     "word": "מַתּתְּלָאָה",
     "pronunciation": "",
     "english": "mattla'ah (mat-tel-aw-aw') n-f.; 1. what a trouble!; [from H4100 and H8513]; KJV: what a weariness. ; Root(s): H4100, H8513 ",
-    "telugu": "",
+    "telugu": "ఎంత శ్రమ",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "ఎంత కష్టము, అలసట",
+    "telugu_definition": "ఎంత కష్టము, అలసట"
   },
   "H4973": {
     "strongs": "H4973",
@@ -70569,11 +70693,13 @@
     "word": "פְּלִילִי",
     "pronunciation": "",
     "english": "pliyliy (pel-ee-lee') adj.; 1. judicial; [from H6414]; KJV: judge. ; Root(s): H6414 ",
-    "telugu": "",
+    "telugu": "న్యాయబద్ధమైన",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "adjective",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "న్యాయ సంబంధమైన",
+    "telugu_definition": "న్యాయ సంబంధమైన"
   },
   "H6417": {
     "strongs": "H6417",
@@ -71658,11 +71784,13 @@
     "word": "פָּרוַּח",
     "pronunciation": "",
     "english": "Paruwach (paw-roo'-akh) n/p.; 1. blossomed; 2. Paruach, an Israelite; [passive participle of H6524]; KJV: Paruah. ; Root(s): H6524 ",
-    "telugu": "",
+    "telugu": "పరూవ",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "వికసించిన, ఒక ఇశ్రాయేలీయుడు",
+    "telugu_definition": "వికసించిన, ఒక ఇశ్రాయేలీయుడు"
   },
   "H6516": {
     "strongs": "H6516",
@@ -72791,11 +72919,13 @@
     "word": "פְּתַלתּוֹל",
     "pronunciation": "",
     "english": "pthaltol (peth-al-tole') adj.; 1. tortuous (i.e. crafty); [from H6617]; KJV: crooked. ; Root(s): H6617 ",
-    "telugu": "",
+    "telugu": "వంకరైన",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "adjective",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "మెలికలు తిరిగిన, కపటమైన",
+    "telugu_definition": "మెలికలు తిరిగిన, కపటమైన"
   },
   "H6619": {
     "strongs": "H6619",
@@ -73000,11 +73130,13 @@
     "word": "צּוֹבֵבָה",
     "pronunciation": "",
     "english": "Tsobebah (tso-bay-baw') n/p.; 1. the canopier (with the article); 2. Tsobebah, an Israelitess; [feminine active participle of the same as H6632]; KJV: Zobebah. ; Root(s): H6632 ",
-    "telugu": "",
+    "telugu": "సోబేబా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "పందిరి వేయునది, ఒక ఇశ్రాయేలీయురాలు",
+    "telugu_definition": "పందిరి వేయునది, ఒక ఇశ్రాయేలీయురాలు"
   },
   "H6638": {
     "strongs": "H6638",
@@ -75530,11 +75662,13 @@
     "word": "צָּרֶבֶת",
     "pronunciation": "",
     "english": "tsarebeth (tsaw-reh'-beth) adj.; 1. conflagration (of fire or disease); [from H6686]; KJV: burning, inflammation. ; Root(s): H6686 ",
-    "telugu": "",
+    "telugu": "మంట",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "adjective",
-    "occurrences": 3
+    "occurrences": 3,
+    "telugu_meaning": "మంట, వాపు (వ్యాధి)",
+    "telugu_definition": "మంట, వాపు (వ్యాధి)"
   },
   "H6868": {
     "strongs": "H6868",
@@ -76872,11 +77006,13 @@
     "word": "קְטוּרָה",
     "pronunciation": "",
     "english": "Qtuwrah (ket-oo-raw') n/p.; 1. perfumed; 2. Keturah, a wife of Abraham; [feminine passive participle of H6999]; KJV: Keturah. ; Root(s): H6999 ",
-    "telugu": "",
+    "telugu": "కెతూరా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun proper",
-    "occurrences": 4
+    "occurrences": 4,
+    "telugu_meaning": "సుగంధ ద్రవ్యం, అబ్రాహాము భార్య",
+    "telugu_definition": "సుగంధ ద్రవ్యం, అబ్రాహాము భార్య"
   },
   "H6990": {
     "strongs": "H6990",
@@ -77818,143 +77954,169 @@
     "word": "קִניָן",
     "pronunciation": "",
     "english": "qinyan (kin-yawn') n-m.; 1. creation; 2. (concretely) creatures; 3. (also) acquisition, purchase, wealth; [from H7069]; KJV: getting, goods, X with money, riches, substance. ; Root(s): H7069 ",
-    "telugu": "",
+    "telugu": "సంపద",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 10
+    "occurrences": 10,
+    "telugu_meaning": "సృష్టి, సంపాదన, ఆస్తి",
+    "telugu_definition": "సృష్టి, సంపాదన, ఆస్తి"
   },
   "H7076": {
     "strongs": "H7076",
     "word": "קִנָּמוֹן",
     "pronunciation": "",
     "english": "qinnamown (kin-naw-mone') n-m.; 1. cinnamon bark (as in upright rolls); [from an unused root (meaning to erect)]; KJV: cinnamon. ",
-    "telugu": "",
+    "telugu": "దాల్చిన చెక్క",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 3
+    "occurrences": 3,
+    "telugu_meaning": "దాల్చిన చెక్క",
+    "telugu_definition": "దాల్చిన చెక్క"
   },
   "H7077": {
     "strongs": "H7077",
     "word": "קָנַן",
     "pronunciation": "",
     "english": "qanan (kaw-nan') v.; 1. to nestle, i.e. build or occupy as a nest; [a primitive root, to erect; but used only as denominative from H7064]; KJV: make...nest. ; Root(s): H7064 ",
-    "telugu": "",
+    "telugu": "గూడు కట్టు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 6
+    "occurrences": 6,
+    "telugu_meaning": "గూడు కట్టుకొను, నివసించు",
+    "telugu_definition": "గూడు కట్టుకొను, నివసించు"
   },
   "H7078": {
     "strongs": "H7078",
     "word": "קֶנֶץ",
     "pronunciation": "",
     "english": "qenets (keh'-nets) n-m.; 1. perversion; [from an unused root probably meaning to wrench]; KJV: end. ",
-    "telugu": "",
+    "telugu": "ముగింపు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "వక్రమార్గం, ముగింపు",
+    "telugu_definition": "వక్రమార్గం, ముగింపు"
   },
   "H7079": {
     "strongs": "H7079",
     "word": "קְנָת",
     "pronunciation": "",
     "english": "Qnath (ken-awth') n/l.; 1. possession; 2. Kenath, a place East of the Jordan; [from H7069]; KJV: Kenath. ; Root(s): H7069 ",
-    "telugu": "",
+    "telugu": "కెనాతు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 2
+    "occurrences": 2,
+    "telugu_meaning": "స్వాధీనము, ఒక స్థలము",
+    "telugu_definition": "స్వాధీనము, ఒక స్థలము"
   },
   "H7080": {
     "strongs": "H7080",
     "word": "קָסַם",
     "pronunciation": "",
     "english": "qacam (kaw-sam') v.; 1. (properly) to distribute, i.e. determine by lot or magical scroll; 2. (by implication) to divine; [a primitive root]; KJV: divine(-r, -ation), prudent, soothsayer, use (divination). ",
-    "telugu": "",
+    "telugu": "సోదె చెప్పు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 22
+    "occurrences": 22,
+    "telugu_meaning": "భవిష్యత్తు చెప్పు, శకునం చెప్పు",
+    "telugu_definition": "భవిష్యత్తు చెప్పు, శకునం చెప్పు"
   },
   "H7081": {
     "strongs": "H7081",
     "word": "קֶסֶם",
     "pronunciation": "",
     "english": "qecem (keh'-sem) n-m.; 1. a lot; [from H7080]; KJV: (reward of) divination, divine sentence, witchcraft. ; Root(s): H7080 ",
-    "telugu": "",
+    "telugu": "సోదె",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 11
+    "occurrences": 11,
+    "telugu_meaning": "శకునం, మంత్రవిద్య",
+    "telugu_definition": "శకునం, మంత్రవిద్య"
   },
   "H7082": {
     "strongs": "H7082",
     "word": "קָסַס",
     "pronunciation": "",
     "english": "qacac (kaw-sas') v.; 1. to lop off; [a primitive root]; KJV: cut off. ",
-    "telugu": "",
+    "telugu": "నరికివేయు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "verb",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "నరికివేయు",
+    "telugu_definition": "నరికివేయు"
   },
   "H7083": {
     "strongs": "H7083",
     "word": "קֶסֶת",
     "pronunciation": "",
     "english": "qeceth (keh'-seth) n-f.; 1. (properly) a cup, i.e. an ink-stand; [from the same as H3563 (or as H7185)]; KJV: inkhorn. ; Root(s): H3563, H7185 ",
-    "telugu": "",
+    "telugu": "సిరాబుడ్డి",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 3
+    "occurrences": 3,
+    "telugu_meaning": "సిరాబుడ్డి",
+    "telugu_definition": "సిరాబుడ్డి"
   },
   "H7084": {
     "strongs": "H7084",
     "word": "קְעִילָה",
     "pronunciation": "",
     "english": "Q`iylah (keh-ee-law') n/l.; 1. citadel; 2. Keilah, a place in Israel; [perhaps from H7049 in the sense of inclosing]; KJV: Keilah. ; Root(s): H7049 ",
-    "telugu": "",
+    "telugu": "కీలా",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun location",
-    "occurrences": 18
+    "occurrences": 18,
+    "telugu_meaning": "కోట, ఇశ్రాయేలులో ఒక స్థలము",
+    "telugu_definition": "కోట, ఇశ్రాయేలులో ఒక స్థలము"
   },
   "H7085": {
     "strongs": "H7085",
     "word": "קַעֲקַע",
     "pronunciation": "",
     "english": "qa`aqa` (kah-ak-ah') n-m.; 1. an incision or gash; [from the same as H6970]; KJV: + mark. ; Root(s): H6970 ",
-    "telugu": "",
+    "telugu": "పచ్చబొట్టు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "గాటు, గుర్తు",
+    "telugu_definition": "గాటు, గుర్తు"
   },
   "H7086": {
     "strongs": "H7086",
     "word": "קְעָרָה",
     "pronunciation": "",
     "english": "q`arah (keh-aw-raw') n-f.; 1. a bowl (as cut out hollow); [probably from H7167]; KJV: charger, dish. ; Root(s): H7167 ",
-    "telugu": "",
+    "telugu": "పళ్ళెము",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 17
+    "occurrences": 17,
+    "telugu_meaning": "గిన్నె, పళ్ళెము",
+    "telugu_definition": "గిన్నె, పళ్ళెము"
   },
   "H7087": {
     "strongs": "H7087",
     "word": "קָפָא",
     "pronunciation": "",
     "english": "qapha' (kaw-faw') n-m.; 1. to shrink, i.e. thicken (as unracked wine, curdled milk, clouded sky, frozen water); [a primitive root]; KJV: congeal, curdle, dark, settle. ",
-    "telugu": "",
+    "telugu": "గడ్డకట్టు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 5
+    "occurrences": 5,
+    "telugu_meaning": "చిక్కబడు, గడ్డకట్టు (నీరు)",
+    "telugu_definition": "చిక్కబడు, గడ్డకట్టు (నీరు)"
   },
   "H7088": {
     "strongs": "H7088",
@@ -82306,11 +82468,13 @@
     "word": "רַעמָה",
     "pronunciation": "",
     "english": "ra`mah (rah-maw') n-f.; 1. the mane of a horse (as quivering in the wind); [feminine of H7482]; KJV: thunder. ; Root(s): H7482 ",
-    "telugu": "",
+    "telugu": "జూలు",
     "transliteration": "",
     "language": "Hebrew",
     "pos": "noun",
-    "occurrences": 1
+    "occurrences": 1,
+    "telugu_meaning": "గుర్రపు జూలు",
+    "telugu_definition": "గుర్రపు జూలు"
   },
   "H7484": {
     "strongs": "H7484",
