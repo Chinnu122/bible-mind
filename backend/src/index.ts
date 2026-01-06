@@ -56,26 +56,28 @@ app.get('/health', (_req: Request, res: Response) => {
   });
 });
 
+import meaningsRouter from './routes/meanings';
+import preferencesRouter from './routes/preferences';
+import favoritesRouter from './routes/favorites';
+
+// ... (existing imports)
+
 // API Info
 app.get('/api', (_req: Request, res: Response) => {
   res.json({
     name: 'Bible Mind API',
-    version: '1.0.0',
+    version: '2.0.0', // Updated version
     description: 'Advanced Bible API with Hebrew & Greek meanings',
     endpoints: {
       books: '/api/books',
       verses: '/api/verses/:book/:chapter/:verse',
       strongs: '/api/strongs/:number',
       search: '/api/search?q=query',
+      meanings: '/api/meanings/:word', // New
+      preferences: '/api/preferences', // New
+      favorites: '/api/favorites', // New
       languages: '/api/languages',
-      download: '/api/download',
-      notes: '/api/notes/:userId',
-      telugu: '/api/telugu',
-      characterOfDay: '/api/character-of-day',
-      reviews: '/api/reviews',
-      quiz: '/api/quiz',
-      auth: '/api/auth',
-      gallery: '/api/gallery'
+      // ...
     }
   });
 });
@@ -85,6 +87,9 @@ app.use('/api/books', booksRouter);
 app.use('/api/verses', versesRouter);
 app.use('/api/strongs', strongsRouter);
 app.use('/api/search', searchRouter);
+app.use('/api/meanings', meaningsRouter); // New
+app.use('/api/preferences', preferencesRouter); // New
+app.use('/api/favorites', favoritesRouter); // New
 app.use('/api/languages', languagesRouter);
 app.use('/api/download', downloadRouter);
 app.use('/api/notes', notesRouter);
@@ -98,9 +103,9 @@ app.use('/api/daily-verse', dailyVerseRouter);
 app.use('/api/export', exportRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/cross-references', crossReferencesRouter);
-app.use('/api/v2/search', v2SearchRouter); // ElasticSearch-powered advanced search
-app.use('/api/v2/auth', v2AuthRouter); // OAuth + JWT authentication
-app.use('/api/update', updateRouter); // App update check and APK download
+app.use('/api/v2/search', v2SearchRouter);
+app.use('/api/v2/auth', v2AuthRouter);
+app.use('/api/update', updateRouter);
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));
