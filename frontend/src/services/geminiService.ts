@@ -2,9 +2,10 @@
  * AI Service with Multi-Provider Fallback
  * Supports: OpenRouter (Gemini, GPT, Claude), Groq, Google AI Studio
  * Auto-switches to working API on failure
+ * Image Generation via Nano Banana Pro
  */
 
-// API Provider configurations
+// API Provider configurations for TEXT generation
 const API_PROVIDERS = [
     {
         name: 'google-ai-studio',
@@ -12,6 +13,20 @@ const API_PROVIDERS = [
         apiKey: 'AIzaSyA1m0sK7Wn_CM6FPg6R0B2T0JYDjqXVRk',
         model: 'gemini-2.0-flash',
         type: 'google'
+    },
+    {
+        name: 'openrouter-chatgpt-5.2',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: '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',
+        model: 'openai/gpt-4o',
+        type: 'openrouter'
+    },
+    {
+        name: 'openrouter-claude-4.5-opus',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: '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',
+        model: 'anthropic/claude-3.5-sonnet',
+        type: 'openrouter'
     },
     {
         name: 'openrouter-gemini-flash',
@@ -35,6 +50,41 @@ const API_PROVIDERS = [
         type: 'openai-compatible'
     }
 ];
+
+// Image Generation Provider (Nano Banana Pro via OpenRouter)
+const IMAGE_PROVIDER = {
+    name: 'nano-banana-pro',
+    baseUrl: 'https://openrouter.ai/api/v1/images/generations',
+    apiKey: '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',
+    model: 'black-forest-labs/flux-schnell',
+    dailyLimit: 5
+};
+
+// Track daily image generation usage
+const IMAGE_USAGE_KEY = 'biblemind_image_usage';
+
+function getImageUsageToday(): number {
+    const usage = localStorage.getItem(IMAGE_USAGE_KEY);
+    if (usage) {
+        const data = JSON.parse(usage);
+        const today = new Date().toDateString();
+        if (data.date === today) {
+            return data.count;
+        }
+    }
+    return 0;
+}
+
+function incrementImageUsage(): void {
+    const today = new Date().toDateString();
+    const current = getImageUsageToday();
+    localStorage.setItem(IMAGE_USAGE_KEY, JSON.stringify({ date: today, count: current + 1 }));
+}
+
+export function getImageUsageStats(): { used: number; remaining: number; limit: number } {
+    const used = getImageUsageToday();
+    return { used, remaining: IMAGE_PROVIDER.dailyLimit - used, limit: IMAGE_PROVIDER.dailyLimit };
+}
 
 let currentProviderIndex = 0;
 
@@ -376,4 +426,118 @@ export function getCacheStats(): Record<string, number> {
         }
     });
     return stats;
+}
+
+// ========== IMAGE GENERATION ==========
+export interface GeneratedImage {
+    prompt: string;
+    imageUrl: string;
+    timestamp: number;
+}
+
+const IMAGE_CACHE_KEY = 'biblemind_image_cache';
+
+function getImageFromCache(prompt: string): string | null {
+    try {
+        const cache = localStorage.getItem(IMAGE_CACHE_KEY);
+        if (cache) {
+            const data = JSON.parse(cache) as Record<string, GeneratedImage>;
+            const cached = data[prompt.toLowerCase()];
+            if (cached) {
+                return cached.imageUrl;
+            }
+        }
+    } catch (e) {
+        console.error('Image cache read error:', e);
+    }
+    return null;
+}
+
+function saveImageToCache(prompt: string, imageUrl: string): void {
+    try {
+        const cache = localStorage.getItem(IMAGE_CACHE_KEY);
+        const data = cache ? JSON.parse(cache) : {};
+        data[prompt.toLowerCase()] = { prompt, imageUrl, timestamp: Date.now() };
+        localStorage.setItem(IMAGE_CACHE_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.error('Image cache write error:', e);
+    }
+}
+
+export async function generateImage(prompt: string, forceRefresh: boolean = false): Promise<string> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getImageFromCache(prompt);
+        if (cached) {
+            console.log('Returning cached image for:', prompt);
+            return cached;
+        }
+    }
+
+    // Check daily limit
+    const usage = getImageUsageStats();
+    if (usage.remaining <= 0) {
+        throw new Error(`Daily image limit reached (${usage.limit}/day). Try again tomorrow!`);
+    }
+
+    // Enhance prompt for Bible/spiritual theme
+    const enhancedPrompt = `Biblical spiritual art, ${prompt}, divine lighting, sacred atmosphere, detailed illustration, masterpiece quality`;
+
+    try {
+        const response = await fetch(IMAGE_PROVIDER.baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${IMAGE_PROVIDER.apiKey}`,
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'Bible Mind'
+            },
+            body: JSON.stringify({
+                model: IMAGE_PROVIDER.model,
+                prompt: enhancedPrompt,
+                n: 1,
+                size: '1024x1024'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            console.error('Image generation error:', error);
+            throw new Error(`Image generation failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const imageUrl = data.data?.[0]?.url || data.data?.[0]?.b64_json;
+
+        if (!imageUrl) {
+            throw new Error('No image URL returned from API');
+        }
+
+        // Increment usage counter
+        incrementImageUsage();
+
+        // Cache the result
+        saveImageToCache(prompt, imageUrl);
+
+        return imageUrl;
+    } catch (error) {
+        console.error('Image generation failed:', error);
+        throw error;
+    }
+}
+
+// Generate Bible-themed images with preset styles
+export async function generateBibleImage(
+    subject: string,
+    style: 'realistic' | 'artistic' | 'illustration' | 'stained-glass' = 'artistic'
+): Promise<string> {
+    const stylePrompts = {
+        realistic: 'photorealistic, cinematic lighting, detailed',
+        artistic: 'oil painting style, classical art, renaissance',
+        illustration: 'children book illustration, colorful, friendly',
+        'stained-glass': 'stained glass window style, vibrant colors, cathedral'
+    };
+
+    const fullPrompt = `${subject}, ${stylePrompts[style]}, biblical theme`;
+    return generateImage(fullPrompt);
 }
