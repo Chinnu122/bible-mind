@@ -56,7 +56,7 @@ const IMAGE_PROVIDER = {
     name: 'nano-banana-pro',
     baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
     apiKey: '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',
-    model: 'black-forest-labs/flux-1.1-pro',
+    model: 'black-forest-labs/flux-schnell',
     dailyLimit: 5
 };
 
