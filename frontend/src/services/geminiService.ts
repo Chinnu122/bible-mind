@@ -51,14 +51,76 @@ const API_PROVIDERS = [
     }
 ];
 
-// Image Generation Provider (Hugging Face Inference API)
+// Image Generation Provider (Hugging Face Inference via Backend Proxy)
+// API Key is now handled securely on the backend
 const IMAGE_PROVIDER = {
-    name: 'hugging-face-pro',
-    baseUrl: 'https://api-inference.huggingface.co/models',
-    apiKey: import.meta.env.VITE_HF_API_KEY,
-    model: 'black-forest-labs/FLUX.1-dev',
-    dailyLimit: 5
+    name: 'hugging-face-proxy',
+    model: 'stabilityai/stable-diffusion-xl-base-1.0',
+    dailyLimit: 5,
+    // Use environment variable for API URL in production, fallback to localhost for dev
+    proxyUrl: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/ai/generate-image` : 'http://localhost:3001/api/ai/generate-image'
 };
+
+// ... (skipping cache functions which are unchanged)
+
+export async function generateImage(prompt: string, forceRefresh: boolean = false): Promise<string> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getImageFromCache(prompt);
+        if (cached) {
+            console.log('Returning cached image for:', prompt);
+            return cached;
+        }
+    }
+
+    // Check daily limit
+    const usage = getImageUsageStats();
+    if (usage.remaining <= 0) {
+        throw new Error(`Daily image limit reached (${usage.limit}/day). Try again tomorrow!`);
+    }
+
+    // Enhance prompt for Bible/spiritual theme
+    const enhancedPrompt = `Biblical spiritual art, ${prompt}, divine lighting, sacred atmosphere, detailed illustration, masterpiece quality`;
+
+    try {
+        console.log('Fetching from Backend Proxy:', IMAGE_PROVIDER.proxyUrl);
+
+        const response = await fetch(IMAGE_PROVIDER.proxyUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt: enhancedPrompt
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Backend Proxy Error:', { status: response.status, statusText: response.statusText, body: errorText });
+            throw new Error(`Image generation failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success || !data.imageUrl) {
+            throw new Error(data.error || 'Failed to generate image');
+        }
+
+        const imageUrl = data.imageUrl;
+
+        // Increment usage counter
+        incrementImageUsage();
+
+        // Cache the result
+        saveImageToCache(prompt, imageUrl);
+
+        return imageUrl;
+    } catch (error) {
+        console.error('Image generation failed:', error);
+        throw error;
+    }
+}
 
 // Track daily image generation usage
 const IMAGE_USAGE_KEY = 'biblemind_image_usage';
@@ -464,77 +526,7 @@ function saveImageToCache(prompt: string, imageUrl: string): void {
     }
 }
 
-export async function generateImage(prompt: string, forceRefresh: boolean = false): Promise<string> {
-    // Check cache first (unless forceRefresh)
-    if (!forceRefresh) {
-        const cached = getImageFromCache(prompt);
-        if (cached) {
-            console.log('Returning cached image for:', prompt);
-            return cached;
-        }
-    }
 
-    // Check daily limit
-    const usage = getImageUsageStats();
-    if (usage.remaining <= 0) {
-        throw new Error(`Daily image limit reached (${usage.limit}/day). Try again tomorrow!`);
-    }
-
-    // Enhance prompt for Bible/spiritual theme
-    const enhancedPrompt = `Biblical spiritual art, ${prompt}, divine lighting, sacred atmosphere, detailed illustration, masterpiece quality`;
-
-    try {
-        const response = await fetch(`${IMAGE_PROVIDER.baseUrl}/${IMAGE_PROVIDER.model}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${IMAGE_PROVIDER.apiKey}`,
-                'Content-Type': 'application/json',
-                'X-Use-Cache': 'false'
-            },
-            body: JSON.stringify({
-                inputs: enhancedPrompt,
-                parameters: {
-                    num_inference_steps: 25,
-                    guidance_scale: 7.5,
-                    width: 1024,
-                    height: 1024
-                }
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            console.error('Image generation error:', error);
-            throw new Error(`Image generation failed: ${response.status} - ${response.statusText}`);
-        }
-
-        // HF returns a Blob (binary image data)
-        const blob = await response.blob();
-
-        // Convert Blob to Base64 Data URL
-        const imageUrl = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-
-        if (!imageUrl) {
-            throw new Error('Failed to convert image blob to URL');
-        }
-
-        // Increment usage counter
-        incrementImageUsage();
-
-        // Cache the result
-        saveImageToCache(prompt, imageUrl);
-
-        return imageUrl;
-    } catch (error) {
-        console.error('Image generation failed:', error);
-        throw error;
-    }
-}
 
 // Generate Bible-themed images with preset styles
 export async function generateBibleImage(

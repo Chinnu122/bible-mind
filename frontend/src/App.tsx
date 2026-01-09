@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, BookOpen, Calendar, CheckCircle, MessageSquare, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
+  Settings, User, Home, BookOpen, Calendar, CheckCircle, Bot, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
 } from 'lucide-react';
 import Hero from './components/Hero';
 import SimpleBibleReader from './components/SimpleBibleReader';
@@ -16,7 +16,7 @@ import SettingsModal from './components/SettingsModal';
 import DailyVersePage from './components/DailyVersePage';
 import BibleStudyPage from './components/BibleStudyPage';
 import CharacterOfDay from './components/CharacterOfDay';
-import ReviewBoard from './components/ReviewBoard';
+import AIChatbot from './components/AIChatbot';
 import DailyQuiz from './components/DailyQuiz';
 import AtmospherePlayer from './components/AtmospherePlayer';
 import HolidayManager, { HolidayMode } from './components/holiday/HolidayManager';
@@ -111,7 +111,7 @@ function AppLayout() {
       books: 'Books',
       daily: 'Daily',
       quiz: 'Quiz',
-      reviews: 'Community',
+      reviews: 'AI Guide',
       pricing: 'Pricing',
       download: 'Download'
     },
@@ -123,7 +123,7 @@ function AppLayout() {
       books: 'పుస్తకాలు', // Books
       daily: 'దినచర్య', // Daily
       quiz: 'ప్రశ్నలు', // Quiz
-      reviews: 'సమాజం', // Community
+      reviews: 'AI గైడ్', // AI Guide
       pricing: 'ధరలు', // Pricing
       download: 'డౌన్‌లోడ్' // Download
     },
@@ -135,7 +135,7 @@ function AppLayout() {
       books: 'किताबें',
       daily: 'दैनिक',
       quiz: 'प्रश्नोत्तरी',
-      reviews: 'समुदाय',
+      reviews: 'AI गाइड',
       pricing: 'मूल्य',
       download: 'डाउनलोड'
     }
@@ -152,7 +152,7 @@ function AppLayout() {
     { id: 'books', icon: Library, label: t.books },
     { id: 'daily', icon: Calendar, label: t.daily },
     { id: 'quiz', icon: CheckCircle, label: t.quiz },
-    { id: 'reviews', icon: MessageSquare, label: t.reviews },
+    { id: 'reviews', icon: Bot, label: t.reviews },
     { id: 'pricing', icon: Crown, label: t.pricing },
     { id: 'download', icon: Download, label: t.download },
   ];
@@ -255,7 +255,7 @@ function AppLayout() {
             {view === 'notes' && <NotesPage key="notes" onBack={() => setView('landing')} onNavigateToAuth={() => setView('auth')} />}
             {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('landing')} />}
             {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
-            {view === 'reviews' && <ReviewBoard key="reviews" onBack={() => setView('landing')} />}
+            {view === 'reviews' && <AIChatbot key="reviews" onBack={() => setView('landing')} />}
             {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('landing')} />}
             {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('landing')} />}
             {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}

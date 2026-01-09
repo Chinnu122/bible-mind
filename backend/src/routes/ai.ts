@@ -1,9 +1,62 @@
 import { Router, Request, Response } from 'express';
+import axios from 'axios';
 
 const router = Router();
 
 /**
+ * POST /api/ai/generate-image
+ * Generate image via Hugging Face Inference API (Proxy)
+ */
+router.post('/generate-image', async (req: Request, res: Response) => {
+    try {
+        const { prompt } = req.body;
+
+        // Get API key from environment variable (set HF_API_KEY in .env or Render dashboard)
+        const apiKey = process.env.HF_API_KEY;
+
+        if (!apiKey) {
+            return res.status(500).json({ success: false, error: 'Server configuration error: Missing HF_API_KEY environment variable' });
+        }
+
+        const response = await axios.post(
+            'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
+            {
+                inputs: prompt,
+                parameters: {
+                    num_inference_steps: 25,
+                    guidance_scale: 7.5,
+                    width: 1024, // FLUX.1-dev supports higher res, sticking to 1024 for speed
+                    height: 1024
+                }
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                responseType: 'arraybuffer'
+            }
+        );
+
+        const base64 = Buffer.from(response.data, 'binary').toString('base64');
+        const dataUrl = `data:image/jpeg;base64,${base64}`;
+
+        res.json({ success: true, imageUrl: dataUrl });
+
+    } catch (error: any) {
+        console.error('AI Image Gen error:', error.response?.data ? String(error.response.data) : error.message);
+        console.error('Full Error:', JSON.stringify(error.response?.data || error, null, 2));
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate image',
+            details: error.response?.data ? String(error.response.data) : error.message
+        });
+    }
+});
+
+/**
  * GET /api/ai/context/:book/:chapter/:verse
+
  * Get AI-generated historical and cultural context for a verse
  * Placeholder for future OpenAI/LLM integration
  */
