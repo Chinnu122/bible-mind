@@ -44,6 +44,7 @@ export interface InterlinearWord {
     transliteration: string;
     english: string;
     telugu: string;
+    hindi: string;
     grammar: string;
 }
 
@@ -51,21 +52,32 @@ export interface InterlinearResponse {
     reference: string;
     translation_english: string;
     translation_telugu: string;
+    translation_hindi: string;
     words: InterlinearWord[];
 }
 
 export interface Story {
     title: string;
+    title_telugu: string;
+    title_hindi: string;
     content: string;
+    content_telugu: string;
+    content_hindi: string;
     moral: string;
+    moral_telugu: string;
+    moral_hindi: string;
     characters: string[];
 }
 
 export interface StudySession {
     topic: string;
     content: string;
+    content_telugu: string;
+    content_hindi: string;
     references: string[];
     questions: string[];
+    questions_telugu: string[];
+    questions_hindi: string[];
 }
 
 export interface VocabularyItem {
@@ -204,18 +216,20 @@ export async function fetchInterlinear(reference: string, isOldTestament: boolea
     const sourceLang = isOldTestament ? 'Hebrew' : 'Greek';
 
     const prompt = `Analyze the Bible verse ${reference}. 
-Provide a word-for-word interlinear translation from ${sourceLang} to English and Telugu.
+Provide a word-for-word interlinear translation from ${sourceLang} to English, Telugu, and Hindi.
 Return a JSON object with EXACTLY this structure:
 {
   "reference": "${reference}",
   "translation_english": "full English translation",
-  "translation_telugu": "full Telugu translation",
+  "translation_telugu": "full Telugu translation in Telugu script",
+  "translation_hindi": "full Hindi translation in Devanagari script",
   "words": [
     {
       "original": "${sourceLang} word",
       "transliteration": "romanized form",
       "english": "English meaning",
       "telugu": "Telugu meaning in Telugu script",
+      "hindi": "Hindi meaning in Devanagari script",
       "grammar": "grammatical info (noun, verb, etc)"
     }
   ]
@@ -244,11 +258,18 @@ export async function fetchStory(character: string, forceRefresh: boolean = fals
 
     const prompt = `Write a short, engaging children's story about the Bible character: ${character}.
 The story should be suitable for kids aged 6-12, easy to understand, with simple vocabulary.
+Provide the story in English, Telugu, and Hindi.
 Return a JSON object with EXACTLY this structure:
 {
-  "title": "Story title",
-  "content": "The story content (3-4 paragraphs, engaging and educational)",
-  "moral": "The moral lesson from this story",
+  "title": "Story title in English",
+  "title_telugu": "Story title in Telugu script",
+  "title_hindi": "Story title in Devanagari script",
+  "content": "The story content in English (3-4 paragraphs)",
+  "content_telugu": "The story content in Telugu script",
+  "content_hindi": "The story content in Devanagari script",
+  "moral": "The moral lesson in English",
+  "moral_telugu": "The moral lesson in Telugu script",
+  "moral_hindi": "The moral lesson in Devanagari script",
   "characters": ["${character}", "other characters in the story"]
 }`;
 
@@ -273,12 +294,17 @@ export async function fetchStudy(topic: string, forceRefresh: boolean = false): 
     }
 
     const prompt = `Create a detailed Bible study session on the topic: "${topic}".
+Provide content in English, Telugu, and Hindi.
 Return a JSON object with EXACTLY this structure:
 {
   "topic": "${topic}",
-  "content": "Detailed study content (3-5 paragraphs with theological insights)",
+  "content": "Detailed study content in English (3-5 paragraphs with theological insights)",
+  "content_telugu": "Study content translated to Telugu script",
+  "content_hindi": "Study content translated to Devanagari script",
   "references": ["Scripture reference 1", "Scripture reference 2", "...5-10 references"],
-  "questions": ["Reflection question 1?", "Reflection question 2?", "...3-5 questions"]
+  "questions": ["Reflection question 1 in English?", "Question 2?", "...3-5 questions"],
+  "questions_telugu": ["Reflection question 1 in Telugu?", "..."],
+  "questions_hindi": ["Reflection question 1 in Hindi?", "..."]
 }`;
 
     const response = await callAI(prompt);

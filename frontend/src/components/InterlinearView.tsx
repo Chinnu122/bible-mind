@@ -146,7 +146,7 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                         <div className="bg-gradient-to-r from-gold-900/30 to-amber-900/20 rounded-2xl p-6 border border-gold-500/20">
                             <h3 className="text-2xl font-serif text-gold-300 mb-4">{result.reference}</h3>
 
-                            <div className="grid md:grid-cols-2 gap-4">
+                            <div className="grid md:grid-cols-3 gap-4">
                                 <div className="bg-white/5 rounded-xl p-4">
                                     <div className="flex items-center gap-2 text-blue-400 mb-2">
                                         <Globe className="w-4 h-4" />
@@ -161,6 +161,15 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                                     </div>
                                     <p className="text-lg text-emerald-100" style={{ fontFamily: 'Noto Sans Telugu, sans-serif' }}>
                                         {result.translation_telugu}
+                                    </p>
+                                </div>
+
+                                <div className="bg-white/5 rounded-xl p-4">
+                                    <div className="flex items-center gap-2 text-orange-400 mb-2">
+                                        <span className="text-xs uppercase tracking-wider font-bold">हिंदी (Hindi)</span>
+                                    </div>
+                                    <p className="text-lg text-orange-100" style={{ fontFamily: 'Noto Sans Devanagari, sans-serif' }}>
+                                        {result.translation_hindi}
                                     </p>
                                 </div>
                             </div>
@@ -219,10 +228,13 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                                     </div>
 
                                     {/* Meanings */}
-                                    <div className="space-y-2 text-center border-t border-slate-700 pt-3">
+                                    <div className="space-y-1 text-center border-t border-slate-700 pt-3">
                                         <p className="font-medium text-indigo-300 text-sm">{word.english}</p>
                                         <p className="text-emerald-300 text-sm" style={{ fontFamily: 'Noto Sans Telugu, sans-serif' }}>
                                             {word.telugu}
+                                        </p>
+                                        <p className="text-orange-300 text-sm" style={{ fontFamily: 'Noto Sans Devanagari, sans-serif' }}>
+                                            {word.hindi}
                                         </p>
                                         <p className="text-xs text-slate-500 italic mt-2 opacity-0 group-hover:opacity-100 transition">
                                             {word.grammar}

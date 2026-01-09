@@ -18,6 +18,7 @@ export default function BibleStudyPage({ onBack }: BibleStudyPageProps) {
     const [aiStudy, setAiStudy] = useState<StudySession | null>(null);
     const [aiLoading, setAiLoading] = useState(false);
     const [aiError, setAiError] = useState<string | null>(null);
+    const [studyLanguage, setStudyLanguage] = useState<'english' | 'telugu' | 'hindi'>('english');
 
     const handleAiSearch = async (e: React.FormEvent, forceRefresh: boolean = false) => {
         e.preventDefault();
@@ -186,10 +187,32 @@ export default function BibleStudyPage({ onBack }: BibleStudyPageProps) {
                                 </div>
                             </div>
 
+                            {/* Language Tabs */}
+                            <div className="flex justify-center gap-2 mb-4">
+                                <button
+                                    onClick={() => setStudyLanguage('english')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition ${studyLanguage === 'english' ? 'bg-indigo-600 text-white' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+                                >
+                                    English
+                                </button>
+                                <button
+                                    onClick={() => setStudyLanguage('telugu')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition ${studyLanguage === 'telugu' ? 'bg-emerald-600 text-white' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+                                >
+                                    తెలుగు
+                                </button>
+                                <button
+                                    onClick={() => setStudyLanguage('hindi')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition ${studyLanguage === 'hindi' ? 'bg-orange-600 text-white' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+                                >
+                                    हिंदी
+                                </button>
+                            </div>
+
                             {/* Content */}
                             <div className="prose prose-invert max-w-none mb-6">
-                                {aiStudy.content.split('\n').map((para, idx) => (
-                                    <p key={idx} className="text-gray-300 leading-relaxed mb-3">{para}</p>
+                                {(studyLanguage === 'english' ? aiStudy.content : studyLanguage === 'telugu' ? aiStudy.content_telugu : aiStudy.content_hindi)?.split('\n').map((para, idx) => (
+                                    <p key={idx} className="text-gray-300 leading-relaxed mb-3" style={studyLanguage !== 'english' ? { fontFamily: studyLanguage === 'telugu' ? 'Noto Sans Telugu, sans-serif' : 'Noto Sans Devanagari, sans-serif' } : undefined}>{para}</p>
                                 ))}
                             </div>
 
@@ -209,10 +232,12 @@ export default function BibleStudyPage({ onBack }: BibleStudyPageProps) {
 
                             {/* Questions */}
                             <div className="bg-purple-900/20 rounded-lg p-4">
-                                <h4 className="text-sm font-bold text-purple-300 mb-2">Reflection Questions</h4>
+                                <h4 className="text-sm font-bold text-purple-300 mb-2">
+                                    {studyLanguage === 'english' ? 'Reflection Questions' : studyLanguage === 'telugu' ? 'ప్రతిబింబ ప్రశ్నలు' : 'प्रतिबिंब प्रश्न'}
+                                </h4>
                                 <ol className="list-decimal list-inside space-y-2">
-                                    {aiStudy.questions.map((q, idx) => (
-                                        <li key={idx} className="text-gray-300 italic">"{q}"</li>
+                                    {(studyLanguage === 'english' ? aiStudy.questions : studyLanguage === 'telugu' ? aiStudy.questions_telugu : aiStudy.questions_hindi)?.map((q, idx) => (
+                                        <li key={idx} className="text-gray-300 italic" style={studyLanguage !== 'english' ? { fontFamily: studyLanguage === 'telugu' ? 'Noto Sans Telugu, sans-serif' : 'Noto Sans Devanagari, sans-serif' } : undefined}>"{q}"</li>
                                     ))}
                                 </ol>
                             </div>

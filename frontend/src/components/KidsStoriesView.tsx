@@ -28,6 +28,7 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
     const [story, setStory] = useState<Story | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [language, setLanguage] = useState<'english' | 'telugu' | 'hindi'>('english');
 
     const cacheStats = getCacheStats();
 
@@ -158,9 +159,31 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
 
                             {/* Content */}
                             <div className="p-8 md:p-12">
+                                {/* Language Tabs */}
+                                <div className="flex justify-center gap-2 mb-6">
+                                    <button
+                                        onClick={() => setLanguage('english')}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition ${language === 'english' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'}`}
+                                    >
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => setLanguage('telugu')}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition ${language === 'telugu' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'}`}
+                                    >
+                                        తెలుగు
+                                    </button>
+                                    <button
+                                        onClick={() => setLanguage('hindi')}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition ${language === 'hindi' ? 'bg-orange-600 text-white' : 'bg-orange-100 text-orange-800 hover:bg-orange-200'}`}
+                                    >
+                                        हिंदी
+                                    </button>
+                                </div>
+
                                 {/* Title */}
                                 <h1 className="text-3xl md:text-4xl font-serif text-amber-800 mb-6 text-center">
-                                    {story.title}
+                                    {language === 'english' ? story.title : language === 'telugu' ? story.title_telugu : story.title_hindi}
                                 </h1>
 
                                 {/* Characters */}
@@ -178,8 +201,8 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
 
                                 {/* Story Content */}
                                 <div className="prose prose-lg prose-amber max-w-none mb-8">
-                                    {story.content.split('\n').map((paragraph, idx) => (
-                                        <p key={idx} className="text-slate-700 leading-relaxed mb-4 text-lg">
+                                    {(language === 'english' ? story.content : language === 'telugu' ? story.content_telugu : story.content_hindi)?.split('\n').map((paragraph, idx) => (
+                                        <p key={idx} className="text-slate-700 leading-relaxed mb-4 text-lg" style={language !== 'english' ? { fontFamily: language === 'telugu' ? 'Noto Sans Telugu, sans-serif' : 'Noto Sans Devanagari, sans-serif' } : undefined}>
                                             {paragraph}
                                         </p>
                                     ))}
@@ -188,9 +211,11 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
                                 {/* Moral */}
                                 <div className="bg-amber-100 rounded-xl p-6 border-2 border-amber-200">
                                     <h4 className="font-bold text-amber-800 uppercase text-sm tracking-wide mb-2 flex items-center gap-2">
-                                        <Sparkles className="w-4 h-4" /> Lesson for Us
+                                        <Sparkles className="w-4 h-4" /> {language === 'english' ? 'Lesson for Us' : language === 'telugu' ? 'మన కోసం పాఠం' : 'हमारे लिए सबक'}
                                     </h4>
-                                    <p className="italic text-amber-900 font-medium text-lg">{story.moral}</p>
+                                    <p className="italic text-amber-900 font-medium text-lg" style={language !== 'english' ? { fontFamily: language === 'telugu' ? 'Noto Sans Telugu, sans-serif' : 'Noto Sans Devanagari, sans-serif' } : undefined}>
+                                        {language === 'english' ? story.moral : language === 'telugu' ? story.moral_telugu : story.moral_hindi}
+                                    </p>
                                 </div>
 
                                 {/* Export & Regenerate Buttons */}
