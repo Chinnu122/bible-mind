@@ -1,5 +1,5 @@
 {
-  "name": "bible-mind-translator",
+  "name": "biblemind---ultimate-scripture-study",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,7 @@
   "dependencies": {
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
-    "@google/genai": "^1.34.0",
+    "@google/genai": "^1.35.0",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {

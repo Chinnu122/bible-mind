@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, Book, Users, ChevronRight, ExternalLink, MapPin, Sparkles, Wand2, Music, Cross, PlayCircle } from 'lucide-react';
+import { X, Search, Book, Users, ChevronRight, ExternalLink, MapPin, Sparkles, Wand2, Music, Cross, PlayCircle, Languages, BookOpen } from 'lucide-react';
 import InfographicPlayer from './InfographicPlayer';
+import InterlinearView from './InterlinearView';
+import KidsStoriesView from './KidsStoriesView';
 
 interface BiblicalItem {
     name: string;
@@ -29,7 +31,7 @@ interface DivineLibraryProps {
 }
 
 export default function DivineLibrary({ onClose }: DivineLibraryProps) {
-    const [activeTab, setActiveTab] = useState<'names' | 'places' | 'infographics'>('names');
+    const [activeTab, setActiveTab] = useState<'names' | 'places' | 'infographics' | 'wordstudy' | 'kidsstories'>('names');
     const [names, setNames] = useState<BiblicalItem[]>([]);
     const [places, setPlaces] = useState<BiblicalItem[]>([]);
     const [infographics, setInfographics] = useState<InfographicBook[]>([]);
@@ -165,27 +167,41 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                         <p className="text-sm text-slate-400">
                                             {activeTab === 'names' ? 'Biblical Names & Meanings' :
                                                 activeTab === 'places' ? 'Biblical Places & Meanings' :
-                                                    'Interactive Infographic Books'}
+                                                    activeTab === 'wordstudy' ? 'Hebrew/Greek to Telugu & English' :
+                                                        activeTab === 'kidsstories' ? 'Bible Stories for Children' :
+                                                            'Interactive Infographic Books'}
                                         </p>
                                     </div>
                                 </div>
                                 <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full"><X className="w-6 h-6 text-slate-400" /></button>
                             </div>
 
-                            {/* Tabs */}
-                            <div className="mt-4 flex gap-2">
-                                <button onClick={() => { setActiveTab('names'); setCategoryFilter(null); setSelectedItem(null); }}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'names' ? 'bg-gold-500/30 text-gold-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
-                                    <Users className="w-4 h-4" /> Names
-                                </button>
-                                <button onClick={() => { setActiveTab('places'); setCategoryFilter(null); setSelectedItem(null); }}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'places' ? 'bg-emerald-500/30 text-emerald-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
-                                    <MapPin className="w-4 h-4" /> Places
-                                </button>
-                                <button onClick={() => { setActiveTab('infographics'); setCategoryFilter(null); setSelectedItem(null); }}
-                                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'infographics' ? 'bg-purple-500/30 text-purple-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
-                                    <PlayCircle className="w-4 h-4" /> Infographics
-                                </button>
+                            {/* Tabs - 2 rows for all 5 tabs */}
+                            <div className="mt-4 space-y-2">
+                                <div className="flex gap-2">
+                                    <button onClick={() => { setActiveTab('names'); setCategoryFilter(null); setSelectedItem(null); }}
+                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'names' ? 'bg-gold-500/30 text-gold-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                                        <Users className="w-4 h-4" /> Names
+                                    </button>
+                                    <button onClick={() => { setActiveTab('places'); setCategoryFilter(null); setSelectedItem(null); }}
+                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'places' ? 'bg-emerald-500/30 text-emerald-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                                        <MapPin className="w-4 h-4" /> Places
+                                    </button>
+                                    <button onClick={() => { setActiveTab('infographics'); setCategoryFilter(null); setSelectedItem(null); }}
+                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'infographics' ? 'bg-purple-500/30 text-purple-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                                        <PlayCircle className="w-4 h-4" /> Infographics
+                                    </button>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={() => { setActiveTab('wordstudy'); setCategoryFilter(null); setSelectedItem(null); }}
+                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'wordstudy' ? 'bg-blue-500/30 text-blue-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                                        <Languages className="w-4 h-4" /> Word Study
+                                    </button>
+                                    <button onClick={() => { setActiveTab('kidsstories'); setCategoryFilter(null); setSelectedItem(null); }}
+                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'kidsstories' ? 'bg-amber-500/30 text-amber-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                                        <BookOpen className="w-4 h-4" /> Kids Stories
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Search */}
@@ -196,7 +212,7 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                             </div>
 
                             {/* Categories (Only for Names/Places) */}
-                            {activeTab !== 'infographics' && (
+                            {(activeTab === 'names' || activeTab === 'places') && (
                                 <div className="mt-3 flex flex-wrap gap-2">
                                     <button onClick={() => setCategoryFilter(null)}
                                         className={`px-3 py-1 rounded-lg text-xs ${!categoryFilter ? 'bg-gold-500/30 text-gold-200' : 'bg-white/5 text-slate-400'}`}>
@@ -214,7 +230,22 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
 
                         {/* Content */}
                         <div className="flex-1 overflow-hidden flex bg-[#0c0c0c]">
-                            {activeTab === 'infographics' ? (
+                            {/* Word Study Tab */}
+                            {activeTab === 'wordstudy' && (
+                                <div className="p-6 w-full overflow-y-auto">
+                                    <InterlinearView />
+                                </div>
+                            )}
+
+                            {/* Kids Stories Tab */}
+                            {activeTab === 'kidsstories' && (
+                                <div className="p-6 w-full overflow-y-auto">
+                                    <KidsStoriesView />
+                                </div>
+                            )}
+
+                            {/* Infographics Tab */}
+                            {activeTab === 'infographics' && (
                                 // Infographics Section with Featured Hero
                                 <div className="p-6 w-full overflow-y-auto">
                                     {filteredInfographics.length === 0 ? (
@@ -293,7 +324,10 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                         </>
                                     )}
                                 </div>
-                            ) : (
+                            )}
+
+                            {/* Names/Places Tab */}
+                            {(activeTab === 'names' || activeTab === 'places') && (
                                 // Existing List/Details View for Names/Places
                                 <>
                                     <div className={`${selectedItem ? 'w-1/3 hidden md:block' : 'w-full'} overflow-y-auto p-4 border-r border-white/10`}>

@@ -3,32 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bible Mind Translator</title>
+    <title>BibleMind</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Noto+Serif+Telugu&family=Noto+Serif+Devanagari&family=Noto+Serif+Tamil&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Lato:wght@300;400;700&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet">
     <style>
       body {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-        background-color: #050505;
-        color: white;
+        font-family: 'Lato', sans-serif;
+        background-color: #0f172a;
+        color: #e2e8f0;
       }
-      h1, h2, h3, .font-serif {
+      h1, h2, h3, h4, h5, h6, .serif-font {
         font-family: 'Cinzel', serif;
+      }
+      .telugu-font {
+        font-family: 'Noto Sans Telugu', sans-serif;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05); 
+        background: #1e293b;
       }
       ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1); 
+        background: #475569;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.2); 
+        background: #64748b;
+      }
+      .glass-panel {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
     </style>
   <script type="importmap">
@@ -37,7 +45,7 @@
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
   }
 }
