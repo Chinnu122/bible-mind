@@ -2,7 +2,7 @@
  * AI Service with Multi-Provider Fallback
  * Supports: OpenRouter (Gemini, GPT, Claude), Groq, Google AI Studio
  * Auto-switches to working API on failure
- * Image Generation via Nano Banana Pro
+ * Image Generation via Hugging Face Inference API
  */
 
 // API Provider configurations for TEXT generation
@@ -10,55 +10,117 @@ const API_PROVIDERS = [
     {
         name: 'google-ai-studio',
         baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
-        apiKey: 'AIzaSyA1m0sK7Wn_CM6FPg6R0B2T0JYDjqXVRk',
+        apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
         model: 'gemini-2.0-flash',
         type: 'google'
     },
     {
         name: 'openrouter-chatgpt-5.2',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_OPENROUTER_CHATGPT_KEY,
         model: 'openai/gpt-4o',
         type: 'openrouter'
     },
     {
         name: 'openrouter-claude-4.5-opus',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_OPENROUTER_CLAUDE_KEY,
         model: 'anthropic/claude-3.5-sonnet',
         type: 'openrouter'
     },
     {
         name: 'openrouter-gemini-flash',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_OPENROUTER_GEMINI_FLASH_KEY,
         model: 'google/gemini-2.0-flash-exp:free',
         type: 'openrouter'
     },
     {
         name: 'openrouter-gemini-pro',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_OPENROUTER_GEMINI_PRO_KEY,
         model: 'google/gemini-pro',
         type: 'openrouter'
     },
     {
         name: 'groq',
         baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_GROQ_API_KEY,
         model: 'llama-3.3-70b-versatile',
         type: 'openai-compatible'
     }
 ];
 
-// Image Generation Provider (Nano Banana Pro via OpenRouter)
+// Image Generation Provider (Hugging Face Inference via Backend Proxy)
+// API Key is now handled securely on the backend
 const IMAGE_PROVIDER = {
-    name: 'nano-banana-pro',
-    baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-    apiKey: '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',
-    model: 'black-forest-labs/flux-schnell',
-    dailyLimit: 5
+    name: 'hugging-face-proxy',
+    model: 'stabilityai/stable-diffusion-xl-base-1.0',
+    dailyLimit: 5,
+    // Use environment variable for API URL in production, fallback to localhost for dev
+    proxyUrl: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/ai/generate-image` : 'http://localhost:3001/api/ai/generate-image'
 };
+
+// ... (skipping cache functions which are unchanged)
+
+export async function generateImage(prompt: string, forceRefresh: boolean = false): Promise<string> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getImageFromCache(prompt);
+        if (cached) {
+            console.log('Returning cached image for:', prompt);
+            return cached;
+        }
+    }
+
+    // Check daily limit
+    const usage = getImageUsageStats();
+    if (usage.remaining <= 0) {
+        throw new Error(`Daily image limit reached (${usage.limit}/day). Try again tomorrow!`);
+    }
+
+    // Enhance prompt for Bible/spiritual theme
+    const enhancedPrompt = `Biblical spiritual art, ${prompt}, divine lighting, sacred atmosphere, detailed illustration, masterpiece quality`;
+
+    try {
+        console.log('Fetching from Backend Proxy:', IMAGE_PROVIDER.proxyUrl);
+
+        const response = await fetch(IMAGE_PROVIDER.proxyUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt: enhancedPrompt
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Backend Proxy Error:', { status: response.status, statusText: response.statusText, body: errorText });
+            throw new Error(`Image generation failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success || !data.imageUrl) {
+            throw new Error(data.error || 'Failed to generate image');
+        }
+
+        const imageUrl = data.imageUrl;
+
+        // Increment usage counter
+        incrementImageUsage();
+
+        // Cache the result
+        saveImageToCache(prompt, imageUrl);
+
+        return imageUrl;
+    } catch (error) {
+        console.error('Image generation failed:', error);
+        throw error;
+    }
+}
 
 // Track daily image generation usage
 const IMAGE_USAGE_KEY = 'biblemind_image_usage';
@@ -93,9 +155,9 @@ export interface InterlinearWord {
     original: string;
     transliteration: string;
     english: string;
-    telugu: string;
     hindi: string;
-    grammar: string;
+    morphology?: string;
+    strongs?: string;
 }
 
 export interface InterlinearResponse {
@@ -464,88 +526,7 @@ function saveImageToCache(prompt: string, imageUrl: string): void {
     }
 }
 
-export async function generateImage(prompt: string, forceRefresh: boolean = false): Promise<string> {
-    // Check cache first (unless forceRefresh)
-    if (!forceRefresh) {
-        const cached = getImageFromCache(prompt);
-        if (cached) {
-            console.log('Returning cached image for:', prompt);
-            return cached;
-        }
-    }
 
-    // Check daily limit
-    const usage = getImageUsageStats();
-    if (usage.remaining <= 0) {
-        throw new Error(`Daily image limit reached (${usage.limit}/day). Try again tomorrow!`);
-    }
-
-    // Enhance prompt for Bible/spiritual theme
-    const enhancedPrompt = `Biblical spiritual art, ${prompt}, divine lighting, sacred atmosphere, detailed illustration, masterpiece quality`;
-
-    try {
-        const response = await fetch(IMAGE_PROVIDER.baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${IMAGE_PROVIDER.apiKey}`,
-                'HTTP-Referer': window.location.origin,
-                'X-Title': 'Bible Mind'
-            },
-            body: JSON.stringify({
-                model: IMAGE_PROVIDER.model,
-                messages: [
-                    {
-                        role: 'user',
-                        content: enhancedPrompt
-                    }
-                ],
-                modalities: ['image', 'text'],
-                max_tokens: 1024
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            console.error('Image generation error:', error);
-            throw new Error(`Image generation failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // OpenRouter returns image in content array
-        let imageUrl = null;
-        const content = data.choices?.[0]?.message?.content;
-        if (Array.isArray(content)) {
-            const imageContent = content.find((c: { type: string }) => c.type === 'image_url' || c.type === 'image');
-            if (imageContent) {
-                imageUrl = imageContent.image_url?.url || imageContent.url || imageContent.data;
-            }
-        } else if (typeof content === 'string' && content.startsWith('data:image')) {
-            imageUrl = content;
-        }
-
-        // Fallback to old format
-        if (!imageUrl) {
-            imageUrl = data.data?.[0]?.url || data.data?.[0]?.b64_json;
-        }
-
-        if (!imageUrl) {
-            throw new Error('No image URL returned from API');
-        }
-
-        // Increment usage counter
-        incrementImageUsage();
-
-        // Cache the result
-        saveImageToCache(prompt, imageUrl);
-
-        return imageUrl;
-    } catch (error) {
-        console.error('Image generation failed:', error);
-        throw error;
-    }
-}
 
 // Generate Bible-themed images with preset styles
 export async function generateBibleImage(

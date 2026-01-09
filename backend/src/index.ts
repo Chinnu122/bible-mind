@@ -1,4 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Application, Request, Response, NextFunction } from 'express';
+
+// DEBUG: Check env var
+console.log('DEBUG: HF_API_KEY loaded:', !!process.env.HF_API_KEY);
+if (process.env.HF_API_KEY) console.log('DEBUG: HF_API_KEY length:', process.env.HF_API_KEY.length);
+
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';

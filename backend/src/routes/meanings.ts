@@ -23,18 +23,20 @@ router.get('/:word', async (req: Request, res: Response) => {
         if (/^[HGA]?\d+$/i.test(word)) {
             const definition = dataStore.getStrongs(word);
             if (definition) {
+                const multiLang = dataStore.getStrongsMultiLang(definition.strongsNumber);
+
                 return res.json({
                     success: true,
                     data: {
-                        word: definition.lemma,
+                        word: definition.word,
                         meaning: definition.gloss,
-                        definition: definition.definition || definition.gloss,
+                        definition: definition.gloss,
                         root: definition.rootWord,
                         usageCount: definition.occurrences,
                         language: definition.language === 'H' ? 'Hebrew' : definition.language === 'G' ? 'Greek' : 'Aramaic',
-                        transliteration: definition.transliteration,
-                        telugu: definition.teluguMeaning,
-                        hindi: definition.hindiMeaning
+                        transliteration: '', // Not available in basic definition
+                        telugu: multiLang?.telugu,
+                        hindi: multiLang?.hindi
                     }
                 });
             }
