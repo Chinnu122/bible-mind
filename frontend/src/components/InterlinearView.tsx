@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, Download, FileText, FileSpreadsheet, ArrowLeft, Book, Globe } from 'lucide-react';
+import { Search, Loader2, Download, FileText, FileSpreadsheet, ArrowLeft, Book, Globe, RefreshCw } from 'lucide-react';
 import { fetchInterlinear, InterlinearResponse, getCacheStats } from '../services/geminiService';
 import { exportInterlinearCSV, exportInterlinearPDF, downloadJSON } from '../utils/exportUtils';
 
@@ -26,7 +26,7 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
         return OT_BOOKS.some(book => ref.toLowerCase().includes(book.toLowerCase()));
     };
 
-    const handleSearch = async (e: React.FormEvent) => {
+    const handleSearch = async (e: React.FormEvent, forceRefresh: boolean = false) => {
         e.preventDefault();
         if (!reference.trim()) return;
 
@@ -36,10 +36,27 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
 
         try {
             const isOT = isOldTestament(reference);
-            const data = await fetchInterlinear(reference, isOT);
+            const data = await fetchInterlinear(reference, isOT, forceRefresh);
             setResult(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to fetch translation');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleRegenerate = async () => {
+        if (!reference.trim() || loading) return;
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const isOT = isOldTestament(reference);
+            const data = await fetchInterlinear(reference, isOT, true); // Force refresh
+            setResult(data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to regenerate');
         } finally {
             setLoading(false);
         }
@@ -149,25 +166,32 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                             </div>
                         </div>
 
-                        {/* Export Buttons */}
-                        <div className="flex justify-center gap-3">
+                        {/* Export & Regenerate Buttons */}
+                        <div className="flex flex-wrap justify-center gap-3">
+                            <button
+                                onClick={handleRegenerate}
+                                disabled={loading}
+                                className="flex items-center gap-2 px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 rounded-lg text-amber-300 transition disabled:opacity-50"
+                            >
+                                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Regenerate
+                            </button>
                             <button
                                 onClick={() => exportInterlinearCSV(result)}
                                 className="flex items-center gap-2 px-4 py-2 bg-green-600/20 hover:bg-green-600/30 border border-green-500/30 rounded-lg text-green-300 transition"
                             >
-                                <FileSpreadsheet className="w-4 h-4" /> Download CSV
+                                <FileSpreadsheet className="w-4 h-4" /> CSV
                             </button>
                             <button
                                 onClick={() => exportInterlinearPDF(result)}
                                 className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 rounded-lg text-red-300 transition"
                             >
-                                <FileText className="w-4 h-4" /> Download PDF
+                                <FileText className="w-4 h-4" /> PDF
                             </button>
                             <button
                                 onClick={() => downloadJSON(result, `interlinear_${result.reference.replace(/[:\s]/g, '_')}`)}
                                 className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg text-blue-300 transition"
                             >
-                                <Download className="w-4 h-4" /> Download JSON
+                                <Download className="w-4 h-4" /> JSON
                             </button>
                         </div>
 

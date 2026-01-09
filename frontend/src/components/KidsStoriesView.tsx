@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Loader2, Download, FileText, Book, Sparkles, Users } from 'lucide-react';
+import { ArrowLeft, Loader2, Download, FileText, Book, Sparkles, Users, RefreshCw } from 'lucide-react';
 import { fetchStory, Story, getCacheStats } from '../services/geminiService';
 import { exportStoryPDF, downloadJSON } from '../utils/exportUtils';
 
@@ -31,19 +31,25 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
 
     const cacheStats = getCacheStats();
 
-    const handleCharacterClick = async (charName: string) => {
+    const handleCharacterClick = async (charName: string, forceRefresh: boolean = false) => {
         setSelectedChar(charName);
         setLoading(true);
         setError(null);
-        setStory(null);
+        if (!forceRefresh) setStory(null);
 
         try {
-            const data = await fetchStory(charName);
+            const data = await fetchStory(charName, forceRefresh);
             setStory(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to generate story');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleRegenerate = () => {
+        if (selectedChar && !loading) {
+            handleCharacterClick(selectedChar, true);
         }
     };
 
@@ -187,19 +193,26 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
                                     <p className="italic text-amber-900 font-medium text-lg">{story.moral}</p>
                                 </div>
 
-                                {/* Export Buttons */}
-                                <div className="flex justify-center gap-3 mt-8 pt-6 border-t border-amber-200">
+                                {/* Export & Regenerate Buttons */}
+                                <div className="flex flex-wrap justify-center gap-3 mt-8 pt-6 border-t border-amber-200">
+                                    <button
+                                        onClick={handleRegenerate}
+                                        disabled={loading}
+                                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-50"
+                                    >
+                                        <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Regenerate
+                                    </button>
                                     <button
                                         onClick={() => exportStoryPDF(story)}
                                         className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition"
                                     >
-                                        <FileText className="w-4 h-4" /> Save as PDF
+                                        <FileText className="w-4 h-4" /> PDF
                                     </button>
                                     <button
                                         onClick={() => downloadJSON(story, `story_${selectedChar}`)}
                                         className="flex items-center gap-2 px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg border border-amber-300 transition"
                                     >
-                                        <Download className="w-4 h-4" /> Save Data
+                                        <Download className="w-4 h-4" /> JSON
                                     </button>
                                 </div>
                             </div>

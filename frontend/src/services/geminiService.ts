@@ -191,12 +191,14 @@ async function callAI(prompt: string, jsonMode: boolean = true): Promise<string>
 }
 
 // ========== INTERLINEAR ==========
-export async function fetchInterlinear(reference: string, isOldTestament: boolean): Promise<InterlinearResponse> {
-    // Check cache first
-    const cached = getCache<InterlinearResponse>(CACHE_KEYS.INTERLINEAR, reference);
-    if (cached) {
-        console.log('Returning cached interlinear for:', reference);
-        return cached;
+export async function fetchInterlinear(reference: string, isOldTestament: boolean, forceRefresh: boolean = false): Promise<InterlinearResponse> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getCache<InterlinearResponse>(CACHE_KEYS.INTERLINEAR, reference);
+        if (cached) {
+            console.log('Returning cached interlinear for:', reference);
+            return cached;
+        }
     }
 
     const sourceLang = isOldTestament ? 'Hebrew' : 'Greek';
@@ -230,12 +232,14 @@ Include 5-15 key words from the verse.`;
 }
 
 // ========== KIDS STORIES ==========
-export async function fetchStory(character: string): Promise<Story> {
-    // Check cache first
-    const cached = getCache<Story>(CACHE_KEYS.STORIES, character.toLowerCase());
-    if (cached) {
-        console.log('Returning cached story for:', character);
-        return cached;
+export async function fetchStory(character: string, forceRefresh: boolean = false): Promise<Story> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getCache<Story>(CACHE_KEYS.STORIES, character.toLowerCase());
+        if (cached) {
+            console.log('Returning cached story for:', character);
+            return cached;
+        }
     }
 
     const prompt = `Write a short, engaging children's story about the Bible character: ${character}.
@@ -258,12 +262,14 @@ Return a JSON object with EXACTLY this structure:
 }
 
 // ========== BIBLE STUDY ==========
-export async function fetchStudy(topic: string): Promise<StudySession> {
-    // Check cache first
-    const cached = getCache<StudySession>(CACHE_KEYS.STUDIES, topic.toLowerCase());
-    if (cached) {
-        console.log('Returning cached study for:', topic);
-        return cached;
+export async function fetchStudy(topic: string, forceRefresh: boolean = false): Promise<StudySession> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getCache<StudySession>(CACHE_KEYS.STUDIES, topic.toLowerCase());
+        if (cached) {
+            console.log('Returning cached study for:', topic);
+            return cached;
+        }
     }
 
     const prompt = `Create a detailed Bible study session on the topic: "${topic}".

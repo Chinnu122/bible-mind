@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BookOpen, MapPin, MessageCircle, AlertTriangle, Gift, History, ChevronDown, ChevronUp, ExternalLink, Search, Loader2, Download, FileText, Sparkles } from 'lucide-react';
+import { ArrowLeft, BookOpen, MapPin, MessageCircle, AlertTriangle, Gift, History, ChevronDown, ChevronUp, ExternalLink, Search, Loader2, Download, FileText, Sparkles, RefreshCw } from 'lucide-react';
 import { revelationChurches, Church } from '../data/revelationChurches';
 import { fetchStudy, StudySession, getCacheStats } from '../services/geminiService';
 import { exportStudyPDF, downloadJSON } from '../utils/exportUtils';
@@ -19,19 +19,35 @@ export default function BibleStudyPage({ onBack }: BibleStudyPageProps) {
     const [aiLoading, setAiLoading] = useState(false);
     const [aiError, setAiError] = useState<string | null>(null);
 
-    const handleAiSearch = async (e: React.FormEvent) => {
+    const handleAiSearch = async (e: React.FormEvent, forceRefresh: boolean = false) => {
         e.preventDefault();
         if (!topic.trim()) return;
 
         setAiLoading(true);
         setAiError(null);
-        setAiStudy(null);
+        if (!forceRefresh) setAiStudy(null);
 
         try {
-            const data = await fetchStudy(topic);
+            const data = await fetchStudy(topic, forceRefresh);
             setAiStudy(data);
         } catch (err) {
             setAiError(err instanceof Error ? err.message : 'Failed to generate study');
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    const handleRegenerate = async () => {
+        if (!topic.trim() || aiLoading) return;
+
+        setAiLoading(true);
+        setAiError(null);
+
+        try {
+            const data = await fetchStudy(topic, true);
+            setAiStudy(data);
+        } catch (err) {
+            setAiError(err instanceof Error ? err.message : 'Failed to regenerate');
         } finally {
             setAiLoading(false);
         }
@@ -148,6 +164,13 @@ export default function BibleStudyPage({ onBack }: BibleStudyPageProps) {
                             <div className="flex justify-between items-start mb-4">
                                 <h3 className="text-2xl font-serif text-indigo-200">{aiStudy.topic}</h3>
                                 <div className="flex gap-2">
+                                    <button
+                                        onClick={handleRegenerate}
+                                        disabled={aiLoading}
+                                        className="flex items-center gap-1 px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 rounded-lg text-amber-300 text-sm transition disabled:opacity-50"
+                                    >
+                                        <RefreshCw className={`w-4 h-4 ${aiLoading ? 'animate-spin' : ''}`} /> Regenerate
+                                    </button>
                                     <button
                                         onClick={() => exportStudyPDF(aiStudy)}
                                         className="flex items-center gap-1 px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 rounded-lg text-red-300 text-sm transition"
