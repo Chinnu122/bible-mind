@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, Book, Users, ChevronRight, ExternalLink, MapPin, Sparkles, Wand2, Music, Cross, PlayCircle, Languages, BookOpen } from 'lucide-react';
+import { X, Search, Book, Users, ChevronRight, ExternalLink, MapPin, Sparkles, Wand2, Music, Cross, PlayCircle, Languages, BookOpen, Image as ImageIcon } from 'lucide-react';
 import InfographicPlayer from './InfographicPlayer';
 import InterlinearView from './InterlinearView';
 import KidsStoriesView from './KidsStoriesView';
+import ImageGenerator from './ImageGenerator';
 
 interface BiblicalItem {
     name: string;
@@ -31,7 +32,7 @@ interface DivineLibraryProps {
 }
 
 export default function DivineLibrary({ onClose }: DivineLibraryProps) {
-    const [activeTab, setActiveTab] = useState<'names' | 'places' | 'infographics' | 'wordstudy' | 'kidsstories'>('names');
+    const [activeTab, setActiveTab] = useState<'names' | 'places' | 'infographics' | 'wordstudy' | 'kidsstories' | 'imageai'>('names');
     const [names, setNames] = useState<BiblicalItem[]>([]);
     const [places, setPlaces] = useState<BiblicalItem[]>([]);
     const [infographics, setInfographics] = useState<InfographicBook[]>([]);
@@ -201,6 +202,10 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                         className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'kidsstories' ? 'bg-amber-500/30 text-amber-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
                                         <BookOpen className="w-4 h-4" /> Kids Stories
                                     </button>
+                                    <button onClick={() => { setActiveTab('imageai'); setCategoryFilter(null); setSelectedItem(null); }}
+                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'imageai' ? 'bg-pink-500/30 text-pink-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                                        <ImageIcon className="w-4 h-4" /> Image AI
+                                    </button>
                                 </div>
                             </div>
 
@@ -241,6 +246,13 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                             {activeTab === 'kidsstories' && (
                                 <div className="p-6 w-full overflow-y-auto">
                                     <KidsStoriesView />
+                                </div>
+                            )}
+
+                            {/* Image AI Tab */}
+                            {activeTab === 'imageai' && (
+                                <div className="p-6 w-full overflow-y-auto">
+                                    <ImageGenerator />
                                 </div>
                             )}
 

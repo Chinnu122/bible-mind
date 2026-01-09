@@ -2,39 +2,89 @@
  * AI Service with Multi-Provider Fallback
  * Supports: OpenRouter (Gemini, GPT, Claude), Groq, Google AI Studio
  * Auto-switches to working API on failure
+ * Image Generation via Hugging Face Inference API
  */
 
-// API Provider configurations
+// API Provider configurations for TEXT generation
 const API_PROVIDERS = [
     {
         name: 'google-ai-studio',
         baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
-        apiKey: 'AIzaSyA1m0sK7Wn_CM6FPg6R0B2T0JYDjqXVRk',
+        apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
         model: 'gemini-2.0-flash',
         type: 'google'
     },
     {
+        name: 'openrouter-chatgpt-5.2',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: import.meta.env.VITE_OPENROUTER_CHATGPT_KEY,
+        model: 'openai/gpt-4o',
+        type: 'openrouter'
+    },
+    {
+        name: 'openrouter-claude-4.5-opus',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: import.meta.env.VITE_OPENROUTER_CLAUDE_KEY,
+        model: 'anthropic/claude-3.5-sonnet',
+        type: 'openrouter'
+    },
+    {
         name: 'openrouter-gemini-flash',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_OPENROUTER_GEMINI_FLASH_KEY,
         model: 'google/gemini-2.0-flash-exp:free',
         type: 'openrouter'
     },
     {
         name: 'openrouter-gemini-pro',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_OPENROUTER_GEMINI_PRO_KEY,
         model: 'google/gemini-pro',
         type: 'openrouter'
     },
     {
         name: 'groq',
         baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
-        apiKey: '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',
+        apiKey: import.meta.env.VITE_GROQ_API_KEY,
         model: 'llama-3.3-70b-versatile',
         type: 'openai-compatible'
     }
 ];
+
+// Image Generation Provider (Hugging Face Inference API)
+const IMAGE_PROVIDER = {
+    name: 'hugging-face-pro',
+    baseUrl: 'https://api-inference.huggingface.co/models',
+    apiKey: import.meta.env.VITE_HF_API_KEY,
+    model: 'black-forest-labs/FLUX.1-dev',
+    dailyLimit: 5
+};
+
+// Track daily image generation usage
+const IMAGE_USAGE_KEY = 'biblemind_image_usage';
+
+function getImageUsageToday(): number {
+    const usage = localStorage.getItem(IMAGE_USAGE_KEY);
+    if (usage) {
+        const data = JSON.parse(usage);
+        const today = new Date().toDateString();
+        if (data.date === today) {
+            return data.count;
+        }
+    }
+    return 0;
+}
+
+function incrementImageUsage(): void {
+    const today = new Date().toDateString();
+    const current = getImageUsageToday();
+    localStorage.setItem(IMAGE_USAGE_KEY, JSON.stringify({ date: today, count: current + 1 }));
+}
+
+export function getImageUsageStats(): { used: number; remaining: number; limit: number } {
+    const used = getImageUsageToday();
+    return { used, remaining: IMAGE_PROVIDER.dailyLimit - used, limit: IMAGE_PROVIDER.dailyLimit };
+}
 
 let currentProviderIndex = 0;
 
@@ -43,9 +93,9 @@ export interface InterlinearWord {
     original: string;
     transliteration: string;
     english: string;
-    telugu: string;
     hindi: string;
-    grammar: string;
+    morphology?: string;
+    strongs?: string;
 }
 
 export interface InterlinearResponse {
@@ -376,4 +426,128 @@ export function getCacheStats(): Record<string, number> {
         }
     });
     return stats;
+}
+
+// ========== IMAGE GENERATION ==========
+export interface GeneratedImage {
+    prompt: string;
+    imageUrl: string;
+    timestamp: number;
+}
+
+const IMAGE_CACHE_KEY = 'biblemind_image_cache';
+
+function getImageFromCache(prompt: string): string | null {
+    try {
+        const cache = localStorage.getItem(IMAGE_CACHE_KEY);
+        if (cache) {
+            const data = JSON.parse(cache) as Record<string, GeneratedImage>;
+            const cached = data[prompt.toLowerCase()];
+            if (cached) {
+                return cached.imageUrl;
+            }
+        }
+    } catch (e) {
+        console.error('Image cache read error:', e);
+    }
+    return null;
+}
+
+function saveImageToCache(prompt: string, imageUrl: string): void {
+    try {
+        const cache = localStorage.getItem(IMAGE_CACHE_KEY);
+        const data = cache ? JSON.parse(cache) : {};
+        data[prompt.toLowerCase()] = { prompt, imageUrl, timestamp: Date.now() };
+        localStorage.setItem(IMAGE_CACHE_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.error('Image cache write error:', e);
+    }
+}
+
+export async function generateImage(prompt: string, forceRefresh: boolean = false): Promise<string> {
+    // Check cache first (unless forceRefresh)
+    if (!forceRefresh) {
+        const cached = getImageFromCache(prompt);
+        if (cached) {
+            console.log('Returning cached image for:', prompt);
+            return cached;
+        }
+    }
+
+    // Check daily limit
+    const usage = getImageUsageStats();
+    if (usage.remaining <= 0) {
+        throw new Error(`Daily image limit reached (${usage.limit}/day). Try again tomorrow!`);
+    }
+
+    // Enhance prompt for Bible/spiritual theme
+    const enhancedPrompt = `Biblical spiritual art, ${prompt}, divine lighting, sacred atmosphere, detailed illustration, masterpiece quality`;
+
+    try {
+        const response = await fetch(`${IMAGE_PROVIDER.baseUrl}/${IMAGE_PROVIDER.model}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${IMAGE_PROVIDER.apiKey}`,
+                'Content-Type': 'application/json',
+                'X-Use-Cache': 'false'
+            },
+            body: JSON.stringify({
+                inputs: enhancedPrompt,
+                parameters: {
+                    num_inference_steps: 25,
+                    guidance_scale: 7.5,
+                    width: 1024,
+                    height: 1024
+                }
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            console.error('Image generation error:', error);
+            throw new Error(`Image generation failed: ${response.status} - ${response.statusText}`);
+        }
+
+        // HF returns a Blob (binary image data)
+        const blob = await response.blob();
+
+        // Convert Blob to Base64 Data URL
+        const imageUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+
+        if (!imageUrl) {
+            throw new Error('Failed to convert image blob to URL');
+        }
+
+        // Increment usage counter
+        incrementImageUsage();
+
+        // Cache the result
+        saveImageToCache(prompt, imageUrl);
+
+        return imageUrl;
+    } catch (error) {
+        console.error('Image generation failed:', error);
+        throw error;
+    }
+}
+
+// Generate Bible-themed images with preset styles
+export async function generateBibleImage(
+    subject: string,
+    style: 'realistic' | 'artistic' | 'illustration' | 'stained-glass' = 'artistic'
+): Promise<string> {
+    const stylePrompts = {
+        realistic: 'photorealistic, cinematic lighting, detailed',
+        artistic: 'oil painting style, classical art, renaissance',
+        illustration: 'children book illustration, colorful, friendly',
+        'stained-glass': 'stained glass window style, vibrant colors, cathedral'
+    };
+
+    const fullPrompt = `${subject}, ${stylePrompts[style]}, biblical theme`;
+    return generateImage(fullPrompt);
 }
