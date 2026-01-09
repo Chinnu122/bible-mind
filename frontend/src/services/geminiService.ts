@@ -54,9 +54,9 @@ const API_PROVIDERS = [
 // Image Generation Provider (Nano Banana Pro via OpenRouter)
 const IMAGE_PROVIDER = {
     name: 'nano-banana-pro',
-    baseUrl: 'https://openrouter.ai/api/v1/images/generations',
+    baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
     apiKey: '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',
-    model: 'black-forest-labs/flux-schnell',
+    model: 'black-forest-labs/flux-1.1-pro',
     dailyLimit: 5
 };
 
@@ -494,9 +494,14 @@ export async function generateImage(prompt: string, forceRefresh: boolean = fals
             },
             body: JSON.stringify({
                 model: IMAGE_PROVIDER.model,
-                prompt: enhancedPrompt,
-                n: 1,
-                size: '1024x1024'
+                messages: [
+                    {
+                        role: 'user',
+                        content: enhancedPrompt
+                    }
+                ],
+                modalities: ['image', 'text'],
+                max_tokens: 1024
             })
         });
 
@@ -507,7 +512,23 @@ export async function generateImage(prompt: string, forceRefresh: boolean = fals
         }
 
         const data = await response.json();
-        const imageUrl = data.data?.[0]?.url || data.data?.[0]?.b64_json;
+
+        // OpenRouter returns image in content array
+        let imageUrl = null;
+        const content = data.choices?.[0]?.message?.content;
+        if (Array.isArray(content)) {
+            const imageContent = content.find((c: { type: string }) => c.type === 'image_url' || c.type === 'image');
+            if (imageContent) {
+                imageUrl = imageContent.image_url?.url || imageContent.url || imageContent.data;
+            }
+        } else if (typeof content === 'string' && content.startsWith('data:image')) {
+            imageUrl = content;
+        }
+
+        // Fallback to old format
+        if (!imageUrl) {
+            imageUrl = data.data?.[0]?.url || data.data?.[0]?.b64_json;
+        }
 
         if (!imageUrl) {
             throw new Error('No image URL returned from API');
