@@ -215,14 +215,10 @@ router.get('/kids-story/:character', async (req: Request, res: Response) => {
 // ============================================
 
 /**
- * GET /ai/quiz
- * GET /ai/quiz/:topic
- * Get or generate a quiz game
+ * Helper function for quiz logic
  */
-router.get('/quiz/:topic?', async (req: Request, res: Response) => {
+async function handleQuizRequest(providedTopic: string | undefined, res: Response) {
     try {
-        // Use provided topic or generate a daily topic based on date
-        const providedTopic = req.params.topic;
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
         const quizTopic = providedTopic || `daily-${today}`;
 
@@ -264,6 +260,20 @@ router.get('/quiz/:topic?', async (req: Request, res: Response) => {
             error: error.message || 'Failed to get quiz'
         });
     }
+}
+
+/**
+ * GET /ai/quiz - Get daily quiz
+ */
+router.get('/quiz', async (req: Request, res: Response) => {
+    return handleQuizRequest(undefined, res);
+});
+
+/**
+ * GET /ai/quiz/:topic - Get quiz for specific topic
+ */
+router.get('/quiz/:topic', async (req: Request, res: Response) => {
+    return handleQuizRequest(req.params.topic, res);
 });
 
 // ============================================
