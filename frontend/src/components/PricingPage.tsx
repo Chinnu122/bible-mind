@@ -15,15 +15,15 @@ export default function PricingPage({ onBack }: PricingPageProps) {
         { icon: <Check className="w-5 h-5" />, text: "Telugu & Hindi Translations" },
         { icon: <Check className="w-5 h-5" />, text: "Unlimited Notes & Bookmarks" },
         { icon: <Check className="w-5 h-5" />, text: "All Visual Themes" },
-        { icon: <Check className="w-5 h-5" />, text: "AI Image Generation" },
         { icon: <Check className="w-5 h-5" />, text: "Character Stories" },
+        { icon: <Check className="w-5 h-5" />, text: "Interlinear Word Study" },
     ];
 
     const comingSoonFeatures = [
-        { icon: <Zap className="w-5 h-5" />, text: "AI Bible Study Assistant" },
         { icon: <Users className="w-5 h-5" />, text: "Family Sharing (5 members)" },
         { icon: <Shield className="w-5 h-5" />, text: "Offline Mode" },
         { icon: <Star className="w-5 h-5" />, text: "Exclusive Study Materials" },
+        { icon: <Zap className="w-5 h-5" />, text: "Audio Bible" },
     ];
 
     return (

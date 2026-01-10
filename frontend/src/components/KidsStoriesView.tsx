@@ -1,63 +1,128 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Loader2, Download, FileText, Book, Sparkles, Users, RefreshCw } from 'lucide-react';
-import { fetchStory, Story, getCacheStats } from '../services/geminiService';
-import { exportStoryPDF, downloadJSON } from '../utils/exportUtils';
+import { ArrowLeft, Sparkles, Users } from 'lucide-react';
 
 interface KidsStoriesViewProps {
     onBack?: () => void;
 }
 
-const CHARACTERS = [
-    { name: 'David', emoji: '👑', color: 'from-amber-500/20 to-yellow-500/20', description: 'The Shepherd King' },
-    { name: 'Moses', emoji: '🌊', color: 'from-blue-500/20 to-cyan-500/20', description: 'Parted the Red Sea' },
-    { name: 'Esther', emoji: '👸', color: 'from-pink-500/20 to-rose-500/20', description: 'Brave Queen of Persia' },
-    { name: 'Noah', emoji: '🚢', color: 'from-sky-500/20 to-blue-500/20', description: 'Builder of the Ark' },
-    { name: 'Daniel', emoji: '🦁', color: 'from-orange-500/20 to-amber-500/20', description: 'Survived the Lion\'s Den' },
-    { name: 'Jonah', emoji: '🐋', color: 'from-teal-500/20 to-emerald-500/20', description: 'Swallowed by a Fish' },
-    { name: 'Jesus', emoji: '✝️', color: 'from-gold-500/20 to-yellow-500/20', description: 'Son of God' },
-    { name: 'Paul', emoji: '✉️', color: 'from-purple-500/20 to-violet-500/20', description: 'Apostle to the Gentiles' },
-    { name: 'Joseph', emoji: '🌈', color: 'from-red-500/20 to-orange-500/20', description: 'Dreamer with Colorful Coat' },
-    { name: 'Ruth', emoji: '🌾', color: 'from-amber-500/20 to-green-500/20', description: 'Faithful Daughter-in-law' },
-    { name: 'Samson', emoji: '💪', color: 'from-red-500/20 to-rose-500/20', description: 'Strong Man of Israel' },
-    { name: 'Abraham', emoji: '⭐', color: 'from-indigo-500/20 to-blue-500/20', description: 'Father of Faith' }
+interface StoryData {
+    name: string;
+    emoji: string;
+    color: string;
+    description: string;
+    title: string;
+    content: string;
+    moral: string;
+    characters: string[];
+}
+
+const STORIES: StoryData[] = [
+    {
+        name: 'David',
+        emoji: '👑',
+        color: 'from-amber-500/20 to-yellow-500/20',
+        description: 'The Shepherd King',
+        title: 'David and Goliath',
+        content: `Long ago in Israel, there lived a young shepherd boy named David. He had a kind heart and loved to sing praises to God while watching his sheep.
+
+One day, a giant named Goliath challenged the army of Israel. Everyone was afraid! But David wasn't scared. He said, "God will help me!"
+
+David picked up five smooth stones and went to face the giant. Goliath laughed at the small boy. But David said, "You come with a sword, but I come in the name of the Lord!"
+
+David swung his sling and the stone hit Goliath right on the forehead. The giant fell down! David's faith in God helped him win.`,
+        moral: 'With faith in God, we can overcome any challenge, no matter how big it seems.',
+        characters: ['David', 'Goliath', 'King Saul']
+    },
+    {
+        name: 'Moses',
+        emoji: '🌊',
+        color: 'from-blue-500/20 to-cyan-500/20',
+        description: 'Parted the Red Sea',
+        title: 'Moses and the Red Sea',
+        content: `Moses was leading God's people out of Egypt. Pharaoh's army was chasing them!
+
+The people reached the Red Sea and had nowhere to go. They were very scared. But Moses trusted God.
+
+God told Moses to stretch out his staff over the sea. When he did, an amazing thing happened! The waters split apart, making a dry path through the middle.
+
+All the people walked safely through on dry ground. When the army tried to follow, the waters came back together. God saved His people!`,
+        moral: 'God always makes a way for those who trust in Him, even when things seem impossible.',
+        characters: ['Moses', 'Pharaoh', 'Israelites']
+    },
+    {
+        name: 'Noah',
+        emoji: '🚢',
+        color: 'from-sky-500/20 to-blue-500/20',
+        description: 'Builder of the Ark',
+        title: 'Noah and the Ark',
+        content: `Noah was a good man who loved God. One day, God told Noah to build a big boat called an ark.
+
+People laughed at Noah. "Why build a boat on dry land?" But Noah obeyed God and kept building.
+
+When the ark was ready, God sent animals two by two - lions, elephants, birds, and more! Then rain started falling. It rained for 40 days and nights!
+
+The ark floated safely on the water. When the rain stopped, Noah sent out a dove. It came back with an olive leaf! The flood was over. God put a rainbow in the sky as a promise.`,
+        moral: 'When we obey God even when others don\'t understand, He will always keep us safe.',
+        characters: ['Noah', 'Mrs. Noah', 'Animals']
+    },
+    {
+        name: 'Daniel',
+        emoji: '🦁',
+        color: 'from-orange-500/20 to-amber-500/20',
+        description: 'Survived the Lion\'s Den',
+        title: 'Daniel in the Lions\' Den',
+        content: `Daniel prayed to God three times every day. Some jealous men made a law that no one could pray to anyone except the king.
+
+Daniel kept praying to God anyway. The king was sad, but he had to punish Daniel. They threw Daniel into a den full of hungry lions!
+
+The king couldn't sleep all night. In the morning, he ran to the den. "Daniel! Did your God save you?"
+
+Daniel answered, "My God sent an angel to shut the lions' mouths! They didn't hurt me!" The king was so happy. He made everyone respect Daniel's God.`,
+        moral: 'God protects those who are faithful to Him, even in the most dangerous situations.',
+        characters: ['Daniel', 'King Darius', 'Lions']
+    },
+    {
+        name: 'Jonah',
+        emoji: '🐋',
+        color: 'from-teal-500/20 to-emerald-500/20',
+        description: 'Swallowed by a Fish',
+        title: 'Jonah and the Big Fish',
+        content: `God told Jonah to go to Nineveh and tell the people to stop being bad. But Jonah was scared and ran away on a ship!
+
+A big storm came. The sailors were afraid. Jonah knew the storm was because he ran from God. "Throw me into the sea!" he said.
+
+When they did, the storm stopped. God sent a huge fish to swallow Jonah! For three days, Jonah prayed inside the fish.
+
+The fish spit Jonah onto the beach. This time, Jonah obeyed God and went to Nineveh. The people listened and changed their ways!`,
+        moral: 'We cannot run from God. It\'s always better to obey Him the first time.',
+        characters: ['Jonah', 'Sailors', 'People of Nineveh']
+    },
+    {
+        name: 'Joseph',
+        emoji: '🌈',
+        color: 'from-red-500/20 to-orange-500/20',
+        description: 'Dreamer with Colorful Coat',
+        title: 'Joseph\'s Colorful Coat',
+        content: `Joseph's father gave him a beautiful coat of many colors. His brothers were jealous and sold him to traders going to Egypt.
+
+In Egypt, Joseph worked hard. Even when bad things happened, he trusted God. God gave Joseph the ability to understand dreams.
+
+One day, the king had a strange dream. Joseph explained it meant seven good years would come, then seven bad years of no food.
+
+The king made Joseph second in charge of all Egypt! When the bad years came, guess who came to buy food? Joseph's brothers! Joseph forgave them and brought his whole family to Egypt.`,
+        moral: 'God can turn bad situations into something good. Always trust His plan.',
+        characters: ['Joseph', 'Jacob', 'Brothers', 'Pharaoh']
+    }
 ];
 
 export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
     const [selectedChar, setSelectedChar] = useState<string | null>(null);
-    const [story, setStory] = useState<Story | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [language, setLanguage] = useState<'english' | 'telugu' | 'hindi'>('english');
 
-    const cacheStats = getCacheStats();
-
-    const handleCharacterClick = async (charName: string, forceRefresh: boolean = false) => {
-        setSelectedChar(charName);
-        setLoading(true);
-        setError(null);
-        if (!forceRefresh) setStory(null);
-
-        try {
-            const data = await fetchStory(charName, forceRefresh);
-            setStory(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to generate story');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleRegenerate = () => {
-        if (selectedChar && !loading) {
-            handleCharacterClick(selectedChar, true);
-        }
-    };
+    const story = STORIES.find(s => s.name === selectedChar);
 
     const handleBack = () => {
         setSelectedChar(null);
-        setStory(null);
-        setError(null);
     };
 
     return (
@@ -72,7 +137,7 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
                     )}
                     <div className="flex-1" />
                     <div className="text-xs text-slate-500">
-                        Saved: {cacheStats.stories} stories
+                        {STORIES.length} stories available
                     </div>
                 </div>
 
@@ -89,12 +154,12 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
             </div>
 
             {/* Character Grid */}
-            {!selectedChar && !loading && (
+            {!selectedChar && (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {CHARACTERS.map((char) => (
+                    {STORIES.map((char) => (
                         <motion.button
                             key={char.name}
-                            onClick={() => handleCharacterClick(char.name)}
+                            onClick={() => setSelectedChar(char.name)}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${char.color} border border-white/10 hover:border-gold-500/50 p-6 text-left transition-all group`}
@@ -102,36 +167,9 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
                             <div className="text-4xl mb-3">{char.emoji}</div>
                             <h3 className="text-xl font-bold text-white mb-1">{char.name}</h3>
                             <p className="text-sm text-slate-300 opacity-75">{char.description}</p>
-
-                            {/* Hover indicator */}
                             <div className="absolute bottom-0 left-0 right-0 h-1 bg-gold-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                         </motion.button>
                     ))}
-                </div>
-            )}
-
-            {/* Loading State */}
-            {loading && (
-                <div className="flex flex-col items-center justify-center py-20 text-gold-500">
-                    <div className="relative">
-                        <Loader2 className="w-12 h-12 animate-spin" />
-                        <Book className="w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gold-300" />
-                    </div>
-                    <p className="mt-4 text-lg">Creating story about {selectedChar}...</p>
-                    <p className="text-sm text-slate-500 mt-2">This may take a moment</p>
-                </div>
-            )}
-
-            {/* Error Message */}
-            {error && (
-                <div className="max-w-2xl mx-auto bg-red-500/20 border border-red-500/30 rounded-xl p-6 text-center">
-                    <p className="text-red-200 mb-4">{error}</p>
-                    <button
-                        onClick={handleBack}
-                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
-                    >
-                        Try Another Character
-                    </button>
                 </div>
             )}
 
@@ -159,31 +197,9 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
 
                             {/* Content */}
                             <div className="p-8 md:p-12">
-                                {/* Language Tabs */}
-                                <div className="flex justify-center gap-2 mb-6">
-                                    <button
-                                        onClick={() => setLanguage('english')}
-                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition ${language === 'english' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'}`}
-                                    >
-                                        English
-                                    </button>
-                                    <button
-                                        onClick={() => setLanguage('telugu')}
-                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition ${language === 'telugu' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'}`}
-                                    >
-                                        తెలుగు
-                                    </button>
-                                    <button
-                                        onClick={() => setLanguage('hindi')}
-                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition ${language === 'hindi' ? 'bg-orange-600 text-white' : 'bg-orange-100 text-orange-800 hover:bg-orange-200'}`}
-                                    >
-                                        हिंदी
-                                    </button>
-                                </div>
-
                                 {/* Title */}
                                 <h1 className="text-3xl md:text-4xl font-serif text-amber-800 mb-6 text-center">
-                                    {language === 'english' ? story.title : language === 'telugu' ? story.title_telugu : story.title_hindi}
+                                    {story.title}
                                 </h1>
 
                                 {/* Characters */}
@@ -201,8 +217,8 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
 
                                 {/* Story Content */}
                                 <div className="prose prose-lg prose-amber max-w-none mb-8">
-                                    {(language === 'english' ? story.content : language === 'telugu' ? story.content_telugu : story.content_hindi)?.split('\n').map((paragraph, idx) => (
-                                        <p key={idx} className="text-slate-700 leading-relaxed mb-4 text-lg" style={language !== 'english' ? { fontFamily: language === 'telugu' ? 'Noto Sans Telugu, sans-serif' : 'Noto Sans Devanagari, sans-serif' } : undefined}>
+                                    {story.content.split('\n').map((paragraph, idx) => (
+                                        <p key={idx} className="text-slate-700 leading-relaxed mb-4 text-lg">
                                             {paragraph}
                                         </p>
                                     ))}
@@ -211,34 +227,11 @@ export default function KidsStoriesView({ onBack }: KidsStoriesViewProps) {
                                 {/* Moral */}
                                 <div className="bg-amber-100 rounded-xl p-6 border-2 border-amber-200">
                                     <h4 className="font-bold text-amber-800 uppercase text-sm tracking-wide mb-2 flex items-center gap-2">
-                                        <Sparkles className="w-4 h-4" /> {language === 'english' ? 'Lesson for Us' : language === 'telugu' ? 'మన కోసం పాఠం' : 'हमारे लिए सबक'}
+                                        <Sparkles className="w-4 h-4" /> Lesson for Us
                                     </h4>
-                                    <p className="italic text-amber-900 font-medium text-lg" style={language !== 'english' ? { fontFamily: language === 'telugu' ? 'Noto Sans Telugu, sans-serif' : 'Noto Sans Devanagari, sans-serif' } : undefined}>
-                                        {language === 'english' ? story.moral : language === 'telugu' ? story.moral_telugu : story.moral_hindi}
+                                    <p className="italic text-amber-900 font-medium text-lg">
+                                        {story.moral}
                                     </p>
-                                </div>
-
-                                {/* Export & Regenerate Buttons */}
-                                <div className="flex flex-wrap justify-center gap-3 mt-8 pt-6 border-t border-amber-200">
-                                    <button
-                                        onClick={handleRegenerate}
-                                        disabled={loading}
-                                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-50"
-                                    >
-                                        <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Regenerate
-                                    </button>
-                                    <button
-                                        onClick={() => exportStoryPDF(story)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition"
-                                    >
-                                        <FileText className="w-4 h-4" /> PDF
-                                    </button>
-                                    <button
-                                        onClick={() => downloadJSON(story, `story_${selectedChar}`)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg border border-amber-300 transition"
-                                    >
-                                        <Download className="w-4 h-4" /> JSON
-                                    </button>
                                 </div>
                             </div>
                         </div>

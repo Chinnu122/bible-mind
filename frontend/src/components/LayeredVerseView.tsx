@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BookOpen, Sparkles, Languages, ChevronRight } from 'lucide-react';
+import { X, BookOpen, Languages, ChevronRight, Sparkles } from 'lucide-react';
 import { bibleAPI, BibleVerse, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
 
@@ -9,7 +9,7 @@ interface LayeredVerseViewProps {
     onClose: () => void;
 }
 
-type LayerType = 'text' | 'lexicon' | 'context';
+type LayerType = 'text' | 'lexicon';
 
 const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) => {
     const [activeLayer, setActiveLayer] = useState<LayerType>('text');
@@ -44,7 +44,9 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
                     gender: "",
                     occurrences: 0,
                     firstOccurrence: "",
-                    rootWord: ""
+                    rootWord: "",
+                    english: "Unknown",
+                    telugu: ""
                 });
             }
         } catch (error) {
@@ -58,7 +60,9 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
                 gender: "",
                 occurrences: 0,
                 firstOccurrence: "",
-                rootWord: ""
+                rootWord: "",
+                english: "Error",
+                telugu: ""
             });
         } finally {
             setLexiconLoading(false);
@@ -68,7 +72,6 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
     const tabs = [
         { id: 'text', label: 'Text', icon: BookOpen },
         { id: 'lexicon', label: 'Lexicon', icon: Languages },
-        { id: 'context', label: 'AI Context', icon: Sparkles },
     ];
 
     return (
@@ -147,7 +150,6 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
                                         <div>
                                             <div className="text-xs text-slate-500 mb-2 uppercase tracking-wide">Hebrew (Original)</div>
                                             <p className="text-2xl md:text-3xl text-gold-200 font-serif font-hebrew leading-loose text-right" dir="rtl">
-                                                {/* In a real app, we would map over words to make them clickable */}
                                                 {verse.hebrewText.split(' ').map((word, i) => (
                                                     <span
                                                         key={i}
@@ -190,28 +192,6 @@ const LayeredVerseView: React.FC<LayeredVerseViewProps> = ({ verse, onClose }) =
                                     loading={lexiconLoading}
                                     onClose={() => setActiveLayer('text')}
                                 />
-                            </motion.div>
-                        )}
-
-
-
-                        {activeLayer === 'context' && (
-                            <motion.div
-                                key="context"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                className="h-full flex flex-col items-center justify-center p-8 text-center"
-                            >
-                                <div className="p-6 rounded-full bg-purple-500/10 mb-6 relative">
-                                    <Sparkles size={48} className="text-purple-400" />
-                                    <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full" />
-                                </div>
-                                <h3 className="text-2xl text-crema-100 font-serif mb-2">AI Historical Context</h3>
-                                <p className="text-slate-400 max-w-md mx-auto mb-8">
-                                    Deep historical insights, timelines, and cultural context powered by AI.
-                                    (Coming soon in Phase 4)
-                                </p>
                             </motion.div>
                         )}
                     </AnimatePresence>

@@ -1,0 +1,41 @@
+# Node modules
+node_modules
+
+# Build outputs
+dist
+build
+
+# Development files
+*.log
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+coverage
+*.test.*
+*.spec.*
+
+# Source maps
+*.map
+
+# Android
+android
+*.apk
+*.aab
+
+# Large data files (should be served from CDN/API)
+public/data/*.json
+public/assets/audio
+public/assets/video
+
+# Capacitor
+capacitor.config.ts
+ios

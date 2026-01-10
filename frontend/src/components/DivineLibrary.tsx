@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, Book, Users, ChevronRight, ExternalLink, MapPin, Sparkles, Wand2, Music, Cross, PlayCircle, Languages, BookOpen, Image as ImageIcon } from 'lucide-react';
+import { X, Search, Book, Users, ChevronRight, ExternalLink, MapPin, Sparkles, Wand2, Music, Cross, PlayCircle, Languages, BookOpen } from 'lucide-react';
 import InfographicPlayer from './InfographicPlayer';
 import InterlinearView from './InterlinearView';
 import KidsStoriesView from './KidsStoriesView';
-import ImageGenerator from './ImageGenerator';
 
 interface BiblicalItem {
     name: string;
@@ -23,7 +22,7 @@ interface InfographicBook {
     title: string;
     color: string;
     bgMusic?: string;
-    content: any; // Using any for brevity as the full type is in the component
+    content: any;
     icon: string;
 }
 
@@ -32,7 +31,7 @@ interface DivineLibraryProps {
 }
 
 export default function DivineLibrary({ onClose }: DivineLibraryProps) {
-    const [activeTab, setActiveTab] = useState<'names' | 'places' | 'infographics' | 'wordstudy' | 'kidsstories' | 'imageai'>('names');
+    const [activeTab, setActiveTab] = useState<'names' | 'places' | 'infographics' | 'wordstudy' | 'kidsstories'>('names');
     const [names, setNames] = useState<BiblicalItem[]>([]);
     const [places, setPlaces] = useState<BiblicalItem[]>([]);
     const [infographics, setInfographics] = useState<InfographicBook[]>([]);
@@ -53,10 +52,9 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                         status: 404,
                         statusText: "File Not Found (Fetch Error)",
                         json: () => Promise.resolve([])
-                    } as Response)) // Fallback if file missing
+                    } as Response))
                 ]);
 
-                // Handle potential 404s cleanly
                 if (namesRes.ok) {
                     setNames(await namesRes.json());
                 }
@@ -64,11 +62,9 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                     setPlaces(await placesRes.json());
                 }
 
-                // Detailed Infographic handling
                 if (!infoRes.ok) {
                     console.error("Infographics fetch failed:", infoRes.status, infoRes.statusText);
-                    setInfographics([]); // Ensure empty
-                    // Optional: set a UI error state here if we had one
+                    setInfographics([]);
                 } else {
                     try {
                         const infoData = await infoRes.json();
@@ -95,7 +91,6 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
 
     const currentItems = activeTab === 'names' ? names : activeTab === 'places' ? places : [];
 
-    // Filter Names/Places
     const filteredItems = currentItems.filter(item => {
         const matchesSearch = !searchQuery ||
             item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -104,7 +99,6 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
         return matchesSearch && (!categoryFilter || item.category === categoryFilter);
     });
 
-    // Filter Infographics
     const filteredInfographics = infographics.filter(book =>
         !searchQuery || book.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -126,7 +120,7 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
     const getBookIcon = (iconName: string) => {
         switch (iconName) {
             case 'sparkles': return <Sparkles className="w-6 h-6 text-gold-400" />;
-            case 'waves': return <Wand2 className="w-6 h-6 text-blue-400" />; // approximating waves 
+            case 'waves': return <Wand2 className="w-6 h-6 text-blue-400" />;
             case 'music': return <Music className="w-6 h-6 text-purple-400" />;
             case 'compass': return <MapPin className="w-6 h-6 text-emerald-400" />;
             case 'cross': return <Cross className="w-6 h-6 text-red-400" />;
@@ -145,7 +139,6 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                 )}
             </AnimatePresence>
 
-            {/* Main Modal - Hide if infographic player is open to avoid clutter, or just layer above */}
             {!selectedInfographic && (
                 <>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -177,7 +170,7 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                 <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full"><X className="w-6 h-6 text-slate-400" /></button>
                             </div>
 
-                            {/* Tabs - 2 rows for all 5 tabs */}
+                            {/* Tabs */}
                             <div className="mt-4 space-y-2">
                                 <div className="flex gap-2">
                                     <button onClick={() => { setActiveTab('names'); setCategoryFilter(null); setSelectedItem(null); }}
@@ -201,10 +194,6 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                     <button onClick={() => { setActiveTab('kidsstories'); setCategoryFilter(null); setSelectedItem(null); }}
                                         className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'kidsstories' ? 'bg-amber-500/30 text-amber-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
                                         <BookOpen className="w-4 h-4" /> Kids Stories
-                                    </button>
-                                    <button onClick={() => { setActiveTab('imageai'); setCategoryFilter(null); setSelectedItem(null); }}
-                                        className={`flex-1 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${activeTab === 'imageai' ? 'bg-pink-500/30 text-pink-200' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
-                                        <ImageIcon className="w-4 h-4" /> Image AI
                                     </button>
                                 </div>
                             </div>
@@ -249,16 +238,8 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
                                 </div>
                             )}
 
-                            {/* Image AI Tab */}
-                            {activeTab === 'imageai' && (
-                                <div className="p-6 w-full overflow-y-auto">
-                                    <ImageGenerator />
-                                </div>
-                            )}
-
                             {/* Infographics Tab */}
                             {activeTab === 'infographics' && (
-                                // Infographics Section with Featured Hero
                                 <div className="p-6 w-full overflow-y-auto">
                                     {filteredInfographics.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center h-full text-slate-500">
@@ -340,7 +321,6 @@ export default function DivineLibrary({ onClose }: DivineLibraryProps) {
 
                             {/* Names/Places Tab */}
                             {(activeTab === 'names' || activeTab === 'places') && (
-                                // Existing List/Details View for Names/Places
                                 <>
                                     <div className={`${selectedItem ? 'w-1/3 hidden md:block' : 'w-full'} overflow-y-auto p-4 border-r border-white/10`}>
                                         {loading ? (

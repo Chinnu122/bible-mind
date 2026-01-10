@@ -3,66 +3,112 @@
  * Supports CSV, PDF, and JSON exports
  */
 
-import { InterlinearResponse, Story, StudySession, VocabularyItem } from '../services/geminiService';
+// Type definitions (previously imported from geminiService)
+export interface InterlinearResponse {
+  reference: string;
+  translation_english: string;
+  translation_telugu: string;
+  translation_hindi?: string;
+  words: Array<{
+    original: string;
+    transliteration: string;
+    english: string;
+    telugu: string;
+    hindi?: string;
+    grammar: string;
+  }>;
+}
+
+export interface Story {
+  title: string;
+  title_telugu?: string;
+  title_hindi?: string;
+  characters: string[];
+  content: string;
+  content_telugu?: string;
+  content_hindi?: string;
+  moral: string;
+  moral_telugu?: string;
+  moral_hindi?: string;
+}
+
+export interface StudySession {
+  topic: string;
+  content: string;
+  content_telugu?: string;
+  content_hindi?: string;
+  references: string[];
+  questions: string[];
+  questions_telugu?: string[];
+  questions_hindi?: string[];
+}
+
+export interface VocabularyItem {
+  hebrew: string;
+  english: string;
+  telugu: string;
+  hindi?: string;
+  occurrences: number;
+}
 
 // ========== CSV EXPORT ==========
 export function downloadCSV(data: any[], filename: string, headers?: string[]): void {
-    const csvHeaders = headers || Object.keys(data[0] || {});
+  const csvHeaders = headers || Object.keys(data[0] || {});
 
-    const csvRows = [
-        csvHeaders.join(','),
-        ...data.map(row =>
-            csvHeaders.map(header => {
-                const value = row[header] ?? '';
-                // Escape quotes and wrap in quotes if contains comma or quote
-                const escaped = String(value).replace(/"/g, '""');
-                return escaped.includes(',') || escaped.includes('"') || escaped.includes('\n')
-                    ? `"${escaped}"`
-                    : escaped;
-            }).join(',')
-        )
-    ];
+  const csvRows = [
+    csvHeaders.join(','),
+    ...data.map(row =>
+      csvHeaders.map(header => {
+        const value = row[header] ?? '';
+        // Escape quotes and wrap in quotes if contains comma or quote
+        const escaped = String(value).replace(/"/g, '""');
+        return escaped.includes(',') || escaped.includes('"') || escaped.includes('\n')
+          ? `"${escaped}"`
+          : escaped;
+      }).join(',')
+    )
+  ];
 
-    const csvContent = '\uFEFF' + csvRows.join('\n'); // BOM for UTF-8
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    downloadBlob(blob, filename.endsWith('.csv') ? filename : `${filename}.csv`);
+  const csvContent = '\uFEFF' + csvRows.join('\n'); // BOM for UTF-8
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  downloadBlob(blob, filename.endsWith('.csv') ? filename : `${filename}.csv`);
 }
 
 // Export interlinear data as CSV
 export function exportInterlinearCSV(data: InterlinearResponse): void {
-    const rows = data.words.map(word => ({
-        Original: word.original,
-        Transliteration: word.transliteration,
-        English: word.english,
-        Telugu: word.telugu,
-        Grammar: word.grammar
-    }));
+  const rows = data.words.map(word => ({
+    Original: word.original,
+    Transliteration: word.transliteration,
+    English: word.english,
+    Telugu: word.telugu,
+    Grammar: word.grammar
+  }));
 
-    downloadCSV(rows, `interlinear_${data.reference.replace(/[:\s]/g, '_')}.csv`);
+  downloadCSV(rows, `interlinear_${data.reference.replace(/[:\s]/g, '_')}.csv`);
 }
 
 // Export vocabulary as CSV
 export function exportVocabularyCSV(data: VocabularyItem[], bookName: string): void {
-    const rows = data.map(item => ({
-        Hebrew: item.hebrew,
-        English: item.english,
-        Telugu: item.telugu,
-        Hindi: item.hindi,
-        Occurrences: item.occurrences
-    }));
+  const rows = data.map(item => ({
+    Hebrew: item.hebrew,
+    English: item.english,
+    Telugu: item.telugu,
+    Hindi: item.hindi,
+    Occurrences: item.occurrences
+  }));
 
-    downloadCSV(rows, `vocabulary_${bookName}.csv`);
+  downloadCSV(rows, `vocabulary_${bookName}.csv`);
 }
 
 // ========== PDF EXPORT (using browser print) ==========
 export function downloadPDF(content: string, title: string): void {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-        alert('Please allow popups to download PDF');
-        return;
-    }
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Please allow popups to download PDF');
+    return;
+  }
 
-    printWindow.document.write(`
+  printWindow.document.write(`
     <!DOCTYPE html>
     <html>
     <head>
@@ -94,12 +140,12 @@ export function downloadPDF(content: string, title: string): void {
     </body>
     </html>
   `);
-    printWindow.document.close();
+  printWindow.document.close();
 }
 
 // Export story as PDF
 export function exportStoryPDF(story: Story): void {
-    const content = `
+  const content = `
     <h1>${story.title}</h1>
     <h2>Characters</h2>
     <p>${story.characters.join(', ')}</p>
@@ -110,12 +156,12 @@ export function exportStoryPDF(story: Story): void {
       <p><em>${story.moral}</em></p>
     </div>
   `;
-    downloadPDF(content, story.title);
+  downloadPDF(content, story.title);
 }
 
 // Export study as PDF
 export function exportStudyPDF(study: StudySession): void {
-    const content = `
+  const content = `
     <h1>Bible Study: ${study.topic}</h1>
     <h2>Content</h2>
     <div>${study.content.split('\n').map(p => `<p>${p}</p>`).join('')}</div>
@@ -124,12 +170,12 @@ export function exportStudyPDF(study: StudySession): void {
     <h2>Reflection Questions</h2>
     <ol>${study.questions.map(q => `<li>${q}</li>`).join('')}</ol>
   `;
-    downloadPDF(content, `Bible Study - ${study.topic}`);
+  downloadPDF(content, `Bible Study - ${study.topic}`);
 }
 
 // Export interlinear as PDF
 export function exportInterlinearPDF(data: InterlinearResponse): void {
-    const tableRows = data.words.map(word => `
+  const tableRows = data.words.map(word => `
     <tr>
       <td class="hebrew">${word.original}</td>
       <td>${word.transliteration}</td>
@@ -139,7 +185,7 @@ export function exportInterlinearPDF(data: InterlinearResponse): void {
     </tr>
   `).join('');
 
-    const content = `
+  const content = `
     <h1>Interlinear: ${data.reference}</h1>
     <h2>English Translation</h2>
     <p>${data.translation_english}</p>
@@ -159,24 +205,24 @@ export function exportInterlinearPDF(data: InterlinearResponse): void {
       <tbody>${tableRows}</tbody>
     </table>
   `;
-    downloadPDF(content, `Interlinear - ${data.reference}`);
+  downloadPDF(content, `Interlinear - ${data.reference}`);
 }
 
 // ========== JSON EXPORT ==========
 export function downloadJSON(data: any, filename: string): void {
-    const jsonContent = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json' });
-    downloadBlob(blob, filename.endsWith('.json') ? filename : `${filename}.json`);
+  const jsonContent = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonContent], { type: 'application/json' });
+  downloadBlob(blob, filename.endsWith('.json') ? filename : `${filename}.json`);
 }
 
 // ========== HELPER ==========
 function downloadBlob(blob: Blob, filename: string): void {
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }

@@ -105,8 +105,7 @@ export default function VerseGallery({ onBack }: { onBack: () => void }) {
                             Divine Gallery
                         </h2>
                         <p className="text-slate-400 max-w-xl">
-                            AI-generated visualizations of scripture, updated hourly.
-                            Powered by Gemini & Flux.
+                            Curated visualizations of scripture to inspire your faith journey.
                         </p>
                     </div>
                 </div>

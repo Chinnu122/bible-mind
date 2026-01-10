@@ -1,68 +1,100 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, Download, FileText, FileSpreadsheet, ArrowLeft, Book, Globe, RefreshCw } from 'lucide-react';
-import { fetchInterlinear, InterlinearResponse, getCacheStats } from '../services/geminiService';
-import { exportInterlinearCSV, exportInterlinearPDF, downloadJSON } from '../utils/exportUtils';
+import { Search, ArrowLeft, Book, Globe } from 'lucide-react';
 
 interface InterlinearViewProps {
     onBack?: () => void;
 }
 
-const OT_BOOKS = [
-    "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
-    "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra",
-    "Nehemiah", "Esther", "Job", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon",
-    "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos",
-    "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi"
-];
+interface WordData {
+    original: string;
+    transliteration: string;
+    english: string;
+    telugu: string;
+    hindi: string;
+    grammar: string;
+}
+
+interface VerseData {
+    reference: string;
+    translation_english: string;
+    translation_telugu: string;
+    translation_hindi: string;
+    words: WordData[];
+}
+
+// Pre-defined interlinear data for common verses
+const VERSE_DATA: Record<string, VerseData> = {
+    'Genesis 1:1': {
+        reference: 'Genesis 1:1',
+        translation_english: 'In the beginning God created the heaven and the earth.',
+        translation_telugu: 'ఆదిలో దేవుడు భూమ్యాకాశములను సృజించెను.',
+        translation_hindi: 'आदि में परमेश्‍वर ने आकाश और पृथ्वी की सृष्‍टि की।',
+        words: [
+            { original: 'בְּרֵאשִׁית', transliteration: 'bereshit', english: 'In the beginning', telugu: 'ఆదిలో', hindi: 'आदि में', grammar: 'noun, common, feminine' },
+            { original: 'בָּרָא', transliteration: 'bara', english: 'created', telugu: 'సృజించెను', hindi: 'सृष्टि की', grammar: 'verb, qal, perfect' },
+            { original: 'אֱלֹהִים', transliteration: 'elohim', english: 'God', telugu: 'దేవుడు', hindi: 'परमेश्वर', grammar: 'noun, masculine, plural' },
+            { original: 'אֵת', transliteration: 'et', english: '(object marker)', telugu: '-', hindi: '-', grammar: 'particle' },
+            { original: 'הַשָּׁמַיִם', transliteration: 'hashamayim', english: 'the heavens', telugu: 'ఆకాశమును', hindi: 'आकाश', grammar: 'noun, masculine, plural' },
+            { original: 'וְאֵת', transliteration: "ve'et", english: 'and', telugu: 'మరియు', hindi: 'और', grammar: 'conjunction + particle' },
+            { original: 'הָאָרֶץ', transliteration: "ha'aretz", english: 'the earth', telugu: 'భూమిని', hindi: 'पृथ्वी', grammar: 'noun, common, feminine' }
+        ]
+    },
+    'John 3:16': {
+        reference: 'John 3:16',
+        translation_english: 'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.',
+        translation_telugu: 'దేవుడు లోకమును ఎంతో ప్రేమించెను గనుక ఆయన తన అద్వితీయ కుమారుని ఇచ్చెను.',
+        translation_hindi: 'क्योंकि परमेश्वर ने जगत से ऐसा प्रेम रखा कि उसने अपना एकलौता पुत्र दे दिया।',
+        words: [
+            { original: 'Οὕτως', transliteration: 'houtos', english: 'For...so', telugu: 'ఎంతో', hindi: 'ऐसा', grammar: 'adverb' },
+            { original: 'ἠγάπησεν', transliteration: 'egapesen', english: 'loved', telugu: 'ప్రేమించెను', hindi: 'प्रेम रखा', grammar: 'verb, aorist, active' },
+            { original: 'ὁ θεὸς', transliteration: 'ho theos', english: 'God', telugu: 'దేవుడు', hindi: 'परमेश्वर', grammar: 'noun, nominative' },
+            { original: 'τὸν κόσμον', transliteration: 'ton kosmon', english: 'the world', telugu: 'లోకమును', hindi: 'जगत', grammar: 'noun, accusative' },
+            { original: 'ὥστε', transliteration: 'hoste', english: 'that', telugu: 'గనుక', hindi: 'कि', grammar: 'conjunction' },
+            { original: 'τὸν υἱὸν', transliteration: 'ton huion', english: 'the Son', telugu: 'కుమారుని', hindi: 'पुत्र', grammar: 'noun, accusative' },
+            { original: 'ἔδωκεν', transliteration: 'edoken', english: 'he gave', telugu: 'ఇచ్చెను', hindi: 'दे दिया', grammar: 'verb, aorist, active' }
+        ]
+    },
+    'Psalm 23:1': {
+        reference: 'Psalm 23:1',
+        translation_english: 'The LORD is my shepherd; I shall not want.',
+        translation_telugu: 'యెహోవా నా కాపరి, నాకు లేమి కలుగదు.',
+        translation_hindi: 'यहोवा मेरा चरवाहा है; मुझे कुछ घटी न होगी।',
+        words: [
+            { original: 'יְהוָה', transliteration: 'YHWH', english: 'The LORD', telugu: 'యెహోవా', hindi: 'यहोवा', grammar: 'proper noun' },
+            { original: 'רֹעִי', transliteration: "ro'i", english: 'my shepherd', telugu: 'నా కాపరి', hindi: 'मेरा चरवाहा', grammar: 'noun + suffix' },
+            { original: 'לֹא', transliteration: 'lo', english: 'not', telugu: 'కాదు', hindi: 'नहीं', grammar: 'adverb, negative' },
+            { original: 'אֶחְסָר', transliteration: 'echsar', english: 'I shall want', telugu: 'లేమి కలుగదు', hindi: 'घटी होगी', grammar: 'verb, qal, imperfect' }
+        ]
+    }
+};
+
+const QUICK_REFS = ['Genesis 1:1', 'John 3:16', 'Psalm 23:1'];
 
 export default function InterlinearView({ onBack }: InterlinearViewProps) {
     const [reference, setReference] = useState('');
-    const [result, setResult] = useState<InterlinearResponse | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState<VerseData | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const isOldTestament = (ref: string): boolean => {
-        return OT_BOOKS.some(book => ref.toLowerCase().includes(book.toLowerCase()));
-    };
-
-    const handleSearch = async (e: React.FormEvent, forceRefresh: boolean = false) => {
+    const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (!reference.trim()) return;
 
-        setLoading(true);
         setError(null);
         setResult(null);
 
-        try {
-            const isOT = isOldTestament(reference);
-            const data = await fetchInterlinear(reference, isOT, forceRefresh);
-            setResult(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to fetch translation');
-        } finally {
-            setLoading(false);
+        // Check if we have this verse in our data
+        const normalizedRef = reference.trim();
+        const foundVerse = Object.entries(VERSE_DATA).find(([key]) =>
+            key.toLowerCase() === normalizedRef.toLowerCase()
+        );
+
+        if (foundVerse) {
+            setResult(foundVerse[1]);
+        } else {
+            setError(`Interlinear data not available for "${reference}". Try: Genesis 1:1, John 3:16, or Psalm 23:1`);
         }
     };
-
-    const handleRegenerate = async () => {
-        if (!reference.trim() || loading) return;
-
-        setLoading(true);
-        setError(null);
-
-        try {
-            const isOT = isOldTestament(reference);
-            const data = await fetchInterlinear(reference, isOT, true); // Force refresh
-            setResult(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to regenerate');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const cacheStats = getCacheStats();
 
     return (
         <div className="space-y-6">
@@ -78,7 +110,7 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                     <p className="text-slate-400 text-sm">Word-for-word: Hebrew/Greek → Telugu & English</p>
                 </div>
                 <div className="text-xs text-slate-500">
-                    Cached: {cacheStats.interlinear} verses
+                    {Object.keys(VERSE_DATA).length} verses available
                 </div>
             </div>
 
@@ -96,10 +128,10 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                 </div>
                 <button
                     type="submit"
-                    disabled={loading || !reference.trim()}
+                    disabled={!reference.trim()}
                     className="bg-gold-600 hover:bg-gold-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold px-6 py-4 rounded-xl flex items-center gap-2 transition-all"
                 >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
+                    <Search className="w-5 h-5" />
                     Analyze
                 </button>
             </form>
@@ -107,10 +139,14 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
             {/* Quick Examples */}
             <div className="flex flex-wrap justify-center gap-2">
                 <span className="text-slate-500 text-sm">Try:</span>
-                {['Genesis 1:1', 'John 3:16', 'Psalm 23:1', 'Romans 8:28'].map(ref => (
+                {QUICK_REFS.map(ref => (
                     <button
                         key={ref}
-                        onClick={() => setReference(ref)}
+                        onClick={() => {
+                            setReference(ref);
+                            setResult(VERSE_DATA[ref]);
+                            setError(null);
+                        }}
                         className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-full text-sm text-slate-300 transition"
                     >
                         {ref}
@@ -122,14 +158,6 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
             {error && (
                 <div className="max-w-2xl mx-auto bg-red-500/20 border border-red-500/30 rounded-xl p-4 text-center text-red-200">
                     {error}
-                </div>
-            )}
-
-            {/* Loading State */}
-            {loading && (
-                <div className="flex flex-col items-center justify-center py-16 text-gold-500">
-                    <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                    <p className="text-sm uppercase tracking-widest opacity-80">Consulting Divine Wisdom...</p>
                 </div>
             )}
 
@@ -175,35 +203,6 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                             </div>
                         </div>
 
-                        {/* Export & Regenerate Buttons */}
-                        <div className="flex flex-wrap justify-center gap-3">
-                            <button
-                                onClick={handleRegenerate}
-                                disabled={loading}
-                                className="flex items-center gap-2 px-4 py-2 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 rounded-lg text-amber-300 transition disabled:opacity-50"
-                            >
-                                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Regenerate
-                            </button>
-                            <button
-                                onClick={() => exportInterlinearCSV(result)}
-                                className="flex items-center gap-2 px-4 py-2 bg-green-600/20 hover:bg-green-600/30 border border-green-500/30 rounded-lg text-green-300 transition"
-                            >
-                                <FileSpreadsheet className="w-4 h-4" /> CSV
-                            </button>
-                            <button
-                                onClick={() => exportInterlinearPDF(result)}
-                                className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 rounded-lg text-red-300 transition"
-                            >
-                                <FileText className="w-4 h-4" /> PDF
-                            </button>
-                            <button
-                                onClick={() => downloadJSON(result, `interlinear_${result.reference.replace(/[:\s]/g, '_')}`)}
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg text-blue-300 transition"
-                            >
-                                <Download className="w-4 h-4" /> JSON
-                            </button>
-                        </div>
-
                         {/* Word Grid */}
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {result.words.map((word, idx) => (
@@ -218,7 +217,7 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                                     <div className="text-center mb-3">
                                         <span
                                             className="text-2xl font-bold text-gold-100 block mb-1"
-                                            style={{ direction: isOldTestament(reference) ? 'rtl' : 'ltr' }}
+                                            style={{ direction: result.reference.includes('John') ? 'ltr' : 'rtl' }}
                                         >
                                             {word.original}
                                         </span>

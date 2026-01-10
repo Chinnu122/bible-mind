@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, BookOpen, Calendar, CheckCircle, Bot, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
+  Settings, User, Home, BookOpen, Calendar, CheckCircle, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
 } from 'lucide-react';
 import Hero from './components/Hero';
 import SimpleBibleReader from './components/SimpleBibleReader';
@@ -16,7 +16,7 @@ import SettingsModal from './components/SettingsModal';
 import DailyVersePage from './components/DailyVersePage';
 import BibleStudyPage from './components/BibleStudyPage';
 import CharacterOfDay from './components/CharacterOfDay';
-import AIChatbot from './components/AIChatbot';
+// AIChatbot removed
 import DailyQuiz from './components/DailyQuiz';
 import AtmospherePlayer from './components/AtmospherePlayer';
 import HolidayManager, { HolidayMode } from './components/holiday/HolidayManager';
@@ -43,7 +43,7 @@ import LanguageSelector from './components/LanguageSelector';
 import { BibleProvider } from './contexts/BibleContext';
 import AdvancedSearchPage from './components/AdvancedSearchPage';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'reviews' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search';
 
 interface UserData {
   id: string;
@@ -111,7 +111,6 @@ function AppLayout() {
       books: 'Books',
       daily: 'Daily',
       quiz: 'Quiz',
-      reviews: 'AI Guide',
       pricing: 'Pricing',
       download: 'Download'
     },
@@ -123,7 +122,6 @@ function AppLayout() {
       books: 'పుస్తకాలు', // Books
       daily: 'దినచర్య', // Daily
       quiz: 'ప్రశ్నలు', // Quiz
-      reviews: 'AI గైడ్', // AI Guide
       pricing: 'ధరలు', // Pricing
       download: 'డౌన్‌లోడ్' // Download
     },
@@ -135,7 +133,6 @@ function AppLayout() {
       books: 'किताबें',
       daily: 'दैनिक',
       quiz: 'प्रश्नोत्तरी',
-      reviews: 'AI गाइड',
       pricing: 'मूल्य',
       download: 'डाउनलोड'
     }
@@ -152,7 +149,6 @@ function AppLayout() {
     { id: 'books', icon: Library, label: t.books },
     { id: 'daily', icon: Calendar, label: t.daily },
     { id: 'quiz', icon: CheckCircle, label: t.quiz },
-    { id: 'reviews', icon: Bot, label: t.reviews },
     { id: 'pricing', icon: Crown, label: t.pricing },
     { id: 'download', icon: Download, label: t.download },
   ];
@@ -249,13 +245,12 @@ function AppLayout() {
             {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
             {view === 'reader' && <SimpleBibleReader key="reader" />}
             {view === 'search' && <AdvancedSearchPage key="search" onNavigate={() => setView('reader')} onBack={() => setView('landing')} />}
-            {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('reviews')} />}
+            {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('landing')} />}
             {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
             {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
             {view === 'notes' && <NotesPage key="notes" onBack={() => setView('landing')} onNavigateToAuth={() => setView('auth')} />}
             {view === 'study' && <BibleStudyPage key="study" onBack={() => setView('landing')} />}
             {view === 'character' && <CharacterOfDay key="character" onBack={() => setView('daily')} />}
-            {view === 'reviews' && <AIChatbot key="reviews" onBack={() => setView('landing')} />}
             {view === 'quiz' && <DailyQuiz key="quiz" onBack={() => setView('landing')} />}
             {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('landing')} />}
             {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}
