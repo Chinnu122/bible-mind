@@ -24,7 +24,15 @@ import {
 } from '../services/openrouterService';
 
 const router = Router();
-const prisma = new PrismaClient();
+
+// Lazy-load PrismaClient to ensure DATABASE_URL is available
+let _prisma: PrismaClient | null = null;
+const getPrisma = (): PrismaClient => {
+    if (!_prisma) {
+        _prisma = new PrismaClient();
+    }
+    return _prisma;
+};
 
 // ============================================
 // INTERLINEAR ANALYSIS
@@ -47,7 +55,7 @@ router.get('/interlinear/:book/:chapter', async (req: Request, res: Response) =>
         }
 
         // Check database cache first
-        const cached = await prisma.aIInterlinear.findUnique({
+        const cached = await getPrisma().aIInterlinear.findUnique({
             where: { book_chapter: { book, chapter: chapterNum } }
         });
 
@@ -65,7 +73,7 @@ router.get('/interlinear/:book/:chapter', async (req: Request, res: Response) =>
         const data = await generateInterlinear(book, chapterNum);
 
         // Save to database
-        await prisma.aIInterlinear.create({
+        await getPrisma().aIInterlinear.create({
             data: {
                 book,
                 chapter: chapterNum,
@@ -110,7 +118,7 @@ router.get('/study/:topic', async (req: Request, res: Response) => {
         const normalizedTopic = topic.trim().toLowerCase();
 
         // Check database cache first
-        const cached = await prisma.aIBibleStudy.findUnique({
+        const cached = await getPrisma().aIBibleStudy.findUnique({
             where: { topic: normalizedTopic }
         });
 
@@ -128,7 +136,7 @@ router.get('/study/:topic', async (req: Request, res: Response) => {
         const data = await generateBibleStudy(topic);
 
         // Save to database
-        await prisma.aIBibleStudy.create({
+        await getPrisma().aIBibleStudy.create({
             data: {
                 topic: normalizedTopic,
                 data: data as any
@@ -171,7 +179,7 @@ router.get('/kids-story/:character', async (req: Request, res: Response) => {
         const normalizedChar = character.trim().toLowerCase();
 
         // Check database cache first
-        const cached = await prisma.aIKidsStory.findUnique({
+        const cached = await getPrisma().aIKidsStory.findUnique({
             where: { character: normalizedChar }
         });
 
@@ -189,7 +197,7 @@ router.get('/kids-story/:character', async (req: Request, res: Response) => {
         const data = await generateKidStory(character);
 
         // Save to database
-        await prisma.aIKidsStory.create({
+        await getPrisma().aIKidsStory.create({
             data: {
                 character: normalizedChar,
                 data: data as any
@@ -223,7 +231,7 @@ async function handleQuizRequest(providedTopic: string | undefined, res: Respons
         const quizTopic = providedTopic || `daily-${today}`;
 
         // Check database cache first
-        const cached = await prisma.aIQuiz.findUnique({
+        const cached = await getPrisma().aIQuiz.findUnique({
             where: { topic: quizTopic }
         });
 
@@ -241,7 +249,7 @@ async function handleQuizRequest(providedTopic: string | undefined, res: Respons
         const data = await generateQuiz(providedTopic || undefined);
 
         // Save to database
-        await prisma.aIQuiz.create({
+        await getPrisma().aIQuiz.create({
             data: {
                 topic: quizTopic,
                 data: data as any
@@ -287,12 +295,12 @@ router.get('/quiz/:topic', async (req: Request, res: Response) => {
 router.get('/riddle', async (req: Request, res: Response) => {
     try {
         // First, check if we have any cached riddles
-        const cachedCount = await prisma.aIRiddle.count();
+        const cachedCount = await getPrisma().aIRiddle.count();
 
         // If we have enough riddles, return a random one
         if (cachedCount >= 10) {
             const randomOffset = Math.floor(Math.random() * cachedCount);
-            const cached = await prisma.aIRiddle.findFirst({
+            const cached = await getPrisma().aIRiddle.findFirst({
                 skip: randomOffset
             });
 
@@ -314,12 +322,12 @@ router.get('/riddle', async (req: Request, res: Response) => {
         const riddleHash = hashRiddle(data.riddle);
 
         // Check if this exact riddle exists
-        const existing = await prisma.aIRiddle.findUnique({
+        const existing = await getPrisma().aIRiddle.findUnique({
             where: { riddleHash }
         });
 
         if (!existing) {
-            await prisma.aIRiddle.create({
+            await getPrisma().aIRiddle.create({
                 data: {
                     riddleHash,
                     data: data as any
@@ -353,12 +361,12 @@ router.get('/riddle/new', async (req: Request, res: Response) => {
         // Save to database
         const riddleHash = hashRiddle(data.riddle);
 
-        const existing = await prisma.aIRiddle.findUnique({
+        const existing = await getPrisma().aIRiddle.findUnique({
             where: { riddleHash }
         });
 
         if (!existing) {
-            await prisma.aIRiddle.create({
+            await getPrisma().aIRiddle.create({
                 data: {
                     riddleHash,
                     data: data as any
@@ -391,11 +399,11 @@ router.get('/riddle/new', async (req: Request, res: Response) => {
 router.get('/stats', async (req: Request, res: Response) => {
     try {
         const [interlinear, studies, stories, quizzes, riddles] = await Promise.all([
-            prisma.aIInterlinear.count(),
-            prisma.aIBibleStudy.count(),
-            prisma.aIKidsStory.count(),
-            prisma.aIQuiz.count(),
-            prisma.aIRiddle.count()
+            getPrisma().aIInterlinear.count(),
+            getPrisma().aIBibleStudy.count(),
+            getPrisma().aIKidsStory.count(),
+            getPrisma().aIQuiz.count(),
+            getPrisma().aIRiddle.count()
         ]);
 
         return res.json({
