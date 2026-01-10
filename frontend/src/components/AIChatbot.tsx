@@ -4,7 +4,7 @@ import {
     Send, ChevronLeft, Bot, User, Sparkles, Image, Loader2,
     BookOpen, Quote, Copy, Check, Trash2
 } from 'lucide-react';
-import { generateImage } from '../services/geminiService';
+import { generateImage, callAI } from '../services/geminiService';
 
 // Types
 interface ChatMessage {
@@ -25,25 +25,7 @@ interface ChatMessage {
 // Storage key
 const CHAT_HISTORY_KEY = 'biblemind_chat_history';
 
-// API Providers for chat (reusing frontend providers)
-const API_PROVIDERS = [
-    {
-        name: 'google-gemini',
-        baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
-        model: 'gemini-1.5-flash',
-        apiKey: import.meta.env.VITE_GOOGLE_API_KEY || '',
-        type: 'google'
-    },
-    {
-        name: 'groq-llama',
-        baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
-        model: 'llama-3.1-70b-versatile',
-        apiKey: import.meta.env.VITE_GROQ_API_KEY || '',
-        type: 'openai-compatible'
-    }
-];
-
-// Call AI for structured response
+// Call AI for structured response using unified service
 async function callChatAI(prompt: string): Promise<ChatMessage['structured']> {
     const systemPrompt = `You are a wise, knowledgeable Bible study assistant. When answering questions:
 1. Start with a brief introductory paragraph (2-3 sentences)
@@ -57,66 +39,23 @@ IMPORTANT: Respond in this exact JSON format:
     "points": ["Point 1", "Point 2", "Point 3", "Point 4"],
     "references": ["Genesis 1:1", "John 3:16", "Psalm 23:1"],
     "conclusion": "Your closing thoughts here..."
-}`;
+}
 
-    for (const provider of API_PROVIDERS) {
-        if (!provider.apiKey) continue;
+User Question: ${prompt}`;
 
-        try {
-            let response: Response;
-
-            if (provider.type === 'google') {
-                response = await fetch(
-                    `${provider.baseUrl}/${provider.model}:generateContent?key=${provider.apiKey}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: `${systemPrompt}\n\nUser Question: ${prompt}` }] }],
-                            generationConfig: { responseMimeType: 'application/json' }
-                        })
-                    }
-                );
-
-                if (!response.ok) continue;
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (text) return JSON.parse(text);
-            } else {
-                response = await fetch(provider.baseUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${provider.apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: provider.model,
-                        messages: [
-                            { role: 'system', content: systemPrompt },
-                            { role: 'user', content: prompt }
-                        ],
-                        response_format: { type: 'json_object' }
-                    })
-                });
-
-                if (!response.ok) continue;
-                const data = await response.json();
-                const text = data.choices?.[0]?.message?.content;
-                if (text) return JSON.parse(text);
-            }
-        } catch (error) {
-            console.warn(`Provider ${provider.name} failed:`, error);
-            continue;
-        }
+    try {
+        const response = await callAI(systemPrompt, true);
+        return JSON.parse(response);
+    } catch (error) {
+        console.error('Chat AI error:', error);
+        // Fallback response
+        return {
+            intro: "I apologize, but I'm having trouble connecting to my knowledge base right now.",
+            points: ["Please try again in a moment", "Check your internet connection", "The AI service may be temporarily unavailable"],
+            references: ["Proverbs 3:5-6"],
+            conclusion: "Trust in the Lord with all your heart, and lean not on your own understanding."
+        };
     }
-
-    // Fallback response
-    return {
-        intro: "I apologize, but I'm having trouble connecting to my knowledge base right now.",
-        points: ["Please try again in a moment", "Check your internet connection", "The AI service may be temporarily unavailable"],
-        references: ["Proverbs 3:5-6"],
-        conclusion: "Trust in the Lord with all your heart, and lean not on your own understanding."
-    };
 }
 
 // Load/Save chat history
@@ -319,8 +258,8 @@ export default function AIChatbot({ onBack }: { onBack: () => void }) {
 
                                 <div className={`max-w-[80%] ${msg.role === 'user' ? 'order-first' : ''}`}>
                                     <div className={`rounded-2xl p-4 ${msg.role === 'user'
-                                            ? 'bg-violet-600 text-white rounded-br-sm'
-                                            : 'bg-slate-800 border border-white/5 rounded-bl-sm'
+                                        ? 'bg-violet-600 text-white rounded-br-sm'
+                                        : 'bg-slate-800 border border-white/5 rounded-bl-sm'
                                         }`}>
                                         {msg.structured ? (
                                             <div className="space-y-4">

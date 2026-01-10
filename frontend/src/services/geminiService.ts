@@ -6,28 +6,25 @@
  */
 
 // API Provider configurations for TEXT generation
+// Priority order: Fastest/cheapest first, premium fallbacks last
 const API_PROVIDERS = [
+    // 1. Google AI Studio - Fastest, generous free tier
     {
         name: 'google-ai-studio',
         baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
         apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.0-flash-exp',
         type: 'google'
     },
+    // 2. Groq - Ultra fast inference, good free tier
     {
-        name: 'openrouter-chatgpt-5.2',
-        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: import.meta.env.VITE_OPENROUTER_CHATGPT_KEY,
-        model: 'openai/gpt-4o',
-        type: 'openrouter'
+        name: 'groq-llama',
+        baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
+        apiKey: import.meta.env.VITE_GROQ_API_KEY,
+        model: 'llama-3.3-70b-versatile',
+        type: 'openai-compatible'
     },
-    {
-        name: 'openrouter-claude-4.5-opus',
-        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: import.meta.env.VITE_OPENROUTER_CLAUDE_KEY,
-        model: 'anthropic/claude-3.5-sonnet',
-        type: 'openrouter'
-    },
+    // 3. OpenRouter Gemini Flash (Free tier)
     {
         name: 'openrouter-gemini-flash',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
@@ -35,6 +32,7 @@ const API_PROVIDERS = [
         model: 'google/gemini-2.0-flash-exp:free',
         type: 'openrouter'
     },
+    // 4. OpenRouter Gemini Pro
     {
         name: 'openrouter-gemini-pro',
         baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
@@ -42,12 +40,21 @@ const API_PROVIDERS = [
         model: 'google/gemini-pro',
         type: 'openrouter'
     },
+    // 5. OpenRouter Claude (Premium fallback)
     {
-        name: 'groq',
-        baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
-        apiKey: import.meta.env.VITE_GROQ_API_KEY,
-        model: 'llama-3.3-70b-versatile',
-        type: 'openai-compatible'
+        name: 'openrouter-claude',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: import.meta.env.VITE_OPENROUTER_CLAUDE_KEY,
+        model: 'anthropic/claude-3.5-sonnet',
+        type: 'openrouter'
+    },
+    // 6. OpenRouter ChatGPT (Premium fallback)
+    {
+        name: 'openrouter-chatgpt',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: import.meta.env.VITE_OPENROUTER_CHATGPT_KEY,
+        model: 'openai/gpt-4o',
+        type: 'openrouter'
     }
 ];
 
@@ -233,8 +240,8 @@ function setCache<T>(key: string, subKey: string, data: T): void {
     }
 }
 
-// Generic AI call with fallback
-async function callAI(prompt: string, jsonMode: boolean = true): Promise<string> {
+// Generic AI call with fallback - exported for use by other components
+export async function callAI(prompt: string, jsonMode: boolean = true): Promise<string> {
     const maxRetries = API_PROVIDERS.length;
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {
