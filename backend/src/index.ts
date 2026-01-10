@@ -35,6 +35,7 @@ import aiRouter from './routes/ai';
 import v2AuthRouter from './routes/authRoutesV2';
 import updateRouter from './routes/update';
 import crossReferencesRouter from './routes/crossReferences';
+import aiContentRouter from './routes/aiContent';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -114,6 +115,7 @@ app.use('/api/cross-references', crossReferencesRouter);
 app.use('/api/v2/search', v2SearchRouter);
 app.use('/api/v2/auth', v2AuthRouter);
 app.use('/api/update', updateRouter);
+app.use('/api/ai-content', aiContentRouter);
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));

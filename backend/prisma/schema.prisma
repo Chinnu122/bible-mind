@@ -245,3 +245,63 @@ model VerseRevision {
   
   @@index([bookId, chapter, verse])
 }
+
+// ============================================
+// AI GENERATED CONTENT CACHE
+// ============================================
+
+// Interlinear word-by-word analysis for chapters
+model AIInterlinear {
+  id          String   @id @default(cuid())
+  book        String
+  chapter     Int
+  language    String   // 'Hebrew' | 'Greek'
+  data        Json     // Full interlinear word data array
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([book, chapter])
+  @@index([book])
+}
+
+// Bible study guides by topic
+model AIBibleStudy {
+  id          String   @id @default(cuid())
+  topic       String   @unique
+  data        Json     // { title, mainPassage, introduction, keyPoints, crossReferences, conclusion }
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([topic])
+}
+
+// Kids stories by character
+model AIKidsStory {
+  id          String   @id @default(cuid())
+  character   String   @unique
+  data        Json     // { title, storyText, moral, ageGroup }
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([character])
+}
+
+// Quiz games by topic/date
+model AIQuiz {
+  id          String   @id @default(cuid())
+  topic       String   @unique
+  data        Json     // { topic, questions: [...] }
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([topic])
+}
+
+// Bible riddles
+model AIRiddle {
+  id          String   @id @default(cuid())
+  riddleHash  String   @unique  // Hash of riddle content for uniqueness
+  data        Json     // { riddle, hints, answer, acceptedAnswers, explanation, difficulty }
+  
+  createdAt   DateTime @default(now())
+}

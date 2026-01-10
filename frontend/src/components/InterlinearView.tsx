@@ -1,100 +1,102 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowLeft, Book, Globe } from 'lucide-react';
+import { Search, ArrowLeft, Book, Globe, ChevronDown, Download, Loader2 } from 'lucide-react';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 interface InterlinearViewProps {
     onBack?: () => void;
 }
 
-interface WordData {
-    original: string;
+interface InterlinearWord {
+    verse: number;
+    originalWord: string;
     transliteration: string;
-    english: string;
-    telugu: string;
-    hindi: string;
-    grammar: string;
+    englishMeaning: string;
+    teluguMeaning: string;
+    hindiMeaning?: string;
+    strongsNumber: string;
+    occurrenceCount: number;
+    isFirstOccurrence: boolean;
+    firstOccurrenceReference?: string;
 }
 
-interface VerseData {
-    reference: string;
-    translation_english: string;
-    translation_telugu: string;
-    translation_hindi: string;
-    words: WordData[];
+interface ChapterData {
+    book: string;
+    chapter: number;
+    language: 'Hebrew' | 'Greek';
+    words: InterlinearWord[];
 }
 
-// Pre-defined interlinear data for common verses
-const VERSE_DATA: Record<string, VerseData> = {
-    'Genesis 1:1': {
-        reference: 'Genesis 1:1',
-        translation_english: 'In the beginning God created the heaven and the earth.',
-        translation_telugu: 'ఆదిలో దేవుడు భూమ్యాకాశములను సృజించెను.',
-        translation_hindi: 'आदि में परमेश्‍वर ने आकाश और पृथ्वी की सृष्‍टि की।',
-        words: [
-            { original: 'בְּרֵאשִׁית', transliteration: 'bereshit', english: 'In the beginning', telugu: 'ఆదిలో', hindi: 'आदि में', grammar: 'noun, common, feminine' },
-            { original: 'בָּרָא', transliteration: 'bara', english: 'created', telugu: 'సృజించెను', hindi: 'सृष्टि की', grammar: 'verb, qal, perfect' },
-            { original: 'אֱלֹהִים', transliteration: 'elohim', english: 'God', telugu: 'దేవుడు', hindi: 'परमेश्वर', grammar: 'noun, masculine, plural' },
-            { original: 'אֵת', transliteration: 'et', english: '(object marker)', telugu: '-', hindi: '-', grammar: 'particle' },
-            { original: 'הַשָּׁמַיִם', transliteration: 'hashamayim', english: 'the heavens', telugu: 'ఆకాశమును', hindi: 'आकाश', grammar: 'noun, masculine, plural' },
-            { original: 'וְאֵת', transliteration: "ve'et", english: 'and', telugu: 'మరియు', hindi: 'और', grammar: 'conjunction + particle' },
-            { original: 'הָאָרֶץ', transliteration: "ha'aretz", english: 'the earth', telugu: 'భూమిని', hindi: 'पृथ्वी', grammar: 'noun, common, feminine' }
-        ]
-    },
-    'John 3:16': {
-        reference: 'John 3:16',
-        translation_english: 'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.',
-        translation_telugu: 'దేవుడు లోకమును ఎంతో ప్రేమించెను గనుక ఆయన తన అద్వితీయ కుమారుని ఇచ్చెను.',
-        translation_hindi: 'क्योंकि परमेश्वर ने जगत से ऐसा प्रेम रखा कि उसने अपना एकलौता पुत्र दे दिया।',
-        words: [
-            { original: 'Οὕτως', transliteration: 'houtos', english: 'For...so', telugu: 'ఎంతో', hindi: 'ऐसा', grammar: 'adverb' },
-            { original: 'ἠγάπησεν', transliteration: 'egapesen', english: 'loved', telugu: 'ప్రేమించెను', hindi: 'प्रेम रखा', grammar: 'verb, aorist, active' },
-            { original: 'ὁ θεὸς', transliteration: 'ho theos', english: 'God', telugu: 'దేవుడు', hindi: 'परमेश्वर', grammar: 'noun, nominative' },
-            { original: 'τὸν κόσμον', transliteration: 'ton kosmon', english: 'the world', telugu: 'లోకమును', hindi: 'जगत', grammar: 'noun, accusative' },
-            { original: 'ὥστε', transliteration: 'hoste', english: 'that', telugu: 'గనుక', hindi: 'कि', grammar: 'conjunction' },
-            { original: 'τὸν υἱὸν', transliteration: 'ton huion', english: 'the Son', telugu: 'కుమారుని', hindi: 'पुत्र', grammar: 'noun, accusative' },
-            { original: 'ἔδωκεν', transliteration: 'edoken', english: 'he gave', telugu: 'ఇచ్చెను', hindi: 'दे दिया', grammar: 'verb, aorist, active' }
-        ]
-    },
-    'Psalm 23:1': {
-        reference: 'Psalm 23:1',
-        translation_english: 'The LORD is my shepherd; I shall not want.',
-        translation_telugu: 'యెహోవా నా కాపరి, నాకు లేమి కలుగదు.',
-        translation_hindi: 'यहोवा मेरा चरवाहा है; मुझे कुछ घटी न होगी।',
-        words: [
-            { original: 'יְהוָה', transliteration: 'YHWH', english: 'The LORD', telugu: 'యెహోవా', hindi: 'यहोवा', grammar: 'proper noun' },
-            { original: 'רֹעִי', transliteration: "ro'i", english: 'my shepherd', telugu: 'నా కాపరి', hindi: 'मेरा चरवाहा', grammar: 'noun + suffix' },
-            { original: 'לֹא', transliteration: 'lo', english: 'not', telugu: 'కాదు', hindi: 'नहीं', grammar: 'adverb, negative' },
-            { original: 'אֶחְסָר', transliteration: 'echsar', english: 'I shall want', telugu: 'లేమి కలుగదు', hindi: 'घटी होगी', grammar: 'verb, qal, imperfect' }
-        ]
-    }
-};
-
-const QUICK_REFS = ['Genesis 1:1', 'John 3:16', 'Psalm 23:1'];
+const BOOKS = [
+    'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
+    'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
+    'Psalms', 'Proverbs', 'Isaiah', 'Matthew', 'Mark',
+    'Luke', 'John', 'Acts', 'Romans', 'Revelation'
+];
 
 export default function InterlinearView({ onBack }: InterlinearViewProps) {
-    const [reference, setReference] = useState('');
-    const [result, setResult] = useState<VerseData | null>(null);
+    const [book, setBook] = useState('Genesis');
+    const [chapter, setChapter] = useState(1);
+    const [data, setData] = useState<ChapterData | null>(null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [cached, setCached] = useState(false);
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!reference.trim()) return;
-
+    const handleFetch = async () => {
+        setLoading(true);
         setError(null);
-        setResult(null);
+        setData(null);
 
-        // Check if we have this verse in our data
-        const normalizedRef = reference.trim();
-        const foundVerse = Object.entries(VERSE_DATA).find(([key]) =>
-            key.toLowerCase() === normalizedRef.toLowerCase()
-        );
+        try {
+            const response = await fetch(`${API_BASE_URL}/ai-content/interlinear/${encodeURIComponent(book)}/${chapter}`);
+            const result = await response.json();
 
-        if (foundVerse) {
-            setResult(foundVerse[1]);
-        } else {
-            setError(`Interlinear data not available for "${reference}". Try: Genesis 1:1, John 3:16, or Psalm 23:1`);
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to load interlinear data');
+            }
+
+            setData(result.data);
+            setCached(result.cached);
+        } catch (err: any) {
+            setError(err.message || 'Failed to load data. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
+
+    const downloadCSV = () => {
+        if (!data) return;
+
+        const headers = ['Verse', 'Original', 'Transliteration', 'English', 'Telugu', 'Strongs', 'Count', 'First'];
+        const rows = data.words.map(w => [
+            w.verse,
+            w.originalWord,
+            w.transliteration,
+            `"${w.englishMeaning}"`,
+            `"${w.teluguMeaning}"`,
+            w.strongsNumber,
+            w.occurrenceCount,
+            w.isFirstOccurrence ? 'Yes' : 'No'
+        ]);
+
+        const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${data.book}_${data.chapter}_Interlinear.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    // Group words by verse
+    const groupedByVerse = data?.words.reduce((acc, word) => {
+        if (!acc[word.verse]) acc[word.verse] = [];
+        acc[word.verse].push(word);
+        return acc;
+    }, {} as Record<number, InterlinearWord[]>) || {};
 
     return (
         <div className="space-y-6">
@@ -106,145 +108,163 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
                     </button>
                 )}
                 <div className="text-center flex-1">
-                    <h2 className="text-2xl md:text-3xl font-serif text-gold-200 mb-1">Original Languages Interlinear</h2>
-                    <p className="text-slate-400 text-sm">Word-for-word: Hebrew/Greek → Telugu & English</p>
-                </div>
-                <div className="text-xs text-slate-500">
-                    {Object.keys(VERSE_DATA).length} verses available
+                    <h2 className="text-2xl md:text-3xl font-serif text-gold-200 mb-1">Interlinear Bible Study</h2>
+                    <p className="text-slate-400 text-sm">Word-by-word: Hebrew/Greek → Telugu & English</p>
                 </div>
             </div>
 
-            {/* Search Form */}
-            <form onSubmit={handleSearch} className="flex gap-3 max-w-2xl mx-auto">
-                <div className="flex-1 relative">
-                    <Book className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                    <input
-                        type="text"
-                        value={reference}
-                        onChange={(e) => setReference(e.target.value)}
-                        placeholder="Enter reference (e.g., Genesis 1:1, John 3:16)"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-gold-500/50 focus:ring-2 focus:ring-gold-500/20"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    disabled={!reference.trim()}
-                    className="bg-gold-600 hover:bg-gold-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold px-6 py-4 rounded-xl flex items-center gap-2 transition-all"
-                >
-                    <Search className="w-5 h-5" />
-                    Analyze
-                </button>
-            </form>
+            {/* Selection Controls */}
+            <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/30 rounded-2xl border border-gold-500/20 p-6">
+                <div className="flex flex-wrap gap-4 items-end">
+                    {/* Book Selector */}
+                    <div className="flex-1 min-w-[180px]">
+                        <label className="block text-sm font-medium text-gold-300 mb-2">
+                            <Book className="w-4 h-4 inline mr-1" /> Book
+                        </label>
+                        <div className="relative">
+                            <select
+                                value={book}
+                                onChange={(e) => setBook(e.target.value)}
+                                className="w-full px-4 py-3 bg-slate-800/80 border border-gold-500/30 rounded-xl text-crema-100 appearance-none cursor-pointer focus:ring-2 focus:ring-gold-500/50 focus:border-gold-400 transition-all"
+                            >
+                                {BOOKS.map(b => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gold-400 pointer-events-none" />
+                        </div>
+                    </div>
 
-            {/* Quick Examples */}
-            <div className="flex flex-wrap justify-center gap-2">
-                <span className="text-slate-500 text-sm">Try:</span>
-                {QUICK_REFS.map(ref => (
+                    {/* Chapter Input */}
+                    <div className="w-28">
+                        <label className="block text-sm font-medium text-gold-300 mb-2">Chapter</label>
+                        <input
+                            type="number"
+                            min={1}
+                            max={150}
+                            value={chapter}
+                            onChange={(e) => setChapter(parseInt(e.target.value) || 1)}
+                            className="w-full px-4 py-3 bg-slate-800/80 border border-gold-500/30 rounded-xl text-crema-100 focus:ring-2 focus:ring-gold-500/50 focus:border-gold-400 transition-all"
+                        />
+                    </div>
+
+                    {/* Analyze Button */}
                     <button
-                        key={ref}
-                        onClick={() => {
-                            setReference(ref);
-                            setResult(VERSE_DATA[ref]);
-                            setError(null);
-                        }}
-                        className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-full text-sm text-slate-300 transition"
+                        onClick={handleFetch}
+                        disabled={loading}
+                        className="px-6 py-3 bg-gradient-to-r from-gold-600 to-gold-500 text-slate-900 font-bold rounded-xl hover:from-gold-500 hover:to-gold-400 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
-                        {ref}
+                        {loading ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                Analyzing...
+                            </>
+                        ) : (
+                            <>
+                                <Globe className="w-5 h-5" />
+                                Analyze Chapter
+                            </>
+                        )}
                     </button>
-                ))}
-            </div>
-
-            {/* Error Message */}
-            {error && (
-                <div className="max-w-2xl mx-auto bg-red-500/20 border border-red-500/30 rounded-xl p-4 text-center text-red-200">
-                    {error}
                 </div>
-            )}
+
+                {loading && (
+                    <p className="mt-4 text-sm text-gold-300/70 animate-pulse">
+                        ✨ Processing ancient texts... This may take a moment for longer chapters.
+                    </p>
+                )}
+
+                {error && (
+                    <div className="mt-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
+                        <p className="text-red-300">{error}</p>
+                    </div>
+                )}
+            </div>
 
             {/* Results */}
-            <AnimatePresence>
-                {result && (
+            <AnimatePresence mode="wait">
+                {data && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="space-y-6"
+                        className="bg-slate-800/50 rounded-2xl border border-gold-500/20 overflow-hidden"
                     >
-                        {/* Translation Summary */}
-                        <div className="bg-gradient-to-r from-gold-900/30 to-amber-900/20 rounded-2xl p-6 border border-gold-500/20">
-                            <h3 className="text-2xl font-serif text-gold-300 mb-4">{result.reference}</h3>
-
-                            <div className="grid md:grid-cols-3 gap-4">
-                                <div className="bg-white/5 rounded-xl p-4">
-                                    <div className="flex items-center gap-2 text-blue-400 mb-2">
-                                        <Globe className="w-4 h-4" />
-                                        <span className="text-xs uppercase tracking-wider font-bold">English</span>
-                                    </div>
-                                    <p className="text-lg text-blue-100 font-serif">{result.translation_english}</p>
-                                </div>
-
-                                <div className="bg-white/5 rounded-xl p-4">
-                                    <div className="flex items-center gap-2 text-emerald-400 mb-2">
-                                        <span className="text-xs uppercase tracking-wider font-bold">తెలుగు (Telugu)</span>
-                                    </div>
-                                    <p className="text-lg text-emerald-100" style={{ fontFamily: 'Noto Sans Telugu, sans-serif' }}>
-                                        {result.translation_telugu}
-                                    </p>
-                                </div>
-
-                                <div className="bg-white/5 rounded-xl p-4">
-                                    <div className="flex items-center gap-2 text-orange-400 mb-2">
-                                        <span className="text-xs uppercase tracking-wider font-bold">हिंदी (Hindi)</span>
-                                    </div>
-                                    <p className="text-lg text-orange-100" style={{ fontFamily: 'Noto Sans Devanagari, sans-serif' }}>
-                                        {result.translation_hindi}
-                                    </p>
-                                </div>
+                        {/* Results Header */}
+                        <div className="p-4 bg-gradient-to-r from-gold-900/30 to-transparent border-b border-gold-500/20 flex justify-between items-center flex-wrap gap-3">
+                            <div>
+                                <h3 className="text-xl font-serif text-gold-200">
+                                    {data.book} {data.chapter}
+                                </h3>
+                                <p className="text-sm text-slate-400">
+                                    {data.words.length} words • {data.language}
+                                    {cached && <span className="ml-2 text-green-400">• Cached</span>}
+                                </p>
                             </div>
+                            <button
+                                onClick={downloadCSV}
+                                className="flex items-center gap-2 px-4 py-2 bg-green-600/80 text-white text-sm font-medium rounded-lg hover:bg-green-500 transition-colors"
+                            >
+                                <Download className="w-4 h-4" /> Download CSV
+                            </button>
                         </div>
 
-                        {/* Word Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {result.words.map((word, idx) => (
-                                <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                    className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 hover:border-gold-500/50 transition group"
-                                >
-                                    {/* Original Word */}
-                                    <div className="text-center mb-3">
-                                        <span
-                                            className="text-2xl font-bold text-gold-100 block mb-1"
-                                            style={{ direction: result.reference.includes('John') ? 'ltr' : 'rtl' }}
+                        {/* Words Table */}
+                        <div className="overflow-x-auto max-h-[60vh] overflow-y-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead className="sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                                    <tr className="text-gold-300/80 text-xs uppercase tracking-wider border-b border-gold-500/20">
+                                        <th className="p-3 font-semibold">Vs</th>
+                                        <th className="p-3 font-semibold">Original</th>
+                                        <th className="p-3 font-semibold">Translit</th>
+                                        <th className="p-3 font-semibold">English</th>
+                                        <th className="p-3 font-semibold">Telugu</th>
+                                        <th className="p-3 font-semibold">Strong's</th>
+                                        <th className="p-3 font-semibold">Stats</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-700/50">
+                                    {data.words.map((word, idx) => (
+                                        <tr
+                                            key={idx}
+                                            className="hover:bg-gold-500/5 transition-colors text-sm"
                                         >
-                                            {word.original}
-                                        </span>
-                                        <span className="text-xs text-slate-500 uppercase tracking-wide">
-                                            {word.transliteration}
-                                        </span>
-                                    </div>
-
-                                    {/* Meanings */}
-                                    <div className="space-y-1 text-center border-t border-slate-700 pt-3">
-                                        <p className="font-medium text-indigo-300 text-sm">{word.english}</p>
-                                        <p className="text-emerald-300 text-sm" style={{ fontFamily: 'Noto Sans Telugu, sans-serif' }}>
-                                            {word.telugu}
-                                        </p>
-                                        <p className="text-orange-300 text-sm" style={{ fontFamily: 'Noto Sans Devanagari, sans-serif' }}>
-                                            {word.hindi}
-                                        </p>
-                                        <p className="text-xs text-slate-500 italic mt-2 opacity-0 group-hover:opacity-100 transition">
-                                            {word.grammar}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                            <td className="p-3 font-medium text-slate-500">{word.verse}</td>
+                                            <td className="p-3 font-bold text-xl font-serif text-crema-100 direction-rtl">
+                                                {word.originalWord}
+                                            </td>
+                                            <td className="p-3 italic text-slate-400">{word.transliteration}</td>
+                                            <td className="p-3 text-crema-200">{word.englishMeaning}</td>
+                                            <td className="p-3 font-medium text-amber-300">{word.teluguMeaning}</td>
+                                            <td className="p-3">
+                                                <code className="px-2 py-1 bg-slate-700/50 rounded text-xs text-gold-300">
+                                                    {word.strongsNumber}
+                                                </code>
+                                            </td>
+                                            <td className="p-3">
+                                                <div className="flex flex-col gap-1 items-start">
+                                                    <span className="text-xs text-slate-500">×{word.occurrenceCount}</span>
+                                                    {word.isFirstOccurrence && (
+                                                        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-xs font-bold rounded-full">
+                                                            First
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Empty State */}
+            {!data && !loading && !error && (
+                <div className="text-center py-12 text-slate-500">
+                    <Book className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                    <p>Select a book and chapter, then click "Analyze Chapter" to see word-by-word breakdown.</p>
+                </div>
+            )}
         </div>
     );
 }
