@@ -242,10 +242,19 @@ function setCache<T>(key: string, subKey: string, data: T): void {
 
 // Generic AI call with fallback - exported for use by other components
 export async function callAI(prompt: string, jsonMode: boolean = true): Promise<string> {
-    const maxRetries = API_PROVIDERS.length;
+    // Filter providers that have valid API keys
+    const availableProviders = API_PROVIDERS.filter(p => p.apiKey && p.apiKey.length > 10);
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        const provider = API_PROVIDERS[(currentProviderIndex + attempt) % API_PROVIDERS.length];
+    if (availableProviders.length === 0) {
+        console.error('No API keys configured! Please add API keys to environment variables.');
+        console.log('Expected env vars: VITE_GOOGLE_API_KEY, VITE_GROQ_API_KEY, VITE_OPENROUTER_*');
+        throw new Error('No AI providers available. Please check API key configuration.');
+    }
+
+    console.log(`Available providers: ${availableProviders.map(p => p.name).join(', ')}`);
+
+    for (let attempt = 0; attempt < availableProviders.length; attempt++) {
+        const provider = availableProviders[attempt];
 
         try {
             console.log(`Trying provider: ${provider.name}`);
@@ -312,7 +321,7 @@ export async function callAI(prompt: string, jsonMode: boolean = true): Promise<
 
         } catch (error) {
             console.warn(`Provider ${provider.name} failed:`, error);
-            if (attempt === maxRetries - 1) {
+            if (attempt === availableProviders.length - 1) {
                 throw new Error('All AI providers failed. Please try again later.');
             }
         }
