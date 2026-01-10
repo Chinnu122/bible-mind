@@ -26,13 +26,50 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
+        confirmPassword: '',
         name: ''
     });
+
+    // Validate form before submit
+    const validateForm = (): boolean => {
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            return false;
+        }
+
+        // Password length
+        if (formData.password.length < 8) {
+            setError('Password must be at least 8 characters');
+            return false;
+        }
+
+        // For signup: check password match and name
+        if (mode === 'signup') {
+            if (!formData.name.trim()) {
+                setError('Please enter your name');
+                return false;
+            }
+            if (formData.password !== formData.confirmPassword) {
+                setError('Passwords do not match');
+                return false;
+            }
+        }
+
+        return true;
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+
+        // Validate before proceeding
+        if (!validateForm()) {
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -179,7 +216,31 @@ export default function AuthPage({ onBack, onAuthSuccess }: AuthPageProps) {
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
+                            {formData.password && formData.password.length < 8 && (
+                                <p className="text-xs text-amber-400/70 mt-1">Min 8 characters</p>
+                            )}
                         </div>
+
+                        {mode === 'signup' && (
+                            <div className="group">
+                                <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2 group-focus-within:text-gold-400 transition-colors">
+                                    Confirm Password
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-0 top-3 w-5 h-5 text-slate-600 group-focus-within:text-gold-400 transition-colors" />
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                        className="w-full bg-transparent border-b border-slate-700 py-3 pl-8 text-crema-100 placeholder-slate-700 focus:outline-none focus:border-gold-400 transition-all font-medium"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                                    <p className="text-xs text-red-400/70 mt-1">Passwords don't match</p>
+                                )}
+                            </div>
+                        )}
 
                         {error && <p className="text-red-400 text-sm animate-fade-in">{error}</p>}
                         {success && <p className="text-sage-400 text-sm animate-fade-in">{success}</p>}
