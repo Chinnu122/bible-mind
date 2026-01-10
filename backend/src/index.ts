@@ -3,7 +3,10 @@ dotenv.config();
 
 import express, { Application, Request, Response, NextFunction } from 'express';
 
-// DEBUG: Check env var
+// DEBUG: Check env vars
+console.log('DEBUG: DATABASE_URL loaded:', !!process.env.DATABASE_URL);
+console.log('DEBUG: DIRECT_URL loaded:', !!process.env.DIRECT_URL);
+console.log('DEBUG: OPENROUTER_API_KEY loaded:', !!process.env.OPENROUTER_API_KEY);
 console.log('DEBUG: HF_API_KEY loaded:', !!process.env.HF_API_KEY);
 if (process.env.HF_API_KEY) console.log('DEBUG: HF_API_KEY length:', process.env.HF_API_KEY.length);
 
