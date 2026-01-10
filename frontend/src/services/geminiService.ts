@@ -1,53 +1,27 @@
 /**
  * AI Service with Multi-Provider Fallback
- * Supports: OpenRouter (Gemini, GPT, Claude), Groq, Google AI Studio
- * Auto-switches to working API on failure
- * Image Generation via Hugging Face Inference API
+ * Primary: Groq (Llama 3.3 70B) - Ultra-fast, 14K requests/day free
+ * Fallback: OpenRouter GPT-4o - Premium accuracy
  */
 
 // API Provider configurations for TEXT generation
+// Priority: Groq first (free, ultra-fast), OpenRouter GPT second (paid, premium)
 const API_PROVIDERS = [
+    // 1. Groq - Primary provider (FREE, 14K requests/day, ~500 tokens/sec)
     {
-        name: 'google-ai-studio',
-        baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
-        apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
-        model: 'gemini-2.0-flash',
-        type: 'google'
-    },
-    {
-        name: 'openrouter-chatgpt-5.2',
-        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: import.meta.env.VITE_OPENROUTER_CHATGPT_KEY,
-        model: 'openai/gpt-4o',
-        type: 'openrouter'
-    },
-    {
-        name: 'openrouter-claude-4.5-opus',
-        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: import.meta.env.VITE_OPENROUTER_CLAUDE_KEY,
-        model: 'anthropic/claude-3.5-sonnet',
-        type: 'openrouter'
-    },
-    {
-        name: 'openrouter-gemini-flash',
-        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: import.meta.env.VITE_OPENROUTER_GEMINI_FLASH_KEY,
-        model: 'google/gemini-2.0-flash-exp:free',
-        type: 'openrouter'
-    },
-    {
-        name: 'openrouter-gemini-pro',
-        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKey: import.meta.env.VITE_OPENROUTER_GEMINI_PRO_KEY,
-        model: 'google/gemini-pro',
-        type: 'openrouter'
-    },
-    {
-        name: 'groq',
+        name: 'groq-llama',
         baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
         apiKey: import.meta.env.VITE_GROQ_API_KEY,
         model: 'llama-3.3-70b-versatile',
         type: 'openai-compatible'
+    },
+    // 2. OpenRouter GPT-4o - Fallback (paid, highest accuracy)
+    {
+        name: 'openrouter-gpt4o',
+        baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKey: import.meta.env.VITE_OPENROUTER_CHATGPT_KEY,
+        model: 'openai/gpt-4o',
+        type: 'openrouter'
     }
 ];
 
@@ -148,7 +122,7 @@ export function getImageUsageStats(): { used: number; remaining: number; limit: 
     return { used, remaining: IMAGE_PROVIDER.dailyLimit - used, limit: IMAGE_PROVIDER.dailyLimit };
 }
 
-let currentProviderIndex = 0;
+
 
 // Types
 export interface InterlinearWord {
@@ -233,79 +207,59 @@ function setCache<T>(key: string, subKey: string, data: T): void {
     }
 }
 
-// Generic AI call with fallback
+// Generic AI call with fallback - Groq primary, OpenRouter fallback
 async function callAI(prompt: string, jsonMode: boolean = true): Promise<string> {
-    const maxRetries = API_PROVIDERS.length;
+    // Filter providers with valid API keys
+    const availableProviders = API_PROVIDERS.filter(p => p.apiKey && p.apiKey.length > 10);
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        const provider = API_PROVIDERS[(currentProviderIndex + attempt) % API_PROVIDERS.length];
+    if (availableProviders.length === 0) {
+        console.error('No API keys configured! Set VITE_GROQ_API_KEY or VITE_OPENROUTER_CHATGPT_KEY');
+        throw new Error('No AI providers available. Please configure API keys.');
+    }
+
+    for (let attempt = 0; attempt < availableProviders.length; attempt++) {
+        const provider = availableProviders[attempt];
 
         try {
             console.log(`Trying provider: ${provider.name}`);
-            let response: Response;
 
-            if (provider.type === 'google') {
-                // Google AI Studio format
-                response = await fetch(
-                    `${provider.baseUrl}/${provider.model}:generateContent?key=${provider.apiKey}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }],
-                            generationConfig: {
-                                responseMimeType: jsonMode ? 'application/json' : 'text/plain'
-                            }
-                        })
-                    }
-                );
-
-                if (!response.ok) throw new Error(`Google API error: ${response.status}`);
-
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!text) throw new Error('No response from Google AI');
-
-                // Update working provider
-                currentProviderIndex = (currentProviderIndex + attempt) % API_PROVIDERS.length;
-                return text;
-
-            } else {
-                // OpenRouter / OpenAI compatible format
-                response = await fetch(provider.baseUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${provider.apiKey}`,
-                        ...(provider.type === 'openrouter' && {
-                            'HTTP-Referer': window.location.origin,
-                            'X-Title': 'Bible Mind'
-                        })
-                    },
-                    body: JSON.stringify({
-                        model: provider.model,
-                        messages: [
-                            { role: 'system', content: 'You are a helpful Bible study assistant. Always respond in valid JSON format when asked.' },
-                            { role: 'user', content: prompt }
-                        ],
-                        response_format: jsonMode ? { type: 'json_object' } : undefined
+            // All our providers now use OpenAI-compatible format
+            const response = await fetch(provider.baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${provider.apiKey}`,
+                    ...(provider.type === 'openrouter' && {
+                        'HTTP-Referer': window.location.origin,
+                        'X-Title': 'Bible Mind'
                     })
-                });
+                },
+                body: JSON.stringify({
+                    model: provider.model,
+                    messages: [
+                        { role: 'system', content: 'You are a helpful Bible study assistant. Always respond in valid JSON format when asked.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    response_format: jsonMode ? { type: 'json_object' } : undefined
+                })
+            });
 
-                if (!response.ok) throw new Error(`API error: ${response.status}`);
-
-                const data = await response.json();
-                const text = data.choices?.[0]?.message?.content;
-                if (!text) throw new Error('No response from API');
-
-                // Update working provider
-                currentProviderIndex = (currentProviderIndex + attempt) % API_PROVIDERS.length;
-                return text;
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.warn(`Provider ${provider.name} returned ${response.status}:`, errorText);
+                throw new Error(`API error: ${response.status}`);
             }
+
+            const data = await response.json();
+            const text = data.choices?.[0]?.message?.content;
+            if (!text) throw new Error('No response from API');
+
+            console.log(`✅ Success with ${provider.name}`);
+            return text;
 
         } catch (error) {
             console.warn(`Provider ${provider.name} failed:`, error);
-            if (attempt === maxRetries - 1) {
+            if (attempt === availableProviders.length - 1) {
                 throw new Error('All AI providers failed. Please try again later.');
             }
         }
