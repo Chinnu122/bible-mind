@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, Loader2, Volume2, Square, Wand2, X, Type, Settings2, BookOpen, Search, List } from 'lucide-react';
-import { bibleAPI, BibleVerse, BibleBook, StrongsDefinition } from '../api/bibleApi';
+import { bibleAPI, BibleVerse, StrongsDefinition } from '../api/bibleApi';
 import LexiconPanel from './LexiconPanel';
 import LessonBuilder from './LessonBuilder';
 import { useSettings } from '../contexts/SettingsContext';
@@ -18,15 +18,15 @@ export default function BibleReader() {
     setBook: setSelectedBook,
     setChapter: setSelectedChapter,
     goToVerse,
-    loading: contextLoading,
-    error: contextError
+    // loading: contextLoading, // Unused
+    // error: contextError // Unused
   } = useBible();
 
   const [verses, setVerses] = useState<BibleVerse[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<BibleVerse | null>(null);
   const [showLessonBuilder, setShowLessonBuilder] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [showChapterSelector, setShowChapterSelector] = useState(false);
   const [showVerseSelector, setShowVerseSelector] = useState(false);
@@ -109,6 +109,8 @@ export default function BibleReader() {
           strongsNumber: "Unknown",
           word: cleanWord,
           gloss: "Definition not found in database.",
+          english: "Definition not found in database.",
+          telugu: "",
           language: selectedBook?.testament === 'old' ? "Hebrew" : "Greek",
           partOfSpeech: "Unknown",
           gender: "",
@@ -123,6 +125,8 @@ export default function BibleReader() {
         strongsNumber: "Error",
         word: word,
         gloss: "Failed to fetch definition. Please try again.",
+        english: "Failed to fetch definition. Please try again.",
+        telugu: "",
         language: "Unknown",
         partOfSpeech: "",
         gender: "",

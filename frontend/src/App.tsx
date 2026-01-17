@@ -19,18 +19,18 @@ import CharacterOfDay from './components/CharacterOfDay';
 // AIChatbot removed
 import DailyQuiz from './components/DailyQuiz';
 import AtmospherePlayer from './components/AtmospherePlayer';
-import HolidayManager, { HolidayMode } from './components/holiday/HolidayManager';
-import HolidayBackground from './components/holiday/HolidayBackground';
+// HolidayManager and HolidayBackground removed - not currently used
 import VerseGallery from './components/VerseGallery';
 import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
 import Dashboard from './components/Dashboard';
 import PricingPage from './components/PricingPage';
-import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
+// Unused background components - commented out to fix TypeScript errors
+// import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
 import LogoIntro from './components/LogoIntro';
-import NebulaBackground from './components/NebulaBackground';
+// import NebulaBackground from './components/NebulaBackground';
 import MetallicWavesWallpaper from './components/MetallicWavesWallpaper';
-import LivingPrismIntro from './components/LivingPrismIntro';
+// import LivingPrismIntro from './components/LivingPrismIntro';
 // LogoIntro removed
 import MagneticButton from './components/MagneticButton';
 import Logo from './components/Logo';
@@ -52,13 +52,13 @@ interface UserData {
 }
 
 function AppLayout() {
-  const { theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode, language } = useSettings();
+  const { theme: _theme, zenMode, customBackground, isSettingsOpen, setIsSettingsOpen, setZenMode, language } = useSettings();
   const [showIntro, setShowIntro] = useState(true); // Logo intro on app load
   const [view, setView] = useState<ViewState>('landing');
   const [_mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<UserData | null>(null);
-  const [holidayMode, setHolidayMode] = useState<HolidayMode>('none');
+  // Holiday mode state removed - HolidayManager not currently used
   const [showGlossary, setShowGlossary] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 

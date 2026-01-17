@@ -63,16 +63,16 @@ const UpdateChecker: React.FC = () => {
         }
     };
 
-    const isNewerVersion = (remote: string, local: string): boolean => {
-        const remoteParts = remote.split('.').map(Number);
-        const localParts = local.split('.').map(Number);
-
-        for (let i = 0; i < 3; i++) {
-            if ((remoteParts[i] || 0) > (localParts[i] || 0)) return true;
-            if ((remoteParts[i] || 0) < (localParts[i] || 0)) return false;
-        }
-        return false;
-    };
+    // Unused helper function - kept for reference
+    // const isNewerVersion = (remote: string, local: string): boolean => {
+    //     const remoteParts = remote.split('.').map(Number);
+    //     const localParts = local.split('.').map(Number);
+    //     for (let i = 0; i < 3; i++) {
+    //         if ((remoteParts[i] || 0) > (localParts[i] || 0)) return true;
+    //         if ((remoteParts[i] || 0) < (localParts[i] || 0)) return false;
+    //     }
+    //     return false;
+    // };
 
     const handleDismiss = () => {
         if (versionInfo && !versionInfo.forceUpdate) {

@@ -65,7 +65,7 @@ export function BibleProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('bible-mind-chapter', currentChapter.toString());
     }, [currentBook, currentChapter]);
 
-    const goToVerse = (bookName: string, chapter: number, verseNum: number) => {
+    const goToVerse = (bookName: string, chapter: number, _verseNum: number) => {
         const book = books.find(b => b.bookName === bookName || b.shortName === bookName);
         if (book) {
             setCurrentBook(book);

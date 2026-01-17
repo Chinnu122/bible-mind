@@ -694,8 +694,8 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
     const [loadingWords, setLoadingWords] = useState(false);
     // For original text tab - selected word popup
     const [selectedWord, setSelectedWord] = useState<string | null>(null);
-    // For viewing occurrences
-    const [viewingOccurrences, setViewingOccurrences] = useState<string | null>(null);
+    // For viewing occurrences (placeholder for future feature)
+    const [_viewingOccurrences, setViewingOccurrences] = useState<string | null>(null);
 
     const isOT = verse.bookId <= 39;
     const originalText = isOT ? verse.hebrewText : verse.greekText;

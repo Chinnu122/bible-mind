@@ -39,6 +39,8 @@ import v2AuthRouter from './routes/authRoutesV2';
 import updateRouter from './routes/update';
 import crossReferencesRouter from './routes/crossReferences';
 import aiContentRouter from './routes/aiContent';
+import concordanceRouter from './routes/concordance';
+import parallelVersesRouter from './routes/parallelVerses';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -119,6 +121,8 @@ app.use('/api/v2/search', v2SearchRouter);
 app.use('/api/v2/auth', v2AuthRouter);
 app.use('/api/update', updateRouter);
 app.use('/api/ai-content', aiContentRouter);
+app.use('/api/concordance', concordanceRouter);
+app.use('/api/verses/parallel', parallelVersesRouter);
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));

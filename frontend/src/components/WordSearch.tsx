@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Loader2, Book, Globe } from 'lucide-react';
-import { bibleAPI, BibleVerse } from '../api/bibleApi';
+import { bibleAPI } from '../api/bibleApi';
 
 interface SearchResult {
     book: string;

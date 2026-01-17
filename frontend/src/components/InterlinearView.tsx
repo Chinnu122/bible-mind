@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowLeft, Book, Globe, ChevronDown, Download, Loader2 } from 'lucide-react';
+import { ArrowLeft, Book, Globe, ChevronDown, Download, Loader2 } from 'lucide-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -91,12 +91,12 @@ export default function InterlinearView({ onBack }: InterlinearViewProps) {
         document.body.removeChild(link);
     };
 
-    // Group words by verse
-    const groupedByVerse = data?.words.reduce((acc, word) => {
-        if (!acc[word.verse]) acc[word.verse] = [];
-        acc[word.verse].push(word);
-        return acc;
-    }, {} as Record<number, InterlinearWord[]>) || {};
+    // Group words by verse - unused, kept for potential future use
+    // const groupedByVerse = data?.words.reduce((acc, word) => {
+    //     if (!acc[word.verse]) acc[word.verse] = [];
+    //     acc[word.verse].push(word);
+    //     return acc;
+    // }, {} as Record<number, InterlinearWord[]>) || {};
 
     return (
         <div className="space-y-6">

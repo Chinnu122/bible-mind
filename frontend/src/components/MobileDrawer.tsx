@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
-    Menu, X, Home, TrendingUp, BookOpen, Calendar, CheckCircle, MessageSquare,
-    Image as ImageIcon, Crown, Settings, User, LogOut, Download, Smartphone
+    X, Settings, User, LogOut, Download, Smartphone
 } from 'lucide-react';
 
 interface MobileDrawerProps {
     isOpen: boolean;
     onClose: () => void;
-    navItems: Array<{ id: string; icon: React.ElementType; label: string }>;
+    navItems: Array<{ id: string; icon: LucideIcon; label: string }>;
     currentView: string;
     onNavigate: (id: string) => void;
     loggedInUser: { name: string } | null;
@@ -91,6 +91,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
                             <p className="px-3 py-2 text-xs uppercase text-slate-500 tracking-wider">Navigation</p>
                             {navItems.map((item) => {
                                 const isActive = currentView === item.id;
+                                const Icon = item.icon;
                                 return (
                                     <button
                                         key={item.id}
@@ -101,7 +102,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
                                                 : 'text-slate-300 hover:bg-white/5 hover:text-crema-100'
                                             }`}
                                     >
-                                        <item.icon size={20} />
+                                        <Icon size={20} />
                                         <span className="font-medium">{item.label}</span>
                                         {isActive && (
                                             <motion.div

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Search, Filter, Book, ChevronRight, ArrowLeft } from 'lucide-react';
 import { bibleAPI, BibleVerse, BibleBook } from '../api/bibleApi';
 import { useBible } from '../contexts/BibleContext';

@@ -40,7 +40,7 @@ const LexiconPanel: React.FC<LexiconPanelProps> = ({ word, loading, onClose, onJ
     const [multiLang, setMultiLang] = useState<MultiLangMeaning>({});
     const [occurrences, setOccurrences] = useState<OccurrenceLocation[]>([]);
     const [currentOccIndex, setCurrentOccIndex] = useState(0);
-    const [loadingExtra, setLoadingExtra] = useState(false);
+    const [_loadingExtra, setLoadingExtra] = useState(false);
 
     useEffect(() => {
         // Now we get english and telugu directly from the word object (via local dictionary)
