@@ -41,6 +41,7 @@ import crossReferencesRouter from './routes/crossReferences';
 import aiContentRouter from './routes/aiContent';
 import concordanceRouter from './routes/concordance';
 import parallelVersesRouter from './routes/parallelVerses';
+import wordDictionaryRouter from './routes/wordDictionary';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
@@ -123,6 +124,7 @@ app.use('/api/update', updateRouter);
 app.use('/api/ai-content', aiContentRouter);
 app.use('/api/concordance', concordanceRouter);
 app.use('/api/verses/parallel', parallelVersesRouter);
+app.use('/api/dictionary', wordDictionaryRouter);
 
 // Serve generated images statically
 app.use('/generated_images', express.static(path.join(__dirname, '../public/generated_images')));

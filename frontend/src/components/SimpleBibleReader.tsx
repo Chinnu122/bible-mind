@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, Loader2, Book, X } from 'lucide-react';
 import { bibleAPI, BibleVerse, CrossReference } from '../api/bibleApi';
 import { useSettings } from '../contexts/SettingsContext';
 import { useBible } from '../contexts/BibleContext';
+import { useWordDictionary, WordMeaning } from '../hooks/useWordDictionary';
 
 export default function SimpleBibleReader() {
     const {
@@ -46,6 +47,26 @@ export default function SimpleBibleReader() {
     const [isSearching, setIsSearching] = useState(false);
     const [showSearchResults, setShowSearchResults] = useState(false);
     const [selectedVersion, setSelectedVersion] = useState<'english' | 'telugu' | 'hebrew' | 'hindi'>('english');
+
+    // Word Dictionary for inline meanings
+    const { lookupWord } = useWordDictionary();
+    const [inlineWordPopup, setInlineWordPopup] = useState<{
+        word: string;
+        meaning: WordMeaning | null;
+        position: { x: number; y: number };
+    } | null>(null);
+
+    // Handle word click for inline popup
+    const handleInlineWordClick = useCallback((word: string, event: React.MouseEvent) => {
+        event.stopPropagation();
+        const meaning = lookupWord(word);
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        setInlineWordPopup({
+            word,
+            meaning,
+            position: { x: rect.left, y: rect.bottom + 5 }
+        });
+    }, [lookupWord]);
 
     // Load verses when book/chapter changes
     useEffect(() => {
@@ -286,7 +307,7 @@ export default function SimpleBibleReader() {
             </div>
 
             {/* Main Content - Dynamic Bible Text */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto" onClick={() => setInlineWordPopup(null)}>
                 <div className="max-w-3xl mx-auto px-6 py-8">
                     {loading ? (
                         <div className="flex items-center justify-center py-20">
@@ -304,13 +325,32 @@ export default function SimpleBibleReader() {
                                     </div>
 
                                     <div className="pl-6">
-                                        <p
-                                            onClick={() => handleVerseClick(verse)}
-                                            className={`${getFontSizeClass()} text-crema-100 leading-relaxed font-serif cursor-pointer hover:text-gold-100 transition-colors`}
-                                            dir={selectedVersion === 'hebrew' && verse.bookId <= 39 ? 'rtl' : 'ltr'}
-                                        >
-                                            {getPrimaryText(verse)}
-                                        </p>
+                                        {/* Hebrew mode - show clickable words */}
+                                        {selectedVersion === 'hebrew' && verse.hebrewText ? (
+                                            <div
+                                                className={`${getFontSizeClass()} text-crema-100 leading-relaxed font-serif`}
+                                                dir="rtl"
+                                            >
+                                                {verse.hebrewText.split(/\s+/).map((word, idx) => (
+                                                    <span
+                                                        key={idx}
+                                                        onClick={(e) => handleInlineWordClick(word, e)}
+                                                        className="inline-block mx-1 px-1 rounded cursor-pointer hover:bg-gold-500/20 hover:text-gold-200 transition-all"
+                                                        title="Click for meaning"
+                                                    >
+                                                        {word}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p
+                                                onClick={() => handleVerseClick(verse)}
+                                                className={`${getFontSizeClass()} text-crema-100 leading-relaxed font-serif cursor-pointer hover:text-gold-100 transition-colors`}
+                                                dir={selectedVersion === 'hebrew' && verse.bookId <= 39 ? 'rtl' : 'ltr'}
+                                            >
+                                                {getPrimaryText(verse)}
+                                            </p>
+                                        )}
 
                                         {/* Interaction Bar */}
                                         <div className="flex items-center gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -334,6 +374,72 @@ export default function SimpleBibleReader() {
                         </div>
                     )}
                 </div>
+
+                {/* Inline Word Meaning Popup */}
+                <AnimatePresence>
+                    {inlineWordPopup && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="fixed z-50 bg-[#151515] border border-gold-500/30 rounded-xl shadow-2xl p-4 max-w-sm"
+                            style={{
+                                left: Math.min(inlineWordPopup.position.x, window.innerWidth - 320),
+                                top: inlineWordPopup.position.y
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button
+                                onClick={() => setInlineWordPopup(null)}
+                                className="absolute top-2 right-2 p-1 hover:bg-white/10 rounded-full"
+                            >
+                                <X className="w-4 h-4 text-slate-400" />
+                            </button>
+
+                            {/* Hebrew Word */}
+                            <div className="text-3xl font-serif text-gold-200 mb-3 text-right" dir="rtl">
+                                {inlineWordPopup.word}
+                            </div>
+
+                            {inlineWordPopup.meaning ? (
+                                <div className="space-y-3">
+                                    {/* Telugu Meaning */}
+                                    {(inlineWordPopup.meaning.teluguMeaning || inlineWordPopup.meaning.teluguWord) && (
+                                        <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                                            <div className="text-[10px] uppercase text-emerald-400 mb-1">తెలుగు</div>
+                                            <div className="text-lg text-emerald-200">
+                                                {inlineWordPopup.meaning.teluguWord && (
+                                                    <span className="font-bold mr-2">{inlineWordPopup.meaning.teluguWord}</span>
+                                                )}
+                                                {inlineWordPopup.meaning.teluguMeaning}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* English Meaning */}
+                                    <div className="p-3 rounded-lg bg-gold-500/10 border border-gold-500/20">
+                                        <div className="text-[10px] uppercase text-gold-400 mb-1">English</div>
+                                        <div className="text-sm text-crema-100">
+                                            {inlineWordPopup.meaning.englishMeaning || 'No meaning available'}
+                                        </div>
+                                    </div>
+
+                                    {/* Strong's Number */}
+                                    <div className="flex items-center justify-between text-xs text-slate-500">
+                                        <span className="font-mono bg-white/5 px-2 py-1 rounded">
+                                            {inlineWordPopup.meaning.strongsNumber}
+                                        </span>
+                                        <span>{inlineWordPopup.meaning.language}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-sm text-slate-500 italic">
+                                    No meaning found for this word
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Search Results Modal */}
