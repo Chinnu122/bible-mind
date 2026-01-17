@@ -34,11 +34,11 @@ import quizRouter from './routes/quiz';
 import authRouter from './routes/auth';
 import dailyVerseRouter from './routes/dailyVerse';
 import exportRouter from './routes/export';
-import aiRouter from './routes/ai';
+
 import v2AuthRouter from './routes/authRoutesV2';
 import updateRouter from './routes/update';
 import crossReferencesRouter from './routes/crossReferences';
-import aiContentRouter from './routes/aiContent';
+
 import concordanceRouter from './routes/concordance';
 import parallelVersesRouter from './routes/parallelVerses';
 import wordDictionaryRouter from './routes/wordDictionary';
@@ -116,12 +116,12 @@ app.use('/api/quiz', quizRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/daily-verse', dailyVerseRouter);
 app.use('/api/export', exportRouter);
-app.use('/api/ai', aiRouter);
+
 app.use('/api/cross-references', crossReferencesRouter);
 app.use('/api/v2/search', v2SearchRouter);
 app.use('/api/v2/auth', v2AuthRouter);
 app.use('/api/update', updateRouter);
-app.use('/api/ai-content', aiContentRouter);
+
 app.use('/api/concordance', concordanceRouter);
 app.use('/api/verses/parallel', parallelVersesRouter);
 app.use('/api/dictionary', wordDictionaryRouter);

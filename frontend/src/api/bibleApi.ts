@@ -221,31 +221,6 @@ class BibleAPI {
   async getCrossReferences(bookId: number | string, chapter: number, verse: number, limit: number = 8): Promise<CrossReferencesResponse> {
     return this.fetch(`/cross-references/${bookId}/${chapter}/${verse}?limit=${limit}`);
   }
-  // AI Features
-  async getAiInterlinear(book: string, chapter: number) {
-    return this.fetch(`/ai/interlinear/${book}/${chapter}`);
-  }
-
-  async getAiStudy(topic: string) {
-    return this.fetch(`/ai/study/${encodeURIComponent(topic)}`);
-  }
-
-  async getAiKidStory(character: string) {
-    return this.fetch(`/ai/kids-story/${encodeURIComponent(character)}`);
-  }
-
-  async getAiQuiz(topic?: string) {
-    const url = topic ? `/ai/quiz/${encodeURIComponent(topic)}` : '/ai/quiz';
-    return this.fetch(url);
-  }
-
-  async getAiRiddle(forceNew: boolean = false) {
-    return this.fetch(forceNew ? '/ai/riddle/new' : '/ai/riddle');
-  }
-
-  async getAiStats() {
-    return this.fetch('/ai/stats');
-  }
 
   // Strong's - Now uses local dictionary
   async getStrongs(number: string): Promise<StrongsDefinition | null> {

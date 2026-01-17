@@ -42,7 +42,7 @@ import HebrewGreekGlossary from './components/HebrewGreekGlossary';
 import LanguageSelector from './components/LanguageSelector';
 import { BibleProvider } from './contexts/BibleContext';
 import AdvancedSearchPage from './components/AdvancedSearchPage';
-import AIStudio from './components/AIStudio';
+import AIChat from './components/AIChat';
 
 type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search' | 'aistudio';
 
@@ -250,7 +250,7 @@ function AppLayout() {
             {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
             {view === 'reader' && <SimpleBibleReader key="reader" />}
             {view === 'search' && <AdvancedSearchPage key="search" onNavigate={() => setView('reader')} onBack={() => setView('landing')} />}
-            {view === 'aistudio' && <AIStudio key="aistudio" onBack={() => setView('landing')} />}
+            {view === 'aistudio' && <AIChat key="aichat" onBack={() => setView('landing')} />}
             {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('landing')} />}
             {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
             {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
