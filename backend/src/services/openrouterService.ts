@@ -9,7 +9,7 @@ import OpenAI from 'openai';
 // Initialize OpenRouter client (uses OpenAI-compatible API)
 const openrouter = new OpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: process.env.OPENROUTER_API_KEY || '',
+    apiKey: process.env.OPENROUTER_API_KEY_GPT || process.env.OPENROUTER_API_KEY || '',
     defaultHeaders: {
         'HTTP-Referer': 'https://biblemind.app',
         'X-Title': 'Bible Mind'
