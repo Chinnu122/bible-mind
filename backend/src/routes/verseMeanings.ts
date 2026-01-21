@@ -3,8 +3,9 @@ import { prisma } from '../services/database';
 
 const router = Router();
 
-// OpenRouter API configuration
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+// OpenAI API configuration (use OpenAI directly, fallback to OpenRouter)
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY_GPT;
 
 interface WordMeaning {
@@ -103,7 +104,7 @@ router.get('/:bookId/:chapter/:verse', async (req: Request, res: Response) => {
 });
 
 /**
- * Generate word meanings using OpenRouter AI
+ * Generate word meanings using OpenAI API (with OpenRouter fallback)
  */
 async function generateWordMeanings(
     originalText: string,
@@ -114,8 +115,13 @@ async function generateWordMeanings(
     verse: number
 ): Promise<WordMeaning[]> {
 
-    if (!OPENROUTER_API_KEY) {
-        throw new Error('OpenRouter API key not configured');
+    // Use OpenAI directly if available, otherwise fallback to OpenRouter
+    const useOpenAI = !!OPENAI_API_KEY;
+    const apiUrl = useOpenAI ? OPENAI_API_URL : 'https://openrouter.ai/api/v1/chat/completions';
+    const apiKey = useOpenAI ? OPENAI_API_KEY : OPENROUTER_API_KEY;
+
+    if (!apiKey) {
+        throw new Error('No AI API key configured');
     }
 
     const prompt = `You are a Biblical Hebrew and Greek scholar. Analyze this ${language} verse and provide the ORIGINAL meaning of each significant word (not just translations).
@@ -146,16 +152,22 @@ Return as a JSON array with objects having these exact fields:
 
 Return ONLY the JSON array, no explanation or markdown.`;
 
-    const response = await fetch(OPENROUTER_API_URL, {
+    const headers: Record<string, string> = {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+    };
+
+    // Add OpenRouter-specific headers if using OpenRouter
+    if (!useOpenAI) {
+        headers['HTTP-Referer'] = 'https://bible-mind.vercel.app';
+        headers['X-Title'] = 'Bible Mind - Word Meanings';
+    }
+
+    const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://bible-mind.vercel.app',
-            'X-Title': 'Bible Mind - Word Meanings'
-        },
+        headers,
         body: JSON.stringify({
-            model: 'openai/gpt-4o-mini',
+            model: useOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini',
             messages: [
                 {
                     role: 'system',
@@ -173,7 +185,7 @@ Return ONLY the JSON array, no explanation or markdown.`;
 
     if (!response.ok) {
         const errText = await response.text();
-        console.error('OpenRouter API error:', errText);
+        console.error('AI API error:', errText);
         throw new Error(`AI API error: ${response.status}`);
     }
 
