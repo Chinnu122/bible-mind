@@ -355,6 +355,28 @@ class BibleAPI {
     return this.fetch<BibleVerse[]>(`/search?q=${encodeURIComponent(query)}&limit=${limit}`);
   }
 
+  // AI-Generated Verse Word Meanings (with caching)
+  async getVerseMeanings(bookId: number, chapter: number, verse: number): Promise<{
+    success: boolean;
+    cached: boolean;
+    data: {
+      word: string;
+      strongsNumber: string;
+      transliteration: string;
+      meaning: string;
+      teluguMeaning: string;
+      occurrences: number;
+      firstReference: string;
+    }[];
+    generatedAt: string;
+  }> {
+    const response = await fetch(`${this.baseUrl}/verse-meanings/${bookId}/${chapter}/${verse}`);
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
   // Telugu Search - Supports Roman transliteration (e.g., "devudu" -> "దేవుడు")
   async searchTeluguVerses(query: string, limit: number = 50): Promise<{
     bookId: number;

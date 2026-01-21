@@ -795,13 +795,27 @@ interface VerseStudyModalProps {
 }
 
 function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
-    const [activeTab, setActiveTab] = useState<'original' | 'word-for-word' | 'lexicon'>('original');
+    const [activeTab, setActiveTab] = useState<'original' | 'word-for-word' | 'lexicon' | 'ai-meanings'>('ai-meanings');
     const [wordDefinitions, setWordDefinitions] = useState<Record<string, any>>({});
     const [loadingWords, setLoadingWords] = useState(false);
     // For original text tab - selected word popup
     const [selectedWord, setSelectedWord] = useState<string | null>(null);
     // For viewing occurrences (placeholder for future feature)
     const [_viewingOccurrences, setViewingOccurrences] = useState<string | null>(null);
+
+    // AI Meanings state
+    const [aiMeanings, setAiMeanings] = useState<{
+        word: string;
+        strongsNumber: string;
+        transliteration: string;
+        meaning: string;
+        teluguMeaning: string;
+        occurrences: number;
+        firstReference: string;
+    }[]>([]);
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiCached, setAiCached] = useState(false);
+    const [aiError, setAiError] = useState<string | null>(null);
 
     const isOT = verse.bookId <= 39;
     const originalText = isOT ? verse.hebrewText : verse.greekText;
@@ -878,6 +892,28 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
         }
     }, [activeTab, verse]);
 
+    // Fetch AI meanings
+    useEffect(() => {
+        if (activeTab === 'ai-meanings' && aiMeanings.length === 0 && !aiLoading) {
+            setAiLoading(true);
+            setAiError(null);
+            bibleAPI.getVerseMeanings(verse.bookId, verse.chapter, verse.verse)
+                .then(response => {
+                    if (response.success) {
+                        setAiMeanings(response.data || []);
+                        setAiCached(response.cached);
+                    } else {
+                        setAiError('Failed to get meanings');
+                    }
+                })
+                .catch(err => {
+                    console.error('AI meanings error:', err);
+                    setAiError(err.message || 'Failed to get meanings');
+                })
+                .finally(() => setAiLoading(false));
+        }
+    }, [activeTab, verse, aiMeanings.length, aiLoading]);
+
     // Lookup single word on click (Original Tab)
     const handleWordClick = async (word: string) => {
         setSelectedWord(word);
@@ -922,16 +958,17 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-white/10 bg-[#0a0a0a]">
+                <div className="flex border-b border-white/10 bg-[#0a0a0a] overflow-x-auto">
                     {[
+                        { id: 'ai-meanings', label: '✨ AI Meanings' },
                         { id: 'original', label: 'Original Text' },
-                        { id: 'word-for-word', label: 'Word-to-Word (Telugu)' },
+                        { id: 'word-for-word', label: 'Word-to-Word' },
                         { id: 'lexicon', label: 'Lexicon' }
                     ].map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
-                            className={`flex-1 py-4 text-sm font-medium transition-all relative ${activeTab === tab.id
+                            className={`flex-1 py-4 px-2 text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === tab.id
                                 ? 'text-gold-400'
                                 : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                 }`}
@@ -946,6 +983,78 @@ function VerseStudyModal({ verse, teluguText, onClose }: VerseStudyModalProps) {
 
                 {/* Content Area */}
                 <div className="flex-1 overflow-y-auto p-6 bg-[#0f0f0f]">
+
+                    {/* AI Meanings Tab */}
+                    {activeTab === 'ai-meanings' && (
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <h3 className="text-lg font-bold text-gold-200">✨ AI-Powered Word Meanings</h3>
+                                    {aiCached && (
+                                        <span className="text-[10px] px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300">Cached</span>
+                                    )}
+                                </div>
+                                {aiLoading && <Loader2 className="w-5 h-5 animate-spin text-gold-500" />}
+                            </div>
+
+                            {aiError && (
+                                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
+                                    {aiError}
+                                </div>
+                            )}
+
+                            {!aiLoading && !aiError && aiMeanings.length === 0 && (
+                                <div className="text-center py-12 text-slate-500">
+                                    <p>No AI meanings available for this verse.</p>
+                                    <p className="text-xs mt-2">Original Hebrew/Greek text may not be available.</p>
+                                </div>
+                            )}
+
+                            <div className="grid gap-3">
+                                {aiMeanings.map((item, idx) => (
+                                    <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-gold-500/30 transition-colors">
+                                        <div className="flex items-start gap-4">
+                                            {/* Original Word */}
+                                            <div className="w-1/4" dir={verse.bookId <= 39 ? 'rtl' : 'ltr'}>
+                                                <span className="text-2xl font-serif text-gold-200">{item.word}</span>
+                                                <div className="mt-1 text-xs text-slate-500">{item.transliteration}</div>
+                                                <div className="mt-1">
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">
+                                                        {item.strongsNumber}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Meanings */}
+                                            <div className="flex-1">
+                                                {/* Telugu Meaning */}
+                                                <div className="text-xl text-emerald-300 font-medium mb-1">
+                                                    {item.teluguMeaning || 'అర్థం లేదు'}
+                                                </div>
+                                                {/* English Original Meaning */}
+                                                <div className="text-base text-crema-100">
+                                                    {item.meaning}
+                                                </div>
+                                                {/* Occurrences */}
+                                                {item.occurrences > 0 && (
+                                                    <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
+                                                        <span className="flex items-center gap-1">
+                                                            📊 <span className="text-gold-300 font-bold">{item.occurrences}</span> times in Bible
+                                                        </span>
+                                                        {item.firstReference && (
+                                                            <span className="flex items-center gap-1">
+                                                                📖 First: <span className="text-emerald-300">{item.firstReference}</span>
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* 1. Original Text Tab */}
                     {activeTab === 'original' && (

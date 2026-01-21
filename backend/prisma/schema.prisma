@@ -246,3 +246,24 @@ model VerseRevision {
   
   @@index([bookId, chapter, verse])
 }
+
+// ============================================
+// AI-GENERATED WORD MEANINGS CACHE
+// ============================================
+
+model VerseWordMeaning {
+  id            String   @id @default(cuid())
+  bookId        Int
+  chapter       Int
+  verse         Int
+  
+  // AI-generated content (JSON array)
+  wordMeanings  Json     // [{ word, strongsNumber, transliteration, meaning, teluguMeaning, occurrences, firstReference }]
+  
+  // Metadata
+  generatedAt   DateTime @default(now())
+  modelUsed     String?  // e.g., "gpt-4o-mini"
+  
+  @@unique([bookId, chapter, verse])
+  @@index([bookId, chapter])
+}
