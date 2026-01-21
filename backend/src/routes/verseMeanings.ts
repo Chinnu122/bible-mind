@@ -8,6 +8,10 @@ const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY_GPT;
 
+// Log API key status on startup
+console.log('[VerseMeanings] OPENAI_API_KEY configured:', !!OPENAI_API_KEY);
+console.log('[VerseMeanings] OPENROUTER_API_KEY configured:', !!OPENROUTER_API_KEY);
+
 interface WordMeaning {
     word: string;
     strongsNumber: string;
@@ -17,6 +21,18 @@ interface WordMeaning {
     occurrences: number;
     firstReference: string;
 }
+
+// Test endpoint to verify route is working
+router.get('/test', (_req: Request, res: Response) => {
+    res.json({
+        success: true,
+        message: 'Verse meanings route is working',
+        config: {
+            openaiKeyConfigured: !!OPENAI_API_KEY,
+            openrouterKeyConfigured: !!OPENROUTER_API_KEY
+        }
+    });
+});
 
 /**
  * GET /api/verse-meanings/:bookId/:chapter/:verse
