@@ -369,12 +369,30 @@ class BibleAPI {
       firstReference: string;
     }[];
     generatedAt: string;
+    error?: string;
   }> {
-    const response = await fetch(`${this.baseUrl}/verse-meanings/${bookId}/${chapter}/${verse}`);
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.statusText}`);
+    // Add timeout of 60 seconds for AI generation
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+    try {
+      const response = await fetch(`${this.baseUrl}/verse-meanings/${bookId}/${chapter}/${verse}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `API Error: ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timed out. Please try again.');
+      }
+      throw error;
     }
-    return response.json();
   }
 
   // Telugu Search - Supports Roman transliteration (e.g., "devudu" -> "దేవుడు")

@@ -29,15 +29,21 @@ router.get('/:bookId/:chapter/:verse', async (req: Request, res: Response) => {
         const verse = parseInt(req.params.verse);
 
         if (isNaN(bookId) || isNaN(chapter) || isNaN(verse)) {
-            return res.status(400).json({ error: 'Invalid parameters' });
+            return res.status(400).json({ success: false, error: 'Invalid parameters' });
         }
 
-        // Check cache first
-        const cached = await prisma.verseWordMeaning.findUnique({
-            where: {
-                bookId_chapter_verse: { bookId, chapter, verse }
-            }
-        });
+        // Check cache first (skip if table doesn't exist)
+        let cached = null;
+        try {
+            cached = await prisma.verseWordMeaning.findUnique({
+                where: {
+                    bookId_chapter_verse: { bookId, chapter, verse }
+                }
+            });
+        } catch (cacheErr: any) {
+            // Table might not exist yet - continue without cache
+            console.log('Cache lookup skipped (table may not exist):', cacheErr.message);
+        }
 
         if (cached) {
             return res.json({
@@ -57,7 +63,7 @@ router.get('/:bookId/:chapter/:verse', async (req: Request, res: Response) => {
         });
 
         if (!verseData) {
-            return res.status(404).json({ error: 'Verse not found' });
+            return res.status(404).json({ success: false, error: 'Verse not found' });
         }
 
         const isOT = bookId <= 39;
@@ -66,7 +72,7 @@ router.get('/:bookId/:chapter/:verse', async (req: Request, res: Response) => {
         const kjvText = translations?.kjv || '';
 
         if (!originalText) {
-            return res.status(404).json({ error: 'Original text not available for this verse' });
+            return res.status(404).json({ success: false, error: 'Original text not available for this verse' });
         }
 
         // Generate meanings using AI
@@ -79,27 +85,34 @@ router.get('/:bookId/:chapter/:verse', async (req: Request, res: Response) => {
             verse
         );
 
-        // Cache the result
-        const savedMeaning = await prisma.verseWordMeaning.create({
-            data: {
-                bookId,
-                chapter,
-                verse,
-                wordMeanings: wordMeanings as any,
-                modelUsed: 'gpt-4o-mini'
-            }
-        });
+        // Try to cache the result (skip if table doesn't exist)
+        let generatedAt = new Date();
+        try {
+            const savedMeaning = await prisma.verseWordMeaning.create({
+                data: {
+                    bookId,
+                    chapter,
+                    verse,
+                    wordMeanings: wordMeanings as any,
+                    modelUsed: 'gpt-4o-mini'
+                }
+            });
+            generatedAt = savedMeaning.generatedAt;
+        } catch (saveErr: any) {
+            // Cache save failed - continue without caching
+            console.log('Cache save skipped:', saveErr.message);
+        }
 
         return res.json({
             success: true,
             cached: false,
             data: wordMeanings,
-            generatedAt: savedMeaning.generatedAt
+            generatedAt: generatedAt
         });
 
     } catch (error: any) {
         console.error('Error getting verse meanings:', error);
-        return res.status(500).json({ error: error.message || 'Failed to get verse meanings' });
+        return res.status(500).json({ success: false, error: error.message || 'Failed to get verse meanings' });
     }
 });
 
