@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, BookOpen, Calendar, CheckCircle, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote, Sparkles
+  Settings, User, Home, BookOpen, Calendar, CheckCircle, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
 } from 'lucide-react';
 import Hero from './components/Hero';
 import SimpleBibleReader from './components/SimpleBibleReader';
@@ -42,9 +42,8 @@ import HebrewGreekGlossary from './components/HebrewGreekGlossary';
 import LanguageSelector from './components/LanguageSelector';
 import { BibleProvider } from './contexts/BibleContext';
 import AdvancedSearchPage from './components/AdvancedSearchPage';
-import AIChat from './components/AIChat';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search' | 'aistudio';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search';
 
 interface UserData {
   id: string;
@@ -113,8 +112,7 @@ function AppLayout() {
       daily: 'Daily',
       quiz: 'Quiz',
       pricing: 'Pricing',
-      download: 'Download',
-      aistudio: 'AI Studio'
+      download: 'Download'
     },
     telugu: {
       landing: 'ప్రారంభం', // Home
@@ -125,8 +123,7 @@ function AppLayout() {
       daily: 'దినచర్య', // Daily
       quiz: 'ప్రశ్నలు', // Quiz
       pricing: 'ధరలు', // Pricing
-      download: 'డౌన్‌లోడ్', // Download
-      aistudio: 'AI స్టూడియో' // AI Studio
+      download: 'డౌన్‌లోడ్' // Download
     },
     hindi: {
       landing: 'होम',
@@ -137,8 +134,7 @@ function AppLayout() {
       daily: 'दैनिक',
       quiz: 'प्रश्नोत्तरी',
       pricing: 'मूल्य',
-      download: 'डाउनलोड',
-      aistudio: 'AI स्टूडियो'
+      download: 'डाउनलोड'
     }
   };
 
@@ -151,7 +147,6 @@ function AppLayout() {
     { id: 'notes', icon: StickyNote, label: t.notes },
     { id: 'videos', icon: ImageIcon, label: t.videos },
     { id: 'books', icon: Library, label: t.books },
-    { id: 'aistudio', icon: Sparkles, label: t.aistudio },
     { id: 'daily', icon: Calendar, label: t.daily },
     { id: 'quiz', icon: CheckCircle, label: t.quiz },
     { id: 'pricing', icon: Crown, label: t.pricing },
@@ -250,7 +245,6 @@ function AppLayout() {
             {view === 'dashboard' && <Dashboard key="dashboard" onNavigate={navigateTo} onBack={() => navigateTo('landing')} />}
             {view === 'reader' && <SimpleBibleReader key="reader" />}
             {view === 'search' && <AdvancedSearchPage key="search" onNavigate={() => setView('reader')} onBack={() => setView('landing')} />}
-            {view === 'aistudio' && <AIChat key="aichat" onBack={() => setView('landing')} />}
             {view === 'daily' && <DailyVersePage key="daily" onBack={() => setView('landing')} onViewCharacter={() => setView('character')} onViewQuiz={() => setView('quiz')} onViewCommunity={() => setView('landing')} />}
             {view === 'telugu' && <TeluguPage key="telugu" onBack={() => setView('reader')} />}
             {view === 'auth' && <AuthPage key="auth" onBack={() => setView('landing')} onAuthSuccess={(user) => setLoggedInUser(user)} />}
