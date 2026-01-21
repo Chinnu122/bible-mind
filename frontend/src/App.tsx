@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useScroll } from 'framer-motion';
 import {
-  Settings, User, Home, BookOpen, Calendar, CheckCircle, Image as ImageIcon, LogOut, Crown, Download, Library, StickyNote
+  Settings, User, Home, BookOpen, Calendar, CheckCircle, Image as ImageIcon, LogOut, Download, Library, StickyNote, Users
 } from 'lucide-react';
 import Hero from './components/Hero';
 import SimpleBibleReader from './components/SimpleBibleReader';
@@ -24,7 +24,7 @@ import VerseGallery from './components/VerseGallery';
 import VisualsGallery from './components/VideosPage';
 import BooksPage from './components/BooksPage';
 import Dashboard from './components/Dashboard';
-import PricingPage from './components/PricingPage';
+import DivineLibrary from './components/DivineLibrary';
 // Unused background components - commented out to fix TypeScript errors
 // import LiveAbstractWallpaper from './components/LiveAbstractWallpaper';
 import LogoIntro from './components/LogoIntro';
@@ -43,7 +43,7 @@ import LanguageSelector from './components/LanguageSelector';
 import { BibleProvider } from './contexts/BibleContext';
 import AdvancedSearchPage from './components/AdvancedSearchPage';
 
-type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'pricing' | 'download' | 'search';
+type ViewState = 'landing' | 'hero' | 'reader' | 'notes' | 'telugu' | 'auth' | 'daily' | 'study' | 'character' | 'quiz' | 'gallery' | 'videos' | 'books' | 'dashboard' | 'download' | 'search';
 
 interface UserData {
   id: string;
@@ -61,6 +61,7 @@ function AppLayout() {
   // Holiday mode state removed - HolidayManager not currently used
   const [showGlossary, setShowGlossary] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showReferences, setShowReferences] = useState(false);
 
   // Restore user from localStorage on app load
   useEffect(() => {
@@ -111,7 +112,7 @@ function AppLayout() {
       books: 'Books',
       daily: 'Daily',
       quiz: 'Quiz',
-      pricing: 'Pricing',
+      references: 'References',
       download: 'Download'
     },
     telugu: {
@@ -122,7 +123,7 @@ function AppLayout() {
       books: 'పుస్తకాలు', // Books
       daily: 'దినచర్య', // Daily
       quiz: 'ప్రశ్నలు', // Quiz
-      pricing: 'ధరలు', // Pricing
+      references: 'సూచనలు', // References
       download: 'డౌన్‌లోడ్' // Download
     },
     hindi: {
@@ -133,7 +134,7 @@ function AppLayout() {
       books: 'किताबें',
       daily: 'दैनिक',
       quiz: 'प्रश्नोत्तरी',
-      pricing: 'मूल्य',
+      references: 'संदर्भ',
       download: 'डाउनलोड'
     }
   };
@@ -149,7 +150,7 @@ function AppLayout() {
     { id: 'books', icon: Library, label: t.books },
     { id: 'daily', icon: Calendar, label: t.daily },
     { id: 'quiz', icon: CheckCircle, label: t.quiz },
-    { id: 'pricing', icon: Crown, label: t.pricing },
+    { id: 'references', icon: Users, label: t.references },
     { id: 'download', icon: Download, label: t.download },
   ];
 
@@ -182,6 +183,11 @@ function AppLayout() {
         isOpen={showGlossary}
         onClose={() => setShowGlossary(false)}
       />
+
+      {/* Small References Modal */}
+      <AnimatePresence>
+        {showReferences && <DivineLibrary onClose={() => setShowReferences(false)} />}
+      </AnimatePresence>
 
       {/* Scroll Progress Indicator */}
       <motion.div
@@ -219,7 +225,13 @@ function AppLayout() {
         onClose={() => setMobileDrawerOpen(false)}
         navItems={navItems}
         currentView={view}
-        onNavigate={(id) => navigateTo(id as ViewState)}
+        onNavigate={(id) => {
+          if (id === 'references') {
+            setShowReferences(true);
+          } else {
+            navigateTo(id as ViewState);
+          }
+        }}
         loggedInUser={loggedInUser}
         onLogout={() => { localStorage.removeItem('bible-mind-user'); setLoggedInUser(null); }}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -255,7 +267,6 @@ function AppLayout() {
             {view === 'gallery' && <VerseGallery key="gallery" onBack={() => setView('landing')} />}
             {view === 'videos' && <VisualsGallery key="videos" onBack={() => setView('dashboard')} />}
             {view === 'books' && <BooksPage key="books" onBack={() => setView('dashboard')} />}
-            {view === 'pricing' && <PricingPage key="pricing" onBack={() => setView('dashboard')} />}
             {view === 'download' && <DownloadPage key="download" onBack={() => setView('landing')} />}
           </AnimatePresence>
         </motion.main>
@@ -269,8 +280,14 @@ function AppLayout() {
               return (
                 <MagneticButton
                   key={item.id}
-                  onClick={() => navigateTo(item.id as ViewState)}
-                  className={`relative group p-3 rounded-full transition-all duration-300 ${isActive ? 'bg-gold-500/20 text-gold-400' : 'text-slate-400 hover:text-crema-50 hover:bg-white/5'}`}
+                  onClick={() => {
+                    if (item.id === 'references') {
+                      setShowReferences(true);
+                    } else {
+                      navigateTo(item.id as ViewState);
+                    }
+                  }}
+                  className={`relative group p-3 rounded-full transition-all duration-300 ${isActive || (item.id === 'references' && showReferences) ? 'bg-gold-500/20 text-gold-400' : 'text-slate-400 hover:text-crema-50 hover:bg-white/5'}`}
                 >
                   {isActive && (
                     <motion.div
